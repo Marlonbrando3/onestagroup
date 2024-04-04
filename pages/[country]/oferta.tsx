@@ -40,7 +40,7 @@ export default function Property() {
   const [searchShow, setSearchShow] = useState(true);
   const [images, setImages] = useState<any[]>();
 
-  let showedImage: any = [];
+  let showedImage: any | undefined;
 
   if (images !== undefined) {
     images?.filter((img) => {
@@ -110,36 +110,38 @@ export default function Property() {
       multipler = 1;
     }
 
-    let oneImageLength = photosR / images.length;
-    let cutedImage = photosCM / oneImageLength;
+    if (images !== undefined) {
+      let oneImageLength = photosR / images.length;
+      let cutedImage = photosCM / oneImageLength;
 
-    let marginWork = 0;
+      let marginWork = 0;
 
-    if (photosC - photosCM < oneImageLength * multipler) {
-      marginWork = 0;
+      if (photosC - photosCM < oneImageLength * multipler) {
+        marginWork = 0;
+      }
+
+      if (photosC - photosCM >= oneImageLength * multipler) {
+        marginWork = margin - oneImageLength * multipler;
+      }
+
+      if (photosC === photosCM) {
+        marginWork = photosR - photosCM;
+      }
+
+      if (photosC - photosR === 0) {
+        marginWork =
+          margin - (oneImageLength - oneImageLength * (cutedImage - Math.floor(cutedImage)));
+      }
+
+      console.log(photosR - photosC);
+
+      photosContainer.current.style.marginLeft = `-${marginWork.toString()}px`;
+      console.log(`-${margin.toString()}`);
+
+      setTimeout(() => {
+        setMargin(marginWork);
+      }, 400);
     }
-
-    if (photosC - photosCM >= oneImageLength * multipler) {
-      marginWork = margin - oneImageLength * multipler;
-    }
-
-    if (photosC === photosCM) {
-      marginWork = photosR - photosCM;
-    }
-
-    if (photosC - photosR === 0) {
-      marginWork =
-        margin - (oneImageLength - oneImageLength * (cutedImage - Math.floor(cutedImage)));
-    }
-
-    console.log(photosR - photosC);
-
-    photosContainer.current.style.marginLeft = `-${marginWork.toString()}px`;
-    console.log(`-${margin.toString()}`);
-
-    setTimeout(() => {
-      setMargin(marginWork);
-    }, 400);
   };
 
   const handleChangeSlideRight = () => {
@@ -153,40 +155,42 @@ export default function Property() {
     console.log("PhotosC: " + photosC);
     console.log("PhpotosR: " + photosR);
 
-    let oneImageLength = photosR / images.length;
-    let cutedImage = photosCM / oneImageLength;
+    if (images !== undefined) {
+      let oneImageLength = photosR / images.length;
+      let cutedImage = photosCM / oneImageLength;
 
-    console.log(photosR - photosC);
+      console.log(photosR - photosC);
 
-    let multipler = 0;
+      let multipler = 0;
 
-    if (window.outerWidth > 780) {
-      multipler = 2;
-    } else {
-      multipler = 1;
+      if (window.outerWidth > 780) {
+        multipler = 2;
+      } else {
+        multipler = 1;
+      }
+
+      let marginWork = 0;
+
+      if (photosR - photosC > oneImageLength * multipler) {
+        marginWork = margin + oneImageLength * multipler;
+      }
+      if (photosR - photosC < oneImageLength * multipler) {
+        marginWork = margin + (photosR - photosC);
+      }
+
+      if (photosR - photosC < 10) {
+        marginWork = 0;
+      }
+
+      console.log(marginWork);
+
+      photosContainer.current.style.marginLeft = `-${marginWork.toString()}px`;
+      console.log(`-${margin.toString()}`);
+
+      setTimeout(() => {
+        setMargin(marginWork);
+      }, 400);
     }
-
-    let marginWork = 0;
-
-    if (photosR - photosC > oneImageLength * multipler) {
-      marginWork = margin + oneImageLength * multipler;
-    }
-    if (photosR - photosC < oneImageLength * multipler) {
-      marginWork = margin + (photosR - photosC);
-    }
-
-    if (photosR - photosC < 10) {
-      marginWork = 0;
-    }
-
-    console.log(marginWork);
-
-    photosContainer.current.style.marginLeft = `-${marginWork.toString()}px`;
-    console.log(`-${margin.toString()}`);
-
-    setTimeout(() => {
-      setMargin(marginWork);
-    }, 400);
   };
 
   // const handleShowNavi = () => {
