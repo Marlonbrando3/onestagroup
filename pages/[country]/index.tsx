@@ -1,21 +1,56 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import Script from "next/script";
-import Header from "../components/Header";
-import HomeView from "../components/HomeView";
-import SearchBarMainPage from "../components/SearchBarMainPage";
-import MainTheme from "../components/MainTheme";
-import Applychanges from "../components/SearchEngine/Applychanges";
-import WhatsAppButton from "../components/whatsapp/whatsappButton";
-import Aboutus from "../components/indexComponents/Aboutus";
-import Footer from "../components/Footer";
+import { useRouter } from "next/router";
+import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
+import Header from "../../components/Header";
+import SearchEngine from "../../components/SearchEngine/SearchEngine";
+import Footer from "../../components/Footer";
+import ContactFormMain from "../../components/ContactFormMain";
+import Properties from "../../public/properties.json";
 
-export default function FirstView() {
-  // const router = useRouter();
+export default function Home() {
+  const router = useRouter();
+  const menu = useRef();
 
+  // let properties = propertiesWithSites
+  const [sitesArray, setSitesArray] = useState(["1", "1", "1"]);
+
+  const ppp = [];
+
+  //   region,
+  //   pool,
+  //   page,
+  //   seaview,
+  //   bungalow,
+  //   apartament,
+  //   house,
+  //   garden,
+  //   parking,
+  //   balcony,
+  //   solarium,
+  //   pricefrom,
+  //   priceto,
+  //   bedf,
+  //   bedt,
+  //   bathf,
+  //   batht,
+  //   distance,
+  //   type,
+  // } = router.query;
+
+  // const { showSearchComponentsOnMobile, SearchFilters, setSearchFilters } = useContext(AppContext);
+
+  //actual choosed country from router
+  const [ActualCountry, setActualCountry] = useState(router.query.country);
+
+  //actual active site
+  const [actualSite, setActualSite] = useState(1);
+
+  //INDEX
   const [choosedCountry, setChoosedCountry] = useState({
     id: "",
-    country: "Hiszpania",
+    country: "",
     region: "",
     city: "",
     title: "",
@@ -33,8 +68,13 @@ export default function FirstView() {
     distancetothesea: "",
   });
 
+  // const properties = propertiesFromBase;
+
+  const NewsletterDiv = [];
+
   return (
     <>
+      {/* <!-- Google tag (gtag.js) --> */}
       <Script async src="https://www.googletagmanager.com/gtag/js?id=G-7E286CBN97"></Script>
       <Script id="ga">
         {` window.dataLayer = window.dataLayer || [];
@@ -71,53 +111,45 @@ export default function FirstView() {
                     `}
       </Script>
       <Head>
-        <meta property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii" content="image" />
         <title>
-          Nieruchomości Hiszpania || Nieruchomości Portgualia || Nieruchomości Dominikana
+          Nieruchomości Hiszpania || Nieruchomości Portgualia || Nieruchomości Dominikana - Onesta
+          Group
         </title>
         <link rel="shortcut icon" href="/logotype.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com"></link>
-        <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com"></link>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true"></link>
         <link
           href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;500;600&display=swap"
           rel="stylesheet"
         ></link>
         <meta
-          name="Keywords"
-          content="Nieruchomości Hiszpania, nieruchomości w Hiszpanii, apartamenty w Hiszpanii, polska agencja nieruchomości w Hiszpanii, nieruchomości Portugalia, nieruchomości w Portugali, apartamenty w Portugalii, polska agencja nieruchomości w Portugalii, nieruchomości na Dominikanie, apartamenty Dominikana, apartamenty na Dominikanie"
+          name="viewport"
+          content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
         />
         <meta
           name="Description"
           content="Biura pośrednictwa sprzedaży nieruchomości w Hiszpanii, Portugalii, Chorwacji, Dominikanie. Przeprowdzimy Cię przez cały proces zakupowy. Nieruchomości Hiszpania, Nieruchomości Portugalia, Nieruchomości Dominikana, Nieruchomości Chorwacja."
         />
-        <meta
-          name="viewport"
-          content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
-        />
+        <meta property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii" content="image" />
+        <meta property="og:title" content="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"></meta>
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
       </Head>
-      <div className="main-index">
-        <WhatsAppButton />
-        {/* 
-        <div
-          className={
-            searchShow
-              ? "hidden"
-              : "w-full h-16 fixed top-0 md:bg-gray-800/[0.4] z-20 bg-white shadow-xl"
-          }
-        >
-          <Header />
-        </div> */}
+      {/* <div
+        className={
+          showSearchComponentsOnMobile === false ? "overflow-x-hidden" : "h-0 overflow-hidden"
+        }
+      > */}
+      <div ref={menu} className="fixed duration-700 w-full z-50 bg-white">
         <Header />
-        {/* <Applychanges /> */}
-        <HomeView />
-        <SearchBarMainPage />
-        {/* <MainTheme /> */}
-        <Aboutus />
-        <Footer />
       </div>
+      {/* <Newsletter /> */}
+      <MiniHomeView />
+      {/* <div id="shadowSearch" className='absolute w-full h-screen bg-gray-900/[0.6] z-[50]'></div> */}
+      {/* <CountryIndexContext.Provider value={{ SearchFilters, setSearchFilters, PropertiesLength }}> */}
+      <SearchEngine />
+      <ContactFormMain />
+      <Footer />
+      {/* </div> */}
     </>
   );
 }
