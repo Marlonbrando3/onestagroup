@@ -78,7 +78,7 @@ export default function Property() {
     }
   }, [searchParams]);
 
-  let showedImage: any | undefined = images?.filter((img) => {
+  let showedImage: any[] = images?.filter((img) => {
     if (img.showed === true) {
       showedImage = img.image;
     }
