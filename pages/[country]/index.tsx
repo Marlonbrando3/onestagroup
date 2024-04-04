@@ -11,7 +11,7 @@ import Properties from "../../public/properties.json";
 
 export default function Home() {
   const router = useRouter();
-  const menu = useRef();
+  const menu = useRef<any>();
 
   // let properties = propertiesWithSites
   const [sitesArray, setSitesArray] = useState(["1", "1", "1"]);
@@ -117,7 +117,7 @@ export default function Home() {
         </title>
         <link rel="shortcut icon" href="/logotype.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true"></link>
+        <link rel="preconnect" href="https://fonts.gstatic.com"></link>
         <link
           href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;500;600&display=swap"
           rel="stylesheet"
