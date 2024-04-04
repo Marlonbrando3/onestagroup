@@ -11,9 +11,9 @@ type Property = {
 export default function ImagesInPropetyCard({ images, setImages }: Property) {
   const [activeImgNumber, setActiveImgNumber] = useState(1);
 
-  const handleActiveImage = (indexfromClick) => {
+  const handleActiveImage = (indexfromClick: any) => {
     setImages(
-      images.map((img, index) => {
+      images.map((img: any, index: any) => {
         if (img.showed === false && index + 1 === indexfromClick) {
           return {
             ...img,
@@ -36,7 +36,7 @@ export default function ImagesInPropetyCard({ images, setImages }: Property) {
 
   return (
     <div className="flex border w-full">
-      {images?.map((prop, index) => (
+      {images?.map((prop: any, index: any) => (
         <div
           key={prop}
           className={

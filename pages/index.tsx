@@ -1,11 +1,9 @@
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import Script from "next/script";
 import Header from "../components/Header";
 import HomeView from "../components/HomeView";
 import SearchBarMainPage from "../components/SearchBarMainPage";
-import MainTheme from "../components/MainTheme";
-import Applychanges from "../components/SearchEngine/Applychanges";
 import WhatsAppButton from "../components/whatsapp/whatsappButton";
 import Aboutus from "../components/indexComponents/Aboutus";
 import Footer from "../components/Footer";
