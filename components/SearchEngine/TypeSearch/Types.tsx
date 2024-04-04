@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 export default function Types() {
   const router = useRouter();
 
-  const setNewType = (e) => {
+  const setNewType = (e:any) => {
     router.query.type = e.target.value;
     router.push(router, undefined, { shallow: true });
   };

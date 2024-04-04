@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 export default function Types() {
   const router = useRouter();
 
-  const setNewMarket = (e) => {
+  const setNewMarket = (e:any) => {
     router.query.market = e.target.value;
     router.push(router, undefined, { shallow: true });
   };
