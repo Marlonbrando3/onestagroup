@@ -1,5 +1,4 @@
 export default function (req: any, res: any) {
-  require("dotenv").config();
   let nodemailer = require("nodemailer");
 
   const endEmail = "marek.marszalek@onesta.com.pl";
