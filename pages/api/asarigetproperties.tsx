@@ -1,4 +1,4 @@
-export default async function POST(req, res, id) {
+export default async function POST(req: any, res: any, id: any) {
   // const params = await req.json();
   try {
     let result = await fetch(`https://api.asari.pro/site/listing?id=${req.body.id}`, {

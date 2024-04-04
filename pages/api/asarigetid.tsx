@@ -1,4 +1,4 @@
-export default async function GET(req, res) {
+export default async function GET(req: any, res: any) {
   try {
     let result = await fetch("https://api.asari.pro/site/exportedListingIdList", {
       method: "GET",
