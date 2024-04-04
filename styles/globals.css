@@ -251,13 +251,6 @@ div.InputsStyleContainer p {
   border-radius: 5px;
 }
 
-/* import HandshakeIcon from '@mui/icons-material/Handshake';
-import SavingsIcon from '@mui/icons-material/Savings';
-import GTranslateIcon from '@mui/icons-material/GTranslate';
-import GavelIcon from '@mui/icons-material/Gavel';
-import MapsHomeWorkIcon from '@mui/icons-material/MapsHomeWork';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent'; */
-
 @layer components {
   .InputsStyleContainer {
     @apply font-normal text-sm

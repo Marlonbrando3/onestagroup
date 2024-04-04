@@ -13,7 +13,6 @@ import { MdSavings } from "react-icons/md";
 import { SiGoogletranslate } from "react-icons/si";
 import { GoLaw } from "react-icons/go";
 import { BsFillBuildingsFill } from "react-icons/bs";
-// import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import { SiPowervirtualagents } from "react-icons/si";
 import ContactFormAboutUs from "../ContactFormAboutUs";
 

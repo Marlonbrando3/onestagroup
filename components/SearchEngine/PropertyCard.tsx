@@ -5,15 +5,10 @@ import { useState, useContext } from "react";
 import { IoMdPin } from "react-icons/io";
 import { IoBedOutline } from "react-icons/io5";
 import { PiBathtubLight } from "react-icons/pi";
-// import WavesOutlinedIcon from "@mui/icons-material/WavesOutlined";
+
 import { FaSwimmingPool } from "react-icons/fa";
 import { BiArea } from "react-icons/bi";
-// import LocalParkingIcon from "@mui/icons-material/LocalParking";
-// import OtherHousesIcon from "@mui/icons-material/OtherHouses";
-// import img from "../images/2_max.jpeg";
-// import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import ResultsSlider from "./ResultsSlider";
-// import ShareIcon from "@mui/icons-material/Share";
 import { MdIosShare } from "react-icons/md";
 
 type Property = {

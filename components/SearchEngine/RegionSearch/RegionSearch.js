@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { useRouter } from "next/router";
 import DataCountry from "../../../data/DataCountry.json";
-import { NumbersOutlined, OneKPlusOutlined } from "@mui/icons-material";
 
 export default function CountrySearch({ activeRegionList, setActiveRegionList }) {
   const router = useRouter();

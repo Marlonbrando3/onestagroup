@@ -6,18 +6,8 @@ import Header from "../../components/Header";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
-// import db from "../../utils/db.doc";
-// import PropertyTwo from "../../model/propertymodel";
-import Localization from "@mui/icons-material/Room";
-import ShowerOutlinedIcon from "@mui/icons-material/ShowerOutlined";
-import WavesOutlinedIcon from "@mui/icons-material/WavesOutlined";
-import PoolOutlinedIcon from "@mui/icons-material/PoolOutlined";
-import Bedrooms from "@mui/icons-material/AirlineSeatIndividualSuiteOutlined";
-import ImagesInPropetyCard from "../../components/ImagesInPropetyCard";
-import ChevronRightIcon from "@mui/icons-material/ChevronRightOutlined";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeftOutlined";
 import Features from "../../components/Features";
 import Descryption from "../../components/Descryption";
 import Properties from "../../public/properties.json";
@@ -48,7 +38,9 @@ export default function Property() {
   useEffect(() => {
     console.log(router);
     if (router.isReady === true) {
-      const QueryId = parseInt(searchParams.get("id"));
+      const QueryIdTemp: any = searchParams.get("id");
+      const QueryId = parseInt(QueryIdTemp);
+
       console.log(QueryId);
       const propertyDataTemp = Properties.filter((i) => i.id === QueryId);
       console.log(propertyDataTemp);

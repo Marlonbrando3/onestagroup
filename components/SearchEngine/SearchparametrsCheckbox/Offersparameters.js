@@ -1,17 +1,8 @@
-import { CommentsDisabledOutlined } from "@mui/icons-material";
-import CancelIcon from "@mui/icons-material/Cancel";
-import CheckIcon from "@mui/icons-material/Check";
-import Pool from "@mui/icons-material/Pool";
-import Seaview from "@mui/icons-material/Houseboat";
+import { FaCheckSquare } from "react-icons/fa";
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
-import { SearchComponentsContext } from "../SearchComponentsList";
 
 export default function Offersparameters({ name, title }) {
   const router = useRouter();
-
-  const { searchConditions, setSearchConditions } = useContext(AppContext);
-  const { ShowChangedAreApply } = useContext(SearchComponentsContext);
 
   let ActualValue;
 
@@ -66,7 +57,7 @@ export default function Offersparameters({ name, title }) {
                 : "hidden"
             }
           >
-            <CheckIcon
+            <FaCheckSquare
               name={name}
               className="w-full h-full rounded-sm flex items-center justify-center"
             />
