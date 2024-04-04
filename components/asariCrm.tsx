@@ -1,11 +1,11 @@
 import React, { useMemo, useCallback, useRef, useState, useEffect } from "react";
 
 export default function AsariCrm() {
-  const properties = [];
+  const properties: any = [];
   const [progress, setProgress] = useState<number>(0);
 
-  const spinner = useRef<HTMLParagraphElement>();
-  const finish = useRef<HTMLParagraphElement>();
+  const spinner = useRef<any>();
+  const finish = useRef<any>();
 
   let i = 0;
   let percent = 0;
@@ -14,7 +14,7 @@ export default function AsariCrm() {
     return `${progress} %`;
   }, [progress]);
 
-  const handleDownloadingAllProperties = async (propertiesId) => {
+  const handleDownloadingAllProperties = async (propertiesId: any) => {
     for (const id of propertiesId) {
       console.log(i);
       console.log(percent);
@@ -52,14 +52,14 @@ export default function AsariCrm() {
     });
   };
 
-  const delay = async (time) => {
+  const delay = async (time: any) => {
     await new Promise((resolve) => setTimeout(() => resolve(console.log("-------")), time));
   };
 
   const handleDownloadingDataFromAsari = async () => {
     finish.current.style.display = "hidden";
     spinner.current.style.display = "flex";
-    const propertiesId = [];
+    const propertiesId: any = [];
 
     try {
       let res = await fetch("/api/asarigetid", {
@@ -67,7 +67,7 @@ export default function AsariCrm() {
         headers: { "Content-Type": "application/json" },
       });
       const resultsData = await res.json();
-      resultsData.list.data.map((propId) => {
+      resultsData.list.data.map((propId: any) => {
         propertiesId.push(propId.id);
       });
       console.log(propertiesId);
