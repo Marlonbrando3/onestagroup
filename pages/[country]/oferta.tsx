@@ -30,7 +30,7 @@ export default function Property() {
 
   const [actualImage, setActualImage] = useState(1);
   const [searchShow, setSearchShow] = useState(true);
-  const [images, setImages] = useState<any[]>();
+  const [images, setImages] = useState<any[]>([]);
 
   let showedImage;
   console.log(propertyData);
@@ -214,12 +214,12 @@ export default function Property() {
   //   } else return "nie";
   // });
 
-  const Touchstart = (e) => {
+  const Touchstart = (e: any) => {
     setStart(e.changedTouches[0].clientX);
     console.log(e.changedTouches[0].clientX);
   };
 
-  const Touchend = (e) => {
+  const Touchend = (e: any) => {
     setEnd(e.changedTouches[0].clientX);
     console.log(e.changedTouches[0].clientX);
   };
@@ -283,7 +283,7 @@ export default function Property() {
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
         />
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true"></link>
+        <link rel="preconnect" href="https://fonts.gstatic.com"></link>
         <link
           href="https://fonts.googleapis.com/css2?family=Manjari:wght@100;400;700&family=Nunito+Sans&display=swap"
           rel="stylesheet"
@@ -300,7 +300,7 @@ export default function Property() {
           </p>
         </div>
         <div className="lg:w-[1150px] md:w-[780px] max-w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white ">
-          <div className="flex flex-col lg:flex-row mx-auto">
+          {/* <div className="flex flex-col lg:flex-row mx-auto">
             <div className="md:w-[740px] md:h-[500px] w-full sm:h-[500px] h-[400px] overflow-hidden mr-[20px]">
               <div className="flex md:h-[500px] sm:h-[500px] h-[400px] w-full flex-col justify-between">
                 <div className="lg:w-[800px] md:w-[740px] h-[500px] sm:h-[600px] w-[700px] overflow-hidden hidden sm:block select-none relative rounded-xl mx-auto">
@@ -312,7 +312,6 @@ export default function Property() {
                     alt="photo"
                   ></Image>
                 </div>
-                {/* <button onClick={check}>lalalallal</button> */}
                 <div className="relative">
                   <div
                     onClick={handleChangeSlideLeft}
@@ -339,8 +338,6 @@ export default function Property() {
                     onTouchStart={Touchstart}
                     onTouchEnd={Touchend}
                     className="lg:w-[90%] md:w-[740px] w-[92.2vw] mx-auto relative flex sm:h-[134px] md:h-[100px] md:rounded-auto rounded-md overflow-hidden"
-                    // onMouseEnter={handleShowNavi}
-                    // onMouseLeave={handleHideNavi}
                   >
                     <div
                       ref={photosContainer}
@@ -355,7 +352,6 @@ export default function Property() {
                         }
                       >
                         <ImagesInPropetyCard
-                          // className="select-none"
                           mainImage={images}
                           images={images}
                           setImages={setImages}
@@ -405,7 +401,6 @@ export default function Property() {
                     <div className="mr-2">
                       <WavesOutlinedIcon />
                     </div>
-                    <div>{/* {property[0].distance} */}</div>
                   </div>
                 </div>
                 <div className="w-1/4 border-2 border-white h-16 bg-gray-50  pt-2">
@@ -414,7 +409,7 @@ export default function Property() {
                     <div className="mr-2">
                       <PoolOutlinedIcon />
                     </div>
-                    <div className="font-bold text-md">{/* {pool.toString().toUpperCase()} */}</div>
+                    <div className="font-bold text-md"></div>
                   </div>
                 </div>
                 <div className="w-full h-64 relative">
@@ -438,7 +433,7 @@ export default function Property() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <Features />
         {/* <Descryption
