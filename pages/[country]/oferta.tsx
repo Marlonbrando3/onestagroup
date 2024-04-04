@@ -332,7 +332,7 @@ export default function Property() {
                     className="absolute select-none lg:w-[25px] w-[40px] flex left-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
                   >
                     <FaChevronLeft
-                      className="h-full w-8 text-black block"
+                      className="h-[20px] w-[20px] text-black block"
                       onClick={handleChangeSlideLeft}
                     />
                   </div>
@@ -342,7 +342,7 @@ export default function Property() {
                     className="absolute select-none lg:w-[25px] w-[40px] flex right-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
                   >
                     <FaChevronRight
-                      className="h-full w-8 text-black block"
+                      className="h-[20px] w-[20px] text-black block"
                       onClick={handleChangeSlideRight}
                     />
                   </div>
