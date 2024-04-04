@@ -27,7 +27,7 @@ export default function Features() {
         <MdOutlineStreetview /> <p className="pl-2 text-xl">Widok na morze</p>
       </span>
       <span className="flex lg:w-auto w-1/2 lg:my-8 lg:px-3 py-1">
-        <PoolOutlinedIcon /> <p className="pl-2 text-xl">Balkon</p>
+        <FaSwimmingPool /> <p className="pl-2 text-xl">Balkon</p>
       </span>
     </div>
   );
