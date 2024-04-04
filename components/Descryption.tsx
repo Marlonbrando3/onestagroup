@@ -5,24 +5,22 @@ import ContactOnPropertyCard from "./SearchEngine/ContactOnPropertyCard";
 import ContactForm from "./ContactForm";
 
 type Props = {
-  description;
-  bedrooms;
-  bathrooms;
-  distance;
-  pool;
-  propertyId;
+  description: any;
+  bedrooms: any;
+  bathrooms: any;
+  distance: any;
+  pool: any;
+  propertyId: any;
 };
 
-export default function Descryption(
-  {
+export default function Descryption({
   description,
   bedrooms,
   bathrooms,
   distance,
   pool,
   propertyId,
-}: Props
-) {
+}: Props) {
   return (
     <div className="lg:flex lg:flex-wrap w-full rounded-md lg:w-10/12 lg:leading-7 mx-auto">
       {/* container for 2 colums left:desc and contact form, right: contact with agent (only desktop) */}
