@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { verify } from "jsonwebtoken";
+// import { verify } from "jsonwebtoken";
 import { useRouter } from "next/router";
 import { secret } from "./api/secret";
 // import AdminInputs from "/components/AdminInputs";
