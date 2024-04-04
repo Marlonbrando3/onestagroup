@@ -38,9 +38,17 @@ export default function Property() {
 
   const [actualImage, setActualImage] = useState(1);
   const [searchShow, setSearchShow] = useState(true);
-  const [images, setImages] = useState<any[]>([]);
+  const [images, setImages] = useState<any[]>();
 
-  console.log(propertyData);
+  let showedImage: any = [];
+
+  if (images !== undefined) {
+    images?.filter((img) => {
+      if (img.showed === true) {
+        showedImage = img.image;
+      }
+    });
+  }
 
   useEffect(() => {
     console.log(router);
@@ -77,12 +85,6 @@ export default function Property() {
       console.log(imagesTemp);
     }
   }, [searchParams]);
-
-  let showedImage: any[] = images?.filter((img) => {
-    if (img.showed === true) {
-      showedImage = img.image;
-    }
-  });
 
   const [handleMarginSlider, setHandleMarginSlider] = useState(false);
   const [margin, setMargin] = useState(0);
