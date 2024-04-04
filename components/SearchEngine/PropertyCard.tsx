@@ -1,11 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useContext } from "react";
 import { IoMdPin } from "react-icons/io";
 import { IoBedOutline } from "react-icons/io5";
 import { PiBathtubLight } from "react-icons/pi";
-
 import { FaSwimmingPool } from "react-icons/fa";
 import { BiArea } from "react-icons/bi";
 import ResultsSlider from "./ResultsSlider";

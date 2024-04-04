@@ -6,9 +6,17 @@ import Header from "../../components/Header";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
+import ImagesInPropetyCard from "@/components/ImagesInPropetyCard";
 import { useState, useEffect } from "react";
 import React from "react";
 import Features from "../../components/Features";
+import { FaChevronRight } from "react-icons/fa6";
+import { FaChevronLeft } from "react-icons/fa6";
+import { IoMdPin } from "react-icons/io";
+import { IoBedOutline } from "react-icons/io5";
+import { PiBathtubLight } from "react-icons/pi";
+import { FaSwimmingPool } from "react-icons/fa";
+import { BiArea } from "react-icons/bi";
 import Descryption from "../../components/Descryption";
 import Properties from "../../public/properties.json";
 
@@ -32,7 +40,6 @@ export default function Property() {
   const [searchShow, setSearchShow] = useState(true);
   const [images, setImages] = useState<any[]>([]);
 
-  let showedImage;
   console.log(propertyData);
 
   useEffect(() => {
@@ -71,7 +78,7 @@ export default function Property() {
     }
   }, [searchParams]);
 
-  images?.filter((img) => {
+  let showedImage: any | undefined = images?.filter((img) => {
     if (img.showed === true) {
       showedImage = img.image;
     }
@@ -300,7 +307,7 @@ export default function Property() {
           </p>
         </div>
         <div className="lg:w-[1150px] md:w-[780px] max-w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white ">
-          {/* <div className="flex flex-col lg:flex-row mx-auto">
+          <div className="flex flex-col lg:flex-row mx-auto">
             <div className="md:w-[740px] md:h-[500px] w-full sm:h-[500px] h-[400px] overflow-hidden mr-[20px]">
               <div className="flex md:h-[500px] sm:h-[500px] h-[400px] w-full flex-col justify-between">
                 <div className="lg:w-[800px] md:w-[740px] h-[500px] sm:h-[600px] w-[700px] overflow-hidden hidden sm:block select-none relative rounded-xl mx-auto">
@@ -318,7 +325,7 @@ export default function Property() {
                     // ref={buttonLeft}
                     className="absolute select-none lg:w-[25px] w-[40px] flex left-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
                   >
-                    <ChevronLeftIcon
+                    <FaChevronLeft
                       className="h-full w-8 text-black block"
                       onClick={handleChangeSlideLeft}
                     />
@@ -328,7 +335,7 @@ export default function Property() {
                     ref={buttonRight}
                     className="absolute select-none lg:w-[25px] w-[40px] flex right-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
                   >
-                    <ChevronRightIcon
+                    <FaChevronRight
                       className="h-full w-8 text-black block"
                       onClick={handleChangeSlideRight}
                     />
@@ -366,7 +373,7 @@ export default function Property() {
               <div className="w-full h-[100px]">
                 <div className="flex h-[90px] items-center">
                   <div className="h-12 w-10 flex items-center justify-center">
-                    <Localization />
+                    <IoMdPin />
                   </div>
                   <div className="flex flex-col h-full justify-center">
                     <div className="">{propertyData[0]?.country.name}</div>
@@ -381,7 +388,7 @@ export default function Property() {
                   <div className="w-full flex justify-center text-sm">Sypalni</div>
                   <div className="flex h-full justify-center">
                     <div className="mr-2">
-                      <Bedrooms />
+                      <IoBedOutline />
                     </div>
                     <div>{propertyData[0]?.noOfRooms}</div>
                   </div>
@@ -390,7 +397,7 @@ export default function Property() {
                   <div className="w-full flex justify-center text-sm">Łazienki</div>
                   <div className="flex justify-center ">
                     <div className="mr-2">
-                      <ShowerOutlinedIcon />
+                      <PiBathtubLight />
                     </div>
                     <div>{propertyData[0]?.noOfBathrooms}</div>
                   </div>
@@ -399,7 +406,7 @@ export default function Property() {
                   <div className="w-full flex justify-center text-xs">Do Morza</div>
                   <div className="flex justify-center  ">
                     <div className="mr-2">
-                      <WavesOutlinedIcon />
+                      <FaSwimmingPool />
                     </div>
                   </div>
                 </div>
@@ -407,7 +414,7 @@ export default function Property() {
                   <div className="w-full flex justify-center text-xs">Basen</div>
                   <div className="flex justify-center ">
                     <div className="mr-2">
-                      <PoolOutlinedIcon />
+                      <FaSwimmingPool />
                     </div>
                     <div className="font-bold text-md"></div>
                   </div>
@@ -433,7 +440,7 @@ export default function Property() {
                 </div>
               </div>
             </div>
-          </div> */}
+          </div>
         </div>
         <Features />
         {/* <Descryption
