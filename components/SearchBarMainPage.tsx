@@ -1,14 +1,12 @@
-import React, { useState, useContext, useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import DataCountry from "../data/DataCountry.json";
 
 export default function SearchButton() {
   const router = useRouter();
-  const advancedSearch = useRef<HTMLParagraphElement>();
+  const advancedSearch = useRef<any>();
 
-  const country = useRef();
+  const country = useRef<any>();
 
   const [showedadvancedSearch, setshowedadvancedSearch] = useState(false);
 
@@ -37,28 +35,7 @@ export default function SearchButton() {
     }
   });
 
-  const handleAdvanceSearch = () => {
-    setshowedadvancedSearch(!showedadvancedSearch);
-    console.log(parseInt(advancedSearch.current.style.height));
-
-    if (window.outerWidth > 1023) {
-      if (parseInt(advancedSearch.current.style.height) > 200) {
-        advancedSearch.current.style.height = "23px";
-        advancedSearch.current.style.marginTop = "0px";
-      } else {
-        advancedSearch.current.style.height = "230px";
-        advancedSearch.current.style.marginTop = "-205px";
-      }
-    } else {
-      if (parseInt(advancedSearch.current.style.height) > 200) {
-        advancedSearch.current.style.height = "23px";
-      } else {
-        advancedSearch.current.style.height = "380px";
-      }
-    }
-  };
-
-  const handleQueryData = (e) => {
+  const handleQueryData = (e: any) => {
     let paramsName = e.target.name;
     // console.log(paramsBolean)
     let paramsValues = e.target.value;
@@ -115,7 +92,7 @@ export default function SearchButton() {
     } else return i;
   });
 
-  const query = querybeta.reduce(function (result, currentObject) {
+  const query = querybeta.reduce(function (result: any, currentObject: any) {
     for (var key in currentObject) {
       if (currentObject.hasOwnProperty(key)) {
         result[key] = currentObject[key];
@@ -126,7 +103,7 @@ export default function SearchButton() {
 
   console.log(query);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
     e.preventDefault();
     router.push({
       pathname: `/${countryChoosed}`,
