@@ -267,7 +267,6 @@ export default function SearchButton() {
               onChange={handleQueryData}
               ref={country}
               className="lg:w-[170px] w-[90%] h-[30px] bg-white rounded-2xl text-[14px] font-[500] pl-2 border-[1px] border-yellow-500"
-              placeholder="Kraj"
             >
               <option value="hiszpania">Hiszpania</option>
               <option value="portugalia">Portugalia</option>
