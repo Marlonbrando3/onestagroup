@@ -39,7 +39,7 @@ export default function Home({ handleShowMobileFilters, searchEngine }: Props) {
   console.log(router.query);
 
   const handleNewSearch = () => {
-    if (searchEngine.current.style.top) searchEngine.current.style.top = "-340px";
+    if (searchEngine.current.style.top) searchEngine.current.style.top = "-360px";
     router.push({ pathname: `/${router.query.country}`, query: queries });
   };
 
