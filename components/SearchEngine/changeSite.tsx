@@ -20,6 +20,7 @@ export default function ChangeSite({ PropertiesDataSubSites, actualPage, setActu
 
   const data = PropertiesDataSubSites.map((p: any, index: any) => (
     <div
+      key={index}
       onClick={() => handleChanginSite(index)}
       className={`px-[10px] mx-[2px] rounded-md cursor-pointer ${
         actualPage === index + 1
