@@ -17,11 +17,11 @@ export default function Home() {
 
   const handleShowMobileFilters = () => {
     console.log(searchEngine.current.style.top);
-    if (searchEngine.current.style.top === "-340px") {
+    if (searchEngine.current.style.top === "-360px") {
       searchEngine.current.style.top = "70px";
       mobileButtonSearchEngine.current.innerHTML = "Zamknij";
     } else {
-      searchEngine.current.style.top = "-340px";
+      searchEngine.current.style.top = "-360px";
       mobileButtonSearchEngine.current.innerHTML = "Filtry";
     }
   };
