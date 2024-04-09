@@ -35,7 +35,7 @@ export default function PropertyCard({ property }: Property) {
   const market = property.mortgageMarket === "Primary" ? "Rynek Pierwotny" : "Rynek Wtórny";
 
   return (
-    <div className="flex flex-col bg-gray-500 w-[92vw] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
+    <div className="flex flex-col bg-gray-500 lg:w-[370px] w-[92vw] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
       <div className="w-full h-[220px] overflow-hidden mx-auto rounded-t-md flex items-center justify-center text-4xl relative">
         <ResultsSlider
           images={property.images}
