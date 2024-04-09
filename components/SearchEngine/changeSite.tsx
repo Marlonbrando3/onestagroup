@@ -18,20 +18,6 @@ export default function ChangeSite({ PropertiesDataSubSites, actualPage, setActu
     setActualPage(index + 1);
   };
 
-  const data = PropertiesDataSubSites.map((p: any, index: any) => (
-    <div
-      key={index}
-      onClick={() => handleChanginSite(index)}
-      className={`px-[10px] mx-[2px] rounded-md cursor-pointer ${
-        actualPage === index + 1
-          ? "bg-none border border-gray-700 font-bold"
-          : "bg-yellow-500 border border-yellow-500"
-      }`}
-    >
-      {index + 1}
-    </div>
-  ));
-
   return (
     <div className="w-full h-[50px] flex items-center ">
       <div className="w-[300px] mx-auto flex justify-center">
@@ -44,6 +30,7 @@ export default function ChangeSite({ PropertiesDataSubSites, actualPage, setActu
         </p>{" "}
         {PropertiesDataSubSites.map((p: any, index: any) => (
           <div
+            key={index}
             onClick={() => handleChanginSite(index)}
             className={`px-[10px] mx-[2px] rounded-md cursor-pointer ${
               parseInt(page as string) === index + 1
