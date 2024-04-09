@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useRef, useContext } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/router";
 
 export default function ContactFormMain() {
@@ -14,8 +14,6 @@ export default function ContactFormMain() {
     Email: "",
     Message: "",
   });
-
-  console.log("https://onesta.com.pl" + router.asPath.toString());
 
   const confirmation = useRef();
 
@@ -61,8 +59,8 @@ export default function ContactFormMain() {
   };
 
   return (
-    <div className='relative flex flex-col w-full h-1/2 bg-center bg-cover bg-[url("../components/images/bg-contact.jpeg")]'>
-      <div className="absolute w-full h-full bg-blue-900/[0.7]"></div>
+    <div className='relative flex flex-col w-full h-1/2 bg-center bg-cover bg-[url("/palmyBGform.jpeg")] rounded-xl'>
+      <div className="absolute w-full h-full bg-gray-900/[0]"></div>
       <div className="h-10/12 lg:w-[1200px] w-full flex flex-col-reverse lg:flex-row lg:flex py-10 lg:mx-auto">
         <div className="flex lg:flex-col items-center z-10 lg:w-6/12 w-full justify-center lg:pt-0 pt-24 visible lg:hidden">
           <div className="text-xs sm:text-lg flex flex-col justify-center items-start lg:items-center h-1/2 w-5/12 text-white">
@@ -83,7 +81,7 @@ export default function ContactFormMain() {
         </div>
         <div className="w-full lg:w-6/12">
           <form
-            className="relative z-10 lg:flex w-10/12 flex flex-col mx-auto"
+            className="relative z-10 lg:flex w-10/12 flex flex-col mx-auto rounded-xl px-[20px]"
             onSubmit={handleSubmit}
             method="post"
           >
@@ -110,7 +108,7 @@ export default function ContactFormMain() {
               każdą inną sprawę:
             </div>
             <input
-              className="h-10 my-2 rounded-sm pl-2 placeholder:pl-3 shadow-md"
+              className="h-10 my-2 rounded-xl pl-2 placeholder:pl-3 shadow-md"
               onChange={(e) => {
                 setDataForm({ ...dataForm, Name: e.target.value });
               }}
@@ -120,7 +118,7 @@ export default function ContactFormMain() {
               required
             ></input>
             <input
-              className="h-12 my-2 rounded-sm pl-2 placeholder:pl-3 shadow-md"
+              className="h-12 my-2 rounded-xl pl-2 placeholder:pl-3 shadow-md"
               onChange={(e) => {
                 setDataForm({ ...dataForm, Phone: e.target.value });
               }}
@@ -130,7 +128,7 @@ export default function ContactFormMain() {
               required
             ></input>
             <input
-              className="h-12 my-2 rounded-sm pl-2 placeholder:pl-3 shadow-md"
+              className="h-12 my-2 rounded-xl pl-2 placeholder:pl-3 shadow-md"
               onChange={(e) => {
                 setDataForm({ ...dataForm, Email: e.target.value });
               }}
@@ -140,7 +138,7 @@ export default function ContactFormMain() {
               required
             ></input>
             <textarea
-              className="h-40 my-2 rounded-sm pl-2 placeholder:p-3 shadow-md"
+              className="h-40 my-2 rounded-xl pl-2 placeholder:p-3 shadow-md"
               onChange={(e) => {
                 setDataForm({ ...dataForm, Message: e.target.value });
               }}

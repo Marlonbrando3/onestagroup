@@ -1,16 +1,10 @@
-import { useState, useContext, useRef } from "react";
+import React from "react";
 import { IoMdClose } from "react-icons/io";
-import { AppContext } from "../../../pages/_app";
-import { SearchEngineContext } from "../SearchEngine";
-import { SearchComponentsContext } from "../SearchComponentsList";
 
 export default function Searange({}) {
   const RangeRef = useRef();
   const RangeRefVis = useRef();
   const [current, setValue] = useState(2000);
-  const { searchConditions, setSearchConditions } = useContext(AppContext);
-  const { applySea, setApplySea } = useContext(SearchEngineContext);
-  const { ShowChangedAreApply } = useContext(SearchComponentsContext);
 
   let distanceActual = [];
 

@@ -1,18 +1,22 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import MainSearchInSearchEngine from "../MainSearchInSearchEngine";
+import MobileFilters from "../MobileFilters";
 
-export default function SearchInput() {
+type Function = {
+  handleShowMobileFilters: any;
+  mobileButtonSearchEngine: any;
+  searchEngine: any;
+};
+
+export default function SearchInput({
+  handleShowMobileFilters,
+  searchEngine,
+  mobileButtonSearchEngine,
+}: Function) {
   const router = useRouter();
 
-  const handleShowMobileFilters = () => {
-    // setShowSearchComponentsOnMobile(
-    //   (showSearchComponentsOnMobile) => !showSearchComponentsOnMobile,
-    // );
-  };
-
   const ShowPopUpChangedApply: any = useRef();
-  const searchEngine = useRef<any>();
   const AdvancedMenu = useRef<HTMLParagraphElement>();
   const AdvancedButton = useRef<HTMLParagraphElement>();
 
@@ -25,25 +29,18 @@ export default function SearchInput() {
 
   return (
     <>
-      {/* <div ref={ShowPopUpChangedApply} className="bg-green-700 transition fixed z-40 bottom-2 right-2 text-white px-3 rounded-md hidden ">Zmiany wprowdzone!</div> */}
       <div
         ref={searchEngine}
         className={
-          "transition-all duration-500 disable hidden -top-screen flex-col items-center justify-center lg:top-[70px] h-[100px] lg:w-screen bg-white lg:flex z-40"
+          "transition-all duration-500 fixed -top-[340px] lg:mt-0 flex-col items-center justify-center lg:h-[100px] h-auto w-screen lg:w-screen bg-white lg:flex lg:sticky z-30 border"
         }
       >
-        <div
-          className="border-2 rounded-[10%] border-red-900 bg-white m-4 w-[30px] h-[30px] z-40 block md:hidden fixed top-0 right-0"
-          onClick={handleShowMobileFilters}
-        >
-          <div className="w-[28px] h-[28px] text-white relative flex items-center justify-center">
-            <div className="absolute border-t-2 border-red-900 w-8/12 h-[1px] rotate-45"></div>
-            <div className="absolute border-t-2 border-red-900  w-8/12 h-[1px] -rotate-45"></div>
-          </div>
-        </div>
-        <form className="lg:-mt-[100px] p-[10px] rounded-[20px] flex md:flex-row flex-col justify-center items-center lg:w-[1100px] w-screenborder-red-500/[0.5] h-[800px] md:h-auto relative shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] bg-white">
+        <form className="lg:-mt-[100px] p-[10px] rounded-[20px] flex md:flex-row flex-col justify-center items-center lg:w-[1100px] h-auto md:h-auto relative shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] bg-white">
           <div className="h-auto flex items-center w-full">
-            <MainSearchInSearchEngine />
+            <MainSearchInSearchEngine
+              handleShowMobileFilters={handleShowMobileFilters}
+              searchEngine={searchEngine}
+            />
           </div>
           {/* <div
               ref={AdvancedMenu}
@@ -109,6 +106,11 @@ export default function SearchInput() {
               Szukaj
             </div> */}
         </form>
+        <MobileFilters
+          handleShowMobileFilters={handleShowMobileFilters}
+          searchEngine={searchEngine}
+          mobileButtonSearchEngine={mobileButtonSearchEngine}
+        />
         <div className="flex flex-col justify-center items-center xl:mx-[45px] lg:mt-0"></div>
       </div>
     </>

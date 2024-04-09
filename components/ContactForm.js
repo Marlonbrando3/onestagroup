@@ -52,7 +52,7 @@ export default function ContactForm({ propertyId }) {
   };
 
   return (
-    <div className=" lg:flex w-full bg-slate-900/[0.9] mx-1 px-2 lg:px-10 rounded-md mt-1 lg:w-full lg:mx-auto">
+    <div className="lg:flex w-full bg-[url('/palmyBGform.jpeg')] bg-center bg-cover mx-1 px-2 lg:px-10 rounded-md mt-1 lg:w-full lg:mx-auto">
       <form className="flex flex-col lg:w-full lg:p-7 p-7" onSubmit={handleSubmit}>
         <div className="py-4 font-bold text-2xl text-white">Zadaj nam pytanie:</div>
         <p className="py-2 font-bold text-white">
@@ -93,7 +93,7 @@ export default function ContactForm({ propertyId }) {
         ></input>
         {/* <label id="massage">Wiadomość</label> */}
         <textarea
-          className="cf-input-property-card pl-2 pt-1"
+          className="cf-input-property-card pl-2 pt-1 h-[140px]"
           onChange={(e) => {
             setDataForm({ ...dataForm, Message: e.target.value });
           }}
@@ -102,7 +102,7 @@ export default function ContactForm({ propertyId }) {
           placeholder="Wiadomość"
         ></textarea>
         <div className="checkbox flex my-2">
-          <input className="w-6 h-6" type="checkbox" name="mail" required></input>
+          <input className="w-6 h-6 cursor-pointer" type="checkbox" name="mail" required></input>
           <p className="block ml-2 text-white">
             Akceptuję regulamin i{" "}
             <a className="underline-offset-1" href="#">
@@ -110,7 +110,7 @@ export default function ContactForm({ propertyId }) {
             </a>
           </p>
         </div>
-        <button type="submit" className="bg-red-600 w-full rounded-md py-2 text-white">
+        <button type="submit" className="bg-yellow-500 w-full rounded-md py-2 text-white">
           Wyślij
         </button>
       </form>

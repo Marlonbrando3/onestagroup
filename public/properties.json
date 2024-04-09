@@ -1,6 +1,6 @@
 [
   {
-    "actualisationDate": "2024-03-26 18:09:19",
+    "actualisationDate": "2024-04-05 12:42:07",
     "administrativeRent": { "amount": 50, "currency": "EUR" },
     "agent": {
       "id": 68870,
@@ -55,7 +55,7 @@
     "contractType": null,
     "country": { "id": 56, "name": "Hiszpania", "code": "ES" },
     "dateCreated": "2024-03-25 19:16:04",
-    "description": "Wyjątkowe i niepowtarzalne apartamenty w Hiszpanii.&nbsp; Pierwszej linia brzegowa z widokiem na morze, na zamkniętych osiedlu. W okolicy plaża oraz jedna z popularniejszych restauracji w regionie - Nautilus. Nieopodal znajdziemy markety oraz centrum handlowe La Zenia Boulvare. Okolice to niska i kameralna zabudowa.",
+    "description": "Wyjątkowe i niepowtarzalne apartamenty w Hiszpanii.&nbsp; <br>Pierwszej linia brzegowa z widokiem na morze, na zamkniętych osiedlu. <br><br>Wyjątkowość apartamentów w tym obiekcie to przede wszystkim widok na morze z każdego z nich. Sama inwestycja powstaje w wyjątkowym miejscu - na niewielkim cyplu wybrzeża dlatego morze widoczne jest z apartamentów, których okna wychodzącą zarówno na stronę zachodnią jak i południową. Apartamenty są rozkładowe i zaprojektowane w stylu premium.<br><br>Punta Prima jest niewielką acz urokliwą dzielnicą o stosunkowo niskiej zabudowie i&nbsp; głównie wypoczynkową w której znajdziemy kilka innych inwestycji oraz w którą inwestują deweloperzy.<br>W okolicy znajdziemy plaże oraz jedna z popularniejszych restauracji w regionie - Nautilus. Nieopodal znajdują się markety oraz centrum handlowe La Zenia Boulvare, droga do lotniska, parki, bary.<br><br>Specyfikacja nieruchomości:<br>- 2 lub sypialnie,<br>- 2 łazienki,<br>- taras,<br>- baseny na terenie obiektu,<br>- ogród i sporo zieleni,<br>- miejsce parkingowe,<br>- osiedle jest zamknięte,<br><br>Przybliżony termin oddania: czerwiec 2025<br>opłata rezerwacyjna 10 000 euro.<br><br><br>",
     "elevator": null,
     "emissionCO2": null,
     "energyCertificateState": null,
@@ -71,7 +71,7 @@
     "garageParkingPrice": { "amount": null, "currency": "PLN" },
     "gas": false,
     "generatedDescription": null,
-    "headerAdvertisement": "Wyjątkowe apartamenty na Costa Blanca, Punta Prima",
+    "headerAdvertisement": "Wyjątkowe apartamenty z widokiem na morze",
     "headroom": null,
     "heatingTypeList": ["Electric"],
     "hotWaterList": ["CityWater"],
@@ -99,8 +99,8 @@
     "ownershipType": "Mortgage",
     "parentListing": null,
     "parkingSpacesNo": null,
-    "price": { "amount": 299000, "currency": "EUR" },
-    "priceM2": { "amount": 4983.33, "currency": "EUR" },
+    "price": { "amount": 319000, "currency": "EUR" },
+    "priceM2": { "amount": 4492.96, "currency": "EUR" },
     "primaryEnergy": null,
     "privateDescription": null,
     "process": {
@@ -122,9 +122,9 @@
     "security": null,
     "spaceFloorList": ["Tiles", "Parquet", "Panels", "Mozaic"],
     "status": "Active",
-    "totalArea": 60,
+    "totalArea": 71,
     "usableEnergy": null,
-    "vacantFromDate": "2024-04-12 00:00:00",
+    "vacantFromDate": "2025-06-12 00:00:00",
     "videoUrl": null,
     "virtualTourUrl": null,
     "windowTypeList": ["PCV"],
@@ -142,10 +142,10 @@
     "sharedOwnership": null,
     "groundSharedOwnership": null,
     "isSpecial": false,
-    "prevPrice": { "amount": null, "currency": "PLN" },
-    "changePriceDate": "2024-03-25 19:42:59",
+    "prevPrice": { "amount": 299000, "currency": "EUR" },
+    "changePriceDate": "2024-04-05 12:29:22",
     "priceBeforeReduction": null,
-    "lastUpdated": "2024-03-26 18:09:19",
+    "lastUpdated": "2024-04-05 12:44:07",
     "user": {
       "id": 68870,
       "firstName": "Marek",
@@ -188,12 +188,12 @@
     },
     "statusChangeDate": "2024-03-26 14:01:29",
     "images": [
-      { "id": 97454298, "description": null, "isScheme": false },
-      { "id": 97454299, "description": null, "isScheme": false },
-      { "id": 97454300, "description": null, "isScheme": false },
       { "id": 97454301, "description": null, "isScheme": false },
+      { "id": 97454300, "description": null, "isScheme": false },
+      { "id": 97454299, "description": null, "isScheme": false },
       { "id": 97454302, "description": null, "isScheme": false },
       { "id": 97454303, "description": null, "isScheme": false },
+      { "id": 97454298, "description": null, "isScheme": false },
       { "id": 97454304, "description": null, "isScheme": false },
       { "id": 97454305, "description": null, "isScheme": false },
       { "id": 97454306, "description": null, "isScheme": false },
@@ -1212,7 +1212,7 @@
     "zhDescription": null
   },
   {
-    "actualisationDate": "2024-04-02 15:38:37",
+    "actualisationDate": "2024-04-03 19:34:43",
     "agent": {
       "id": 68870,
       "firstName": "Marek",
@@ -1348,7 +1348,7 @@
     "prevPrice": { "amount": null, "currency": "PLN" },
     "changePriceDate": "2024-04-02 15:25:30",
     "priceBeforeReduction": null,
-    "lastUpdated": "2024-04-02 15:38:44",
+    "lastUpdated": "2024-04-03 19:34:43",
     "user": {
       "id": 68870,
       "firstName": "Marek",

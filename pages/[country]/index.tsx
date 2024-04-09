@@ -7,70 +7,28 @@ import Header from "../../components/Header";
 import SearchEngine from "../../components/SearchEngine/SearchEngine";
 import Footer from "../../components/Footer";
 import ContactFormMain from "../../components/ContactFormMain";
+import MobileFilters from "@/components/MobileFilters";
 import Properties from "../../public/properties.json";
 
 export default function Home() {
-  const router = useRouter();
   const menu = useRef<any>();
+  const searchEngine = useRef<any>();
+  const mobileButtonSearchEngine = useRef<any>();
+
+  const handleShowMobileFilters = () => {
+    console.log(searchEngine.current.style.top);
+    if (searchEngine.current.style.top === "-340px") {
+      searchEngine.current.style.top = "70px";
+      mobileButtonSearchEngine.current.innerHTML = "Zamknij";
+    } else {
+      searchEngine.current.style.top = "-340px";
+      mobileButtonSearchEngine.current.innerHTML = "Filtry";
+    }
+  };
 
   // let properties = propertiesWithSites
-  const [sitesArray, setSitesArray] = useState(["1", "1", "1"]);
 
-  const ppp = [];
-
-  //   region,
-  //   pool,
-  //   page,
-  //   seaview,
-  //   bungalow,
-  //   apartament,
-  //   house,
-  //   garden,
-  //   parking,
-  //   balcony,
-  //   solarium,
-  //   pricefrom,
-  //   priceto,
-  //   bedf,
-  //   bedt,
-  //   bathf,
-  //   batht,
-  //   distance,
-  //   type,
-  // } = router.query;
-
-  // const { showSearchComponentsOnMobile, SearchFilters, setSearchFilters } = useContext(AppContext);
-
-  //actual choosed country from router
-  const [ActualCountry, setActualCountry] = useState(router.query.country);
-
-  //actual active site
-  const [actualSite, setActualSite] = useState(1);
-
-  //INDEX
-  const [choosedCountry, setChoosedCountry] = useState({
-    id: "",
-    country: "",
-    region: "",
-    city: "",
-    title: "",
-    market: "",
-    type: "",
-    bathrooms: "",
-    bedrooms: "",
-    seaview: false,
-    pool: false,
-    parking: false,
-    garden: false,
-    solarium: false,
-    balcony: false,
-    price: "",
-    distancetothesea: "",
-  });
-
-  // const properties = propertiesFromBase;
-
-  const NewsletterDiv = [];
+  // const NewsletterDiv = [];
 
   return (
     <>
@@ -134,22 +92,19 @@ export default function Home() {
         <meta property="og:title" content="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"></meta>
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
       </Head>
-      {/* <div
-        className={
-          showSearchComponentsOnMobile === false ? "overflow-x-hidden" : "h-0 overflow-hidden"
-        }
-      > */}
-      <div ref={menu} className="fixed duration-700 w-full z-50 bg-white">
+      <div ref={menu} className=" duration-700 w-full z-50 bg-white">
         <Header />
       </div>
       {/* <Newsletter /> */}
+      {/* <div className="fixed w-screen h-screen bg-red-900 z-30">lalalaal</div> */}
       <MiniHomeView />
-      {/* <div id="shadowSearch" className='absolute w-full h-screen bg-gray-900/[0.6] z-[50]'></div> */}
-      {/* <CountryIndexContext.Provider value={{ SearchFilters, setSearchFilters, PropertiesLength }}> */}
-      <SearchEngine />
+      <SearchEngine
+        handleShowMobileFilters={handleShowMobileFilters}
+        searchEngine={searchEngine}
+        mobileButtonSearchEngine={mobileButtonSearchEngine}
+      />
       <ContactFormMain />
       <Footer />
-      {/* </div> */}
     </>
   );
 }

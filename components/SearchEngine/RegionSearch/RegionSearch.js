@@ -1,11 +1,9 @@
-import { useContext } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import DataCountry from "../../../data/DataCountry.json";
 
 export default function CountrySearch({ activeRegionList, setActiveRegionList }) {
   const router = useRouter();
-  const { aprove, setAprove, searchConditions, setSearchConditions } = useContext(AppContext);
-  const { ShowChangedAreApply } = useContext(SearchComponentsContext);
 
   const country = router.query.country;
 

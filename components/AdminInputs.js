@@ -64,8 +64,7 @@ export default function AdminInputs() {
     for (const file of fileData.files) {
       const data = new Date().toLocaleDateString();
       const filename = file.name;
-      const link =
-        "https://res.cloudinary.com/onestagrouppl/image/upload/Properties/";
+      const link = "https://res.cloudinary.com/onestagrouppl/image/upload/Properties/";
       const id = UniqeId;
       const uniqueSuffix = "_" + data + "_" + Date.now() + "_." + "jpg";
       const uniqueImgNameWork =
@@ -79,10 +78,7 @@ export default function AdminInputs() {
         title.current.value +
         "_" +
         uniqueSuffix;
-      const uniqueImgName = uniqueImgNameWork
-        .toString()
-        .replaceAll(" ", "_")
-        .replaceAll(",", "_");
+      const uniqueImgName = uniqueImgNameWork.toString().replaceAll(" ", "_").replaceAll(",", "_");
 
       // console.log(uniqueImgName.toString().replaceAll(' ','_'))
 
@@ -152,13 +148,7 @@ export default function AdminInputs() {
       enctype="multipart/form-data"
     >
       <label id="id">Numer oferty (nadany automatycznie)</label>
-      <input
-        ref={id}
-        className="inputs-add-property"
-        name="id"
-        value={UniqeId}
-        readOnly
-      ></input>
+      <input ref={id} className="inputs-add-property" name="id" value={UniqeId} readOnly></input>
 
       <label id="country" className="inputs-add-property-label">
         Kraj
@@ -190,11 +180,7 @@ export default function AdminInputs() {
       <label id="recomended" className="inputs-add-property-label">
         Polecana na stronie gównej?
       </label>
-      <select
-        ref={recomended}
-        className="inputs-add-property"
-        name="addtohomeview"
-      >
+      <select ref={recomended} className="inputs-add-property" name="addtohomeview">
         <option value="true">Tak</option>
         <option value="false">Nie</option>
       </select>
@@ -241,20 +227,12 @@ export default function AdminInputs() {
       <label id="bathrooms" className="inputs-add-property-label">
         Łazienki
       </label>
-      <input
-        ref={bathrooms}
-        className="inputs-add-property"
-        name="bathrooms"
-      ></input>
+      <input ref={bathrooms} className="inputs-add-property" name="bathrooms"></input>
 
       <label id="bedrooms" className="inputs-add-property-label">
         Sypilanie
       </label>
-      <input
-        ref={bedrooms}
-        className="inputs-add-property"
-        name="bedrooms"
-      ></input>
+      <input ref={bedrooms} className="inputs-add-property" name="bedrooms"></input>
 
       <label id="pool" className="inputs-add-property-label">
         Basen
@@ -320,21 +298,12 @@ export default function AdminInputs() {
       <label id="distance" className="inputs-add-property-label">
         Do plazy/morza
       </label>
-      <input
-        ref={distance}
-        className="inputs-add-property"
-        name="distance"
-        type="text"
-      ></input>
+      <input ref={distance} className="inputs-add-property" name="distance" type="text"></input>
 
       <label id="localization" className="inputs-add-property-label">
         Lokalizacja(link google)
       </label>
-      <input
-        ref={localization}
-        className="inputs-add-property"
-        name="localization"
-      ></input>
+      <input ref={localization} className="inputs-add-property" name="localization"></input>
 
       <label id="squaremeters" className="inputs-add-property-label">
         Powierznia obiektu
@@ -349,12 +318,7 @@ export default function AdminInputs() {
       <label id="owner" className="inputs-add-property-label">
         Źródło
       </label>
-      <input
-        ref={owner}
-        className="inputs-add-property"
-        name="owner"
-        type="text"
-      ></input>
+      <input ref={owner} className="inputs-add-property" name="owner" type="text"></input>
 
       <label id="description" className="inputs-add-property-label">
         Opis nieruchomości
@@ -368,13 +332,7 @@ export default function AdminInputs() {
       <label id="PropImages" className="inputs-add-property-label">
         Zdjęcia
       </label>
-      <input
-        ref={images}
-        type="file"
-        multiple
-        placeholder="dupa"
-        name="PropImages"
-      ></input>
+      <input ref={images} type="file" multiple placeholder="dupa" name="PropImages"></input>
 
       <button
         type="submit"

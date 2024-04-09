@@ -19,6 +19,7 @@ import { FaSwimmingPool } from "react-icons/fa";
 import { BiArea } from "react-icons/bi";
 import Descryption from "../../components/Descryption";
 import Properties from "../../public/properties.json";
+import Footer from "@/components/Footer";
 
 export default function Property() {
   const router = useRouter();
@@ -89,18 +90,10 @@ export default function Property() {
   const [handleMarginSlider, setHandleMarginSlider] = useState(false);
   const [margin, setMargin] = useState(0);
 
-  let ChangeSize = useCallback(() => {
-    // console.log(window.outerWidth)
-    // size = window.outerWidth
-  }, []);
-
   const handleChangeSlideLeft = () => {
     const photosCM = photosContainerMain.current.offsetWidth;
     const photosC = photosContainer.current.offsetWidth;
     const photosR = photosRow.current.offsetWidth;
-    console.log("PhotosCM: " + photosCM);
-    console.log("PhotosC: " + photosC);
-    console.log("PhpotosR: " + photosR);
 
     let multipler = 0;
 
@@ -151,10 +144,6 @@ export default function Property() {
     const photosC = photosContainer.current.offsetWidth;
     const photosR = photosRow.current.offsetWidth;
 
-    console.log("PhotosCM: " + photosCM);
-    console.log("PhotosC: " + photosC);
-    console.log("PhpotosR: " + photosR);
-
     if (images !== undefined) {
       let oneImageLength = photosR / images.length;
       let cutedImage = photosCM / oneImageLength;
@@ -193,40 +182,6 @@ export default function Property() {
     }
   };
 
-  // const handleShowNavi = () => {
-  //   buttonLeft.current.style.visibility = "visible";
-  //   buttonRight.current.style.visibility = "visible";
-  // };
-
-  // const handleHideNavi = () => {
-  //   buttonLeft.current.style.visibility = "hidden";
-  //   buttonRight.current.style.visibility = "hidden";
-  // };
-
-  // const pool = property.map((prop) => {
-  //   if (prop.pool === true) {
-  //     return "tak";
-  //   } else return "nie";
-  // });
-
-  // const seaview = property.map((prop) => {
-  //   if (prop.seaview === true) {
-  //     return "tak";
-  //   } else return "nie";
-  // });
-
-  // const parking = property.map((prop) => {
-  //   if (prop.parking === true) {
-  //     return "tak";
-  //   } else return "nie";
-  // });
-
-  // const garden = property.map((prop) => {
-  //   if (prop.garden === true) {
-  //     return "tak";
-  //   } else return "nie";
-  // });
-
   const Touchstart = (e: any) => {
     setStart(e.changedTouches[0].clientX);
     console.log(e.changedTouches[0].clientX);
@@ -236,19 +191,6 @@ export default function Property() {
     setEnd(e.changedTouches[0].clientX);
     console.log(e.changedTouches[0].clientX);
   };
-
-  // useEffect(() => {
-  //   console.log(start - end);
-
-  //   window.addEventListener("resize", ChangeSize);
-
-  //   if (start - end > 50) {
-  //     handleChangeSlideRight();
-  //   }
-  //   if (start - end < -50) {
-  //     handleChangeSlideLeft();
-  //   }
-  // }, [end]);
 
   return (
     <>
@@ -448,15 +390,16 @@ export default function Property() {
             </div>
           </div>
         </div>
-        <Features />
-        {/* <Descryption
-        description={property[0].description}
-        bedrooms={property[0].bedrooms}
-        bathrooms={property[0].bathrooms}
-        distance={property[0].distance}
-        pool={property[0].pool}
-        propertyId={propertyId}
-        /> */}
+        {/* <Features /> */}
+        <Descryption
+          description={propertyData[0]?.description}
+          bedrooms={propertyData[0]?.bedrooms}
+          bathrooms={propertyData[0]?.bathrooms}
+          distance={propertyData[0]?.distance}
+          pool={propertyData[0]?.pool}
+          propertyId={propertyData[0]?.id}
+        />
+        <Footer />
       </div>
     </>
   );

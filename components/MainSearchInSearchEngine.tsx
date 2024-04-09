@@ -9,44 +9,52 @@ import Bedrooms from "./SearchEngine/Bedrooms/BedSearch";
 import PriceSearch from "./SearchEngine/PriceSearch/PriceSearch";
 import { IoSearch } from "react-icons/io5";
 
-export default function Home() {
+type Props = {
+  handleShowMobileFilters: any;
+  searchEngine: any;
+};
+
+export default function Home({ handleShowMobileFilters, searchEngine }: Props) {
   const router = useRouter();
   const AdvancedButton = useRef();
 
-  const [city, setCity] = useState([]);
+  const { region, type, market, bathsmin, bathsmax, bedsmin, bedsmax, pricemin, pricemax } =
+    router.query;
 
-  const handleRegionMenu = useRef();
+  const [dataRegion, setDataRegion] = useState(region || "All");
+  const [dataType, setDataType] = useState(type || "All");
+  const [dataMarket, setDataMarket] = useState(market || "All");
+  const [dataBathsmin, setDataBathsmin] = useState(bathsmin || "All");
+  const [dataBathsmax, setDataBathsmax] = useState(bathsmax || "All");
+  const [dataBedsmin, setDataBedsmin] = useState(bedsmin || "All");
+  const [dataBedsmax, setDataBedsmax] = useState(bedsmax || "All");
+  const [dataPricemin, setDataPricemin] = useState(pricemin || "All");
+  const [dataPricemax, setDataPricemax] = useState(pricemax || "All");
 
-  let regionsToShow = [router.query.region];
+  const [queries, setQueries] = useState({
+    page: 1,
+  });
+  console.log(queries);
 
-  // const handleDeleteParam = (e) => {
-  //   const params = new URLSearchParams(router.query);
-  //   params.delete("region");
-  //   const queryString = params.toString();
-  //   const path = `/[country]${queryString ? `?${queryString}` : ""}`;
-  //   // console.log(queryString)
-
-  //   router.push(path, "", { scroll: false });
-  // };
-
-  const ShowMoreMenu = () => {
-    // showMore();
-  };
+  console.log(router.query);
 
   const handleNewSearch = () => {
-    // console.log(JSON.stringify(SearchFilters));
-    // let newSearch = {};
-    // const test = SearchFilters.map((i) => {
-    //   Object.keys(i).map((key, value) => {
-    //     if (Object.values(i).toString() !== "") {
-    //       newSearch[key] = i[key];
-    //     }
-    //   });
-    // }
-    // router.push({
-    //   pathname: `/${router.query.country}`,
-    //   query: newSearch,
-    // });
+    if (searchEngine.current.style.top) searchEngine.current.style.top = "-340px";
+    router.push({ pathname: `/${router.query.country}`, query: queries });
+  };
+
+  const handleResetingSearch = () => {
+    setDataRegion("All");
+    setDataType("All");
+    setDataMarket("All");
+    setDataBathsmin("All");
+    setDataBathsmax("All");
+    setDataBedsmin("All");
+    setDataBedsmax("All");
+    setDataPricemin("All");
+    setDataPricemax("All");
+    setQueries({ page: 1 });
+    router.push({ pathname: `/${router.query.country}`, query: { page: 1 } });
   };
 
   return (
@@ -55,16 +63,52 @@ export default function Home() {
         <div className="flex flex-col justify-end w-full">
           <div
             id="search-params-wrapper"
-            className="flex md:w-full mt-0 flex-col lg:flex-row mx-auto lg:flex-wrap items-center justify-between"
+            className="flex w-full mt-0 flex-col lg:flex-row mx-auto lg:flex-wrap items-center justify-between"
           >
             <CountrySearch />
-            <Region />
+            <Region
+              setQueries={setQueries}
+              queries={queries}
+              dataRegion={dataRegion}
+              setDataRegion={setDataRegion}
+            />
             {/* <City /> */}
-            <Types />
-            <Market />
-            <Bathrooms />
-            <Bedrooms />
-            <PriceSearch />
+            <Types
+              setQueries={setQueries}
+              queries={queries}
+              dataType={dataType}
+              setDataType={setDataType}
+            />
+            <Market
+              setQueries={setQueries}
+              queries={queries}
+              dataMarket={dataMarket}
+              setDataMarket={setDataMarket}
+            />
+            <Bathrooms
+              setQueries={setQueries}
+              queries={queries}
+              dataBathsmin={dataBathsmin}
+              setDataBathsmin={setDataBathsmin}
+              dataBathsmax={dataBathsmax}
+              setDataBathsmax={setDataBathsmax}
+            />
+            <Bedrooms
+              setQueries={setQueries}
+              queries={queries}
+              dataBedsmin={dataBedsmin}
+              setDataBedsmin={setDataBedsmin}
+              dataBedsmax={dataBedsmax}
+              setDataBedsmax={setDataBedsmax}
+            />
+            <PriceSearch
+              setQueries={setQueries}
+              queries={queries}
+              dataPricemin={dataPricemin}
+              setDataPricemin={setDataPricemin}
+              dataPricemax={dataPricemax}
+              setDataPricemax={setDataPricemax}
+            />
             {/* <div
               // onClick={ShowMoreMenu}
               ref={AdvancedButton}
@@ -72,17 +116,27 @@ export default function Home() {
             >
               <p>więcej filtrów (wkrótce)</p>
             </div> */}
-            <div
-              className="h-[40px] w-[170px] text-white rounded-3xl bg-yellow-500 cursor-pointer flex items-center justify-center mt-[14px]"
-              onClick={handleNewSearch}
-            >
-              <IoSearch />
-              Szukaj
+
+            <div className="flex">
+              {router.asPath.length > 20 && (
+                <div
+                  className="h-[40px] w-[170px] text-black rounded-3xl bg-white cursor-pointer flex items-center justify-center mt-[14px] border border-gray-400"
+                  onClick={handleResetingSearch}
+                >
+                  Wyczyść filtry
+                </div>
+              )}
+              <div
+                className="ml-[10px] h-[40px] w-[170px] text-white rounded-3xl bg-yellow-500 cursor-pointer flex items-center justify-center mt-[14px]"
+                onClick={handleNewSearch}
+              >
+                <IoSearch />
+                Szukaj
+              </div>
             </div>
           </div>
         </div>
       </div>
-      {/* </MainSearch.Provider> */}
     </>
   );
 }

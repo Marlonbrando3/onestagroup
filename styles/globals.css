@@ -246,7 +246,8 @@ div.InputsStyleContainer p {
 }
 
 .cf-input-property-card {
-  border: 1px solid black;
+  /* border: 1px solid black; */
+  box-shadow: 2px 1px 5px 0px;
   margin: 0px 0px 6px 0px;
   border-radius: 5px;
 }
@@ -343,8 +344,8 @@ div.InputsStyleContainer p {
   }
 
   .list {
-    @apply ml-4 font-[600] p-2 list-none cursor-pointer transition
-    hover:bg-red-700 hover:text-white xl:text-[16px] xl:font-[600] text-sm;
+    @apply ml-4 font-[600] px-2 list-none cursor-pointer transition
+    hover:bg-orange-500 hover:text-white lg:text-[16px] xl:font-[600] text-2xl;
   }
 
   .listToChoose {

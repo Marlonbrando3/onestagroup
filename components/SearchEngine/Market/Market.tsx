@@ -1,23 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 
-export default function Types() {
+type Query = {
+  queries: any;
+  setQueries: any;
+  dataMarket: any;
+  setDataMarket: any;
+};
+
+export default function Types({ setQueries, queries, dataMarket, setDataMarket }: Query) {
   const router = useRouter();
 
-  const setNewMarket = (e:any) => {
-    router.query.market = e.target.value;
-    router.push(router, undefined, { shallow: true });
+  const { market } = router.query;
+
+  const setNewMarket = (e: any) => {
+    setDataMarket(e.target.value);
+    setQueries({ ...queries, market: e.target.value });
   };
 
   const MarketSearchInput = (
     <div>
       <select
+        value={dataMarket || market}
         onChange={setNewMarket}
         className="md:w-[180px] w-[90vw] rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px]"
       >
-        <option value="">Pierwotny i wtórny</option>
-        <option value="first">Pierwotny</option>
-        <option value="second">Wtórny</option>
+        <option value="All">Pierwotny i wtórny</option>
+        <option value="Primary">Pierwotny</option>
+        <option value="Secondary">Wtórny</option>
       </select>
     </div>
   );

@@ -12,18 +12,15 @@ export default function SearchButton() {
 
   const [countryChoosed, setCountryChoosed] = useState("hiszpania");
 
-  const [conditions, setconditions] = useState([
-    { name: "firstmarket", value: false },
-    { name: "secondmarket", value: false },
-    { name: "apartment", value: false },
-    { name: "house", value: false },
-    { name: "bathf", value: null },
-    { name: "batht", value: null },
-    { name: "bedsfrom", value: null },
-    { name: "bedsto", value: null },
-    { name: "pf", value: null },
-    { name: "pt", value: null },
-  ]);
+  const [dataRegion, setDataRegion] = useState();
+  const [dataType, setDataType] = useState();
+  const [dataMarket, setDataMarket] = useState();
+  const [dataBathsmin, setDataBathsmin] = useState();
+  const [dataBathsmax, setDataBathsmax] = useState();
+  const [dataBedsmin, setDataBedsmin] = useState();
+  const [dataBedsmax, setDataBedsmax] = useState();
+  const [dataPricemin, setDataPricemin] = useState();
+  const [dataPricemax, setDataPricemax] = useState();
 
   const regions = DataCountry.map((r) => {
     if (r.country === countryChoosed) {
@@ -35,7 +32,8 @@ export default function SearchButton() {
     }
   });
 
-  const handleQueryData = (e: any) => {
+  const handleChoosingCountry = (e: any) => {
+    setQueries({ ...queries, country: e.target.value });
     let paramsName = e.target.name;
     // console.log(paramsBolean)
     let paramsValues = e.target.value;
@@ -51,70 +49,87 @@ export default function SearchButton() {
       setCountryChoosed(paramsValues);
     }
 
-    setconditions(
-      conditions.map((i) => {
-        console.log();
-        if (i.name === paramsName && (i.value === false || i.value === true)) {
-          console.log(i.name);
-          return {
-            name: i.name,
-            value: !i.value,
-          };
-        }
-        if (i.name === paramsName && i.value !== false && i.value !== true) {
-          return {
-            name: i.name,
-            value: paramsValues,
-          };
-        } else return i;
-      }),
-    );
+    // setconditions(
+    //   conditions.map((i) => {
+    //     console.log();
+    //     if (i.name === paramsName && (i.value === false || i.value === true)) {
+    //       console.log(i.name);
+    //       return {
+    //         name: i.name,
+    //         value: !i.value,
+    //       };
+    //     }
+    //     if (i.name === paramsName && i.value !== false && i.value !== true) {
+    //       return {
+    //         name: i.name,
+    //         value: paramsValues,
+    //       };
+    //     } else return i;
+    //   }),
+    // );
   };
 
-  const data = conditions.filter((e) => {
-    if (e.value === false) return false;
-    if (e.value === null) return false;
-    else return true;
+  const [queries, setQueries] = useState<any>({
+    page: 1,
   });
 
-  const querybeta = data.map((i) => {
-    console.log();
-    if (i.value === false || i.value === true) {
-      console.log(i.name);
-      return {
-        [i.name]: i.value,
-      };
-    }
-    if (i.value !== false && i.value !== true) {
-      return {
-        [i.name]: i.value,
-      };
-    } else return i;
-  });
+  // const data = conditions.filter((e) => {
+  //   if (e.value === false) return false;
+  //   if (e.value === null) return false;
+  //   else return true;
+  // });
 
-  const query = querybeta.reduce(function (result: any, currentObject: any) {
-    for (var key in currentObject) {
-      if (currentObject.hasOwnProperty(key)) {
-        result[key] = currentObject[key];
-      }
-    }
-    return result;
-  }, {});
+  // const querybeta = data.map((i) => {
+  //   console.log();
+  //   if (i.value === false || i.value === true) {
+  //     console.log(i.name);
+  //     return {
+  //       [i.name]: i.value,
+  //     };
+  //   }
+  //   if (i.value !== false && i.value !== true) {
+  //     return {
+  //       [i.name]: i.value,
+  //     };
+  //   } else return i;
+  // });
 
-  console.log(query);
+  // const query = querybeta.reduce(function (result: any, currentObject: any) {
+  //   for (var key in currentObject) {
+  //     if (currentObject.hasOwnProperty(key)) {
+  //       result[key] = currentObject[key];
+  //     }
+  //   }
+  //   return result;
+  // }, {});
+
+  const handleChoosingRegion = (e: any) => {
+    setQueries({ ...queries, region: e.target.value });
+  };
+  const handleChangingType = (e: any) => {
+    setQueries({ ...queries, type: e.target.value });
+  };
+  const handleChangingPriceFrom = (e: any) => {
+    setQueries({ ...queries, pricemin: e.target.value });
+  };
+  const handleChangingPriceTo = (e: any) => {
+    setQueries({ ...queries, pricemax: e.target.value });
+  };
+
+  console.log(queries);
 
   const handleSearch = (e: any) => {
     e.preventDefault();
     router.push({
       pathname: `/${countryChoosed}`,
-      query: query,
+      query: queries,
     });
   };
 
   return (
     <>
       <div className="right-0 left-0 mx-auto absolute w-[90vw] lg:w-[950px] lg:top-[410px] top-[22%] flex lg:right-0 lg:left-0 p-6 rounded-[15px] bg-white shadow-xl border-2 border-[#fffbf7] items-center flex-col md:flex-row justify-center">
-        <div
+        {/* <div
           ref={advancedSearch}
           className="z-10 absolute w-[98%] left-0 right-0 mx-auto -top-[25px] h-[23px] flex flex-col duration-150 items-end overflow-hidden"
         >
@@ -247,7 +262,7 @@ export default function SearchButton() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <p className="text-slate-800 lg:text-[26px] text-2xl lg:leading-8 md:w-[400px] mb-[40px] md:mb-0">
           Znajdź swój
           <span className="font-bold text-orange-400"> nowy dom </span> lub{" "}
@@ -264,7 +279,7 @@ export default function SearchButton() {
             </label>
             <select
               name="country"
-              onChange={handleQueryData}
+              onChange={(e) => handleChoosingCountry(e)}
               ref={country}
               className="lg:w-[170px] w-[90%] h-[30px] bg-white rounded-2xl text-[14px] font-[500] pl-2 border-[1px] border-yellow-500"
             >
@@ -280,6 +295,7 @@ export default function SearchButton() {
               Region
             </label>
             <select
+              onChange={handleChoosingRegion}
               name="regions"
               className="lg:w-[170px] h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500"
             >
@@ -291,10 +307,13 @@ export default function SearchButton() {
             <label data-for="country" className=" text-slate-800 w-full">
               Typ nieruchomości
             </label>
-            <select className="lg:w-[170px] w-full h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500">
-              <option>Wszystkie typy</option>
-              <option>Apartament</option>
-              <option>Dom</option>
+            <select
+              onChange={handleChangingType}
+              className="lg:w-[170px] w-full h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500"
+            >
+              <option value="All">Wszystkie typy</option>
+              <option value="ApartmentSale">Apartament</option>
+              <option value="HouseSale">Dom</option>
             </select>
           </div>
           <div className="flex flex-col mt-2 lg:w-auto w-full">
@@ -302,16 +321,23 @@ export default function SearchButton() {
               Zakres cenowy (€ netto)
             </label>
             <div className="flex lg:w-[355px] justify-between items-center w-full">
-              <select className="lg:w-[170px] w-[90%] h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500">
-                <option value="all-prices">od najniższej</option>
-                <option value="200000">od 180 000 €</option>
+              <select
+                onChange={handleChangingPriceFrom}
+                className="lg:w-[170px] w-[90%] h-[30px] bg-white rounded-2xl text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500"
+              >
+                <option value="All">od najniższej</option>
+                <option value="200000">od 200 000 €</option>
                 <option value="250000">od 250 000 €</option>
                 <option value="300000">od 300 000 €</option>
+                <option value="400000">od 400 000 €</option>
                 <option value="500000">od 500 000 €</option>
               </select>
               <div className="bg-yellow-500 h-[2px] md:w-[10px] w-[35px]"></div>
-              <select className="lg:w-[170px] w-[90%]  h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500">
-                <option value="all-prices">do najwyższej</option>
+              <select
+                onChange={handleChangingPriceTo}
+                className="lg:w-[170px] w-[90%]  h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500"
+              >
+                <option value="All">do najwyższej</option>
                 <option value="300000">do 300 000 €</option>
                 <option value="350000">od 350 000 €</option>
                 <option value="400000">od 400 000 €</option>
@@ -320,7 +346,7 @@ export default function SearchButton() {
               </select>
             </div>
           </div>
-          <button className="lg:w-[170px] w-[190px] h-[30px] bg-yellow-500 text-white mt-7 rounded-2xl  text-[18px]  font-[500] mx-auto text-center">
+          <button className="lg:w-[170px] w-[190px] h-[30px] bg-yellow-500 text-white mt-7 rounded-2xl mx-auto lg:mx-0  text-[18px]  font-[500] text-center">
             Szukaj
           </button>
         </form>

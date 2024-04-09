@@ -35,7 +35,7 @@ export default function PropertyCard({ property }: Property) {
   const market = property.mortgageMarket === "Primary" ? "Rynek Pierwotny" : "Rynek Wtórny";
 
   return (
-    <div className="flex flex-col bg-gray-500 w-[350px] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
+    <div className="flex  bg-gray-500 w-[1100px] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
       <div className="w-full h-[220px] overflow-hidden mx-auto rounded-t-md flex items-center justify-center text-4xl relative">
         <ResultsSlider
           images={property.images}
@@ -70,8 +70,8 @@ export default function PropertyCard({ property }: Property) {
           }}
         >
           <div>
-            <div className="flex p-2 w-full h-14 lg:h-10 items-center">
-              <IoMdPin className="mr-2 w-5 md:block md:w-6 md:h-5 lg:mt-6 lg:w-5 h-24 lg:h-22" />
+            <div className="flex p-2 w-full h-10 items-center">
+              <IoMdPin className="mr-2 w-3 md:block md:w-6 md:h-5 lg:mt-6 lg:w-5 h-22" />
               <p className="md:text-[16px] pl-1 md:pt-6 text-xs p-0 leading-4">
                 <span className="text-[20px] font-bold">{property.foreignLocation}</span>
                 <br></br> {property.foreignStreet}
@@ -81,7 +81,7 @@ export default function PropertyCard({ property }: Property) {
               <p>{property.headerAdvertisement}</p>
             </div>
             <div className="flex items-center justify-between w-full pt-1 bg-gray-900/[0.1]">
-              <div className="flex flex-col items-center justify-center w-[24%] bg-white md:p-1 py-2">
+              <div className="flex flex-col items-center justify-center w-[24%] bg-white md:p-1">
                 <p className="w-full text-center hidden md:block text-sm">Sypilanie</p>
                 <div className="flex md:flex-col h-10 lg:flex-row items-center justify-center">
                   <IoBedOutline className="w-2/5 md:w-5 pr-1 lg:w-8 md:h-6 h-14 md:py-0" />
@@ -90,7 +90,7 @@ export default function PropertyCard({ property }: Property) {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-center w-[24%] bg-white md:p-1 py-2">
+              <div className="flex flex-col items-center justify-center w-[24%] bg-white md:p-1">
                 <p className="w-full text-center hidden md:block text-sm">Łazienki</p>
                 <div className="flex md:flex-col h-10 items-center lg:flex-row justify-center">
                   <PiBathtubLight className="w-2/5 md:w-5 lg:w-8 md:h-6 h-14 md:py-0" />
@@ -107,7 +107,7 @@ export default function PropertyCard({ property }: Property) {
                <p className='font-semibold pl-2'>450 m</p>
                </div>
             </div> */}
-              <div className="flex flex-col items-center justify-center w-[24%] bg-white md:p-1 py-2">
+              <div className="flex flex-col items-center justify-center w-[24%] bg-white md:p-1">
                 <p className="w-full text-center hidden md:block text-sm">Basen</p>
                 <div className="flex md:flex-col h-10 items-center lg:flex-row justify-center">
                   <FaSwimmingPool className="w-2/5 md:w-5 lg:w-8 md:h-6 h-14 md:py-0" />
@@ -116,7 +116,7 @@ export default function PropertyCard({ property }: Property) {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-center w-[24%] bg-white md:p-1 py-2">
+              <div className="flex flex-col items-center justify-center w-[24%] bg-white md:p-1">
                 <p className="w-full text-center hidden md:block text-sm">Pow. całk.</p>
                 <div className="flex items-center h-10 md:flex-col lg:flex-row justify-center relative">
                   <BiArea className="w-2/5 md:w-5 lg:w-8 md:h-6 h-14 md:py-0" />

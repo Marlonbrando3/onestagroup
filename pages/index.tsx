@@ -98,18 +98,7 @@ export default function FirstView() {
       </Head>
       <div className="main-index">
         <WhatsAppButton />
-        {/* 
-        <div
-          className={
-            searchShow
-              ? "hidden"
-              : "w-full h-16 fixed top-0 md:bg-gray-800/[0.4] z-20 bg-white shadow-xl"
-          }
-        >
-          <Header />
-        </div> */}
         <Header />
-        {/* <Applychanges /> */}
         <HomeView />
         <SearchBarMainPage />
         {/* <MainTheme /> */}

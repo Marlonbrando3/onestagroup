@@ -1,47 +1,68 @@
-import { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
 
-export default function PriceSearch() {
+type Query = {
+  queries: any;
+  setQueries: any;
+  dataPricemin: any;
+  setDataPricemin: any;
+  dataPricemax: any;
+  setDataPricemax: any;
+};
+
+export default function PriceSearch({
+  setQueries,
+  queries,
+  dataPricemin,
+  setDataPricemin,
+  dataPricemax,
+  setDataPricemax,
+}: Query) {
   const router = useRouter();
+
+  const { pricemin, pricemax } = router.query;
 
   const pricesInputs = useRef<any>();
 
   const setNewPriceFrom = (e: any) => {
-    router.query.priceFrom = e.target.value;
-    router.push(router, undefined, { shallow: true });
+    setDataPricemin(e.target.value);
+    setQueries({ ...queries, pricemin: e.target.value });
   };
 
   const setNewPriceTo = (e: any) => {
-    router.query.priceTo = e.target.value;
-    router.push(router, undefined, { shallow: true });
+    setDataPricemax(e.target.value);
+    setQueries({ ...queries, pricemax: e.target.value });
   };
 
   const PriceSearchFrom = (
-    <div>
+    <div className="w-[47%] lg:w-auto">
       <select
+        value={pricemin || dataPricemin}
         onChange={setNewPriceFrom}
-        className="md:w-[170px] w-[90vw] rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px]"
+        className="md:w-[170px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px]"
       >
-        <option value="all-prices">od najniższej</option>
+        <option value="All">od najniższej</option>
         <option value="200000">od 200 000 €</option>
         <option value="250000">od 250 000 €</option>
         <option value="300000">od 300 000 €</option>
+        <option value="400000">od 400 000 €</option>
         <option value="500000">od 500 000 €</option>
       </select>
     </div>
   );
 
   const PriceSearchTo = (
-    <div>
+    <div className="w-[47%] lg:w-auto">
       <select
+        value={pricemax || dataPricemax}
         onChange={setNewPriceTo}
-        className="md:w-[170px] w-[90vw] rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
+        className="md:w-[170px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
       >
-        <option value="all-prices">do najwyższej</option>
+        <option value="All">do najwyższej</option>
         <option value="300000">do 300 000 €</option>
         <option value="350000">od 350 000 €</option>
         <option value="400000">od 400 000 €</option>
-        <option value="450000">od 500 000 €</option>
+        <option value="500000">od 500 000 €</option>
         <option value="500000 i więcej">do 500 000 € i więcej</option>
       </select>
     </div>
@@ -57,7 +78,7 @@ export default function PriceSearch() {
             className="InputsStyle h-auto xl:w-[px] lg:w-full w-full xl:items-center justify-center flex-row"
           >
             {PriceSearchFrom}
-            <div className="w-[10px] h-[1px] bg-yellow-500"></div>
+            <div className="lg:w-[10px] w-[6%] h-[1px] bg-yellow-500"></div>
             {PriceSearchTo}
           </div>
         </div>

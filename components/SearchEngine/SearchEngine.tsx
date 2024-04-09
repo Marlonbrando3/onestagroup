@@ -1,36 +1,28 @@
-import { useState, useContext, createContext } from "react";
-import { useRouter } from "next/router";
+import React from "react";
 import SearchComponentsList from "./SearchComponentsList";
 import SearchResults from "./SearchResults";
 
-export default function SearchEngine() {
-  const router = useRouter();
+type Function = {
+  handleShowMobileFilters: any;
+  mobileButtonSearchEngine: any;
+  searchEngine: any;
+};
 
-  //a./ll countries, regions, Cities
-
+export default function SearchEngine({
+  handleShowMobileFilters,
+  searchEngine,
+  mobileButtonSearchEngine,
+}: Function) {
   return (
     <>
-      {/* <div
-        className={
-          showSearchComponentsOnMobile === false
-            ? "z-10 flex flex-col items-start justify-start transition w-full bg-white"
-            : "h-full -top-full overflow-hidden"
-        }
-      > */}
-      {/* <div className="flex items-center w-full justify-center md:py-4 py-2 bg-white">
-                    <p className="text-xs w-[1100px] mx-auto font-normal">{router.query.country.charAt(0).toUpperCase() + router.query.country.slice(1)} -  Przeglądasz pośród {PropertiesLength} ogłoszeń.</p>
-                </div> */}
       <div className="flex flex-col items-start justify-center w-full pt-4 bg-gray-400/[0.1]">
-        <SearchComponentsList />
-        {/* <div className="flex items-center w-full justify-center md:py-4 py-2 bg-white">
-              <p className="text-xs w-[1100px] mx-auto font-normal">
-                {router.query.country.charAt(0).toUpperCase() + router.query.country.slice(1)} -
-                Przeglądasz pośród {PropertiesLength} ogłoszeń.
-              </p>
-            </div> */}
+        <SearchComponentsList
+          handleShowMobileFilters={handleShowMobileFilters}
+          mobileButtonSearchEngine={mobileButtonSearchEngine}
+          searchEngine={searchEngine}
+        />
         <SearchResults />
       </div>
-      {/* </div> */}
     </>
   );
 }

@@ -1,12 +1,9 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import data from "../../../data/DataCountry.json";
 import TranslatedData from "../../../data/TranslatedData.json";
 import { MainSearch } from "../../MainSearchInSearchEngine";
 
 export default function Types() {
-  const { region, setRegion } = useContext(MainSearch);
-  const { city, setCity } = useContext(MainSearch);
-
   const inputRefCity = useRef();
   const ButtonCity = useRef();
   const cityRefs = useRef();

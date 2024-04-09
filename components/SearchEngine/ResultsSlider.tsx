@@ -142,8 +142,6 @@ export default function ResultsSlider({
     }
   }, [end]);
 
-  console.log(deliveryDate);
-
   return (
     <div className="h-full w-full relative bg-white">
       <div className="absolute text-[14px] z-20 bg-yellow-500 text-white top-2 px-[6px] font-bold rounded-r-xl h-[24px] leading-[24px] shadow-sm">

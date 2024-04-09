@@ -1,24 +1,45 @@
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 
-export default function Bedrooms() {
+type Query = {
+  queries: any;
+  setQueries: any;
+  dataBedsmin: any;
+  setDataBedsmin: any;
+  dataBedsmax: any;
+  setDataBedsmax: any;
+};
+
+export default function Bedrooms({
+  setQueries,
+  queries,
+  dataBedsmin,
+  setDataBedsmin,
+  dataBedsmax,
+  setDataBedsmax,
+}: Query) {
   const router = useRouter();
+
+  const { bedsmin, bedsmax } = router.query;
+
   const setNewBedsFrom = (e: any) => {
-    router.query.bedsmin = e.target.value;
-    router.push(router, undefined, { shallow: true });
+    setDataBedsmin(e.target.value);
+    setQueries({ ...queries, bedsmin: e.target.value });
   };
 
   const setNewBedsTo = (e: any) => {
-    router.query.bedsmax = e.target.value;
-    router.push(router, undefined, { shallow: true });
+    setDataBedsmax(e.target.value);
+    setQueries({ ...queries, bedsmax: e.target.value });
   };
 
   const bedsFrom = (
-    <div>
+    <div className="w-[47%]">
       <select
+        value={bedsmin || dataBedsmin}
         onChange={setNewBedsFrom}
-        className="md:w-[60px] w-[90vw] rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
+        className="md:w-[60px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
       >
-        <option value="all">do</option>
+        <option value="All">do</option>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -27,12 +48,13 @@ export default function Bedrooms() {
   );
 
   const bedsTo = (
-    <div>
+    <div className="w-[47%]">
       <select
+        value={bedsmax || dataBedsmax}
         onChange={setNewBedsTo}
-        className="md:w-[60px] w-[90vw] rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
+        className="md:w-[60px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
       >
-        <option value="all">do</option>
+        <option value="All">do</option>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -56,7 +78,7 @@ export default function Bedrooms() {
             className="InputsStyle h-auto xl:w-[px] lg:w-full w-full xl:items-center justify-center flex-row"
           >
             {bedsFrom}
-            <div className="w-[5px] h-[1px] bg-yellow-500"></div>
+            <div className="lg:w-[5px] w-[6%] h-[1px] bg-yellow-500"></div>
             {bedsTo}
           </div>
         </div>

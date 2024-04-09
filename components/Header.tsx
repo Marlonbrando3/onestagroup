@@ -12,6 +12,7 @@ import { FaLinkedin } from "react-icons/fa6";
 import { FaSpotify } from "react-icons/fa";
 import { HiOutlineMenu } from "react-icons/hi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import { IoIosClose } from "react-icons/io";
 
 export default function Header() {
   const MouseOnZarzadzanie: any = useRef();
@@ -22,27 +23,37 @@ export default function Header() {
   const MouseOnDominican: any = useRef();
   const MouseOnCroatia: any = useRef();
   const headerDesktop: any = useRef();
+  const Consultation: any = useRef();
+  const submitButton: any = useRef();
 
-  const [MobileMenu, setMobileMenu] = useState(false);
+  const mobileClosedMenu = useRef<any>();
+  const mobileOpenedMenu = useRef<any>();
 
-  const handleShowMobileMenu = () => {
-    setMobileMenu((MobileMenu) => !MobileMenu);
-  };
+  const menu = useRef<any>();
 
   const handleBackToMainPage = () => {
     window.localStorage.clear();
     // setSearchShow(false);
   };
 
-  const handleShowListMenuZarzadzanie = () => {
-    MouseOnZarzadzanie.current.style.display = "flex";
-    MouseOnZarzadzanie.current.style.color = "black";
-    MouseOnZarzadzanie.current.style.backgroundColor = "white";
+  const handleShowingConsultationPopUp = () => {
+    Consultation.current.style.display = "block";
   };
 
-  const handleHideListMenuZarzadzanie = () => {
-    MouseOnZarzadzanie.current.style.display = "none";
-    MouseOnZarzadzanie.current.style.backgroundColor = "none";
+  const handleHidingConsultationPopUp = () => {
+    Consultation.current.style.display = "none";
+  };
+
+  const handlingShowingMobileMenu = () => {
+    if (menu.current.style.right === "-100vw") {
+      menu.current.style.right = "0px";
+      mobileClosedMenu.current.style.display = "none";
+      mobileOpenedMenu.current.style.display = "block";
+    } else {
+      menu.current.style.right = "-100vw";
+      mobileClosedMenu.current.style.display = "block";
+      mobileOpenedMenu.current.style.display = "none";
+    }
   };
 
   const handleShowListMenuNieruchomosci = () => {
@@ -72,14 +83,60 @@ export default function Header() {
     cleardata();
   };
 
+  const [consultationName, setConsultationName] = useState();
+  const [consultationPhone, setConsultationPhone] = useState();
+
+  const handleSendingConsultation = async (e: any) => {
+    let query = JSON.stringify({
+      name: consultationName,
+      phone: consultationPhone,
+    });
+
+    e.preventDefault();
+    console.log("name " + consultationName, " phone " + consultationPhone);
+    let res = await fetch("api/consultation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: query,
+    });
+
+    const results = await res.json();
+
+    console.log(results);
+
+    if (results.status === 200) {
+      submitButton.current.innerHTML = "Wysłano";
+      submitButton.current.style.backgroundColor = "green";
+      setTimeout(() => {
+        Consultation.current.style.display = "none";
+      }, 2000);
+    } else {
+      submitButton.current.innerHTML = "Błąd, spróbuj jeszcze raz";
+      submitButton.current.style.backgroundColor = "red";
+      setTimeout(() => {
+        submitButton.current.innerHTML = "Zamawiam konsultacje";
+        submitButton.current.style.backgroundColor = "yellow";
+      }, 500);
+    }
+  };
+
+  const handleConsultationForm = (e: any) => {
+    if (e.target.name === "name") {
+      setConsultationName(e.target.value);
+    }
+    if (e.target.name === "phone") {
+      setConsultationPhone(e.target.value);
+    }
+  };
+
   const onScroll = useCallback(() => {
     const { scrollX, scrollY, innerWidth } = window;
     // console.log("yOffset", innerWidth, "scrollY", scrollY);
-    if (scrollY > 100 && innerWidth >= 1024) {
+    if (scrollY > 70 && innerWidth >= 1024) {
       headerDesktop.current.style.background = "white";
       headerDesktop.current.style.boxShadow = "1px 1px 5px -3px black";
       headerDesktop.current.style.color = "black";
-    } else if (scrollY < 100 && innerWidth >= 1024) {
+    } else if (scrollY < 70 && innerWidth >= 1024) {
       headerDesktop.current.style.background = "linear-gradient( black 0%, transparent 100%)";
       headerDesktop.current.style.boxShadow = "0px 0px 0px 0px black";
       headerDesktop.current.style.color = "white";
@@ -97,77 +154,16 @@ export default function Header() {
 
   return (
     <>
-      <div className="transition-all duration-700 w-full h-[70px] md:h-[85px] top-0 text-gray-900 z-30 fixed">
-        {/* Mobile Menu */}
-        {/* <div className="xl:w-[1080px] w-full h-full flex mx-auto">
-          <div
-            className={
-              MobileMenu
-                ? "flex items-center z-40 justify-center duration-300 bg-white absolute h-screen left-0 top-0 w-full"
-                : "hidden items-center justify-center duration-300 bg-red-400 absolute w-full -left-screen top-0"
-            }
-          >
-            <ul className="flex flex-col items-start justify-center mr-6 z-30">
-              <li>
-                <Link className="text-3xl" onClick={handleBackToMainPage} href="/">
-                  Strona główna
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-3xl"
-                  href={{ pathname: "/[country]", query: { country: "hiszpania", page: 1 } }}
-                >
-                  Nieruchomości
-                </Link>
-              </li>
-              <li>
-                <Link className="text-3xl" href="/aboutus">
-                  O Nas
-                </Link>
-              </li>
-              <li>
-                <Link className="text-3xl" href="/zarzadzanie-nieruchomosciami-w-hiszpanii">
-                  Zarządzanie najmem
-                </Link>
-              </li>
-              <li>
-                <Link className="text-3xl" onClick={handleBackToMainPage} href="/blog">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link className="text-3xl" href="/abc">
-                  ABC Inwestora
-                </Link>
-              </li>
-              <li>
-                <Link className="text-3xl" href="#">
-                  Kontakt
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <Link
-            onClick={handleBackToMainPage}
-            className="cursor-pointer flex items-center"
-            href="/"
-          >
-            <div className="md:h-full h-[32px] md:w-[150px] w-[120px] relative bg-white">
-              <Image className="object-contain left" src={Logotype} fill alt="logo" />
-            </div>
-          </Link>
-        </div> */}
-
-        {/* Desktop Menu */}
+      <div className="transition-all duration-700 w-full h-[70px] lg:h-[85px] top-0 left-0 text-gray-900 z-40 fixed">
         <div
           ref={headerDesktop}
-          className="flex flex-col flex-1 h-full w-full lg:bg-gradient-to-b lg:from-gray-900/[0.7]  lg:via-gray-900/[0.7] lg:via-50% lg:to-white/[0] lg:to-100% lg:text-white bg-gradient-to-b from-white to-white text-black"
+          className="flex lg:flex-col justify-between flex-1 h-full w-full lg:bg-gradient-to-b lg:from-gray-900/[0.7]  lg:via-gray-900/[0.7] lg:via-50% lg:to-white/[0] lg:to-100% lg:text-white bg-gradient-to-b from-white to-white text-black"
         >
-          <div className="w-full bg-white">
+          {/* header only on large */}
+          <div className="w-full bg-white hidden lg:block">
             <div
               id="header"
-              className="w-[980px] lg:h-[30px] flex justify-end items-center mx-auto"
+              className="hidden w-[980px] lg:h-[30px] md:flex justify-end items-center mx-auto"
             >
               <a href="tel:+48576652525">
                 <div className="lg:mt-0 x-1 font-bold text-xs border-red-600 lg:px-2 text-white rounded-md md:flex items-center cursor-pointer md:w-40 w-[30px] h-[30px] lg:static absolute top-2 right-10 ">
@@ -194,13 +190,13 @@ export default function Header() {
               <Link href="/account/signup" className="border bg-green-700 border-green-700 px-2 rounded-md text-white cursor-pointer duration-300 hover:bg-white hover:text-black">Utwórz konto</Link> */}
             </div>
           </div>
-          <div className="flex mx-auto h-full w-[980px] justify-between">
+          <div className="flex mx-auto h-full lg:w-[980px] w-full justify-between items-center px-[10px] lg:px-0">
             <Link
               onClick={handleBackToMainPage}
-              className="cursor-pointer flex items-center"
+              className="cursor-pointer flex items-center h-full"
               href="/"
             >
-              <div className="md:h-full h-[32px] md:w-[170px] w-[120px] relative bg-white rounded-b-[5px]">
+              <div className="md:h-full lg:h-full md:w-[170px] h-[50px] w-[150px] relative bg-white rounded-b-[5px]">
                 <Image
                   className="object-contain px-[10px] pb-[4px]"
                   src={Logotype}
@@ -209,8 +205,12 @@ export default function Header() {
                 />
               </div>
             </Link>
-            <div className="h-full w-auto justify-end flex items-center z-50">
-              <ul className="lg:flex hidden">
+            {/* menu items */}
+            <div
+              ref={menu}
+              className="absolute w-full lg:static lg:h-[32px] h-[300px] lg:w-auto lg:justify-end flex items-center z-50 top-[69px] -right-[100vw] bg-white lg:bg-transparent duration-200 justify-center md:shadow-none shadow-xl"
+            >
+              <ul className="flex flex-col lg:flex-row justify-center h-full lg:h-[24px] lg:items-center">
                 <li className="list">
                   <Link onClick={handleBackToMainPage} href="/">
                     Strona główna
@@ -301,29 +301,78 @@ export default function Header() {
                 <li className="list">
                   <Link href="/abc">Wiedza</Link>
                 </li>
-                <li className="list bg-yellow-500 rounded-3xl text-white">
-                  <Link href="/abc">bezpłatna konsultacja</Link>
+                <li
+                  onClick={handleShowingConsultationPopUp}
+                  className="list bg-yellow-500 rounded-3xl text-white"
+                >
+                  <p>bezpłatna konsultacja</p>
                 </li>
                 <li className="list">Kontakt</li>
               </ul>
-              <div className="h-[40px] w-[40px] flex justify-center items-center lg:hidden">
-                {MobileMenu ? (
-                  <HiOutlineMenuAlt3
-                    className="transition-all duration-700 cursor-pointer block z-50 h-[40px] w-[40px] lg:hidden visible"
-                    onClick={handleShowMobileMenu}
-                  />
-                ) : (
-                  <HiOutlineMenu
-                    className="transition-all duration-700 cursor-pointer z-50 h-[40px] w-[40px] lg:hidden block"
-                    onClick={handleShowMobileMenu}
-                  />
-                )}
+            </div>
+            <div className="h-[40px] w-[40px] flex justify-center items-center lg:hidden">
+              <div ref={mobileClosedMenu}>
+                <HiOutlineMenu
+                  className="transition-all duration-700 cursor-pointer z-50 h-[40px] w-[40px] lg:hidden block"
+                  onClick={handlingShowingMobileMenu}
+                />
+              </div>
+              <div ref={mobileOpenedMenu} className="hidden">
+                <HiOutlineMenuAlt3
+                  className="transition-all duration-700 cursor-pointer z-50 h-[40px] w-[40px] lg:hidden"
+                  onClick={handlingShowingMobileMenu}
+                />
               </div>
             </div>
           </div>
+          <div
+            ref={Consultation}
+            className="hidden absolute top-[100px] w-[350px] h-[330px] mx-auto left-0 right-0 bg-white z-50 text-white p-[20px] rounded-xl shadow-xl"
+          >
+            <div
+              onClick={handleHidingConsultationPopUp}
+              className="absolute text-black right-2 top-2 w-[20px] h-[20px] cursor-pointer"
+            >
+              <IoIosClose className="w-full h-full" />
+            </div>
+            <form
+              className="flex flex-col h-[90%] justify-between"
+              onSubmit={handleSendingConsultation}
+            >
+              <p className="text-black font-bold text-[18px]">Zamów konsultację</p>
+              <p className="text-black text-[12px] font-normal italic">
+                Podczas rozmowy przedstawimy Ci kroki w drodze szukania, wyboru oraz formalizacji
+                zakupu nieruchomości abyś zrozumiał proces i mógł podjąć świadomą i
+                satysfakcjonującą decyzję.
+              </p>
+              <input
+                name="name"
+                value={consultationName}
+                onChange={handleConsultationForm}
+                placeholder="Imię i nazwisko"
+                className="border rounded-md border-gray-400 pl-[5px] text-black"
+              ></input>
+              <input
+                name="phone"
+                value={consultationPhone}
+                onChange={handleConsultationForm}
+                placeholder="Numer telefonu"
+                className="border rounded-md border-gray-400 pl-[5px] text-black"
+              ></input>
+              <div className="w-full flex items-start">
+                <input type="checkbox" required></input>
+                <p className="text-black text-[10px] pl-[3px]">
+                  Wyrażam zgodę na kontakt oraz akcpetuję politykę prywatności Onesta Group Sp. z
+                  o.o.{" "}
+                </p>
+              </div>
+              <button ref={submitButton} className="bg-yellow-500 rounded-md h-[30px]">
+                Zamawiam kontakt
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-      <MobileFilters />
     </>
   );
 }

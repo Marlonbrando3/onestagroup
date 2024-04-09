@@ -22,17 +22,10 @@ export default function Descryption({
   propertyId,
 }: Props) {
   return (
-    <div className="lg:flex lg:flex-wrap w-full rounded-md lg:w-10/12 lg:leading-7 mx-auto">
+    <div className="lg:flex lg:flex-wrap w-full rounded-md lg:w-[1150px] md:w-[780px] max-w-full lg:leading-7 mx-auto mt-[10px] relative filter">
       {/* container for 2 colums left:desc and contact form, right: contact with agent (only desktop) */}
-      <div className="lg:flex lg:flex-col lg:w-8/12 rounded-md justify-between bg-white lg:mr-3 p-8">
+      <div className="lg:flex lg:flex-col lg:w-[800px] rounded-md justify-between bg-white lg:mr-3 p-8">
         <DescAboutObiect description={description} />
-        <DescAboutProperty
-          description={description}
-          bedrooms={bedrooms}
-          bathrooms={bathrooms}
-          distance={distance}
-          pool={pool}
-        />
         <ContactForm propertyId={propertyId} />
       </div>
       <ContactOnPropertyCard />

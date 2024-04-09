@@ -6,9 +6,10 @@ export default function CountrySearch() {
   const country = router.query.country;
 
   const pushCountry = (e) => {
-    console.log(country);
+    // console.log(country);
     router.push({
       pathname: `/${e.target.value}`,
+      query: { page: 1 },
     });
   };
 
