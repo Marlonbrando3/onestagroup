@@ -61,8 +61,8 @@ export default function ContactFormMain() {
   return (
     <div className='relative flex flex-col w-full h-1/2 bg-center bg-cover bg-[url("/palmyBGform.jpeg")] rounded-xl'>
       <div className="absolute w-full h-full bg-gray-900/[0]"></div>
-      <div className="h-10/12 lg:w-[1200px] w-full flex flex-col-reverse lg:flex-row lg:flex py-10 lg:mx-auto">
-        <div className="flex lg:flex-col items-center z-10 lg:w-6/12 w-full justify-center lg:pt-0 pt-24 visible lg:hidden">
+      <div className="h-11/12 lg:w-[1200px] w-full flex flex-col-reverse lg:flex-row lg:flex py-10 lg:mx-auto">
+        <div className="flex lg:flex-col items-center z-10 lg:w-8/12 w-full justify-center lg:pt-0 pt-24 visible lg:hidden">
           <div className="text-xs sm:text-lg flex flex-col justify-center items-start lg:items-center h-1/2 w-5/12 text-white">
             <p className="font-bold">Siedziba firmy:</p>
             <p>Onesta Group sp. z o.o.</p>
@@ -79,9 +79,9 @@ export default function ContactFormMain() {
             <p>tel.: + 48 576 65 25 25</p>
           </div>
         </div>
-        <div className="w-full lg:w-6/12">
+        <div className="w-full lg:w-7/12">
           <form
-            className="relative z-10 lg:flex w-10/12 flex flex-col mx-auto rounded-xl px-[20px]"
+            className="relative z-10 lg:flex w-full flex flex-col mx-auto rounded-xl px-[20px]"
             onSubmit={handleSubmit}
             method="post"
           >

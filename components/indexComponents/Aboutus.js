@@ -32,7 +32,7 @@ export default function Aboutus() {
       </Script>
       <div className="bg-gray-900/[0.0]">
         <div className="flex flex-col w-[95vw] lg:w-[1200px] md:text-[22px] text-[18px] mx-auto justify-evenly">
-          <p className="w-10/12 mx-auto text-center text-[34px] font-semibold py-10">
+          <p className="w-10/12 mx-auto text-center lg:text-[34px] text-[26px] font-semibold py-10">
             Onesta Group - agencja inna niż wszystkie
           </p>
           <div className="w-8/12 mx-auto h-1 bg-red-900"></div>
@@ -213,7 +213,7 @@ export default function Aboutus() {
           </div>
         </div>
       </div>
-      <div className="w-10/12 mx-auto">
+      <div className="w-11/12 mx-auto">
         <ContactFormMain />
       </div>
       {/* <Footer /> */}
