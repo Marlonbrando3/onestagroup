@@ -47,16 +47,16 @@ export default function ContactFormAboutUs({ temat }) {
         >
           {" "}
           <div className="py-4 font-bold text-2xl text-white w-[800px]">Szybki kontakt:</div>
-          <div className="flex justify-between flex-col md:flex-row">
+          <div className="flex justify-between flex-col md:flex-row pb-[10px]">
             <p className="py-2 font-bold text-white hidden">
               Ogłoszenie o nr ref.{" "}
               <input className="bg-gray-900/[0.0]" type="text" value={temat} name="id"></input>
             </p>
             {/* <label id="name">Imię i naziwsko</label> */}
             <div className="w-full md:w-[70%]">
-              <div className="w-full flex flex-col md:flex-row">
+              <div className="w-full flex flex-col md:flex-row justify-between">
                 <input
-                  className="cf-input-property-card pl-2 md:w-[50%] w-full"
+                  className="cf-input-property-card pl-2 py-1 md:w-[49%] w-full"
                   onChange={(e) => {
                     setDataForm({ ...dataForm, Name: e.target.value });
                   }}
@@ -67,7 +67,7 @@ export default function ContactFormAboutUs({ temat }) {
                 ></input>
                 {/* <label id="phone">Numer telefonu</label> */}
                 <input
-                  className="cf-input-property-card pl-2 py-1 md:w-[50%] w-full"
+                  className="cf-input-property-card pl-2 py-1 md:w-[49%] w-full"
                   onChange={(e) => {
                     setDataForm({ ...dataForm, Phone: e.target.value });
                   }}

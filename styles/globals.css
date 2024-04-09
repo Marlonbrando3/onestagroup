@@ -316,14 +316,14 @@ div.InputsStyleContainer p {
   }
 
   .element-how-we-work-container-in {
-    @apply w-[90%] py-3 px-[4px] md:px-3 rounded-md bg-green-700 flex justify-start items-center flex-col h-[90%] border border-white;
+    @apply w-[90%] py-3 px-[4px] md:px-3 text-black rounded-xl bg-white flex justify-start items-center flex-col h-[90%] border-2 border-yellow-500;
   }
 
   .element-how-we-work-container-in-p {
-    @apply text-center py-5 text-2xl font-semibold text-white;
+    @apply text-center py-5 text-2xl text-black font-semibold;
   }
   .element-how-we-work-container-in-desc {
-    @apply text-center py-5 text-base text-white;
+    @apply text-center py-5 text-base text-black;
   }
 
   .main-country-crousel {

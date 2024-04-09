@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function AboutSpain() {
   return (
     <div className="w-screen h-auto py-[40px]">
-      <h1 className="w-full text-center text-[34px] py-[30px] leading-[30px]">
+      <h1 className="w-[90%] text-center text-[34px] py-[30px] leading-[35px]">
         Jeśli szukasz nieruchomości w Hiszpanii
       </h1>
       <div className="lg:w-[1000px] w-[90vw] mx-auto h-full flex justify-center">
