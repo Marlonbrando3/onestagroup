@@ -36,7 +36,7 @@ export default function SearchResults() {
   // console.log(Properties[0].apartmentTypeList);
 
   let PropertiesSelected = Properties.filter((p) => {
-    // console.log(country);
+    console.log(p);
 
     if (
       p.country.name.toLowerCase() == (country as string) &&
