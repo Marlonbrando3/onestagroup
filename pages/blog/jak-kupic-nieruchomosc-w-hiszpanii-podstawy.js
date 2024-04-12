@@ -226,7 +226,7 @@ export default function BlogPost() {
               transza płatna jest ok 3 m-ce później i również wynosi ok 20-30%. Ostatnie ok 50%
               płatne jest przy akcie notarialnym, który następuje obecnie po ok 12-14 m-cach
               rezerwacji. Tutaj jest o tyle wygodniej, że jest czas aby do wymarzonej nieruchomości
-              "dozbierać" pozostałą kwotę i jest na to nawet 14 mc-y.
+              &quot;dozbierać&quot; pozostałą kwotę i jest na to nawet 14 mc-y.
             </p>
             <br></br>
             <p>
