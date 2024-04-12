@@ -123,8 +123,8 @@ export default function BlogPost() {
         <br></br>
         <p>- Czy dobrym pomysłem są nieruchomości w z przejęć bankowych?</p>
         <p>
-          - Czy powinienem/powinnam szukać czegoś w kategorii "apartamenty" czy "domy", a może
-          celujesz w willę?
+          - Czy powinienem/powinnam szukać czegoś w kategorii &ldquo;apartamenty&ldquo; czy
+          &ldquo;domy&ldquo;, a może celujesz w willę?
         </p>
         <p>
           - Jakie są wymagania formalne lub jakie przygotować dokumenty aby zapewnić sobie
@@ -204,8 +204,8 @@ export default function BlogPost() {
             <p>
               <span className="font-bold">1. Zawarcie umowy rezerwacyjnej </span> - równoznaczne z
               wpłatą rezerwacyjną często oscylującą między 3000, a 10 000 euro netto. Fakt
-              zawierania tych <strong>umów</strong> powoduje, że mieszkanie jest "ściągane z rynku"
-              i już nie może być prezentowane ani zostać sprzedane innej osobie.
+              zawierania tych <strong>umów</strong> powoduje, że mieszkanie jest &ldquo;ściągane z
+              rynku&ldquo; i już nie może być prezentowane ani zostać sprzedane innej osobie.
             </p>
           </li>
           <li>
@@ -239,9 +239,9 @@ export default function BlogPost() {
               opowiem nieco niżej. Co ważne - opłata rezerwacyjna jest
               <strong>w przypadku rynku wtórnego bezzwrotna</strong>, chyba, że okaże się, że
               przepisanie własności mieszkania formalnie nie jest możliwe (np. dokumenty własności
-              nie są poprawne), wtedy następuje zwrot lub "przeksięgowanie" tej płatności na inną
-              nieruchomości jeśli taka zostanie wybrana. Jeśli kupujący po prostu się rozmyśli
-              opłaca rezerwacyjna przepada.
+              nie są poprawne), wtedy następuje zwrot lub &ldquo;przeksięgowanie&ldquo; tej
+              płatności na inną nieruchomości jeśli taka zostanie wybrana. Jeśli kupujący po prostu
+              się rozmyśli opłaca rezerwacyjna przepada.
               <br></br>
               <br></br>
             </p>
@@ -318,12 +318,12 @@ export default function BlogPost() {
           Pierwsza wizyta w <strong>Hiszpanii</strong> pozwala na prezentację i obejrzenie
           apartamentów, obejrzenie wybranego domu i przy okazji na bieżąco oglądanie ofert, które
           zmieniają się bardzo dynamicznie. Ile ofert trzeba obejrzeć? Nie ma tutaj zasady, dynamika
-          sprzedaży nieruchomości w Hiszpanii jest tak wysoka, że oferta może się "deaktualizować" w
-          przeciągu nawet kilku godzin. Niektórzy oglądają 2 inwestycje a inni potrzebują 30 i
-          dopiero znajdują swoją rezydencje marzeń. Natomiast podpierając się doświadczeniem
-          widzimy, że 7/10 klientów potrzebuje jednej wizyty. Dobrze jest jednak przyjąć, że może
-          być potrzebna jeszcze jedna (aby się nie zniechęcać) wizyta zanim na rynku pojawi się
-          oferta, która sprosta wymaganiom. <br></br>
+          sprzedaży nieruchomości w Hiszpanii jest tak wysoka, że oferta może się
+          &ldquo;deaktualizować&ldquo; w przeciągu nawet kilku godzin. Niektórzy oglądają 2
+          inwestycje a inni potrzebują 30 i dopiero znajdują swoją rezydencje marzeń. Natomiast
+          podpierając się doświadczeniem widzimy, że 7/10 klientów potrzebuje jednej wizyty. Dobrze
+          jest jednak przyjąć, że może być potrzebna jeszcze jedna (aby się nie zniechęcać) wizyta
+          zanim na rynku pojawi się oferta, która sprosta wymaganiom. <br></br>
           <br></br>Pierwsza wizyta w Hiszpanii jest idealna do ustalenia jakie rodzaje rodzaje
           nieruchomości nam odpowiadają ale już nie z obrazka tylko w rzeczywistości, a to czasami
           potrafią być całkiem inne nieruchomości.
@@ -388,7 +388,7 @@ export default function BlogPost() {
         <p>
           <strong>Hiszpania</strong> oferuje nam kilka wybrzeży, które są atrakcyjne dla
           <strong>polaków</strong> i bardzo często rodzi się pytanie - czy wybrać Costa Blanca, -
-          Costa Calida, Costa del Sol a może jakaś inna "Costa"? <br></br>
+          Costa Calida, Costa del Sol a może jakaś inna &ldquo;Costa&ldquo;? <br></br>
           <br></br>Jeśli jesteś klientem, który zadaje sobie takie pytania oto kilka z różnic
           pomiędzy tymi wybrzeżami:
         </p>
