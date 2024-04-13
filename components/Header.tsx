@@ -165,16 +165,22 @@ export default function Header() {
               id="header"
               className="hidden w-[980px] lg:h-[30px] md:flex justify-end items-center mx-auto"
             >
-              <a href="tel:+48576652525">
-                <div className="lg:mt-0 x-1 font-bold text-xs border-red-600 lg:px-2 text-white rounded-md md:flex items-center cursor-pointer md:w-40 w-[30px] h-[30px] lg:static absolute top-2 right-10 ">
-                  <CiPhone className="lg:w-8 lg:h-4 lg:p-[1px] p-2 text-black w-[30px] h-[30px] p-auto" />
-                  <p className="hidden md:block ml-1 text-black font-[700]">+48 576 65 25 25</p>
+              <a
+                href="tel:+48576652525"
+                className="text-black hover:text-white hover:bg-yellow-500 rounded-2xl my-[3px]"
+              >
+                <div className="lg:mt-0 x-1 font-bold text-xs border-red-600 lg:px-2 rounded-md md:flex items-center cursor-pointer md:w-40 w-[30px] h-[30px] lg:static absolute top-2 right-10 ">
+                  <CiPhone className="lg:w-6 lg:h-4 lg:p-[1px] p-2 w-[30px] h-[30px] p-auto" />
+                  <p className="hidden md:block ml-1 font-[700]">+48 576 65 25 25</p>
                 </div>
               </a>
-              <a href="maito:biuro@onesta.com.pl">
-                <div className="mt-[12px] lg:mt-0 font-bold text-xs border-red-600 lg:px-2 text-white rounded-md md:flex items-center cursor-pointer md:w-auto w-[30px] h-[30px] lg:static absolute top-2 right-10 ">
-                  <IoMailOutline className="lg:w-8 lg:h-4 lg:p-[1px] p-2 text-black w-[30px] h-[30px] p-auto" />
-                  <p className="hidden md:block ml-1 text-black font-[700]">biuro@onesta.com.pl</p>
+              <a
+                href="maito:biuro@onesta.com.pl"
+                className="hover:bg-yellow-500 duration-200 rounded-2xl  text-black hover:text-white"
+              >
+                <div className="mt-[12px] lg:mt-0 font-bold text-xs border-red-600 lg:px-2 rounded-md md:flex items-center cursor-pointer md:w-auto w-[30px] h-[30px] lg:static absolute top-2 right-10 hover:text-white ">
+                  <IoMailOutline className="lg:w-6 lg:h-4 lg:p-[1px] p-2 w-[30px] h-[30px] p-auto" />
+                  <p className="hidden md:block ml-1 font-[700]">biuro@onesta.com.pl</p>
                 </div>
               </a>
               <div className="lg:static absolute top-14 hidden lg:flex">

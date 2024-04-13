@@ -281,7 +281,7 @@ export default function SearchButton() {
               name="country"
               onChange={(e) => handleChoosingCountry(e)}
               ref={country}
-              className="lg:w-[170px] w-[90%] h-[30px] bg-white rounded-2xl text-[14px] font-[500] pl-2 border-[1px] border-yellow-500"
+              className="lg:w-[170px] w-[90%] h-[30px] bg-white rounded-2xl text-[14px] font-[500] pl-2 border-[1px] border-yellow-500 cursor-pointer"
             >
               <option value="hiszpania">Hiszpania</option>
               <option value="portugalia">Portugalia</option>
@@ -297,7 +297,7 @@ export default function SearchButton() {
             <select
               onChange={handleChoosingRegion}
               name="regions"
-              className="lg:w-[170px] h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500"
+              className="lg:w-[170px] h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500 cursor-pointer"
             >
               <option className="bg-white">{`Wszystkie regiony`}</option>
               {regions}
@@ -309,7 +309,7 @@ export default function SearchButton() {
             </label>
             <select
               onChange={handleChangingType}
-              className="lg:w-[170px] w-full h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500"
+              className="lg:w-[170px] w-full h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500 cursor-pointer"
             >
               <option value="All">Wszystkie typy</option>
               <option value="ApartmentSale">Apartament</option>
@@ -323,7 +323,7 @@ export default function SearchButton() {
             <div className="flex lg:w-[355px] justify-between items-center w-full">
               <select
                 onChange={handleChangingPriceFrom}
-                className="lg:w-[170px] w-[90%] h-[30px] bg-white rounded-2xl text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500"
+                className="lg:w-[170px] w-[90%] h-[30px] bg-white rounded-2xl text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500 cursor-pointer"
               >
                 <option value="All">od najniższej</option>
                 <option value="200000">od 200 000 €</option>
@@ -335,7 +335,7 @@ export default function SearchButton() {
               <div className="bg-yellow-500 h-[2px] md:w-[10px] w-[35px]"></div>
               <select
                 onChange={handleChangingPriceTo}
-                className="lg:w-[170px] w-[90%]  h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500"
+                className="lg:w-[170px] w-[90%]  h-[30px] bg-white rounded-2xl  text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500 cursor-pointer"
               >
                 <option value="All">do najwyższej</option>
                 <option value="300000">do 300 000 €</option>
@@ -346,7 +346,7 @@ export default function SearchButton() {
               </select>
             </div>
           </div>
-          <button className="lg:w-[170px] w-[190px] h-[30px] bg-yellow-500 text-white mt-7 rounded-2xl mx-auto lg:mx-0  text-[18px]  font-[500] text-center">
+          <button className="lg:w-[170px] w-[190px] h-[30px] bg-yellow-500 text-white mt-7 rounded-2xl mx-auto lg:mx-0  text-[18px]  font-[500] border border-yellow-500 text-center hover:bg-white hover:text-yellow-500 duration-200">
             Szukaj
           </button>
         </form>
