@@ -25,7 +25,7 @@ export default function AsariCrm() {
           body: JSON.stringify({ id: id }),
         });
         const result = await resultProperty.json();
-        if (result.list.data.country.name === "Hiszpania") {
+        if (result.list.data.country.name !== "Polska") {
           properties.push(result.list.data);
           console.log("Dodano nieruchomość");
         } else {

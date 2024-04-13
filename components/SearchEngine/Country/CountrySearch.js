@@ -30,13 +30,13 @@ export default function CountrySearch() {
             <option name="hiszpania" value="hiszpania">
               Hiszpania
             </option>
-            <option name="chorwacja" value="portugalia">
+            <option name="portugalia" value="portugalia">
               Portugalia
             </option>
-            <option name="portugalia" value="chorwacja">
+            <option name="chorwacja" value="chorwacja">
               Chorwacja
             </option>
-            <option name="dominicana" value="chorwacja">
+            <option name="dominikana" value="dominikana">
               Dominikana
             </option>
           </select>
