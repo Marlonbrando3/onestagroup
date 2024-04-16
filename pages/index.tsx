@@ -6,30 +6,15 @@ import HomeView from "../components/HomeView";
 import SearchBarMainPage from "../components/SearchBarMainPage";
 import WhatsAppButton from "../components/whatsapp/whatsappButton";
 import Aboutus from "../components/indexComponents/Aboutus";
+import Cookies from "@/components/cookies";
 import Footer from "../components/Footer";
 
-export default function FirstView() {
-  // const router = useRouter();
+type AppProps = {
+  cookiesWindow: any;
+};
 
-  const [choosedCountry, setChoosedCountry] = useState({
-    id: "",
-    country: "Hiszpania",
-    region: "",
-    city: "",
-    title: "",
-    market: "",
-    type: "",
-    bathrooms: "",
-    bedrooms: "",
-    seaview: false,
-    pool: false,
-    parking: false,
-    garden: false,
-    solarium: false,
-    balcony: false,
-    price: "",
-    distancetothesea: "",
-  });
+export default function FirstView({ cookiesWindow }: AppProps) {
+  // const router = useRouter();
 
   return (
     <>
@@ -97,6 +82,7 @@ export default function FirstView() {
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
       </Head>
       <div className="main-index">
+        <Cookies cookiesWindow={cookiesWindow} />
         <WhatsAppButton />
         <Header />
         <HomeView />
