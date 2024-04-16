@@ -33,7 +33,7 @@ export default function Cookies({ cookiesWindow }: AppProps) {
       ref={cookiesWindow}
       className="fixed w-screen h-full bg-gray-900/[0.8] z-50 overflow-y-hidden hidden"
     >
-      <div className="w-[800px] rounded-xl shadow-3xl bg-white z-50 mx-auto mt-[30vh] flex flex-col justify-center items-start p-[40px]">
+      <div className="lg:w-[800px] w-[90vw] rounded-xl shadow-3xl bg-white z-50 mx-auto mt-[30vh] flex flex-col justify-center items-start p-[40px]">
         <div className="h-[60px] text-[24px] leading-[24px] flex">
           <p className="mr-[10px] font-bold">Ciasteczka smakują wszystkim</p>
           <MdCookie className="text-yellow-500" />

@@ -5,7 +5,7 @@ export default async function POST(req: any, res: any) {
   const string = await cryptoRandomStringAsync({ length: 17 });
 
   const cookie = await getCookie("ONESTABACIS", { req, res });
-  console.log(cookie);
+  // console.log(cookie);
 
   if (cookie !== undefined) {
     res.json({ msg: "exists", status: 200 });
