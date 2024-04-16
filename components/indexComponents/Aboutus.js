@@ -31,7 +31,7 @@ export default function Aboutus() {
             `}
       </Script>
       <div className="bg-gray-900/[0.0]">
-        <div className="flex flex-col w-[95vw] lg:w-[1200px] md:text-[22px] text-[18px] mx-auto justify-evenly">
+        {/* <div className="flex flex-col w-[95vw] lg:w-[1200px] md:text-[22px] text-[18px] mx-auto justify-evenly">
           <p className="w-10/12 mx-auto text-center lg:text-[34px] text-[26px] font-semibold py-10">
             Onesta Group - agencja inna niż wszystkie
           </p>
@@ -77,7 +77,7 @@ export default function Aboutus() {
               krajach: Polska, Hiszpania, Portugalia, Chorwacja, Cypr, Dubaj, Dominikana.
             </span>
           </p>
-        </div>
+        </div> */}
         <div className="md:w-7/12 w-[90vw] md:h-[200px] mx-auto text-lg leading-7 flex flex-col md:flex-row items-center justify-center">
           <div className="relative w-[150px] h-[150px]">
             <Image src="/Maro_fota_strona.png" fill className="object-contain" />
