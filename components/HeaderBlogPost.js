@@ -1,12 +1,15 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import Logotype from "./images/logotype.png";
 import SearchComponent from "./searchComponent";
 import MiniMainViewBlog from "./MiniMainViewBlog";
 import Blog from "../data/Blog.json";
 
 export default function HeaderBlog({ temat }) {
+  const router = useRouter();
+
   let img;
   Blog.map((i) => {
     console.log(i.title);
@@ -17,24 +20,46 @@ export default function HeaderBlog({ temat }) {
 
   return (
     <>
-      <div className="relative w-full lg:h-96 h-56 flex justify-between items-start lg:pl-36 bg-cover mt-[50px] px-10 lg:bg-none">
-        {/* Left side  */}
-        <div className="flex flex-col lg:w-1/2 w-10/12 h-auto lg:px-20 mt-[50px]">
-          <h1 className="lg:text-5xl lg:text-gray-900 lg: text-normal text-3xl font-bold w-full grow flex items-center leading-14">
+      <div className="relative w-full lg:h-[500px] h-auto flex justify-between items-start lg:pl-36 bg-cover mt-[90px] px-10 lg:bg-none flex-col text-[14px] lg:text-[18px] mb-[60px]">
+        <div className="h-auto mx-auto lg:w-10/12 w-11/12 pt-[50px] font-semibold">
+          <Link href="/" className="lg:px-[20px]">
+            {" "}
+            Strona główna
+          </Link>{" "}
+          /{" "}
+          <Link href="/blog" className="lg:px-[20px]">
+            {" "}
+            Blog
+          </Link>{" "}
+          / <span className="text-orange-500 lg:px-[20px]">{temat}</span>
+        </div>
+        {/* Title  */}
+        <div className="flex flex-col lg:w-10/12 w-11/12 h-auto mt-[10px] mx-auto">
+          <h1 className="lg:w-2/3 w-full lg:text-4xl lg:text-gray-900 lg: text-normal text-3xl font-bold grow flex items-center leading-14">
             {temat}
           </h1>
-          <p>Data artykułu: 13-01-2024</p>
+          <p className="mt-[5px]">Data artykułu: 13-01-2024</p>
         </div>
-        {/* Right side  */}
-        <div className="lg:w-1/2 lg:h-full object-cover overflow-hidden lg:block hidden">
-          <Image
-            src="/nieruchomosci_w_hiszpanii_co_sie_zmienilo.jpeg"
-            width={700}
-            height={500}
-            alt="logo"
-          />
+        {/* Bottom  */}
+        <div className="lg:w-10/12 w-12/12 flex justify-between mx-auto h-auto lg:flex-row flex-col">
+          <div className="w-full lg:w-[400px] lg:h-[200px] h-[200px] object-cover overflow-hidden relative border rounded-xl">
+            <Image
+              src="/nieruchomosci_w_hiszpanii_co_sie_zmienilo.jpeg"
+              fill
+              alt="logo"
+              objectFit="cover"
+            />
+          </div>
+          <div id="claim" className="lg:w-1/2 font-semibold py-[10px] lg:py-0">
+            <h2 className="w-full text-center">
+              Zatem zdecydowałeś/zdecydowałaś się&nbsp;aby zrobić kolejny ważny krok w drodze do
+              zakupu swojej nieruchomości w Hiszpanii. Jeśli szukasz podstawowej wiedzy o
+              działaniach i korkach w procesie zakupu - dobrze trafiłeś. Artykuł powstał z myślą o
+              takich osobach. Wierzy, że po jego przeczytaniu zrozuienie rynku oraz procesu zakupu
+              nieruchomości w Hiszpanii będzie dla Ciebie jaśniejsze.
+            </h2>
+          </div>
         </div>
-        <div className="-rotate-45 bg-white lg:absolute hidden lg:block bottom-0 right-0 w-0 h-0 border-l-[90px] border-r-[90px] border-t-[90px] border-l-transparent border-r-transparent border-t-white -mx-12 -mb-4"></div>
       </div>
     </>
   );

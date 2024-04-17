@@ -21,7 +21,7 @@
     "link": "https://images.pexels.com/photos/8748170/pexels-photo-8748170.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     "title": "Jak kupić nieruchomość w Hiszpanii",
     "description": "Pierwsze kroki dla osób planujących zakup nieruchomości w Hiszpanii",
-    "tag": "jak-kupic-nieruchomosc-w-hiszpanii-podstawy"
+    "tag": "nieruchomosci-w-hiszpanii-jak-wyglada-proces"
   },
   {
     "id": 4,
@@ -88,15 +88,23 @@
     "tag": "nieruchomosci-w-hiszpanii-co-sie-zmienilo"
   },
   {
-    "id": 10,
+    "id": 12,
     "status": "published",
     "link": "https://images.pexels.com/photos/1703311/pexels-photo-1703311.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "title": "Szukasz nieruchomości w Hiszpanii na sprzedaż?",
-    "description": "Zdabądź informacje na temat zakupu, sprzedaży apartamentów w Hiszpanii. Poznaj podstawowe założenia, zacznij spełniać swoje marzenie!",
-    "tag": "hiszpania-apartamenty-na-sprzedaz"
+    "title": "Nieruchomości w Hiszpanii, co się zmieniło?",
+    "description": "Podstawowe pytania i zagadanienie dot. nieruchomości w Hiszpanii i samego rynku, omówione w kilku krótkich odpowidziach.",
+    "tag": "nieruchomosci-w-hiszpanii-co-sie-zmienilo"
   },
   {
-    "id": 11,
+    "id": 20,
+    "status": "published",
+    "link": "https://images.pexels.com/photos/1703311/pexels-photo-1703311.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "title": "Nieruchomości w Hiszpanii.",
+    "description": "Zdabądź informacje na temat zakupu, sprzedaży apartamentów w Hiszpanii. Poznaj podstawowe założenia, zacznij spełniać swoje marzenie!",
+    "tag": "nieruchomości-w-hiszpanii"
+  },
+  {
+    "id": 21,
     "status": "wating",
     "link": "https://images.pexels.com/photos/1703311/pexels-photo-1703311.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     "title": "Najciekawsze miejsca na Costa del Sol",
@@ -104,7 +112,7 @@
     "article": "Wkrótce"
   },
   {
-    "id": 12,
+    "id": 22,
     "status": "wating",
     "link": "https://cdn.pixabay.com/photo/2023/01/09/09/42/sunflowers-7706977_1280.jpg",
     "title": "Najciekawsze miejsca na Costa Blanca",

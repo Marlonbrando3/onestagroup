@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import Logotype from "./images/logotype.png";
@@ -15,6 +16,8 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { IoIosClose } from "react-icons/io";
 
 export default function Header() {
+  const router = useRouter();
+
   const MouseOnZarzadzanie: any = useRef();
   const MouseOnZarzadzanieSpain: any = useRef();
   const MouseOnProperties: any = useRef();
@@ -120,6 +123,8 @@ export default function Header() {
     }
   };
 
+  console.log(router.asPath);
+
   const handleConsultationForm = (e: any) => {
     if (e.target.name === "name") {
       setConsultationName(e.target.value);
@@ -132,11 +137,11 @@ export default function Header() {
   const onScroll = useCallback(() => {
     const { scrollX, scrollY, innerWidth } = window;
     // console.log("yOffset", innerWidth, "scrollY", scrollY);
-    if (scrollY > 70 && innerWidth >= 1024) {
+    if (scrollY > 70 && innerWidth >= 1024 && !router.asPath?.includes("blog")) {
       headerDesktop.current.style.background = "white";
       headerDesktop.current.style.boxShadow = "1px 1px 5px -3px black";
       headerDesktop.current.style.color = "black";
-    } else if (scrollY < 70 && innerWidth >= 1024) {
+    } else if (scrollY < 70 && innerWidth >= 1024 && !router.asPath?.includes("blog")) {
       headerDesktop.current.style.background = "linear-gradient( black 0%, transparent 100%)";
       headerDesktop.current.style.boxShadow = "0px 0px 0px 0px black";
       headerDesktop.current.style.color = "white";
@@ -157,7 +162,11 @@ export default function Header() {
       <div className="transition-all duration-700 w-full h-[70px] lg:h-[85px] top-0 left-0 text-gray-900 z-40 fixed">
         <div
           ref={headerDesktop}
-          className="flex lg:flex-col justify-between flex-1 h-full w-full lg:bg-gradient-to-b lg:from-gray-900/[0.7]  lg:via-gray-900/[0.7] lg:via-50% lg:to-white/[0] lg:to-100% lg:text-white bg-gradient-to-b from-white to-white text-black"
+          className={`flex lg:flex-col justify-between flex-1 h-full w-full ${
+            !router.asPath?.includes("blog")
+              ? "lg:bg-gradient-to-b lg:from-gray-900/[0.7]  lg:via-gray-900/[0.7] lg:via-50% lg:to-white/[0] lg:to-100% lg:text-white bg-gradient-to-b from-white to-white text-black"
+              : "bg-gradient-to-b from-white  via-white lg:via-50% lg:to-white lg:to-100% to-white text-black"
+          }`}
         >
           {/* header only on large */}
           <div className="w-full bg-white hidden lg:block">

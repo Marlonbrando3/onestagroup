@@ -13,7 +13,8 @@ import Newsletter from "../../components/newsletter";
 import { LuArrowUpRightSquare } from "react-icons/lu";
 
 export default function BlogPost() {
-  const temat = "Nieruchomości w Hiszpanii oto jak wygląda proces.";
+  const temat = "Nieruchomości w Hiszpanii";
+  const clam = "jak wygląda proces zakupu"
 
   return (
     <>
@@ -54,7 +55,7 @@ export default function BlogPost() {
                     `}
       </Script>
       <Head>
-        <title>Nieruchomości w Hiszpanii</title>
+        <title>Nieruchomości w Hiszpanii - jak kupować?</title>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin></link>
         <link
@@ -63,7 +64,7 @@ export default function BlogPost() {
         ></link>
         <meta
           name="Description"
-          content="Nieruchomości Hiszpania. Pośrednictwo w sprzedaży nieruchomości w Hiszpanii. Z artykuły dowiesz się jak zmienił się rynek nierchomości w Hiszpanii."
+          content="Nieruchomości Hiszpania. Pośrednictwo w sprzedaży nieruchomości w Hiszpanii. Z artykuły dowiesz się jak zmienił się rynek nieruchomości w Hiszpanii."
         />
         <meta
           name="Keywords"
@@ -81,79 +82,78 @@ export default function BlogPost() {
       </div>
       <HeaderBlogPost temat={temat} />
       <Blogbuttonoffers />
-      <div className="lg:w-[1100px] lg:mx-auto md:px-[50px] w-[90vw] mx-auto text-[18px] leading-7 tracking-normal">
-        {/* <h1 className="text-[24px] font-bold">Jak kupić nieruchomość w Hiszpanii?</h1> */}
-        <br></br>
-        <h2 className="text-[20px]">
-          {" "}
-          Czyli zdecydowałeś/zdecydowałaś się&nbsp;aby zrobić kolejny ważny krok w drodze do zakupu
-          swojej <strong>nieruchomości w Hiszpanii.</strong> Z artykułu dowiesz jak się poruszać się
-          na rynku nieruchomości w Hiszpanii.
-        </h2>
+      <div className="lg:w-[1000px] lg:mx-auto md:px-[50px] w-[80vw] mx-auto lg:text-[19px] lg:leading-8 tracking-normal">
         <br></br>
         <br></br>
-        {/* <p>
-          Czyli zdecydowałeś/zdecydowałaś się&nbsp;aby zrobić kolejny ważny krok w drodze do zakupu
-          swojej <strong>nieruchomości w Hiszpanii.</strong>
-        </p> */}
+        <br></br>
+        <strong className="text-[24px] font-semibold">Wprowadzenie</strong>
+        <br></br>
         <br></br>
         <p>
-          <strong className="text-[24px] font-semibold">Wprowadzenie</strong>
+          Zakładamy, że jako osoba poszukująca <b>nieruchomości w Hiszpanii na sprzedaż</b> zadajesz
+          sobie większość z poniższych pytań.
         </p>
         <br></br>
-        <p>Zakładamy, że poszukujesz rzeczowych odpowiedzi na kwestie takie jak:</p>
-        <br></br>
-        <p>
-          - Czy powinienem wybierać <strong>nieruchomości w Hiszpanii </strong>z
-          <strong>rynku wtórnego</strong> czy raczej poszukać ofert z rynku pierwotnego cieszącego
-          się
-          <strong>dużym zainteresowaniem </strong>niemniej droższego?
-        </p>
-        <p>W jakim stanie są apartamenty lub domy z rynku wtórnego?</p>
-        <p>
-          - Czy jest tam jakaś rzetelna<strong> polska agencja nieruchomości </strong>z
-          <strong>doświadczeniem</strong>, dla której sprzedaż, oferowane opcje jest rozumiana jako
-          pomoc , która odbierze mnie z lotniska i przedstawi oferty, a finalnie pomoże mi w zakupie
-          nieruchomości w Hiszpanii. Jak mogę znaleźć takie biura?
-        </p>
-        <p>
+        <ul className="list-disc">
+          <li className="list-element-blog">
+            Czy powinienem wybierać <b>nieruchomości w Hiszpanii </b> z rynku wtórnego czy raczej
+            poszukać ofert z rynku pierwotnego cieszącego się <b>dużym zainteresowaniem </b>niemniej
+            droższego?
+          </li>
+          <li className="list-element-blog">
+            W jakim stanie są apartamenty lub domy z rynku wtórnego?
+          </li>
+          <li className="list-element-blog">
+            Czy jest tam jakaś rzetelna<strong> polska agencja nieruchomości </strong>z
+            <strong>doświadczeniem</strong>, dla której sprzedaż, oferowane opcje jest rozumiana
+            jako pomoc , która odbierze mnie z lotniska i przedstawi oferty, a finalnie pomoże mi w
+            zakupie nieruchomości w Hiszpanii. Jak mogę znaleźć takie biura?
+          </li>
+          <li className="list-element-blog">
+            Czy dobrym pomysłem są nieruchomości w z przejęć bankowych?
+          </li>
+          <li className="list-element-blog">
+            Czy powinienem/powinnam szukać czegoś w kategorii &ldquo;apartamenty&ldquo; czy
+            &ldquo;domy&ldquo;, a może celujesz w willę?
+          </li>
+          <li className="list-element-blog">
+            Jakie są wymagania formalne lub jakie przygotować dokumenty aby zapewnić sobie
+            bezpieczeństwo kupując apartament lub dom?
+          </li>
+          <li className="list-element-blog">
+            Czy zakup ma być formą inwestowania i interesuje mnie wynajem mieszkania czy będzie on
+            raczej prywatny? A może połączę oba te rozwiązania?
+          </li>
+          <li className="list-element-blog">
+            Myślę, że powyższe zagadnienia już w jakiejś mierze pokazują, że rozumiemy nad czym
+            klienci rozważają szukając agencji lub wybierając pomiędzy{" "}
+            <strong>apartamentami.</strong>{" "}
+          </li>
+        </ul>
+        <div className="w-full h-auto bg-orange-100 my-[30px] flex p-5 items-center justify-between rounded-xl italic">
+          <div className="h-[50px] w-[3px] bg-red-900"></div>
+          <p className="w-[98%]">
+            Zdajemy sobie sprawę, jak brzmią pierwsze pytania osób, które zaczynają przygodę w
+            poszukiwaniu swojej nieruchomości w Hiszpanii. Staramy się odpowiedzieć praktycznie.
+          </p>
+        </div>
+        <strong className="font-bold">
+          Są tylko 2 drogi <br></br>
           <br></br>
-          <strong className="font-semibold">Spoiler: Onesta jest takim biurem ;)</strong>
-        </p>
-        <br></br>
-        <p>- Czy dobrym pomysłem są nieruchomości w z przejęć bankowych?</p>
-        <p>
-          - Czy powinienem/powinnam szukać czegoś w kategorii &ldquo;apartamenty&ldquo; czy
-          &ldquo;domy&ldquo;, a może celujesz w willę?
-        </p>
-        <p>
-          - Jakie są wymagania formalne lub jakie przygotować dokumenty aby zapewnić sobie
-          bezpieczeństwo kupując apartament lub dom?
-        </p>
-        <p>
-          - Czy zakup ma być formą inwestowania i interesuje mnie wynajem mieszkania czy będzie on
-          raczej prywatny? A może połączę oba te rozwiązania?
-        </p>
-        <p>
-          - Myślę, że powyższe zagadnienia już w jakiejś mierze pokazują, że rozumiemy nad czym
-          klienci rozważają szukając agencji lub wybierając pomiędzy <strong>apartamentami.</strong>
-        </p>
-        <p>
-          <br></br>
-          <br></br>
-          <strong className="font-bold">
-            Tutaj są 2 drogi. <br></br>
-            <br></br>
-          </strong>
-          Albo zrealizujesz <strong>zakup nieruchomości </strong>
-          na terenie <strong>Hiszpanii</strong> samodzielnie albo skorzystasz z{" "}
-          <strong>usług</strong> agencji takich jak Onesta która oferuje kompleksową pomoc{" "}
-          <strong>klientom</strong> w zakupie . Podejrzewam, że finalnie i tak zajmie się&nbsp;tym
-          jakaś agencja (tak się&nbsp;dzieje w 90% przypadków) natomiast rozumiemy doskonale
-          potrzebę zdobycia podstawowej wiedzy przed taką współpracą do której serdecznie{" "}
-          <strong>zapraszamy</strong>. Według nas sprzedaż = pomoc.
-          <br></br> <br></br>
-        </p>
+        </strong>
+        Albo zrealizujesz <strong>zakup nieruchomości na terenie w Hiszpanii</strong> samodzielnie
+        albo skorzystasz z usług agencji takich jak Onesta która oferuje kompleksową pomoc klientom
+        w zakupie.{" "}
+        <b className="font-bold">
+          Kompleksową znaczy, że każdy aspekt, począwszy od prezentacji nieruchomości poprzez
+          weryfikację dokumentów, formalności prawne i urzędowe, akt notarialny, a nawet umeblowanie
+          i wynajem.
+        </b>{" "}
+        Zatem podejrzewam, że finalnie i tak zajmie się tym jakaś agencja (tak się dzieje w 90%
+        przypadków) i bardzo dobrze, natomiast rozumiemy doskonale potrzebę zdobycia podstawowej
+        wiedzy przed taką współpracą do której serdecznie <strong>zapraszamy</strong>. Według nas
+        sprzedaż = pomoc.
+        <br></br> <br></br>
         <p>
           Bez względu na to czy myślisz o zakupie nieruchomości (apartamentu lub domu) na rynku
           pierwotnym (nowe nieruchomości) czy na rynku wtórnym, pytania które sobie zadajesz są
@@ -161,6 +161,10 @@ export default function BlogPost() {
         </p>
         <p>Postaramy się odpowiedzieć na nie w poniżym artykule.</p>
         <br></br>
+        <strong className="font-bold">
+          Rynek nieruchomości w Hiszpanii - dziś <br></br>
+          <br></br>
+        </strong>
         <p>
           Przede wszystkim rynek <strong>nieruchomości w Hiszpanii</strong> jest już przesycony,
           trzeba to przyznać wprost. W konsekwencji mamy aż kilkadziesiąt % agentów czy biur
