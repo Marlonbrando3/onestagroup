@@ -13,7 +13,7 @@ import Newsletter from "../../components/newsletter";
 import { LuArrowUpRightSquare } from "react-icons/lu";
 
 export default function BlogPost() {
-  const temat = "Jak kupić nieruchomość w Hiszpanii.";
+  const temat = "Nieruchomości w Hiszpanii oto jak wygląda proces.";
 
   return (
     <>
@@ -54,7 +54,7 @@ export default function BlogPost() {
                     `}
       </Script>
       <Head>
-        <title>Jak kupić nieruchomość w Hiszpanii</title>
+        <title>Nieruchomości w Hiszpanii</title>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin></link>
         <link
@@ -104,7 +104,7 @@ export default function BlogPost() {
         <p>Zakładamy, że poszukujesz rzeczowych odpowiedzi na kwestie takie jak:</p>
         <br></br>
         <p>
-          - Czy powinienem wybierać <strong>nieruchomość w Hiszpanii </strong>z
+          - Czy powinienem wybierać <strong>nieruchomości w Hiszpanii </strong>z
           <strong>rynku wtórnego</strong> czy raczej poszukać ofert z rynku pierwotnego cieszącego
           się
           <strong>dużym zainteresowaniem </strong>niemniej droższego?
