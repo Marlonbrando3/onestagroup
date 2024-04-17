@@ -55,8 +55,8 @@ export default function HeaderBlog({ temat }) {
               Zatem zdecydowałeś/zdecydowałaś się&nbsp;aby zrobić kolejny ważny krok w drodze do
               zakupu swojej nieruchomości w Hiszpanii. Jeśli szukasz podstawowej wiedzy o
               działaniach i korkach w procesie zakupu - dobrze trafiłeś. Artykuł powstał z myślą o
-              takich osobach. Wierzy, że po jego przeczytaniu zrozuienie rynku oraz procesu zakupu
-              nieruchomości w Hiszpanii będzie dla Ciebie jaśniejsze.
+              takich osobach. Wierzy, że po jego przeczytaniu zrozumienie rynku oraz procesu zakupu
+              nieruchomości w Hiszpanii będą dla Ciebie jaśniejsze.
             </h2>
           </div>
         </div>

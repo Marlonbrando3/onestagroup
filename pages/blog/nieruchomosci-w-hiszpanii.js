@@ -82,7 +82,7 @@ export default function BlogPost() {
       </div>
       <HeaderBlogPost temat={temat} />
       <Blogbuttonoffers />
-      <div className="lg:w-[1000px] lg:mx-auto md:px-[50px] w-[80vw] mx-auto lg:text-[19px] lg:leading-8 tracking-normal">
+      <div className="lg:w-[1000px] lg:mx-auto md:px-[50px] w-[90vw] mx-auto lg:text-[19px] lg:leading-8 tracking-normal">
         <div>
           <p>
             Artykuł ma na celu odpowiedzieć na praktycznie wszystkie pytania, jakie zadaje sobie
@@ -100,7 +100,7 @@ export default function BlogPost() {
           </p>
           <div
             id="menu"
-            className="rounded-xl p-3 flex flex-col bg-orange-100 text-[16px] leading-6 my-[20px] w-[70%]"
+            className="rounded-xl p-3 flex flex-col bg-orange-100 text-[16px] leading-6 my-[20px] lg:w-[70%]"
           >
             <h2>1. Hiszpania i jej atuty - dlaczego warto tam inwestować?</h2>
             <h2>2. Nieruchomomości w Hiszpanii - dlaczego są tak atrakcyjne?</h2>
@@ -116,7 +116,7 @@ export default function BlogPost() {
           </div>
         </div>
         <h2 className="font-bold my-[20px]">
-          Ad 1 . Dlaczego Hiszpania jest tak popularna? Główne atuty
+          Ad. 1. Dlaczego Hiszpania jest tak popularna? Główne atuty
         </h2>
         <p>
           Hiszpania jest regionem śwaita, który na tle otaczających Ją jest zwyczajnie jednym z
@@ -135,7 +135,7 @@ export default function BlogPost() {
           najbardziej wysnięty ląd w Europie - niskie ryzyko konfliktu zbrojnego.
         </p>
         <h2 className="font-bold my-[20px]">
-          Ad. 2 Region regionem ale dlaczego nieruchomości w Hiszpanii są tak atrakcyjne?
+          Ad. 2. Region regionem ale dlaczego nieruchomości w Hiszpanii są tak atrakcyjne?
         </h2>
         <p>
           Hiszpanie od jakiegoś niedługiego czasu bardzo mocno zaczeli budować z myślą o
@@ -195,7 +195,7 @@ export default function BlogPost() {
           odległości od morza nie da się zmienić.
         </p>
         <h2 className="font-bold my-[20px]">
-          Ad. 4 Nieruchomości w Hiszpanii, a nieruchomości w Polsce.
+          Ad. 4. Nieruchomości w Hiszpanii, a nieruchomości w Polsce.
         </h2>
         <p>
           Formalności przy zakupie nieruchomości w Hiszpanii są praktycznie takie same, tj.{" "}
@@ -229,7 +229,7 @@ export default function BlogPost() {
           </ul>
         </p>
         <h2 className="font-bold my-[20px]">
-          Ad. 5 Jak wygląda współpraca z polską agencją nieruchomości w Hiszpanii
+          Ad. 5. Jak wygląda współpraca z polską agencją nieruchomości w Hiszpanii
         </h2>
         <p>
           Model współpracy jest typowy dla branży nieruchomości. Na rynku działa bardzo dużo
@@ -267,7 +267,7 @@ export default function BlogPost() {
           Hiszpania, spełnienie marzeń! Nie daj sobie tego popsuć:)
         </p>
         <h2 className="font-bold my-[20px]">
-          Ad. 6 Czy Polacy oraz jakie inne kraje kupują nieruchomości w Hiszpanii?
+          Ad. 6. Czy Polacy oraz jakie inne kraje kupują nieruchomości w Hiszpanii?
         </h2>
         <p>
           Oczywiście! Polacy coraz chętniej szukają nieruchomości na sprzedaż w Hiszpanii, a ich
@@ -285,7 +285,7 @@ export default function BlogPost() {
           </p>
         </p>
         <h2 className="font-bold my-[20px]">
-          Ad. 7 W jakim celu realizuje się zakup nieruchomości w Hiszpanii?
+          Ad. 7. W jakim celu realizuje się zakup nieruchomości w Hiszpanii?
         </h2>
         <p>
           Istnieją 2 główne kierunki i motywy, cała reszta jest ich wypadkową. Nieruchomości w
@@ -297,7 +297,7 @@ export default function BlogPost() {
           </Link>
         </p>
         <h2 className="font-bold my-[20px]">
-          Ad. 8 Jakie są koszty dodatkowe przy zakupie nieruchomości w Hiszpanii?
+          Ad. 8. Jakie są koszty dodatkowe przy zakupie nieruchomości w Hiszpanii?
         </h2>
         <p>
           Ceny ogłoszeń na portalach zawsze są netto. Kupujący nie płaci prowizji za pośrednictwo w
@@ -309,7 +309,7 @@ export default function BlogPost() {
           netto 200 000 * 1,13 = 226 000 euro brutto.
         </p>
         <h2 className="font-bold my-[20px]">
-          Ad. 9 Najciekawsze regiony na zakup nieruchomości w Hiszpanii.
+          Ad. 9. Najciekawsze regiony na zakup nieruchomości w Hiszpanii.
         </h2>
         <p>
           Gównych regionów, które są brane pod uwagę mamy 3. Costa Blanca, Costa Calida, Costa del
@@ -342,7 +342,7 @@ export default function BlogPost() {
           </ul>
         </p>
         <h2 className="font-bold my-[20px]">
-          Ad. 10 Rynek pierwotny vs rynek wtórny - podstawe różnice
+          Ad. 10. Rynek pierwotny vs rynek wtórny - podstawe różnice
         </h2>
         <p>
           Ujmując to najbardziej obrazowo. Rynek wtórny to bardziej mieszkanie, a pierwotny to
@@ -358,7 +358,7 @@ export default function BlogPost() {
           który czekamy kilkanaście miesięcy.
         </p>
         <br></br>
-        <h2>11. Zakup nieruchomości w Hiszpanii jako inwestycja</h2>
+        <h2 className="font-bold my-[20px]">11. Zakup nieruchomości w Hiszpanii jako inwestycja</h2>
         <p>
           To również dość obszerny temat, na który powstał artykuł{" "}
           <Link href="/blog/jak-kupic-nieruchomosc-w-hiszpanii" className="underline text-blue-500">
