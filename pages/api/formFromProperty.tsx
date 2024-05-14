@@ -22,7 +22,7 @@ export default function (req: any, res: any) {
   const mailData = {
     from: fromEmail,
     to: endEmail,
-    subject: `Jestem zainteresowany nieruchomości ${req.body.id}`,
+    subject: `Jestem zainteresowany nieruchomością ${req.body.id}`,
     text: "Hello. This email is for your email verification.",
     html: `Imię : ${req.body.name}` + `<br>` + `Telefon kontaktowy: ${req.body.phone}` + `<br><br>`,
   };

@@ -35,8 +35,8 @@ export default function PropertyCard({ property }: Property) {
   const market = property.mortgageMarket === "Primary" ? "Rynek Pierwotny" : "Rynek Wtórny";
 
   return (
-    <div className="flex flex-col bg-gray-500 lg:w-[370px] w-[92vw] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
-      <div className="w-full h-[220px] overflow-hidden mx-auto rounded-t-md flex items-center justify-center text-4xl relative">
+    <div className="flex flex-col bg-gray-500 md:w-[370px] w-[92vw] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
+      <div className="w-full md:h-[220px] h-[220px] sm:h-[300px] overflow-hidden mx-auto rounded-t-md flex items-center justify-center text-4xl relative">
         <ResultsSlider
           images={property.images}
           propertyId={property.id}
@@ -79,6 +79,7 @@ export default function PropertyCard({ property }: Property) {
             </div>
             <div className="w-full md:h-28 lg:leading-6 md:pl-8 md:pt-8 pr-12 leading-auto lg:text-[18px] pl-8 py-2 font-bold">
               <p>{property.headerAdvertisement}</p>
+              <p className="text-[12px] mt-[10px]">nr ref. {property.listingId}</p>
             </div>
             <div className="flex items-center justify-between w-full pt-1 bg-gray-900/[0.1]">
               <div className="flex flex-col items-center justify-center w-[24%] bg-white md:p-1 py-2">

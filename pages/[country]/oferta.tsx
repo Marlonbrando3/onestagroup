@@ -383,7 +383,7 @@ export default function Property() {
                     od {propertyData[0]?.price.amount.toLocaleString()} €
                   </p>
                   <p className="text-md text-black font-bold block">
-                    Nr ref. {propertyData[0]?.id}
+                    nr ref. {propertyData[0]?.listingId}
                   </p>
                 </div>
               </div>

@@ -73,7 +73,7 @@ export default function Bathrooms({
           <p className="mx-[5px] text-[12px]">Liczba łazienek</p>
           <div
             // ref={pricesInputs}
-            className="InputsStyle h-auto xl:w-[px] lg:w-full w-full xl:items-center justify-center flex-row border"
+            className="InputsStyle h-auto xl:w-[px] lg:w-full w-full xl:items-center justify-center flex-row"
           >
             {bathsFrom}
             <div className="lg:w-[5px] w-[6%] h-[1px] bg-yellow-500"></div>

@@ -42,7 +42,7 @@ export default function ResultsSlider({
           }}
           ref={image}
           key={key}
-          className="h-[220px] w-[370px] relative object-cover text-sm"
+          className="md:h-[220px] h-[220px] sm:h-[300px] md:w-[370px] w-[92vw] relative object-cover text-sm"
         >
           <Image
             key={i}
@@ -71,7 +71,7 @@ export default function ResultsSlider({
           <div
             ref={image}
             key={key}
-            className="h-[220px] w-[370px] flex items-center justify-center relative object-cover bg-red-500/[0.7] text-3xl text-white font-[700] cursor-pointer"
+            className="md:h-[220px] sm:h-[300px] h-[220px]  md:w-[370px] w-[92vw] flex items-center justify-center relative object-cover bg-red-500/[0.7] text-3xl text-white font-[700] cursor-pointer"
           >
             <p>Więcej zdjęć</p>
           </div>
