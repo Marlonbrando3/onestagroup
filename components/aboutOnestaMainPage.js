@@ -14,10 +14,10 @@ export default function AboutOnestaMainPage() {
         </div>
         <div className="ml-[20px] text-[20px]">
           <b>Dla Ciebie oznacza to</b> współpracę z zespołem z 15 letnim doświadczeniem w sprzedaży
-          i budowaniu relacji z klientami. Słuchamy klientów.
-          <br></br>Wychodzimy na przeciw Twoich potrzeb i przeszukujemy rynek aby znaleść coś dla
-          Ciebie. <br></br>Zatem masz ludzi z nastawieniem na zrozumienie i relację oraz z ofertami
-          wielu agencji - wszystko w jednym miejscu.
+          i budowaniu relacji z klientami. Słuchamy.
+          <br></br>Wychodzimy na przeciw Twoim potrzebom, przeszukujemy rynek, znajdujemy oferty
+          wpisujące się w preferencje. <br></br>Zatem ofertujemy Ci nasz czas, uwagę i cierpliwość
+          wraz z ofertami wielu agencji na rynku Hiszpańskim - wszystko w jednym miejscu.
         </div>
       </div>
     </div>
