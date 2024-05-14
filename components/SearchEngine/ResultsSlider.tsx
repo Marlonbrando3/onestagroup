@@ -147,9 +147,11 @@ export default function ResultsSlider({
       <div className="absolute text-[14px] z-20 bg-yellow-500 text-white top-2 px-[6px] font-bold rounded-r-xl h-[24px] leading-[24px] shadow-sm">
         {market}
       </div>
-      <div className="bg-orange absolute z-20 text-[14px] bg-yellow-500 text-white bottom-0 px-[6px] font-bold rounded-r-xl h-[24px] leading-[24px] ">
-        Data oddania {deliveryDate?.toString().slice(0, 7)}
-      </div>
+      {market !== "Secondary" && (
+        <div className="bg-orange absolute z-20 text-[14px] bg-yellow-500 text-white bottom-0 px-[6px] font-bold rounded-r-xl h-[24px] leading-[24px] ">
+          Data oddania {deliveryDate?.toString().slice(0, 7)}
+        </div>
+      )}
       <div
         onClick={handleChangeSiteLeft}
         className="flex items-center z-10 justify-center absolute w-10 h-full left-0 cursor-pointer bg-gray-900/[0.13] hover:bg-sky-900/[0.4] transition duration-450 hover:ease-in-out"
