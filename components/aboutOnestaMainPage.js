@@ -13,9 +13,8 @@ export default function AboutOnestaMainPage() {
           <Image src="/bg_about.jpeg" alt="nieruchomosci-w-hiszpanii" fill></Image>
         </div>
         <div className="ml-[20px] text-[20px]">
-          <b>Dla Ciebie oznacza to</b>, że współpraca z zespołem z Onesta Group to ludzie z prawie
-          15 letnim doświadczeniem w sprzedaży i budowaniu relacji oraz rozumienia klienta. Słuchamy
-          klientów.
+          <b>Dla Ciebie oznacza to</b>, że współpracę z zespołem z 15 letnim doświadczeniem w
+          sprzedaży i budowaniu relacji z klientami. Słuchamy klientów.
           <br></br>Wychodzimy na przeciw Twoich potrzeb i przeszukujemy rynek aby znaleść coś dla
           Ciebie. <br></br>Zatem masz ludzi z nastawieniem na zrozumienie i relację oraz z ofertami
           wielu agencji - wszystko w jednym miejscu.
