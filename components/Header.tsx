@@ -241,13 +241,13 @@ export default function Header() {
                 >
                   Oferty
                   <div
-                    className="hidden absolute mt-2 -ml-2 bg-white flex-col"
+                    className="hidden absolute -ml-2 bg-white flex-col items-center rounded-2xl border -mt-[6px]"
                     ref={MouseOnProperties}
                   >
                     <Link
                       onClick={handleClearData}
                       href={{ pathname: "/[country]", query: { country: "hiszpania", page: 1 } }}
-                      className="p-2 text-black"
+                      className="p-1 text-black rounded-2xl w-full text-center"
                       ref={MouseOnSpain}
                       data-name="MouseOnSpain"
                       onMouseEnter={() => handleHover(MouseOnSpain)}
@@ -257,7 +257,7 @@ export default function Header() {
                     </Link>
                     <Link
                       href={{ pathname: "/[country]", query: { country: "chorwacja", page: 1 } }}
-                      className="p-2 text-black"
+                      className="p-1 text-black rounded-2xl w-full text-center"
                       ref={MouseOnCroatia}
                       data-name="MouseOnCroatia"
                       onMouseEnter={() => handleHover(MouseOnCroatia)}
@@ -267,7 +267,7 @@ export default function Header() {
                     </Link>
                     <Link
                       href={{ pathname: "/[country]", query: { country: "portugalia", page: 1 } }}
-                      className="p-2 text-black"
+                      className="p-1 text-black rounded-2xl w-full text-center"
                       ref={MouseOnPortugal}
                       data-name="MouseOnPortugal"
                       onMouseEnter={() => handleHover(MouseOnPortugal)}
@@ -277,7 +277,7 @@ export default function Header() {
                     </Link>
                     <Link
                       href={{ pathname: "/[country]", query: { country: "dominikana", page: 1 } }}
-                      className="p-2 text-black"
+                      className="p-1 text-black rounded-2xl w-full text-center"
                       ref={MouseOnDominican}
                       data-name="MouseOnDominican"
                       onMouseEnter={() => handleHover(MouseOnDominican)}
