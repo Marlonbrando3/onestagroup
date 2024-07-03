@@ -14,8 +14,8 @@ export default function RecommendedOffers() {
       <div className="md:w-[1100px] w-screen h-auto mx-auto">
         <p className="text-[25px] mb-[20px] w-screen md:w-auto text-center">Rekomendowane oferty</p>
         <div className="flex md:flex-row flex-col">
-          {Props.map((i) => (
-            <PropertyCard property={i} />
+          {Props.map((i, index) => (
+            <PropertyCard key={index} property={i} />
           ))}
         </div>
         <div className="w-full flex">
