@@ -65,19 +65,23 @@ export default function HowWeWork() {
               margin === 0 && "bg-white/[0.2] border-white/[0.2] hover:bg-white/[0.2]"
             } border-2 flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150`}
             onClick={handleMovingSliderBack}
+            onTouchStart={handleMovingSliderBack}
           >
             <IoIosArrowBack
               className="h-full w-full text-white p-[14px]"
               onClick={handleMovingSliderBack}
+              onTouchStart={handleMovingSliderBack}
             />
           </div>
           <div
             className="border-2 flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150"
             onClick={handleMovingSliderForward}
+            onTouchStart={handleMovingSliderForward}
           >
             <IoIosArrowForward
               className="h-full w-full text-white p-[14px]"
               onClick={handleMovingSliderForward}
+              onTouchStart={handleMovingSliderForward}
             />
           </div>
         </div>
