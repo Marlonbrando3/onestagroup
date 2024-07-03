@@ -52,7 +52,7 @@ export default function HowWeWork() {
             className="absolute border-yellow-500 lg:h-[100%] h-[380px] w-auto flex items-center justify-evenly flex-nowrap duration-300"
           >
             {OurJobTXT.map((i) => (
-              <OurJob cont={i} />
+              <OurJob key={i.title} cont={i} />
             ))}
           </div>
         </div>
