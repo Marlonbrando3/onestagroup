@@ -63,7 +63,7 @@ export default function PropertyCard({ property }: Property) {
           href={{
             pathname: "/[country]/oferta",
             query: {
-              country: router.query.country,
+              country: router.query.country || "hiszpania",
               id: property.id,
               t: property.headerAdvertisement,
             },
