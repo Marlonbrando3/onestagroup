@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useRef, useState } from "react";
+import Image from "next/image";
+import OurJob from "./ourJob";
+import OurJobTXT from "@/data/OurJob.json";
 
-export default function MiniHomeView() {
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
+
+export default function HowWeWork() {
   return (
-    <div className='lg:w-[1350px] w-[90vw] rounded-b-[10px] lg:h-[200px] h-[170px] bg-cover bg-center bg-[url("/bg_beach.jpeg")] mx-auto'>
-      {/* <div className='text-white text-5xl pl-20 mt-16'>{ActualCountry}</div> */}
-    </div>
+    <div className='lg:w-full w-[90vw] rounded-b-[50px] lg:h-[200px] h-[670px] bg-cover bg-center bg-[url("/palmyBGform.jpeg")] mx-auto'></div>
   );
 }

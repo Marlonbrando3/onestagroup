@@ -4,7 +4,7 @@ import { useState } from "react";
 import Head from "next/head";
 import Script from "next/script";
 import Header from "../Header";
-import MiniHomeView from "../SearchEngine/MiniHomeView";
+import HowWeWork from "../SearchEngine/howWeWork";
 import ContactFormMain from "../ContactFormMain";
 import Footer from "../Footer";
 import { FaHandsHelping } from "react-icons/fa";
@@ -78,7 +78,7 @@ export default function Aboutus() {
             </span>
           </p>
         </div> */}
-        <div className="md:w-7/12 w-[90vw] md:h-[200px] mx-auto text-lg leading-7 flex flex-col md:flex-row items-center justify-center">
+        {/* <div className="md:w-7/12 w-[90vw] md:h-[200px] mx-auto text-lg leading-7 flex flex-col md:flex-row items-center justify-center">
           <div className="relative w-[150px] h-[150px]">
             <Image src="/Maro_fota_strona.png" fill className="object-contain" />
           </div>
@@ -92,11 +92,11 @@ export default function Aboutus() {
             <p className="text-[18px] font-bold leading-[20px]">Marek Marszałek</p>
             <p className="text-[14px] font-bold leading-[20px]">Założyciel</p>
           </div>
-        </div>
-        <MiniHomeView />
+        </div> */}
+        <HowWeWork />
         <AboutSpain />
         <ContactFormAboutUs />
-        <div className="flex flex-col w-10/12 lg:w-[1200px]  mx-auto">
+        {/* <div className="flex flex-col w-10/12 lg:w-[1200px]  mx-auto">
           <div className="flex w-full">
             <p className="w-full text-center text-3xl font-bold py-10">Jak działamy?</p>
           </div>
@@ -168,10 +168,12 @@ export default function Aboutus() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="flex flex-col w-10/12 mx-auto my-20 ">
           <div className="flex flex-col justify-evenly w-full h-full">
-            <p className="text-center text-3xl text-gray-900 font-bold py-10">Nasze kompetencje</p>
+            <p className="text-center text-3xl text-gray-900  py-10">
+              Nasze kompetencje i wartości
+            </p>
           </div>
           <div className="w-full h-full flex flex-wrap">
             <div className=" flex justify-start items-center xl:w-1/3 sm:w-1/2 w-full h-1/2 sm:py-2 py-5">

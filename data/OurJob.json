@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "Rozmowa i poznanie intencji klienta",
+    "description": "Chcemy jak najdokładniej zrozumieć w jakim momecie jest nasz potencjalny, klient, jak proces zakupowy został (lub nie) zaplanowany"
+  },
+  {
+    "id": 2,
+    "title": "Propozycje nieruchomości",
+    "description": "Chcemy jak najdokładniej zrozumieć w jakim momecie jest nasz potencjalny, klient, jak proces zakupowy został (lub nie) zaplanowany"
+  },
+  {
+    "id": 3,
+    "title": "Prezentacje wybranych nieruchomości",
+    "description": "Na tym etapie praktycznie zawsze spotykamy się z naszym klientem w Hiszpanii lub innym kraju. Planując wcześniej 1 lub 2 dni pokazujemy moliwe jak najbardziej dopasowane nieruchomości"
+  },
+  {
+    "id": 4,
+    "title": "Warunki i rezerwacja nieruchomości",
+    "description": "Po decyzji zakupowej w pierwym kroku mamy rezerwację nieruchomości z płatnym depozytem w kwocie 3000 - 10000 euro w przypadku inwestycji deweloperskiej."
+  },
+  {
+    "id": 5,
+    "title": "Kolejne transze",
+    "description": "Rynek nieruchomości w Hiszpanii, Chorwacji czy Domonikanie przeżywa prawdziwy rozkwit, dlatego płatności nastepują w transzach. Na ogół jedynie 50% kwoty powinna być wpłacona przed aktem notarialnym, pozostała część po oddaniu obiektu do użytku i bezpośrednio przed aktem notarialnym."
+  },
+  {
+    "id": 6,
+    "title": "Przekazanie kluczy i dalsze kroki",
+    "description": "W zależności od tego jaki jest cel zakupowy, nieruchomość możemy umeblować, uzyskać licencje i przekazać pod wynajem lub w całości pozostawić do dyspozuycji klientowi np. wskazując jakie mogą być kolejne kroki."
+  }
+]

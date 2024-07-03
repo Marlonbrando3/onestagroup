@@ -284,10 +284,10 @@ export default function SearchButton() {
               className="lg:w-[170px] w-[90%] h-[30px] bg-white rounded-2xl text-[14px] font-[500] pl-2 border-[1px] border-yellow-500 cursor-pointer"
             >
               <option value="hiszpania">Hiszpania</option>
-              <option value="portugalia">Portugalia</option>
-              <option value="chorwacja">Chorwacja</option>
+              {/* <option value="portugalia">Portugalia</option>
+              <option value="chorwacja">Chorwacja</option> */}
               <option value="dominikana">Dominikana</option>
-              <option value="włochy">Włochy</option>
+              {/* <option value="włochy">Włochy</option> */}
             </select>
           </div>
           <div className="flex flex-col w-1/2 lg:w-auto">

@@ -20,7 +20,7 @@ export default function AsariCrm() {
       console.log(percent);
       await new Promise(async (resolve, reject) => {
         let resultProperty = await fetch("/api/asarigetproperties", {
-          method: "POST",
+          method: "POST", 
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: id }),
         });

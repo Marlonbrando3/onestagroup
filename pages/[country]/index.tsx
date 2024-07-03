@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import Script from "next/script";
 import { useRouter } from "next/router";
-import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
+import MiniHomeView from "../../components/SearchEngine/miniHomeView";
 import Header from "../../components/Header";
 import SearchEngine from "../../components/SearchEngine/SearchEngine";
 import Footer from "../../components/Footer";
@@ -25,10 +25,6 @@ export default function Home() {
       mobileButtonSearchEngine.current.innerHTML = "Filtry";
     }
   };
-
-  // let properties = propertiesWithSites
-
-  // const NewsletterDiv = [];
 
   return (
     <>

@@ -5,7 +5,7 @@ import Script from "next/script";
 import Header from "../../components/Header";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
+import MiniHomeView from "../../components/SearchEngine/howWeWork";
 import ImagesInPropetyCard from "@/components/ImagesInPropetyCard";
 import { useState, useEffect } from "react";
 import React from "react";

@@ -7,6 +7,7 @@ import WhatsAppButton from "../components/whatsapp/whatsappButton";
 import Aboutus from "../components/indexComponents/Aboutus";
 import Cookies from "@/components/cookies";
 import Footer from "../components/Footer";
+import RecommendedOffers from "@/components/recommendedOffers";
 import AboutOnestaMainPage from "../components/aboutOnestaMainPage";
 
 type AppProps = {
@@ -94,6 +95,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         <HomeView />
         <SearchBarMainPage />
         {/* <MainTheme /> */}
+        <RecommendedOffers />
         <AboutOnestaMainPage />
         <Aboutus />
         <Footer />

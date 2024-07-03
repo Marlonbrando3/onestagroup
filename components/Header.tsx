@@ -255,7 +255,7 @@ export default function Header() {
                     >
                       Nieruchomości w Hiszpanii
                     </Link>
-                    <Link
+                    {/* <Link
                       href={{ pathname: "/[country]", query: { country: "chorwacja", page: 1 } }}
                       className="p-1 text-black rounded-2xl w-full text-center"
                       ref={MouseOnCroatia}
@@ -264,8 +264,8 @@ export default function Header() {
                       onMouseLeave={() => handleHoverLeave(MouseOnCroatia)}
                     >
                       Nieruchomości w Chorwacji
-                    </Link>
-                    <Link
+                    </Link> */}
+                    {/* <Link
                       href={{ pathname: "/[country]", query: { country: "portugalia", page: 1 } }}
                       className="p-1 text-black rounded-2xl w-full text-center"
                       ref={MouseOnPortugal}
@@ -274,7 +274,7 @@ export default function Header() {
                       onMouseLeave={() => handleHoverLeave(MouseOnPortugal)}
                     >
                       Nieruchomości w Portugalii
-                    </Link>
+                    </Link> */}
                     <Link
                       href={{ pathname: "/[country]", query: { country: "dominikana", page: 1 } }}
                       className="p-1 text-black rounded-2xl w-full text-center"

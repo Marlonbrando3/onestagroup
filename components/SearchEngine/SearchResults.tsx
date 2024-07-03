@@ -18,9 +18,6 @@ export default function SearchResults() {
   console.log("data" + (parseInt(page as string) - 1 || actualPage));
   console.log(actualPage);
 
-  // console.log(startProperty);
-  // console.log(endProperty);
-
   const {
     country,
     type,
