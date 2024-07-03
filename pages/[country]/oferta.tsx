@@ -5,7 +5,7 @@ import Script from "next/script";
 import Header from "../../components/Header";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import MiniHomeView from "../../components/SearchEngine/howWeWork";
+import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
 import ImagesInPropetyCard from "@/components/ImagesInPropetyCard";
 import { useState, useEffect } from "react";
 import React from "react";
@@ -56,8 +56,6 @@ export default function Property() {
     if (router.isReady === true) {
       const QueryIdTemp: any = searchParams.get("id");
       const QueryId = parseInt(QueryIdTemp);
-
-      console.log(QueryId);
       const propertyDataTemp = Properties.filter((i) => i.id === QueryId);
       console.log(propertyDataTemp);
       const PropertyImages = propertyDataTemp[0]?.images.filter((i) => i.id);
@@ -372,10 +370,7 @@ export default function Property() {
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25218.815183534534!2d-0.80644335!3d37.8052257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd6311deec8d2e83%3A0x8f550cb3fefae865!2sSantiago+de+la+ribera,+Spain!5e0!3m2!1sen!2spl!4v1712163502571!5m2!1sen!2spl&zoom=1222"
                     width="438"
                     height="254"
-                    // style="border:0"
-                    // allowfullscreen=""
                     loading="lazy"
-                    // referrerpolicy="no-referrer-when-downgrade"
                   ></iframe>
                 </div>
                 <div className="bg-white w-full h-20 flex flex-col justify-center items-end pl-4">
@@ -398,6 +393,7 @@ export default function Property() {
           distance={propertyData[0]?.distance}
           pool={propertyData[0]?.pool}
           propertyId={propertyData[0]?.id}
+          propertyRef={propertyData[0]?.listingId}
         />
         <Footer />
       </div>

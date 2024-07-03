@@ -7,6 +7,8 @@ export default function ContactFormMain() {
 
   const submitButton = useRef();
 
+  const [URLafterFromSending, setURLafterFormSending] = useState();
+
   const [dataForm, setDataForm] = useState({
     Id: "Strona Główna",
     Name: "",
@@ -19,9 +21,11 @@ export default function ContactFormMain() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setURLafterFormSending("http://localhost:3000" + router.asPath);
+    setURLafterFormSending("https://onesta.com.pl" + router.asPath);
 
     console.log("Sending");
+    submitButton.current.innerHTML = "Wysyłam...";
+    submitButton.current.style.backgroundColor = "green";
 
     fetch("/api/contact", {
       method: "POST",
@@ -30,7 +34,7 @@ export default function ContactFormMain() {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify(dataForm),
+      body: JSON.stringify({ Ref: "Strona główna" }, dataForm),
     })
       .then((res) => {
         console.log("Response received");
@@ -42,16 +46,9 @@ export default function ContactFormMain() {
       })
       .then(
         router.push({
-          pathname: "http://localhost:3000/thankyoupage",
-          // pathname:'https://onesta.com.pl/thankyoupage'
+          pathname: "https://onesta.com.pl/thankyoupage",
         }),
       );
-
-    confirmation.current.style.display = "block";
-
-    setTimeout(() => {
-      confirmation.current.style.display = "none";
-    }, 7000);
   };
 
   const closeConfirmation = () => {
@@ -59,7 +56,10 @@ export default function ContactFormMain() {
   };
 
   return (
-    <div className='relative flex flex-col w-full h-1/2 bg-center bg-cover bg-[url("/palmyBGform.jpeg")] rounded-xl'>
+    <div
+      id="contact"
+      className='relative flex flex-col w-full h-1/2 bg-center bg-cover bg-[url("/palmyBGform.jpeg")] rounded-xl'
+    >
       <div className="absolute w-full h-full bg-gray-900/[0]"></div>
       <div className="h-11/12 lg:w-[1200px] w-full flex flex-col-reverse lg:flex-row lg:flex py-10 lg:mx-auto">
         <div className="flex lg:flex-col items-center z-10 lg:w-8/12 w-full justify-center lg:pt-0 pt-24 visible lg:hidden">
@@ -85,23 +85,6 @@ export default function ContactFormMain() {
             onSubmit={handleSubmit}
             method="post"
           >
-            <div className=" hidden absolute w-full h-full" ref={confirmation}>
-              <div
-                id="confirmation"
-                className="w-full h-full bg-gray-300 flex flex-col items-center"
-              >
-                <p className="text-black text-5xl text-center mt-20 font-bold">
-                  Wiadomość<br></br>wysłana
-                </p>
-                {/* <MarkEmailReadIcon className="text-green-900 w-3/12 h-3/6" /> */}
-                <div
-                  onClick={closeConfirmation}
-                  className="border px-5 py-2 bg-green-900 text-white font-bold rounded-md hover:bg-white hover:text-black hover:border-gray-900 cursor-pointer"
-                >
-                  Wróć do strony
-                </div>
-              </div>
-            </div>
             <div className="py-4 font-normal text-xl text-white">
               Nie znalazłeś nic dla siebie?<br></br>
               <span className="font-bold text-2xl">Napisz do nas</span> o niepublikowane oferty lub

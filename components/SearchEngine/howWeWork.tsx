@@ -16,7 +16,7 @@ export default function HowWeWork() {
 
     console.log(margin);
     const actualMargin = margin - 350;
-    if (margin > 350 * (Length - 2) * -1) {
+    if (margin > 350 * (Length - 1) * -1) {
       aboutUsSlider.current.style.marginLeft = `${actualMargin}px`;
       setMargin(margin - 350);
     }
@@ -66,13 +66,19 @@ export default function HowWeWork() {
             } border-2 flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150`}
             onClick={handleMovingSliderBack}
           >
-            <IoIosArrowBack className="h-full w-full text-white p-[14px]" />
+            <IoIosArrowBack
+              className="h-full w-full text-white p-[14px]"
+              onClick={handleMovingSliderBack}
+            />
           </div>
           <div
-            className="border-2 flex items-center justify-center cursor-pointer"
+            className="border-2 flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150"
             onClick={handleMovingSliderForward}
           >
-            <IoIosArrowForward className="h-full w-full text-white p-[14px]" />
+            <IoIosArrowForward
+              className="h-full w-full text-white p-[14px]"
+              onClick={handleMovingSliderForward}
+            />
           </div>
         </div>
       </div>

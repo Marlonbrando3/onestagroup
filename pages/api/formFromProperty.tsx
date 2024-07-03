@@ -24,7 +24,13 @@ export default function (req: any, res: any) {
     to: endEmail,
     subject: `Jestem zainteresowany nieruchomością ${req.body.id}`,
     text: "Hello. This email is for your email verification.",
-    html: `Imię : ${req.body.name}` + `<br>` + `Telefon kontaktowy: ${req.body.phone}` + `<br><br>`,
+    html:
+      `Imię : ${req.body.name}` +
+      `<br>` +
+      `Telefon kontaktowy: ${req.body.phone}` +
+      `<br><br>` +
+      `Wiadomość: ${req.body.massege}` +
+      `<br><br>`,
   };
 
   async function send() {

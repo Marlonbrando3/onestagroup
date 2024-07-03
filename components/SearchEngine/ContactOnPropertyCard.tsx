@@ -4,7 +4,11 @@ import { useRouter } from "next/router";
 import { CiPhone } from "react-icons/ci";
 import { IoMailOutline } from "react-icons/io5";
 
-export default function ContactOnPropertyCard() {
+type Props = {
+  propertyRef: any;
+};
+
+export default function ContactOnPropertyCard({ propertyRef }: Props) {
   const router = useRouter();
 
   const { id } = router.query;
@@ -19,7 +23,7 @@ export default function ContactOnPropertyCard() {
     if (e.target.name === "name") {
       setName(e.target.value);
     }
-    if (e.target.name === "phone") {
+    if (e.target.name === "contact") {
       setPhone(e.target.value);
     }
     if (e.target.name === "msg") {
@@ -33,10 +37,8 @@ export default function ContactOnPropertyCard() {
       id,
       name: Name,
       phone: Phone,
-      massege: massege,
+      massege: `${massege} (${propertyRef})`,
     });
-
-    console.log(query);
 
     let res = await fetch("/api/formFromProperty", {
       method: "POST",
@@ -45,8 +47,6 @@ export default function ContactOnPropertyCard() {
     });
 
     const results = await res.json();
-
-    console.log(results);
 
     if (results.status === 200) {
       submitButton.current.innerHTML = "Wysłano";
@@ -82,19 +82,21 @@ export default function ContactOnPropertyCard() {
             onChange={handleChangingForm}
             name="name"
             value={Name}
-            placeholder="Imię"
+            placeholder="Imię (wymagane)"
             className="border rounded-md border-gray-600 pl-[5px] h-[40px]"
+            required
           ></input>
           <input
-            name="phone"
+            name="contact"
             value={Phone}
             onChange={handleChangingForm}
-            placeholder="numer telefonu"
+            placeholder="Numer telefonu lub email"
             className="border rounded-md border-gray-600 pl-[5px] h-[40px]"
+            required
           ></input>
           <textarea
             name="msg"
-            value={massege}
+            value={`${massege} (${propertyRef})`}
             onChange={handleChangingForm}
             className="border rounded-md border-gray-600 pl-[5px] h-[150px]"
           ></textarea>

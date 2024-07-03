@@ -60,11 +60,11 @@ export default function Aboutus() {
             Onesta Group
           </p> */}
           <p className="w-10/12 mx-auto text-center text-[24px] font-semibold py-[20px] leading-[30px]">
-            więcej niż Biuro Nieruchomości
+            więcej niż Broker nieruchomości
           </p>
           <div className="w-8/12 mx-auto h-1 bg-red-900"></div>
           <p className="md:w-10/12 w-[95vw] mx-auto text-center text-[26px] font-[800] leading-9 text-green-600 pt-[10px]">
-            Profesjonalne, odpowiedzialne, nastawione na kupującego Biuro Nieruchomości
+            Profesjonalny, odpowiedzialny, nastawiony na kupujących Broker Nieruchomości
           </p>
           <div className="md:w-[850px] w-[90vw] mx-auto flex py-[90px] md:flex-row flex-col items-center border-b-2">
             <div className="relative h-[200px] w-[200px]">

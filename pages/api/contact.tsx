@@ -25,7 +25,7 @@ export default function (req: any, res: any) {
     subject: `Wiadomość ze strony od: ${req.body.Name}`,
     text: "Hello. This email is for your email verification.",
     html:
-      `Dotyczy: ${req.body.Id}` +
+      `Dotyczy: ${req.body.Ref}` +
       `<br>` +
       `Email kontaktowy: ${req.body.Email}` +
       `<br>` +

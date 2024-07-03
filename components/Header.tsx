@@ -322,7 +322,11 @@ export default function Header() {
                 >
                   <p>bezpłatna konsultacja</p>
                 </li>
-                <li className="list">Kontakt</li>
+                <li className="list">
+                  <Link href="#contact" scroll={false}>
+                    Kontakt
+                  </Link>
+                </li>
               </ul>
             </div>
             <div className="h-[40px] w-[40px] flex justify-center items-center lg:hidden">

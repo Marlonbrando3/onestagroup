@@ -6,7 +6,7 @@ export default function AboutOnestaMainPage() {
   return (
     <div className="w-screen h-auto py-[140px]">
       <h1 className="w-[60%] text-right text-[34px] py-[30px] leading-[35px] mx-auto ">
-        Multibroker <span className="font-bold">Onesta Group</span>...<br></br>inna niż wszystkie
+        Multibroker <span className="font-bold">Onesta Group</span>...<br></br>inny niż wszystkie
       </h1>
       <div className="lg:w-[1000px] w-[90vw] mx-auto h-full flex justify-center">
         <div className="hidden lg:block min-w-[300px] h-[250px] relative rounded-l-[20px] overflow-hidden object-cover">

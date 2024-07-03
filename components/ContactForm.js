@@ -1,25 +1,31 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 
-export default function ContactForm({ propertyId }) {
+export default function ContactForm({ propertyId, propertyRef }) {
   const router = useRouter();
 
+  const submitButton = useRef();
+
+  console.log(propertyRef);
+
   const [dataForm, setDataForm] = useState({
-    Id: propertyId,
     Name: "",
     Phone: "",
     Email: "",
     Message: "",
   });
 
-  console.log(router.asPath.toString());
+  console.log(dataForm);
 
   // setURLafterFormSending('http://localhost:3000'+router.asPath.toString())
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Sending");
+
+    submitButton.current.innerHTML = "Wysyłam...";
+    submitButton.current.style.backgroundColor = "green";
 
     fetch("/api/contact", {
       method: "POST",
@@ -28,28 +34,32 @@ export default function ContactForm({ propertyId }) {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify(dataForm),
+      body: JSON.stringify({ Ref: propertyRef }, dataForm),
     })
       .then((res) => {
         console.log("Response received");
         if (res.status === 200) {
           console.log("Response succeeded!");
-
-          setDataForm({
-            Name: e.target.value,
-            Phone: e.target.value,
-            Email: e.target.value,
-            Message: e.target.value,
+        } else {
+          submitButton.current.innerHTML = "Coś poszło nie tak";
+          submitButton.current.style.backgroundColor = "red";
+          setTimeout(() => {
+            submitButton.current.innerHTML = "Wyślij";
+            submitButton.current.style.backgroundColor = "yellow";
           });
         }
       })
       .then(
         router.push({
-          pathname: "localhost:3000/thankyoupage",
-          // pathname:'https://onesta.com.pl/thankyoupage'
+          // pathname: "localhost:3000/thankyoupage",
+          pathname: "https://onesta.com.pl/thankyoupage",
         }),
       );
   };
+
+  useEffect(() => {
+    setDataForm({ ...dataForm, Ref: propertyRef });
+  }, [router]);
 
   return (
     <div className="lg:flex w-full bg-[url('/palmyBGform.jpeg')] bg-center bg-cover mx-1 px- lg:px-10 rounded-md mt-1 lg:w-full lg:mx-auto">
@@ -57,7 +67,7 @@ export default function ContactForm({ propertyId }) {
         <div className="py-4 font-bold text-2xl text-white">Zadaj nam pytanie:</div>
         <p className="py-2 font-bold text-white">
           Ogłoszenie o nr ref.{" "}
-          <input className="bg-gray-900/[0.0]" type="text" value={propertyId} name="id"></input>
+          <input className="bg-gray-900/[0.0]" type="text" value={propertyRef} name="id"></input>
         </p>
         {/* <label id="name">Imię i naziwsko</label> */}
         <input
@@ -110,7 +120,11 @@ export default function ContactForm({ propertyId }) {
             </a>
           </p>
         </div>
-        <button type="submit" className="bg-yellow-500 w-full rounded-md py-2 text-white">
+        <button
+          ref={submitButton}
+          type="submit"
+          className="bg-yellow-500 w-full rounded-md py-2 text-white"
+        >
           Wyślij
         </button>
       </form>

@@ -12,6 +12,7 @@ html {
   max-width: 100vw;
   height: 100%;
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -20,6 +21,7 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 .main-index {
@@ -380,6 +382,6 @@ div.InputsStyleContainer p {
   }
 
   .list-element-blog {
-    @apply mb-[10px]
+    @apply mb-[10px];
   }
 }
