@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import OurJob from "./ourJob";
+import OurJob from "./OurJob";
 import OurJobTXT from "@/data/OurJob.json";
 
 import { IoIosArrowBack } from "react-icons/io";
@@ -59,30 +59,27 @@ export default function HowWeWork() {
       </div>
       {/* <div className='text-white text-5xl pl-20 mt-16'>{ActualCountry}</div> */}
       <div className="lg:w-[1000px] w-[90%] h-[80px] mx-auto flex justify-center">
-        <div className="w-[200px] h-full md:float-right flex justify-evenly">
+        <div className="w-[230px] h-full md:float-right flex justify-evenly">
           <div
             className={`${
               margin === 0 && "bg-white/[0.2] border-white/[0.2] hover:bg-white/[0.2]"
-            } border-2 flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150`}
-            onClick={handleMovingSliderBack}
-            onTouchStart={handleMovingSliderBack}
+            }  flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150 relative w-[80px] h-[80px] `}
+            // onClick={handleMovingSliderBack}
+            // onTouchStart={handleMovingSliderBack}
           >
-            <IoIosArrowBack
-              className="h-full w-full text-white p-[14px]"
+            <div
+              className="absolute z-50 w-[80px] h-[80px] border"
               onClick={handleMovingSliderBack}
-              onTouchStart={handleMovingSliderBack}
-            />
+            >
+              <IoIosArrowBack className="h-full w-full text-white p-[14px]" />
+            </div>
           </div>
-          <div
-            className="border-2 flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150"
-            onClick={handleMovingSliderForward}
-            onTouchStart={handleMovingSliderForward}
-          >
-            <IoIosArrowForward
-              className="h-full w-full text-white p-[14px]"
-              onClick={handleMovingSliderForward}
-              onTouchStart={handleMovingSliderForward}
-            />
+          <div className="flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150 w-[80px] h-[80px]">
+            <div
+              className="absolute z-50 w-[80px] h-[80px] border"
+              onClick={handleMovingSliderBack}
+            ></div>
+            <IoIosArrowForward className="h-full w-full text-white p-[14px]" />
           </div>
         </div>
       </div>
