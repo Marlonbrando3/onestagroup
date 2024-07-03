@@ -4,7 +4,7 @@ type Text = {
   cont: any;
 };
 
-export default function OurJob({ cont }: Text) {
+export default function OurJobs({ cont }: Text) {
   return (
     <div className="w-[350px] h-full flex items-center justify-center">
       <div className="h-[80%] w-[330px] bg-white rounded-xl shadow-xl">

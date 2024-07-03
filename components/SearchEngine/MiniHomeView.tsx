@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import OurJob from "./OurJob";
+import OurJobs from "./ourJobs";
 import OurJobTXT from "@/data/OurJob.json";
 
 import { IoIosArrowBack } from "react-icons/io";

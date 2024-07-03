@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import OurJob from "./OurJob";
+import OurJobs from "./ourJobs";
 import OurJobTXT from "@/data/OurJob.json";
 
 import { IoIosArrowBack } from "react-icons/io";
@@ -52,7 +52,7 @@ export default function HowWeWork() {
             className="absolute border-yellow-500 lg:h-[100%] h-[380px] w-auto flex items-center justify-evenly flex-nowrap duration-300"
           >
             {OurJobTXT.map((i) => (
-              <OurJob key={i.title} cont={i} />
+              <OurJobs key={i.title} cont={i} />
             ))}
           </div>
         </div>
