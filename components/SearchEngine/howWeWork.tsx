@@ -64,8 +64,6 @@ export default function HowWeWork() {
             className={`${
               margin === 0 && "bg-white/[0.2] border-white/[0.2] hover:bg-white/[0.2]"
             }  flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150 relative w-[80px] h-[80px] `}
-            // onClick={handleMovingSliderBack}
-            // onTouchStart={handleMovingSliderBack}
           >
             <div
               className="absolute z-50 w-[80px] h-[80px] border"
@@ -77,7 +75,7 @@ export default function HowWeWork() {
           <div className="flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150 w-[80px] h-[80px]">
             <div
               className="absolute z-50 w-[80px] h-[80px] border"
-              onClick={handleMovingSliderBack}
+              onClick={handleMovingSliderForward}
             ></div>
             <IoIosArrowForward className="h-full w-full text-white p-[14px]" />
           </div>
