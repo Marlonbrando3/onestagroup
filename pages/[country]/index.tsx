@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import Script from "next/script";
 import { useRouter } from "next/router";
-import MiniHomeView from "../../components/SearchEngine/miniHomeView";
+import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
 import Header from "../../components/Header";
 import SearchEngine from "../../components/SearchEngine/SearchEngine";
 import Footer from "../../components/Footer";
