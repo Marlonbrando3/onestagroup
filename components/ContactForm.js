@@ -20,21 +20,19 @@ export default function ContactForm({ propertyId, propertyRef }) {
 
   // setURLafterFormSending('http://localhost:3000'+router.asPath.toString())
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Sending");
 
     submitButton.current.innerHTML = "Wysyłam...";
     submitButton.current.style.backgroundColor = "green";
 
-    fetch("/api/contact", {
+    await fetch("/api/contact", {
       method: "POST",
       headers: {
-        Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ Ref: propertyRef }, dataForm),
+      body: JSON.stringify({ Ref: propertyRef, dataForm }),
     })
       .then((res) => {
         console.log("Response received");

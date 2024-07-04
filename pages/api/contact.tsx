@@ -22,16 +22,16 @@ export default function (req: any, res: any) {
   const mailData = {
     from: fromEmail,
     to: endEmail,
-    subject: `Wiadomość ze strony od: ${req.body.Name}`,
+    subject: `Wiadomość ze strony od: ${req.body.dataForm.Name}`,
     text: "Hello. This email is for your email verification.",
     html:
       `Dotyczy: ${req.body.Ref}` +
       `<br>` +
-      `Email kontaktowy: ${req.body.Email}` +
+      `Email kontaktowy: ${req.body.dataForm.Email}` +
       `<br>` +
-      `Telefon kontaktowy: ${req.body.Phone}` +
+      `Telefon kontaktowy: ${req.body.dataForm.Phone}` +
       `<br><br>` +
-      `Wiadomość ${req.body.Message}` +
+      `Wiadomość ${req.body.dataForm.Message}` +
       `<br>`,
   };
 

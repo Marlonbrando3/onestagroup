@@ -10,7 +10,6 @@ export default function ContactFormMain() {
   const [URLafterFromSending, setURLafterFormSending] = useState();
 
   const [dataForm, setDataForm] = useState({
-    Id: "Strona Główna",
     Name: "",
     Phone: "",
     Email: "",
@@ -19,7 +18,9 @@ export default function ContactFormMain() {
 
   const confirmation = useRef();
 
-  const handleSubmit = (e) => {
+  console.log(dataForm);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setURLafterFormSending("https://onesta.com.pl" + router.asPath);
 
@@ -27,14 +28,12 @@ export default function ContactFormMain() {
     submitButton.current.innerHTML = "Wysyłam...";
     submitButton.current.style.backgroundColor = "green";
 
-    fetch("/api/contact", {
+    await fetch("/api/contact", {
       method: "POST",
       headers: {
-        Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ Ref: "Strona główna" }, dataForm),
+      body: JSON.stringify({ Ref: "Strona główna", dataForm }),
     })
       .then((res) => {
         console.log("Response received");
@@ -49,10 +48,6 @@ export default function ContactFormMain() {
           pathname: "https://onesta.com.pl/thankyoupage",
         }),
       );
-  };
-
-  const closeConfirmation = () => {
-    confirmation.current.style.display = "none";
   };
 
   return (
