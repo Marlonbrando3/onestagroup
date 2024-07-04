@@ -62,7 +62,10 @@ export default function ContactForm({ propertyId, propertyRef }) {
   }, [router]);
 
   return (
-    <div className="lg:flex w-full bg-[url('/palmyBGform.jpeg')] bg-center bg-cover mx-1 px- lg:px-10 rounded-md mt-1 lg:w-full lg:mx-auto">
+    <div
+      id="contact"
+      className="lg:flex w-full bg-[url('/palmyBGform.jpeg')] bg-center bg-cover mx-1 px- lg:px-10 rounded-md mt-1 lg:w-full lg:mx-auto"
+    >
       <form className="flex flex-col lg:w-full lg:p-7 p-7" onSubmit={handleSubmit}>
         <div className="py-4 font-bold text-2xl text-white">Zadaj nam pytanie:</div>
         <p className="py-2 font-bold text-white">
