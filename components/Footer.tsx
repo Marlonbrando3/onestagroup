@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import LogoType from "./images/logotype.png";
 import { FaRegCopyright } from "react-icons/fa";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -13,6 +14,9 @@ export default function Footer() {
           <p className="hidden md:visible text-[10px] text-grey-900 font-normal clear-both">
             Onesta Group 2024
           </p>
+          <Link href="/polityka-prywatnosci" className="ml-[30px]">
+            Polityka prywatności
+          </Link>
         </div>
         {/* <div className="flex">
           <p>Onesta Group sp. z o.o.</p>

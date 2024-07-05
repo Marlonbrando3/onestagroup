@@ -346,8 +346,8 @@ div.InputsStyleContainer p {
   }
 
   .list {
-    @apply ml-4 font-[600] px-2 list-none cursor-pointer transition
-    hover:bg-white hover:text-yellow-500 lg:text-[16px] xl:font-[600] text-2xl rounded-2xl;
+    @apply ml-4 font-[200] px-2 list-none cursor-pointer transition
+    hover:bg-white hover:text-yellow-500 lg:text-[17px] xl:font-[400] text-2xl rounded-2xl;
   }
 
   .listToChoose {

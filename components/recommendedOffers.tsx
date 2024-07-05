@@ -11,7 +11,7 @@ export default function RecommendedOffers() {
 
   return (
     <>
-      <div className="md:w-[1100px] w-screen h-auto mx-auto">
+      <div className="md:w-[1200px] w-screen h-auto mx-auto">
         <p className="text-[25px] mb-[20px] w-screen md:w-auto text-center">Rekomendowane oferty</p>
         <div className="flex md:flex-row flex-col">
           {Props.map((i, index) => (

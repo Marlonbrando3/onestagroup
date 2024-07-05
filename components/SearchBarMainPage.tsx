@@ -126,10 +126,8 @@ export default function SearchButton() {
     });
   };
 
-  return (
-    <>
-      <div className="right-0 left-0 mx-auto absolute w-[90vw] lg:w-[950px] lg:top-[410px] top-[22%] flex lg:right-0 lg:left-0 p-6 rounded-[15px] bg-white shadow-xl border-2 border-[#fffbf7] items-center flex-col md:flex-row justify-center">
-        {/* <div
+  {
+    /* <div
           ref={advancedSearch}
           className="z-10 absolute w-[98%] left-0 right-0 mx-auto -top-[25px] h-[23px] flex flex-col duration-150 items-end overflow-hidden"
         >
@@ -262,7 +260,12 @@ export default function SearchButton() {
               </div>
             </div>
           </div>
-        </div> */}
+        </div> */
+  }
+
+  return (
+    <>
+      <div className="right-0 left-0 mx-auto absolute w-[90vw] lg:w-[950px] lg:top-[410px] top-[22%] flex lg:right-0 lg:left-0 p-6 rounded-md bg-white shadow-xl border-2 border-[#fffbf7] items-center flex-col md:flex-row justify-center">
         <p className="text-slate-800 lg:text-[26px] text-2xl lg:leading-8 md:w-[400px] mb-[40px] md:mb-0">
           Znajdź swój
           <span className="font-bold text-orange-400"> nowy dom </span> lub{" "}
@@ -346,7 +349,7 @@ export default function SearchButton() {
               </select>
             </div>
           </div>
-          <button className="lg:w-[170px] w-[190px] h-[30px] bg-yellow-500 text-white mt-7 rounded-2xl mx-auto lg:mx-0  text-[18px]  font-[500] border border-yellow-500 text-center hover:bg-white hover:text-yellow-500 duration-200">
+          <button className="lg:w-[170px] w-[190px] text-white h-[30px] bg-yellow-500 mt-7 rounded-2xl mx-auto lg:mx-0 text-[18px]  font-[200] border border-white text-center hover:bg-white hover:text-yellow-500 hover:border-yellow-500 duration-200">
             Szukaj
           </button>
         </form>

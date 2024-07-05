@@ -8,7 +8,7 @@ export default function AboutSpain() {
       <h1 className="w-[90%] text-center text-[34px] py-[30px] leading-[35px]">
         Jeśli szukasz nieruchomości w Hiszpanii
       </h1>
-      <div className="lg:w-[1000px] w-[90vw] mx-auto h-full flex justify-center">
+      <div className="lg:w-[1200px] w-[90vw] mx-auto h-full flex justify-center">
         <div className="hidden lg:block min-w-[300px] h-[500px] relative rounded-l-[20px] overflow-hidden object-cover">
           <Image src="/nieruchomosci-w-hiszpanii.jpeg" alt="nieruchomosci-w-hiszpanii" fill></Image>
         </div>
