@@ -1,27 +1,25 @@
-import React from 'react'
-import { useState } from 'react';
-import Head from 'next/head';
-import Script from 'next/script';
-import Header from '../../components/Header';
-import Link from 'next/link';
-import Footer from '../../components/Footer';
-import ContactFormBlogPost from '../../components/ContactFormBlogPost';
+import React from "react";
+import { useState } from "react";
+import Head from "next/head";
+import Script from "next/script";
+import Header from "../../components/Header";
+import Link from "next/link";
+import Footer from "../../components/Footer";
+import ContactFormBlogPost from "../../components/ContactFormBlogPost";
 
 export default function Zarzadzanie() {
-
   const [searchShow, setSearchShow] = useState(true);
-
 
   return (
     <>
       {/* <!-- Google tag (gtag.js) --> */}
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-P4VZ7P7VZ5"></Script>
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-7E286CBN97"></Script>
       <Script id="google-analitycs">
         {`
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-P4VZ7P7VZ5');
+        gtag('config', 'G-7E286CBN97');
       `}
       </Script>
       <Script id="facebook-pixel">

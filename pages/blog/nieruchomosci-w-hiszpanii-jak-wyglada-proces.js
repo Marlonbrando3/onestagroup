@@ -14,18 +14,18 @@ import { LuArrowUpRightSquare } from "react-icons/lu";
 
 export default function BlogPost() {
   const temat = "Nieruchomości w Hiszpanii";
-  const clam = "jak wygląda proces zakupu"
+  const clam = "jak wygląda proces zakupu";
 
   return (
     <>
       <Newsletter />
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-P4VZ7P7VZ5"></Script>
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-7E286CBN97"></Script>
       <Script id="google-analitycs">
         {`
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-P4VZ7P7VZ5');
+        gtag('config', 'G-7E286CBN97');
       `}
       </Script>
       <Script id="facebook-pixel">
