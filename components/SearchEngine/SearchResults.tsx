@@ -69,7 +69,7 @@ export default function SearchResults() {
 
   return (
     <div className="mx-auto">
-      <div className="h-full md:w-[800px] lg:w-[1300px] md:mr-5 flex items-center justify-center flex-wrap lg:mx-auto">
+      <div className="h-full md:w-[800px] lg:w-auto flex items-center justify-center flex-wrap lg:mx-auto">
         {propertiesSliced.map((property) => (
           <PropertyCard key={property.id} property={property} />
         ))}
