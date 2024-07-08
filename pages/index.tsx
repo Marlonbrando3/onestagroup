@@ -19,23 +19,35 @@ export default function FirstView({ cookiesWindow }: AppProps) {
 
   return (
     <>
-      <Head>
-        <Script id="gtm">
-          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      {/* <!-- Hotjar Tracking Code for https://onesta.com.pl --> */}
+      <Script id="hotjar">
+        {`
+                    (function(h,o,t,j,a,r){
+                        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                        h._hjSettings={hjid:3555670,hjsv:6};
+                        a=o.getElementsByTagName('head')[0];
+                        r=o.createElement('script');r.async=1;
+                        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                        a.appendChild(r);
+                    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+                    `}
+      </Script>
+      <Script id="gtm">
+        {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
           j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
           })(window,document,'script','dataLayer','GTM-KL7WKBWL')`}
-        </Script>
-        <Script id="ga">
-          {` window.dataLayer = window.dataLayer || [];
+      </Script>
+      <Script id="ga">
+        {` window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', 'G-7E286CBN97');
                 `}
-        </Script>
-        <Script id="facebook-pixel">
-          {`!function(f,b,e,v,n,t,s)
+      </Script>
+      <Script id="facebook-pixel">
+        {`!function(f,b,e,v,n,t,s)
                   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
                   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
                   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
@@ -46,21 +58,8 @@ export default function FirstView({ cookiesWindow }: AppProps) {
                   fbq('init', '178665974358939');
                   fbq('track', 'PageView');
                 `}
-        </Script>
-
-        {/* <!-- Hotjar Tracking Code for https://onesta.com.pl --> */}
-        <Script id="hotjar">
-          {`
-                    (function(h,o,t,j,a,r){
-                        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                        h._hjSettings={hjid:3555670,hjsv:6};
-                        a=o.getElementsByTagName('head')[0];
-                        r=o.createElement('script');r.async=1;
-                        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                        a.appendChild(r);
-                    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-                    `}
-        </Script>
+      </Script>
+      <Head>
         <meta property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii" content="image" />
         <title>
           Nieruchomości Hiszpania || Nieruchomości Portgualia || Nieruchomości Dominikana
