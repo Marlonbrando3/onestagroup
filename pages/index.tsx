@@ -11,12 +11,18 @@ import RecommendedOffers from "@/components/recommendedOffers";
 import AboutOnestaMainPage from "../components/aboutOnestaMainPage";
 import HotjarSnippet from "@/analitycs/hotjar";
 
+import Hotjar from "@hotjar/browser";
+
 type AppProps = {
   cookiesWindow: any;
 };
 
 export default function FirstView({ cookiesWindow }: AppProps) {
   // const router = useRouter();
+  const siteId = 3555670;
+  const hotjarVersion = 6;
+
+  Hotjar.init(siteId, hotjarVersion);
 
   return (
     <>
