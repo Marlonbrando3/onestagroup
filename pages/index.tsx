@@ -20,6 +20,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
 
   return (
     <>
+      <HotjarSnippet />
       <Script id="gtm">
         {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -48,7 +49,6 @@ export default function FirstView({ cookiesWindow }: AppProps) {
                 `}
       </Script>
       <Head>
-        <HotjarSnippet />
         <meta property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii" content="image" />
         <title>
           Nieruchomości Hiszpania || Nieruchomości Portgualia || Nieruchomości Dominikana
