@@ -27,6 +27,23 @@ export default function FirstView({ cookiesWindow }: AppProps) {
   return (
     <>
       <HotjarSnippet />
+      <Script id="GTM-conversion-form">
+        {`
+          function gtagSendEvent(url) {
+            var callback = function () {
+              if (typeof url === 'string') {
+                window.location = url;
+              }
+            };
+            gtag('event', 'conversion_event_submit_lead_form', {
+              'event_callback': callback,
+              'event_timeout': 2000,
+              // <event_parameters>
+            });
+            return false;
+          }
+        `}
+      </Script>
       <Script async src="https://www.googletagmanager.com/gtag/js?id=G-7E286CBN97"></Script>
       <Script id="google-analitycs">
         {`
