@@ -9,7 +9,7 @@ import Cookies from "@/components/cookies";
 import Footer from "../components/Footer";
 import RecommendedOffers from "@/components/recommendedOffers";
 import AboutOnestaMainPage from "../components/aboutOnestaMainPage";
-import HotjarSnippet from "../../website/analitycs/hotjar";
+import HotjarSnippet from "@/analitycs/hotjar";
 
 type AppProps = {
   cookiesWindow: any;

@@ -1,6 +1,6 @@
 import Script from "next/script";
 
-const HotjarSnippet = () => {
+export default function HotjarSnippet() {
   return (
     <div>
       <Script id="hotjar-snippet">
@@ -17,6 +17,4 @@ const HotjarSnippet = () => {
       </Script>
     </div>
   );
-};
-
-export default HotjarSnippet;
+}
