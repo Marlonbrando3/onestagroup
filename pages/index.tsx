@@ -44,6 +44,11 @@ export default function FirstView({ cookiesWindow }: AppProps) {
           }
         `}
       </Script>
+      <Script>
+        {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KL7WKBWL"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe>`}
+      </Script>
+
       <Script id="gtm">
         {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
