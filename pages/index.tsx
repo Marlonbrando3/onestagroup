@@ -44,11 +44,6 @@ export default function FirstView({ cookiesWindow }: AppProps) {
           }
         `}
       </Script>
-      <Script id="gtm-code">
-        {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KL7WKBWL"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe>`}
-      </Script>
-
       <Script id="gtm">
         {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -106,6 +101,10 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
       </Head>
       <div className="main-index">
+        <Script id="gtm-code">
+          {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KL7WKBWL"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe>`}
+        </Script>
         <Cookies cookiesWindow={cookiesWindow} />
         <WhatsAppButton />
         <Header />
