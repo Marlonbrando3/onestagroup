@@ -15,7 +15,7 @@ function HomeView() {
           Your browser does not support the video tag.
         </video>
       </div>
-      <div className="w-[70px] h-[70px] z-50 absolute bottom-32 left-0 right-0 mx-auto">
+      <div className="w-[70px] h-[70px] z-50 absolute bottom-32 left-0 right-0 mx-auto md:hidden visible">
         <IoIosArrowDropdownCircle className="text-orange-400 w-full h-full" />
       </div>
       <IoIosArrowDropdownCircle />

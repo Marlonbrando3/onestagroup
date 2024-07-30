@@ -11,7 +11,9 @@ export default function App({ Component, pageProps }: AppProps) {
     const status = results.status;
 
     if (status !== 200) {
-      cookiesWindow.current.style.display = "block";
+      setTimeout(() => {
+        cookiesWindow.current.style.display = "block";
+      }, 4000);
     }
   };
   checkCookiesOnLoad();
