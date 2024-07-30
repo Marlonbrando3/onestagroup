@@ -318,7 +318,7 @@ export default function Header() {
                 </li>
                 <li
                   onClick={handleShowingConsultationPopUp}
-                  className="list bg-yellow-500 rounded-3xl text-white"
+                  className="list bg-orange-400 rounded-3xl text-white"
                 >
                   <p>bezpłatna konsultacja</p>
                 </li>
