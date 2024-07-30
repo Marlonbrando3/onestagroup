@@ -9,7 +9,7 @@ export default function Thankyoupage() {
 
   const handleGoingBackToSearch = () => {
     router.push({
-      pathname: "https://onesta.com.pl/hiszpania",
+      pathname: "https://onesta.com.pl/hiszpania?page=1",
       query: { page: 1 },
     });
   };

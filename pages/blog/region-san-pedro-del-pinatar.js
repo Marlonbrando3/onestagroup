@@ -228,7 +228,10 @@ export default function Zarzadzanie() {
         <br></br>
         <br></br>
         <b>Nieruchomości w tym regionie znajdziesz</b>{" "}
-        <a href="https://onesta.com.pl/hiszpania" className="text-blue-900 underline font-bold">
+        <a
+          href="https://onesta.com.pl/hiszpania?page=1&region=Costa+Blanca"
+          className="text-blue-900 underline font-bold"
+        >
           po kliknięciu tutaj{" "}
         </a>
         i używając filtrów.<br></br>

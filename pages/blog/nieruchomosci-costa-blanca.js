@@ -147,7 +147,10 @@ export default function Zarzadzanie() {
         Ponadto zakup nieruchomości na Costa Blanca cechuje się jednym z wyższych, jeśli nie
         najwyższym ROI czyli zwrotem z inwestycji na poziomie 6-7% netto (
         <b>
-          <a href="https://onesta.com.pl/hiszpania" className="text-blue-900 underline font-bold">
+          <a
+            href="https://onesta.com.pl/hiszpania?page=1"
+            className="text-blue-900 underline font-bold"
+          >
             owe nieruchomości znajdziesz po kliknięciu tutaj
           </a>
         </b>

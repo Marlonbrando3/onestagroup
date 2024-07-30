@@ -267,7 +267,7 @@ export default function BlogPost() {
         <br></br> W tym pomagamy. I do tego zapraszamy.<br></br>
         <br></br>
         <Link
-          href="/hiszpania"
+          href="/hiszpania?page=1"
           className="text-white text-[26px] font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 w-[500px] shadow-xl"
         >
           Przeglądaj oferty nieruchomości
