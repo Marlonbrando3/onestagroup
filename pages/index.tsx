@@ -74,9 +74,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
       </Script>
       <Head>
         <meta property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii" content="image" />
-        <title>
-          Nieruchomości Hiszpania || Nieruchomości Portgualia || Nieruchomości Dominikana
-        </title>
+        <title>Nieruchomości w Hiszpanii, nieruchomości w Chorwacji.</title>
         <link rel="shortcut icon" href="/logotype.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com"></link>
@@ -92,7 +90,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         />
         <meta
           name="Description"
-          content="Biura pośrednictwa sprzedaży nieruchomości w Hiszpanii, Portugalii, Chorwacji, Dominikanie. Przeprowdzimy Cię przez cały proces zakupowy. Nieruchomości Hiszpania, Nieruchomości Portugalia, Nieruchomości Dominikana, Nieruchomości Chorwacja."
+          content="Biuro sprzedaży nieruchomości w Hiszpanii, Portugalii, Chorwacji, Dominikanie. Przeprowdzimy Cię przez cały proces zakupowy od przedstawienia ofer poprzez proces zakupowy do finalnego zarządzania najmem jeśli tak zdecydujesz."
         />
         <meta
           name="viewport"
