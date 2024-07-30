@@ -56,7 +56,7 @@ export default function BlogPost() {
                     `}
       </Script>
       <Head>
-        <title>Nieruchomości w Hiszpanii, Hiszpania nieruchomości</title>
+        <title>Nieruchomości w Hiszpanii, wszystko co warto wiedzieć na początek</title>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin></link>
         <link
@@ -65,8 +65,8 @@ export default function BlogPost() {
         ></link>
         <meta
           name="Description"
-          content="Nieruchomości Hiszpania. Pośrednictwo w sprzedaży nieruchomości w Hiszpanii. Z artykuły dowiesz się jak zmienił się rynek nieruchomości w Hiszpanii."
-        />
+          content="Jeśli stawiasz piersze kroki w drodze do zakupu nieruchomości w Hiszpanii lub chcesz się zorientować w tym temacie, znajdziesz wiele odpowiedzi."
+        ></meta>
         <meta
           name="Keywords"
           content="Nieruchomości Hiszpania, nieruchomości w Hiszpanii, apartamenty w Hiszpanii, apartamenty Hiszpania, polska agencja nieruchomości w Hiszpanii"
@@ -74,7 +74,7 @@ export default function BlogPost() {
         <meta
           name="viewport"
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
-        />
+        ></meta>
       </Head>
       <div className="main-index">
         <div className="w-full h-16 fixed top-0 md:bg-gray-800/[0.4] z-20 bg-white shadow-xl">
