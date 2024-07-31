@@ -326,7 +326,7 @@ export default function SearchButton() {
             <div className="flex lg:w-[355px] justify-between items-center w-full">
               <select
                 onChange={handleChangingPriceFrom}
-                className="lg:w-[170px] w-[90%] md:h-[30px] h-[45px] bg-white  rounded-[8px] text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500 cursor-pointer"
+                className="lg:w-[170px] w-[90%] lg:h-[30px] h-[45px] bg-white  rounded-[8px] text-[14px]  font-[500] pl-2 border-[1px] border-yellow-500 cursor-pointer"
               >
                 <option value="All">od najniższej</option>
                 <option value="200000">od 200 000 €</option>
