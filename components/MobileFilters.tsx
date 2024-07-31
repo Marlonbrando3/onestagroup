@@ -20,7 +20,7 @@ export default function MobileFilters({
         router.pathname !== "/" &&
         router.pathname !== "/[country]/[offers]" &&
         router.pathname === "/[country]"
-          ? "bg-red-600 rounded-b-xl border-blue-900 border-b-2 px-2 py-1 ml-4 w-28 mr-4 z-0 lg:hidden fixed right-0 visible block"
+          ? "bg-red-600 rounded-b-xl border-blue-900 border-b-2 px-2 py-1 ml-4 mt-[20px] w-28 mr-4 z-0 lg:hidden fixed right-0 visible block"
           : "none"
       }
       onClick={handleShowMobileFilters}
