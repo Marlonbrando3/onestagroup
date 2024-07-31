@@ -12,9 +12,10 @@ function HomeView() {
       <iframe
         width="100%"
         height="845"
-        src="https://www.youtube.com/embed/YdGdmLXjaK4?si=k2HZL3B6xM_j9fVq&autoplay=1&showinfo=0&controls=0&vq=hd1080&loop=1&playlist=YdGdmLXjaK4"
+        src="https://www.youtube.com/embed/YdGdmLXjaK4?si=k2HZL3B6xM_j9fVq&autoplay=1&muted=1&showinfo=0&controls=0&vq=hd1080&loop=1&playlist=YdGdmLXjaK4"
         title="YouTube video player"
         frameborder="0"
+        autoplay
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerpolicy="strict-origin-when-cross-origin"
         allowfullscreen
