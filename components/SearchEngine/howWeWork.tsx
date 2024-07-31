@@ -31,7 +31,7 @@ export default function HowWeWork() {
   };
 
   return (
-    <div className='lg:w-full w-[90vw] rounded-b-[50px] lg:h-[450px] h-[670px] bg-cover bg-center bg-[url("/palmyBGform.jpeg")] mx-auto'>
+    <div className='lg:w-full w-[90vw] rounded-b-[50px] lg:h-[450px] h-[670px] bg-cover bg-center bg-[url("/palmyBGform.jpg")] mx-auto'>
       <div className=" h-[80%] w-[1000px] mx-auto flex">
         {/* left side */}
         <div className="flex w-[300px] relative">

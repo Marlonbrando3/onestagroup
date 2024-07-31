@@ -22,9 +22,9 @@ function HomeView() {
         className="-mt-[20px] hidden md:block"
       ></iframe>
       {/* </div> */}
-      <div className="w-[70px] h-[70px] z-50 absolute bottom-32 left-0 right-0 mx-auto md:hidden visible">
+      {/* <div className="w-[70px] h-[70px] z-50 absolute bottom-32 left-0 right-0 mx-auto md:hidden visible">
         <IoIosArrowDropdownCircle className="text-orange-400 w-full h-full" />
-      </div>
+      </div> */}
       <IoIosArrowDropdownCircle />
     </div>
   );
