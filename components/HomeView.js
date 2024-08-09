@@ -8,7 +8,7 @@ function HomeView() {
       <div className='md:h-full h-[100vh] lg:w-full w-screen mx-auto duration-500 sm:-mt-10 bg-cover bg-top bg-[url("/bg_calp_c.jpg")] md:hidden visibile'>
         <div className="absolute transition-transform bg-white z-20 w-full h-full -top-full"></div>
       </div>
-      <div className="w-[180vw] md:w-screen md:h-screen bg-transparent z-20 absolute"></div>
+      {/* <div className="w-[180vw] md:w-screen md:h-screen bg-transparent z-20 absolute"></div> */}
       <iframe
         width="100%"
         height="845"

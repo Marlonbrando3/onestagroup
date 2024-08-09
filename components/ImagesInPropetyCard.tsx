@@ -41,8 +41,8 @@ export default function ImagesInPropetyCard({ images, setImages }: Property) {
           key={prop}
           className={
             prop.showed === true
-              ? "h-full sm:w-32 w-[92.2vw] border-red-700 sm:border-2 relative"
-              : "h-full sm:w-32 w-[92.2vw] border-red-700/[0] sm:border-2 relative"
+              ? "h-full sm:w-32 lg:w-[92.2vw] border-red-700 sm:border-2 relative"
+              : "h-full sm:w-32 lg:w-[92.2vw] border-red-700/[0] sm:border-2 relative"
           }
         >
           <Image
