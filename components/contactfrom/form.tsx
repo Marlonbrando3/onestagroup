@@ -18,7 +18,7 @@ export default function Form() {
     e.preventDefault();
     console.log(name, lastName, email, phone, massege);
     try {
-      let res = await fetch("/api/contactform", {
+      let res = await fetch("/api/form", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
