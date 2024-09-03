@@ -10,8 +10,14 @@ import Whyonesta from "../../components/whyonesta";
 import Header from "@/components/Header";
 import { WorkSans } from "../../fonts/fonts";
 import Footer from "@/components/Footer";
+import Hotjar from "@hotjar/browser";
 
 export default function Home() {
+  const siteId = 3555670;
+  const hotjarVersion = 6;
+
+  Hotjar.init(siteId, hotjarVersion);
+
   return (
     <main className={`${WorkSans.className} w-full`}>
       <Header />
