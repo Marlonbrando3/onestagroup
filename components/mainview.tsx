@@ -1,16 +1,20 @@
 import React from "react";
 import Image from "next/image";
-import { QuicksandSans } from "../fonts/fonts";
 
 export default function Mainview() {
   return (
-    <div
-      className={`${QuicksandSans.className} md:w-full w-[90vw] h-[400px] bg-[url('/main_bg.png')] bg-cover bg-center flex items-center justify-center`}
-    >
-      <span className="bg-orange-400 text-white md:w-[500px] w-[90vw] mx-auto md:text-[24px] text-[20px] text-center rounded-xl">
-        <p className="md:text-[40px] text-[28px] font-bold">Pobyt inwestorski</p>najefektywniejsza
-        forma zakupu nieruchomości w Hiszpanii
-      </span>
+    <div className="w-full h-[600px] bg-[url('/main_bg.png')] bg-cover bg-center flex items-center border-2 border-red-900">
+      <div className="w-[1023px] mx-auto">
+        <div className="bg-white md:w-[600px] w-[90vw] md:text-[24px] text-[20px] rounded-r-[20px]  p-[10px] pl-[20px]">
+          <p className="md:text-[22px] text-[20px] text-black  leading-[32px]">
+            <p className="text-orange-500 font-bold md:text-[38px] text-[30px] italice">
+              2-dniowe spoktanie/prezentacje
+            </p>{" "}
+            na którym poznasz model inwestowania w nieruchomości w Hiszpanii oraz zobaczysz
+            najciekawsze oferty.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

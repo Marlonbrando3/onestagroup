@@ -172,7 +172,7 @@ export default function Header() {
           <div className="w-full bg-white hidden lg:block">
             <div
               id="header"
-              className="hidden w-[980px] lg:h-[30px] md:flex justify-end items-center mx-auto"
+              className="hidden w-[1080px] lg:h-[30px] md:flex justify-end items-center mx-auto"
             >
               <a
                 href="tel:+48576652525"
@@ -205,7 +205,7 @@ export default function Header() {
               <Link href="/account/signup" className="border bg-green-700 border-green-700 px-2 rounded-md text-white cursor-pointer duration-300 hover:bg-white hover:text-black">Utwórz konto</Link> */}
             </div>
           </div>
-          <div className="flex mx-auto h-full lg:w-[980px] w-full justify-between items-center px-[10px] lg:px-0">
+          <div className="flex mx-auto h-full lg:w-[1080px] w-full justify-between items-center px-[10px] lg:px-0">
             <Link
               onClick={handleBackToMainPage}
               className="cursor-pointer flex items-center h-full"
@@ -315,6 +315,12 @@ export default function Header() {
                 </li>
                 <li className="list">
                   <Link href="/abc">Wiedza</Link>
+                </li>
+                <li
+                  // onClick={handleShowingConsultationPopUp}
+                  className="list bg-orange-400 rounded-3xl text-white"
+                >
+                  <Link href="/pobytinwestorski"> pobyt inwestorski</Link>
                 </li>
                 <li
                   onClick={handleShowingConsultationPopUp}
