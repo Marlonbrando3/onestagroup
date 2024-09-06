@@ -252,11 +252,11 @@ export default function Property() {
             {propertyData[0]?.headerAdvertisement}
           </p>
         </div>
-        <div className="lg:w-[1150px] md:w-[780px] max-w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white ">
+        <div className="lg:w-[1150px] md:w-[780px] max-w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
           <div className="flex flex-col lg:flex-row mx-auto">
-            <div className="md:w-[740px] md:h-[500px] w-full sm:h-[500px] h-[400px] overflow-hidden mr-[20px]">
-              <div className="flex md:h-[500px] sm:h-[500px] h-[400px] w-full flex-col justify-between">
-                <div className="lg:w-[800px] md:w-[740px] h-[500px] sm:h-[600px] w-[700px] overflow-hidden hidden sm:block select-none relative rounded-xl mx-auto">
+            <div className="md:w-[740px] md:h-[500px] w-full sm:h-[470px] h-[400px]  overflow-hidden mr-[20px] border">
+              <div className="flex md:h-full sm:h-full h-[400px] w-full flex-col justify-between">
+                <div className="lg:w-[800px] md:w-[740px] h-[500px] sm:h-full w-[700px] overflow-hidden hidden sm:block select-none relative rounded-xl mx-auto">
                   <Image
                     className="w-[400px] object-cover"
                     src={showedImage}
@@ -269,7 +269,7 @@ export default function Property() {
                   <div
                     onClick={handleChangeSlideLeft}
                     // ref={buttonLeft}
-                    className="absolute select-none lg:w-[25px] w-[40px] flex left-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
+                    className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex left-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
                   >
                     <FaChevronLeft
                       className="h-[20px] w-[20px] text-black block"
@@ -279,7 +279,7 @@ export default function Property() {
                   <div
                     onClick={handleChangeSlideRight}
                     ref={buttonRight}
-                    className="absolute select-none lg:w-[25px] w-[40px] flex right-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
+                    className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex right-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
                   >
                     <FaChevronRight
                       className="h-[20px] w-[20px] text-black block"
@@ -290,11 +290,11 @@ export default function Property() {
                     ref={photosContainerMain}
                     onTouchStart={Touchstart}
                     onTouchEnd={Touchend}
-                    className="lg:w-[90%] md:w-[740px] w-[92.2vw] mx-auto relative flex sm:h-[134px] md:h-[100px] md:rounded-auto rounded-md overflow-hidden"
+                    className="lg:w-[90%] md:w-[650px] w-[92.2vw] sm:w-[87vw] mx-auto relative flex sm:h-[134px] md:h-[100px] md:rounded-auto rounded-md overflow-hidden"
                   >
                     <div
                       ref={photosContainer}
-                      className="overflow-x-hidden duration-300 flex  sm:h-[100px] h-[340px] sm:border-2 md:border-0 select-none"
+                      className="overflow-x-hidden duration-300 flex sm:h-[100px] h-[340px] sm:border-2 md:border-0 select-none"
                     >
                       <div
                         ref={photosRow}
