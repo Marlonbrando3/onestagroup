@@ -2,8 +2,11 @@ import Image from "next/image";
 import React, { useState, useRef } from "react";
 import Head from "next/head";
 import { Dancing, TenorsSans, GreatVibes } from "../../fonts/fonts";
+import { useRouter } from "next/router";
 
 export default function Index() {
+  const router = useRouter();
+
   const [region, setRegion] = useState("");
   const [type, setType] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
@@ -85,7 +88,10 @@ export default function Index() {
         });
 
         const data = await res.status;
-        // console.log(data);
+        console.log(data);
+        if (data === 200) {
+          router.push("https://localhost:3000/thankyou");
+        }
       } catch (err) {
         console.log(err);
       }
