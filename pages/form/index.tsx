@@ -285,7 +285,7 @@ export default function Index() {
                 <input
                   type="checkbox"
                   required
-                  className="md:w-[30px] md:h-[30px] h-[50px] w-[50px] md:-mt-[2px] -mt-[10px] cursor-pointer"
+                  className="md:w-[30px] md:h-[30px] h-[30px] w-[30px] md:-mt-[2px] -mt-[10px] cursor-pointer"
                 ></input>
                 <p className="font-semibold pl-[4px] text-[12px]">
                   I agree to be contacted by from Onesta Group and processing the information
