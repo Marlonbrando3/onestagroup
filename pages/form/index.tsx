@@ -90,7 +90,7 @@ export default function Index() {
         const data = await res.status;
         console.log(data);
         if (data === 200) {
-          router.push("https://localhost:3000/thankyou");
+          router.push("https://onesta.com.pl/form/thankyoupageform");
         }
       } catch (err) {
         console.log(err);
