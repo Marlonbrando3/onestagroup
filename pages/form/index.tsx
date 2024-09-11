@@ -99,7 +99,7 @@ export default function Index() {
   return (
     <>
       <Head>
-        <html lang="en_US" />
+        {/* <html lang="en_US" /> */}
         <meta property="Properties in Spain" content="image" />
         <title>Properties in Spain</title>
         <meta
