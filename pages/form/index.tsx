@@ -162,7 +162,7 @@ export default function Index() {
               onSubmit={handlingMassegeSend}
               className={`${TenorsSans.className} flex flex-col md:w-[550px] w-[90%] mt-[30px] mx-auto`}
             >
-              <div className="flex flex-col h-[120px] justify-evenly mb-[30px] ">
+              <div className="flex flex-col h-auto py-[5px] justify-evenly mb-[30px] ">
                 <p className="font-semibold text-[18px]">
                   In which region of Spain would you like to find your property?
                 </p>
@@ -180,7 +180,7 @@ export default function Index() {
                   <option value="Didn't decide">I didn&lsquo;t decide yet</option>
                 </select>
               </div>
-              <div className="flex flex-col h-[100px] justify-evenly mb-[30px] ">
+              <div className="flex flex-col h-auto py-[5px] justify-evenly mb-[30px] ">
                 <p className="font-semibold text-[18px]">
                   What type of property will be suitable for you?
                 </p>
@@ -197,7 +197,7 @@ export default function Index() {
                   <option value="Didn't decide">I didn&lsquo;t decide yet</option>
                 </select>
               </div>
-              <div className="flex flex-col h-[100px] justify-evenly mb-[30px]">
+              <div className="flex flex-col h-auto py-[5px] justify-evenly mb-[30px]">
                 <p className="font-semibold text-[18px]">
                   By what date would you like to complete your purchase?
                 </p>
@@ -214,7 +214,7 @@ export default function Index() {
                   <option value="Didn't decide">I didn&lsquo;t decide yet</option>
                 </select>
               </div>
-              <div className="flex flex-col h-[100px] justify-evenly mb-[30px]">
+              <div className="flex flex-col h-auto py-[5px] justify-evenly mb-[30px]">
                 <p className="font-semibold text-[18px]">
                   Are you ready for exclusive cooperation if your expectations are met?
                 </p>
@@ -231,7 +231,7 @@ export default function Index() {
                   <option value="I don't know">I don&lsquo;t know yet</option>
                 </select>
               </div>
-              <div className="flex flex-col h-[100px] justify-evenly mb-[30px]">
+              <div className="flex flex-col h-auto py-[5px] justify-evenly mb-[30px]">
                 <p className="font-semibold text-[18px]">
                   How much are you willing to spend on a property that perfectly meets your
                   expectations (euros)?
@@ -285,7 +285,7 @@ export default function Index() {
                 <input
                   type="checkbox"
                   required
-                  className="md:w-[30px] md:h-[30px] h-[30px] w-[30px] md:-mt-[2px] -mt-[10px] cursor-pointer"
+                  className="md:w-[30px] md:h-[30px] h-[23px] w-[23px] md:-mt-[2px] -mt-[2px] cursor-pointer"
                 ></input>
                 <p className="font-semibold pl-[4px] text-[12px]">
                   I agree to be contacted by from Onesta Group and processing the information

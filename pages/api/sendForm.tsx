@@ -51,14 +51,16 @@ export default function (req: any, res: any) {
       `<br><br>`,
   };
 
-  async function send() {
-    await transporter.sendMail(mailData, function (err: any, info: any) {
-      console.log("wysłane");
-      if (err) console.log(err);
-      else console.log(info);
+  new Promise((resolve, reject) => {
+    transporter.sendMail(mailData, (err: any, info: any) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+        res.json({ status: 400 });
+      } else {
+        resolve(info);
+        res.json({ status: 200 });
+      }
     });
-    res.json({ status: 200 });
-  }
-
-  send();
+  });
 }

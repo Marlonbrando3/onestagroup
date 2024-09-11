@@ -1,4 +1,4 @@
-export default function (req, res) {
+export default function (req: any, res: any) {
   let nodemailer = require("nodemailer");
 
   const endEmail = "marek.marszalek@onesta.com.pl";
@@ -33,14 +33,16 @@ export default function (req, res) {
       `<br>`,
   };
 
-  async function send() {
-    await transporter.sendMail(mailData, function (err, info) {
-      console.log("wysłane");
-      if (err) console.log(err);
-      else console.log(info);
+  new Promise((resolve, reject) => {
+    transporter.sendMail(mailData, (err: any, info: any) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+        res.json({ status: 400 });
+      } else {
+        resolve(info);
+        res.json({ status: 200 });
+      }
     });
-    res.status(200).json({ msg: 200 });
-  }
-
-  send();
+  });
 }
