@@ -146,8 +146,8 @@ export default function Index() {
           <p
             className={`${TenorsSans.className} text-[16px] md:w-[550px] w-[90%] text-center my-[50px]`}
           >
-            Our experience, along with that of our partners, spans up to 30 years. That's why can
-            provide offer properties from 90% of the real estate market in Spain.{" "}
+            Our experience, along with that of our partners, spans up to 30 years. That&lsquo;s why
+            can provide offer properties from 90% of the real estate market in Spain.{" "}
             <span className="font-bold">Please answer a few question below.</span>
           </p>
           <div className="w-[300px] h-[2px] bg-yellow-600"></div>
@@ -171,7 +171,7 @@ export default function Index() {
                   <option value="Costa Blanca">Costa Blanca</option>
                   <option value="Costa del Sol">Costa del Sol</option>
                   <option value="Other region">Other than above regions</option>
-                  <option value="Didn't decide">I didn't decide yet</option>
+                  <option value="Didn't decide">I didn&lsquo;t decide yet</option>
                 </select>
               </div>
               <div className="flex flex-col h-[100px] justify-evenly mb-[30px] ">
@@ -188,7 +188,7 @@ export default function Index() {
                   </option>
                   <option value="Apartment">Apartment</option>
                   <option value="House">House</option>
-                  <option value="Didn't decide">I didn't decide yet</option>
+                  <option value="Didn't decide">I didn&lsquo;t decide yet</option>
                 </select>
               </div>
               <div className="flex flex-col h-[100px] justify-evenly mb-[30px]">
@@ -205,7 +205,7 @@ export default function Index() {
                   </option>
                   <option value="This month">In this month</option>
                   <option value="By the end of the year">By the end of the year</option>
-                  <option value="Didn't decide">I didn't decide yet</option>
+                  <option value="Didn't decide">I didn&lsquo;t decide yet</option>
                 </select>
               </div>
               <div className="flex flex-col h-[100px] justify-evenly mb-[30px]">
@@ -222,7 +222,7 @@ export default function Index() {
                   </option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
-                  <option value="I don't know">I don't know yet</option>
+                  <option value="I don't know">I don&lsquo;t know yet</option>
                 </select>
               </div>
               <div className="flex flex-col h-[100px] justify-evenly mb-[30px]">
