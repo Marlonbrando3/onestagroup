@@ -115,7 +115,7 @@ export default function Index() {
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
         />
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
-        <meta property="og:locale" content="en_US" />
+        {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
       <div
         className={`${GreatVibes.className} bg-[url('/bg_beach.jpg')] h-auto bg-cover bg-fixed pb-[200px]`}
