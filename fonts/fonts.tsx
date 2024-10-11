@@ -8,7 +8,7 @@ import {
 } from "next/font/google";
 
 export const DMSerif = DM_Serif_Text({ subsets: ["latin-ext"], weight: "400" });
-export const TenorsSans = Tenor_Sans({ subsets: ["latin-ext"], weight: "400" });
+export const TenorsSans = Tenor_Sans({ subsets: ["latin-ext"], weight: ["400"] });
 export const Dancing = Dancing_Script({ subsets: ["latin-ext"], weight: "400" });
 export const GreatVibes = Great_Vibes({ subsets: ["latin-ext"], weight: "400" });
 export const QuicksandSans = Quicksand({

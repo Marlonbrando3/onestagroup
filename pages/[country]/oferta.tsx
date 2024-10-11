@@ -20,6 +20,8 @@ import { BiArea } from "react-icons/bi";
 import Descryption from "../../components/Descryption";
 import Properties from "../../public/properties.json";
 import Footer from "@/components/Footer";
+import { TenorsSans, QuicksandSans } from "../../fonts/fonts";
+import { CiParking1 } from "react-icons/ci";
 
 export default function Property() {
   const router = useRouter();
@@ -242,7 +244,9 @@ export default function Property() {
           rel="stylesheet"
         ></link>
       </Head>
-      <div className="max-w-[100vw] flex flex-col bg-gray-100 mx-[5px] sm:mx-auto">
+      <div
+        className={`${TenorsSans.className} "max-w-[100vw] flex flex-col bg-gray-100 mx-[5px] sm:mx-auto" `}
+      >
         <div className="fixed w-full bg-white z-50">
           <Header />
         </div>
@@ -254,9 +258,9 @@ export default function Property() {
         </div>
         <div className="lg:w-[1150px] md:w-[780px] max-w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
           <div className="flex flex-col lg:flex-row mx-auto">
-            <div className="md:w-[740px] md:h-[500px] w-full sm:h-[470px] h-[400px]  overflow-hidden mr-[20px] border">
+            <div className="md:w-[740px] md:h-[500px] w-full sm:h-[470px] h-[400px]  overflow-hidden mr-[20px] ">
               <div className="flex md:h-full sm:h-full h-[400px] w-full flex-col justify-between">
-                <div className="lg:w-[800px] md:w-[740px] h-[500px] sm:h-full w-[700px] overflow-hidden hidden sm:block select-none relative rounded-xl mx-auto">
+                <div className="lg:w-[800px] md:w-[740px] h-[500px] sm:h-full w-[700px] overflow-hidden hidden sm:block select-none relative rounded-md mx-auto">
                   <Image
                     className="w-[400px] object-cover"
                     src={showedImage}
@@ -290,7 +294,7 @@ export default function Property() {
                     ref={photosContainerMain}
                     onTouchStart={Touchstart}
                     onTouchEnd={Touchend}
-                    className="lg:w-[90%] md:w-[650px] w-[92.2vw] sm:w-[87vw] mx-auto relative flex sm:h-[134px] md:h-[100px] md:rounded-auto rounded-md overflow-hidden"
+                    className="lg:w-[90%] md:w-[650px] w-[92.2vw] sm:w-[87vw] mx-auto relative flex sm:h-[134px] md:h-[100px] md:rounded-auto rounded-md overflow-hidden md:mt-[5px]"
                   >
                     <div
                       ref={photosContainer}
@@ -318,65 +322,71 @@ export default function Property() {
             <div className="flex flex-col justify-center lg:w-[45%] w-full bg-gray-50">
               <div className="w-full h-[100px]">
                 <div className="flex h-[90px] items-center">
-                  <div className="h-12 w-10 flex items-center justify-center">
-                    <IoMdPin />
+                  <div className="h-[40px] w-[40px] flex items-center justify-center">
+                    <IoMdPin className="w-[80%] h-[80%] text-yellow-600" />
                   </div>
                   <div className="flex flex-col h-full justify-center">
                     <div className="">{propertyData[0]?.country.name}</div>
-                    <div className="text-xl font-bold">
+                    <div className="text-[24px] font-[800]">
                       {propertyData[0]?.foreignLocation}, {propertyData[0]?.foreignStreet}{" "}
                     </div>
                   </div>
                 </div>
               </div>
               <div className="flex flex-wrap justify-between content-center">
-                <div className="w-1/4 border-2 border-white h-16 bg-gray-50 pt-2">
-                  <div className="w-full flex justify-center text-sm">Sypalni</div>
-                  <div className="flex h-full justify-center">
+                <div className="w-1/4 border-2 border-white h-[70px] bg-gray-50 pt-2">
+                  <div className="w-full flex justify-center text-[16px]">Sypalni</div>
+                  <div className="flex justify-center items-center">
                     <div className="mr-2">
-                      <IoBedOutline />
+                      <IoBedOutline className="w-[25px] h-[25px]" />
                     </div>
                     <div>{propertyData[0]?.noOfRooms}</div>
                   </div>
                 </div>
                 <div className="w-1/4 border-2 border-white h-16 bg-gray-50 pt-2">
-                  <div className="w-full flex justify-center text-sm">Łazienki</div>
-                  <div className="flex justify-center ">
+                  <div className="w-full flex justify-center text-[16px]">Łazienki</div>
+                  <div className="flex justify-center items-center">
                     <div className="mr-2">
-                      <PiBathtubLight />
+                      <PiBathtubLight className="w-[25px] h-[25px]" />
                     </div>
                     <div>{propertyData[0]?.noOfBathrooms}</div>
                   </div>
                 </div>
                 <div className="w-1/4 border-2 border-white h-16 bg-gray-50  pt-2">
-                  <div className="w-full flex justify-center text-xs">Do Morza</div>
-                  <div className="flex justify-center  ">
+                  <div className="w-full flex justify-center text-[16px]">Parking</div>
+                  <div className="flex justify-center items-center">
                     <div className="mr-2">
-                      <FaSwimmingPool />
+                      <CiParking1 className="w-[25px] h-[25px]" />
                     </div>
+                    <div>1</div>
                   </div>
                 </div>
                 <div className="w-1/4 border-2 border-white h-16 bg-gray-50  pt-2">
-                  <div className="w-full flex justify-center text-xs">Basen</div>
+                  <div className="w-full flex justify-center text-[16px]">Basen</div>
                   <div className="flex justify-center ">
                     <div className="mr-2">
-                      <FaSwimmingPool />
+                      <FaSwimmingPool className="w-[25px] h-[25px]" />
                     </div>
-                    <div className="font-bold text-md"></div>
+                    <div className="font-bold text-md">
+                      {propertyData[0]?.availableNeighborhoodList.includes("Pool") ? 1 : 0}
+                    </div>
                   </div>
                 </div>
                 <div className="w-full h-64 relative">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25218.815183534534!2d-0.80644335!3d37.8052257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd6311deec8d2e83%3A0x8f550cb3fefae865!2sSantiago+de+la+ribera,+Spain!5e0!3m2!1sen!2spl!4v1712163502571!5m2!1sen!2spl&zoom=1222"
+                    src={`https://www.google.com/maps?q=${propertyData[0]?.foreignStreet}, ${propertyData[0]?.country.name}&output=embed`}
                     width="438"
                     height="254"
                     loading="lazy"
                   ></iframe>
                 </div>
-                <div className="bg-white w-full h-20 flex flex-col justify-center items-end pl-4">
-                  <p className="text-5xl font-bold text-yellow-500">
-                    od {propertyData[0]?.price.amount.toLocaleString()} €
-                  </p>
+                <div className="bg-white w-full h-[90px] flex flex-col justify-center items-end pl-4">
+                  <div className="text-[55px] font-[800] text-yellow-500 flex items-end leading-[20px]">
+                    <p className="inline text-[30px] leading-[25px] pr-[5px]">od</p>{" "}
+                    <p className="leading-[40px]">
+                      {propertyData[0]?.price.amount.toLocaleString()} €
+                    </p>
+                  </div>
                   <p className="text-md text-black font-bold block">
                     nr ref. {propertyData[0]?.listingId}
                   </p>

@@ -320,11 +320,14 @@ export default function Header() {
                   // onClick={handleShowingConsultationPopUp}
                   className="list bg-orange-400 rounded-3xl text-white"
                 >
-                  <Link href="/pobytinwestorski"> pobyt inwestorski</Link>
+                  <Link href="/pobytinwestorski" className="px-[5px]">
+                    {" "}
+                    pobyt inwestorski
+                  </Link>
                 </li>
                 <li
                   onClick={handleShowingConsultationPopUp}
-                  className="list bg-orange-400 rounded-3xl text-white"
+                  className="list bg-orange-400 rounded-3xl text-white px-[5px]"
                 >
                   <p>bezpłatna konsultacja</p>
                 </li>

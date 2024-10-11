@@ -35,14 +35,14 @@ export default function ImagesInPropetyCard({ images, setImages }: Property) {
   };
 
   return (
-    <div className="flex border w-full">
+    <div className="flex w-full mt-[0px]">
       {images?.map((prop: any, index: any) => (
         <div
           key={prop}
           className={
             prop.showed === true
-              ? "h-full w-[92.5vw] sm:w-32 lg:w-[160px] border-red-700 sm:border-2 relative"
-              : "h-full w-[92.5vw] sm:w-32 lg:w-[160px] border-red-700/[0] sm:border-2 relative"
+              ? "h-full w-[92.5vw] sm:w-32 lg:w-[160px] border-orange-500 sm:border-2 relative"
+              : "h-full w-[92.5vw] sm:w-32 lg:w-[160px] border-orange-700/[0] sm:border-2 relative"
           }
         >
           <Image

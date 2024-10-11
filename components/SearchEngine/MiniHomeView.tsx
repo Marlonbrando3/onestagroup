@@ -8,6 +8,6 @@ import { IoIosArrowForward } from "react-icons/io";
 
 export default function MiniHomeView() {
   return (
-    <div className='lg:w-full w-[90vw] rounded-b-[50px] lg:h-[200px] h-[140px] bg-cover bg-center bg-[url("/palmyBGform.jpeg")] mx-auto'></div>
+    <div className='lg:w-full w-[90vw] lg:h-[200px] h-[140px] bg-cover bg-center bg-[url("/bg_mini.png")] mx-auto '></div>
   );
 }
