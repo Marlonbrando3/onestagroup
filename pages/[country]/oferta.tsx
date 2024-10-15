@@ -367,9 +367,7 @@ export default function Property() {
                     <div className="mr-2">
                       <FaSwimmingPool className="w-[25px] h-[25px]" />
                     </div>
-                    <div className="font-bold text-md">
-                      {propertyData[0]?.availableNeighborhoodList.includes("Pool") ? 1 : 0}
-                    </div>
+                    <div className="font-bold text-md">1</div>
                   </div>
                 </div>
                 <div className="w-full h-64 relative">
