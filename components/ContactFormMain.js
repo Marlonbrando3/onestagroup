@@ -53,7 +53,7 @@ export default function ContactFormMain() {
   return (
     <div
       id="contact"
-      className='relative flex flex-col w-full h-1/2 bg-center bg-cover bg-[url("/palmyBGform.jpg")] rounded-xl'
+      className='relative flex flex-col w-full h-1/2 bg-center bg-cover bg-[url("/contactformbg.png")] rounded-xl'
     >
       <div className="absolute w-full h-full bg-gray-900/[0]"></div>
       <div className="h-11/12 lg:w-[1200px] w-full flex flex-col-reverse lg:flex-row lg:flex py-10 lg:mx-auto">
@@ -67,8 +67,8 @@ export default function ContactFormMain() {
           </div>
           <div className="text-xs sm:text-lg flex flex-col md:justify-center items-start lg:items-center h-1/2 w-5/12 text-white">
             <p className="font-bold">Biuro dla klientów:</p>
-            <p>45-706 Opole</p>
-            <p>pl. Piłsudskiego 14/3</p>
+            <p>45-865 Opole</p>
+            <p>ul. Niemodlińska 58a </p>
             <div className="w-32 h-4"></div>
             <p>mail: biuro@onesta.com.pl</p>
             <p>tel.: + 48 576 65 25 25</p>
@@ -157,8 +157,8 @@ export default function ContactFormMain() {
           </div>
           <div className="text-xs lg:text-lg flex flex-col justify-center items-start h-1/2 text-white px-[5px]">
             <p className="font-bold">Biuro dla klientów:</p>
-            <p>45-706 Opole</p>
-            <p>pl. Piłsudskiego 14/3</p>
+            <p>45-865 Opole</p>
+            <p>ul. Niemodlińska 58a </p>
             <div className="w-32 h-4"></div>
             <p>mail: biuro@onesta.com.pl</p>
             <p>tel.: + 48 576 75 25 25</p>

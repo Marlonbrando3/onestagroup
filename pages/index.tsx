@@ -12,6 +12,7 @@ import AboutOnestaMainPage from "../components/aboutOnestaMainPage";
 import HotjarSnippet from "@/analitycs/hotjar";
 
 import Hotjar from "@hotjar/browser";
+import Ourteammain from "@/components/ourteammain/ourteammain";
 
 type AppProps = {
   cookiesWindow: any;
@@ -111,6 +112,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         {/* <MainTheme /> */}
         <RecommendedOffers />
         <AboutOnestaMainPage />
+        <Ourteammain />
         <Aboutus />
         <Footer />
       </div>

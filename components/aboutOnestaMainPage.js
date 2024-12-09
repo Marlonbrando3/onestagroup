@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function AboutOnestaMainPage() {
   return (
     <div className="w-screen h-auto py-[140px]">
-      <div className="lg:w-[1200px] w-[90vw] mx-auto h-full flex justify-center">
+      <div className="lg:w-[1000px] w-[90vw] mx-auto h-full flex justify-center">
         <div className="hidden lg:block min-w-[400px] h-[350px] relative rounded-l-[20px] overflow-hidden object-cover">
           <Image src="/bg_about.jpeg" alt="nieruchomosci-w-hiszpanii" fill></Image>
         </div>
@@ -12,7 +12,7 @@ export default function AboutOnestaMainPage() {
             Multibroker <span className="font-bold">Onesta Group</span>
             <br></br>inny niż wszystkie
           </h1>
-          <p className="md:pl-[80px]">
+          <p className="md:pl-[40px]">
             <b>Dla Ciebie oznacza to równowagę w procesie poszukiwań</b> poprzez - współpracę z
             zespołem z 15 letnim doświadczeniem w sprzedaży i budowaniu relacji z klientami. Z
             organizacją, która słucha swoich rozmówców i wychodzi na przeciw Ich potrzebom.
