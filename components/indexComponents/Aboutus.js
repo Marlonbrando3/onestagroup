@@ -21,7 +21,7 @@ import OurSkillsJSON from "../../data/skills.json";
 export default function Aboutus() {
   const [searchShow, setSearchShow] = useState(true);
 
-  const data = OurSkillsJSON.map((i) => <Skill desc={i} />);
+  const data = OurSkillsJSON.map((i) => <Skill key={i} desc={i} />);
 
   return (
     <>
@@ -39,10 +39,7 @@ export default function Aboutus() {
         <HowWeWork />
         <AboutSpain />
         <ContactFormAboutUs />
-        <div
-          key={i}
-          className="flex w-full mx-auto my-20 flex-wrap bg-slate-800 justify-center py-[70px]"
-        >
+        <div className="flex w-full mx-auto my-20 flex-wrap bg-slate-800 justify-center py-[70px]">
           {data}
         </div>
       </div>
