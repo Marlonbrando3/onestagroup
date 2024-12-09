@@ -3,7 +3,7 @@ import Person from "./person";
 import Team from "../../data/team.json";
 
 export default function Ourteammain() {
-  const data = Team.map((i) => <Person data={i} />);
+  const data = Team.map((i) => <Person key={i.id} data={i} />);
 
   return (
     <div className="md:w-[1100px] flex flex-wrap md:my-[60px] md:flex-col lg:flex-row items-center">

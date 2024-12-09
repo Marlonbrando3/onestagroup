@@ -39,7 +39,10 @@ export default function Aboutus() {
         <HowWeWork />
         <AboutSpain />
         <ContactFormAboutUs />
-        <div className="flex w-full mx-auto my-20 flex-wrap bg-slate-800 justify-center py-[70px]">
+        <div
+          key={i}
+          className="flex w-full mx-auto my-20 flex-wrap bg-slate-800 justify-center py-[70px]"
+        >
           {data}
         </div>
       </div>

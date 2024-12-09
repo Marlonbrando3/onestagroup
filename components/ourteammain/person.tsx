@@ -10,13 +10,13 @@ type Person = {
 export default function Person({ data }: Person) {
   const LanguagesData = data.languages.map((i: any) => {
     if (i.includes("PL")) {
-      return <Languages data={i} lang="PL" />;
+      return <Languages key={i} data={i} lang="PL" />;
     }
     if (i.includes("EN")) {
-      return <Languages data={i} lang="EN" />;
+      return <Languages key={i} data={i} lang="EN" />;
     }
     if (i.includes("ES")) {
-      return <Languages data={i} lang="ES" />;
+      return <Languages key={i} data={i} lang="ES" />;
     }
   });
 
