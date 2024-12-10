@@ -70,13 +70,13 @@ export default function Header() {
   };
 
   const handleHover = (e: any) => {
-    e.current.style.backgroundColor = "#B91C1C";
-    e.current.style.color = "white";
+    e.current.style.textDecoration = "underline";
+    // e.current.style.color = "white";
   };
 
   const handleHoverLeave = (e: any) => {
-    e.current.style.backgroundColor = "white";
-    e.current.style.color = "black";
+    e.current.style.textDecoration = "none";
+    // e.current.style.color = "black";
   };
 
   const handleClearData = () => {
@@ -226,13 +226,18 @@ export default function Header() {
               className="absolute w-full lg:static lg:h-[32px] h-[300px] lg:w-auto lg:justify-end flex items-center z-50 top-[69px] -right-[100vw] bg-white lg:bg-transparent duration-200 justify-center md:shadow-none shadow-xl"
             >
               <ul className="flex flex-col lg:flex-row justify-center h-full lg:h-[24px] lg:items-center">
-                <li className="list">
+                <li className="list group">
                   <Link onClick={handleBackToMainPage} href="/">
                     Strona główna
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
                   </Link>
                 </li>
-                <li className="list">
-                  <Link href="/aboutus">O Nas</Link>
+
+                <li className="list group">
+                  <Link href="/aboutus">
+                    O Nas
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
+                  </Link>
                 </li>
                 <li
                   className="list"
@@ -241,19 +246,20 @@ export default function Header() {
                 >
                   Oferty
                   <div
-                    className="hidden absolute -ml-2 bg-white flex-col items-center rounded-2xl border -mt-[6px]"
+                    className="hidden absolute -ml-2 bg-white flex-col items-center rounded-md border -mt-[6px]"
                     ref={MouseOnProperties}
                   >
                     <Link
                       onClick={handleClearData}
                       href={{ pathname: "/[country]", query: { country: "hiszpania", page: 1 } }}
-                      className="p-1 text-black rounded-2xl w-full text-center"
+                      className="p-1 text-black rounded-md w-full text-center group"
                       ref={MouseOnSpain}
                       data-name="MouseOnSpain"
-                      onMouseEnter={() => handleHover(MouseOnSpain)}
-                      onMouseLeave={() => handleHoverLeave(MouseOnSpain)}
+                      // onMouseEnter={() => handleHover(MouseOnSpain)}
+                      // onMouseLeave={() => handleHoverLeave(MouseOnSpain)}
                     >
                       Nieruchomości w Hiszpanii
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
                     </Link>
                     {/* <Link
                       href={{ pathname: "/[country]", query: { country: "chorwacja", page: 1 } }}
@@ -277,13 +283,14 @@ export default function Header() {
                     </Link> */}
                     <Link
                       href={{ pathname: "/[country]", query: { country: "dominikana", page: 1 } }}
-                      className="p-1 text-black rounded-2xl w-full text-center"
+                      className="p-1 text-black rounded-md w-full text-center group"
                       ref={MouseOnDominican}
                       data-name="MouseOnDominican"
-                      onMouseEnter={() => handleHover(MouseOnDominican)}
-                      onMouseLeave={() => handleHoverLeave(MouseOnDominican)}
+                      // onMouseEnter={() => handleHover(MouseOnDominican)}
+                      // onMouseLeave={() => handleHoverLeave(MouseOnDominican)}
                     >
                       Nieruchomości na Dominikanie
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
                     </Link>
                   </div>
                 </li>
@@ -308,17 +315,21 @@ export default function Header() {
                     </Link>
                   </div>
                 </li> */}
-                <li className="list">
+                <li className="list group">
                   <Link onClick={handleBackToMainPage} href="/blog">
                     Blog
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
                   </Link>
                 </li>
-                <li className="list">
-                  <Link href="/abc">Wiedza</Link>
+                <li className="list group">
+                  <Link href="/abc">
+                    Wiedza{" "}
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
+                  </Link>
                 </li>
                 <li
                   // onClick={handleShowingConsultationPopUp}
-                  className="list bg-orange-400 rounded-3xl text-white"
+                  className="list border-2 border-green-400 rounded-md"
                 >
                   <Link href="/pobytinwestorski" className="px-[5px]">
                     {" "}
@@ -327,7 +338,7 @@ export default function Header() {
                 </li>
                 <li
                   onClick={handleShowingConsultationPopUp}
-                  className="list bg-orange-400 rounded-3xl text-white px-[5px]"
+                  className="list border-2 border-green-400 rounded-md px-[5px]"
                 >
                   <p>bezpłatna konsultacja</p>
                 </li>

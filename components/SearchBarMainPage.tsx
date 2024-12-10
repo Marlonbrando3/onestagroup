@@ -266,7 +266,7 @@ export default function SearchButton() {
   return (
     <>
       <div className="right-0 left-0 mx-auto absolute w-[90vw] lg:w-[950px] lg:top-[410px] top-[22%] flex lg:right-0 lg:left-0 p-6 rounded-md bg-white shadow-xl border-2 border-[#fffbf7] items-center flex-col md:flex-row justify-center">
-        <p className="text-slate-800 lg:text-[26px] text-2xl lg:leading-8 md:w-[400px] lg:mb-[40px] md:mb-0 mb-[10px]">
+        <p className="text-slate-800 lg:text-[26px] text-2xl lg:leading-8 md:w-[400px]  md:mb-0 mb-[10px] ">
           Znajdź swój
           <span className="font-bold text-orange-400"> nowy dom </span> lub{" "}
           <span className="font-bold  text-orange-400"> wyjątkową inwestycję </span>
@@ -284,7 +284,7 @@ export default function SearchButton() {
               name="country"
               onChange={(e) => handleChoosingCountry(e)}
               ref={country}
-              className="lg:w-[170px] w-[90%] lg:h-[30px] h-[45px] bg-white rounded-[8px] text-[14px] font-[500] pl-2 border-[1px] border-yellow-500 cursor-pointer"
+              className="lg:w-[170px] w-[90%] lg:h-[30px] h-[45px] rounded-[8px] text-[14px] font-[500] pl-2 bg-orange-400 cursor-pointer text-white"
             >
               <option value="hiszpania">Hiszpania</option>
               {/* <option value="portugalia">Portugalia</option>
