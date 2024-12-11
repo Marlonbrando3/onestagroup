@@ -46,7 +46,9 @@ export default function ContactFormAboutUs({ temat }) {
           onSubmit={handleSubmit}
         >
           {" "}
-          <div className="py-4 font-bold text-2xl text-white w-[800px]">Szybki kontakt:</div>
+          <div className="py-4 font-bold text-md text-white w-[800px] uppercase">
+            Proszę o kontakt
+          </div>
           <div className="flex justify-between flex-col md:flex-row pb-[10px]">
             <p className="py-2 font-bold text-white hidden">
               Ogłoszenie o nr ref.{" "}

@@ -229,14 +229,14 @@ export default function Header() {
                 <li className="list group">
                   <Link onClick={handleBackToMainPage} href="/">
                     Strona główna
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
 
                 <li className="list group">
                   <Link href="/aboutus">
                     O Nas
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
                 <li
@@ -259,7 +259,7 @@ export default function Header() {
                       // onMouseLeave={() => handleHoverLeave(MouseOnSpain)}
                     >
                       Nieruchomości w Hiszpanii
-                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                     </Link>
                     {/* <Link
                       href={{ pathname: "/[country]", query: { country: "chorwacja", page: 1 } }}
@@ -290,7 +290,7 @@ export default function Header() {
                       // onMouseLeave={() => handleHoverLeave(MouseOnDominican)}
                     >
                       Nieruchomości na Dominikanie
-                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                     </Link>
                   </div>
                 </li>
@@ -318,18 +318,18 @@ export default function Header() {
                 <li className="list group">
                   <Link onClick={handleBackToMainPage} href="/blog">
                     Blog
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
                 <li className="list group">
                   <Link href="/abc">
                     Wiedza{" "}
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-150 h-0.5 bg-yellow-500"></span>
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
                 <li
                   // onClick={handleShowingConsultationPopUp}
-                  className="list border-2 border-green-400 rounded-md"
+                  className="list border-2 border-orange-400 rounded-md hover:bg-orange-400"
                 >
                   <Link href="/pobytinwestorski" className="px-[5px]">
                     {" "}
@@ -338,13 +338,14 @@ export default function Header() {
                 </li>
                 <li
                   onClick={handleShowingConsultationPopUp}
-                  className="list border-2 border-green-400 rounded-md px-[5px]"
+                  className="list border-2 border-orange-400 rounded-md px-[5px] hover:bg-orange-400"
                 >
                   <p>bezpłatna konsultacja</p>
                 </li>
-                <li className="list">
+                <li className="list group">
                   <Link href="#contact" scroll={false}>
                     Kontakt
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
               </ul>

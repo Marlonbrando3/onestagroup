@@ -153,13 +153,13 @@ export default function ResultsSlider({
         </div>
       )}
       <div
-        onClick={handleChangeSiteLeft}
+        onClick={handleChangeSiteRight}
         className="flex items-center z-10 justify-center absolute w-10 h-full left-0 cursor-pointer bg-gray-900/[0.13] hover:bg-sky-900/[0.4] transition duration-450 hover:ease-in-out"
       >
         <FaChevronLeft className="w-[30px] h-[30px] text-white" />
       </div>
       <div
-        onClick={handleChangeSiteRight}
+        onClick={handleChangeSiteLeft}
         className={
           margin.length !== 0
             ? "flex items-center z-10 justify-center absolute w-10 h-full right-0 cursor-pointer group bg-gray-900/[0.13] hover:bg-sky-900/[0.4] transition duration-450 hover:ease-in-out"

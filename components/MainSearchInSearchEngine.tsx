@@ -127,7 +127,7 @@ export default function Home({ handleShowMobileFilters, searchEngine }: Props) {
                 </div>
               )}
               <div
-                className="ml-[10px] h-[40px] w-[170px] text-white rounded-3xl bg-yellow-500 cursor-pointer flex items-center justify-center mt-[14px]"
+                className="ml-[10px] h-[40px] w-[170px] text-white rounded-md bg-yellow-500 cursor-pointer flex items-center justify-center mt-[14px]"
                 onClick={handleNewSearch}
               >
                 <IoSearch />

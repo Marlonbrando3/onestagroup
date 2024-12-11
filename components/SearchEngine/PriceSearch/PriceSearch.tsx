@@ -39,7 +39,7 @@ export default function PriceSearch({
       <select
         value={pricemin || dataPricemin}
         onChange={setNewPriceFrom}
-        className="md:w-[170px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px]"
+        className="md:w-[170px] w-full rounded-md outline-none border-yellow-500 border cursor-pointer pl-[3px]"
       >
         <option value="All">od najniższej</option>
         <option value="200000">od 200 000 €</option>
@@ -56,7 +56,7 @@ export default function PriceSearch({
       <select
         value={pricemax || dataPricemax}
         onChange={setNewPriceTo}
-        className="md:w-[170px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
+        className="md:w-[170px] w-full rounded-md outline-none border-yellow-500 border cursor-pointer pl-[3px] "
       >
         <option value="All">do najwyższej</option>
         <option value="300000">do 300 000 €</option>

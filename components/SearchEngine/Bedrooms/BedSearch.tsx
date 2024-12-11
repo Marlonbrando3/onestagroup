@@ -37,7 +37,7 @@ export default function Bedrooms({
       <select
         value={bedsmin || dataBedsmin}
         onChange={setNewBedsFrom}
-        className="md:w-[60px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
+        className="md:w-[60px] w-full rounded-md outline-none border-yellow-500 border cursor-pointer pl-[3px] "
       >
         <option value="All">do</option>
         <option value="1">1</option>
@@ -52,7 +52,7 @@ export default function Bedrooms({
       <select
         value={bedsmax || dataBedsmax}
         onChange={setNewBedsTo}
-        className="md:w-[60px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
+        className="md:w-[60px] w-full rounded-md outline-none border-yellow-500 border cursor-pointer pl-[3px] "
       >
         <option value="All">do</option>
         <option value="1">1</option>

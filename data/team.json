@@ -5,7 +5,8 @@
     "name": "Marek Marszałek",
     "desc": "W pracy z klientami jestem nastawiony na relacyjność z dużą otwartością. Dużo energi wkładam w dokładne rozumienie potrzeb rozmówców, poszerzanie wiedzy rynkowej oraz atrakcji w Hiszpanii co pozwala mi przedstawiać trafne oferty oraz udzielać rzeczowych odpowiedzi. Moje nastawienie wynika z 15-sto letniego doświadczenia w sprzedaży. Zwracam uwagę na szczegóły oraz poprawność i bezpieczeństwo wszelkich procesów oraz ścisłą komunikację.",
     "photo": "Marek.png",
-    "languages": ["PL", "EN"]
+    "languages": ["PL", "EN"],
+    "phone": "+48 576 65 25 25"
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "name": "Karolina Bakowicz",
     "desc": "Jestem osobą kreatywną, zakochaną w Hiszpanii. Prócz doskonałej znajomości rynku nieruchomości równie doskonale znam miejscowe atrakcje, co pozwala mi sugerować idealne miejsca do zakupu nieruchomości w Hiszpanii. Chętnie dzielę się swoją wiedzą dzięki czemu w krótkim czasie mogę przybliżyć Ci Hiszpanię aby szybciej stała się dla Ciebie drugim domem.",
     "photo": "Karolina.jpg",
-    "languages": ["PL", "EN", "ES"]
+    "languages": ["PL", "EN", "ES"],
+    "phone": "+48 505 055 846"
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@
     "name": "Przemysław Krzywański",
     "desc": "Potrafię rzeczowo i konkretnie przedstawić Ci atuty inwestowania w nieruchomości w Hiszpanii. Jako osoba skrupulatna, cierpliwa i potrafiąca uważnie słuchać i zapamiętywać potrafię zadawać właściwe pytania aby wypracować najlepsze rozwiązania i przedstawić oferty trafiające w Twoje gusta i potrzeby.",
     "photo": "Przemek.png",
-    "languages": ["PL", "EN"]
+    "languages": ["PL", "EN"],
+    "phone": "+48 733 489 700"
   },
   {
     "id": 4,
@@ -29,6 +32,7 @@
     "name": "Michał Górecki",
     "desc": "Jako osobowość ścisła, wnikliwa, komunikatywna, o przyjaznym usposobieniu potrafię zrozumieć Twoje potrzeby i przeprowadzić Cię przez proces decyzyjny w jasny i klarowny dla Ciebie sposób. Nieodłącznym element moich działań jest ciągłe poszerzanie wiedzy o rynku, możliwościach inwestycyjnych, szansach oraz bezpieczeństwie procesu zakupu. ",
     "photo": "Michał.jpeg",
-    "languages": ["PL", "EN"]
+    "languages": ["PL", "EN"],
+    "phone": "+48 575 288 322"
   }
 ]

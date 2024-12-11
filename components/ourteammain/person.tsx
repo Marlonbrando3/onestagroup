@@ -2,6 +2,7 @@ import React from "react";
 import Team from "../../data/team.json";
 import Image from "next/image";
 import Languages from "./languages";
+import Phones from "./phones";
 
 type Person = {
   data: any;
@@ -23,6 +24,9 @@ export default function Person({ data }: Person) {
   return (
     <div className="md:h-[400px] md:w-[50%] w-[90%] flex p-[20px] flex-col md:flex-row">
       <div className="md:h-full md:w-[300px] relative rounded-[10px] overflow-hidden h-[150px] w-[150px] mb-[10px] md:mb-0">
+        <div className="absolute w-[85%] h-[30px] z-10 bottom-10 flex bg-amber-500 rounded-r-[20px]">
+          <Phones phone={data.phone} />
+        </div>
         <div className="absolute w-full h-[30px] z-10 bottom-0 flex">{LanguagesData}</div>
         <Image src={`/${data.photo}`} fill objectFit="cover" alt={data.name}></Image>
       </div>

@@ -23,7 +23,7 @@ export default function Types({ setQueries, queries, dataMarket, setDataMarket }
       <select
         value={dataMarket || market}
         onChange={setNewMarket}
-        className="md:w-[180px] w-[90vw] rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px]"
+        className="md:w-[180px] w-[90vw] rounded-md outline-none border-yellow-500 border cursor-pointer pl-[3px]"
       >
         <option value="All">Pierwotny i wtórny</option>
         <option value="Primary">Pierwotny</option>

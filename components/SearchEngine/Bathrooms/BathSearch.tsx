@@ -39,7 +39,7 @@ export default function Bathrooms({
       <select
         value={bathsmin || dataBathsmin}
         onChange={setNewBathFrom}
-        className="md:w-[60px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
+        className="md:w-[60px] w-full rounded-md outline-none border-yellow-500 border cursor-pointer pl-[3px] "
       >
         <option value="all">do</option>
         <option value="1">1</option>
@@ -54,7 +54,7 @@ export default function Bathrooms({
       <select
         value={bathsmax || dataBathsmax}
         onChange={setNewBathTo}
-        className="md:w-[60px] w-full rounded-3xl outline-none border-yellow-500 border cursor-pointer pl-[3px] "
+        className="md:w-[60px] w-full rounded-md outline-none border-yellow-500 border cursor-pointer pl-[3px] "
       >
         <option value="all">do</option>
         <option value="1">1</option>
