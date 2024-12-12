@@ -334,7 +334,7 @@ export default function Property() {
                 </div>
               </div>
               <div className="flex flex-wrap justify-between content-center">
-                <div className="w-1/4 border-2 border-white h-[70px] bg-gray-50 pt-2">
+                <div className="w-1/5 border-2 border-white h-[70px] bg-gray-50 pt-2">
                   <div className="w-full flex justify-center text-[16px]">Sypalni</div>
                   <div className="flex justify-center items-center">
                     <div className="mr-2">
@@ -343,7 +343,7 @@ export default function Property() {
                     <div>{propertyData[0]?.noOfRooms}</div>
                   </div>
                 </div>
-                <div className="w-1/4 border-2 border-white h-16 bg-gray-50 pt-2">
+                <div className="w-1/5 border-2 border-white h-16 bg-gray-50 pt-2">
                   <div className="w-full flex justify-center text-[16px]">Łazienki</div>
                   <div className="flex justify-center items-center">
                     <div className="mr-2">
@@ -352,7 +352,7 @@ export default function Property() {
                     <div>{propertyData[0]?.noOfBathrooms}</div>
                   </div>
                 </div>
-                <div className="w-1/4 border-2 border-white h-16 bg-gray-50  pt-2">
+                <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
                   <div className="w-full flex justify-center text-[16px]">Parking</div>
                   <div className="flex justify-center items-center">
                     <div className="mr-2">
@@ -361,7 +361,16 @@ export default function Property() {
                     <div>1</div>
                   </div>
                 </div>
-                <div className="w-1/4 border-2 border-white h-16 bg-gray-50  pt-2">
+                <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
+                  <div className="w-full flex justify-center text-[16px]">Metraż</div>
+                  <div className="flex justify-center items-center">
+                    <div className="mr-2">
+                      <BiArea className="w-[25px] h-[25px]" />
+                    </div>
+                    <div>{propertyData[0]?.totalArea}</div>
+                  </div>
+                </div>
+                <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
                   <div className="w-full flex justify-center text-[16px]">Basen</div>
                   <div className="flex justify-center ">
                     <div className="mr-2">
