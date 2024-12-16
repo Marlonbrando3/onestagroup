@@ -97,7 +97,7 @@ export default function Aboutus() {
               Pomożemy Państwu w poznaniu tych regionów świata, uczynieniu ich drugim domem, a
               proces zakupu nieruchomości - &quot;bezpiecznym&quot;.
             </span>{" "}
-            Wciąż rozwijamy i aktualizujemy naszą wiedzę o rynku, atrakcjach na wybrzeżach stylu
+            Wciąż rozwijamy i aktualizujemy naszą wiedzę o rynku, atrakcjach na wybrzeżach, stylu
             życia w Hiszpanii aby dostarczyć Państwu wartościowej wiedzy. <br></br>
             <br></br>W branży nieruchomości działamy od 8 lat. <br></br>
             <span className="text-green-600 italic font-semibold">
@@ -105,8 +105,8 @@ export default function Aboutus() {
               jest naszym wyróżnikiem. W procesie sprzedaży dbamy o bezpieczeństwo, zapleczę prawne
               oraz ścisłą komunikację.
             </span>{" "}
-            <br></br>Możemy zrealizować dla Ciebie procesy zakupowe oraz zarządzanie nieruchomością
-            w krajach: Polska, Hiszpania, Portugalia, Chorwacja, Cypr, Dubaj
+            <br></br>Możemy zrealizować dla Ciebie procesy zakupowe oraz zarządzać nieruchomością w
+            krajach: Polska, Hiszpania, Portugalia, Chorwacja, Cypr, Dubaj
           </p>
         </div>
         <ContactFormAboutUs />
