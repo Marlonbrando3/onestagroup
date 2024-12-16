@@ -252,7 +252,7 @@ export default function Property() {
         </div>
         <MiniHomeView />
         <div className="flex items-center justify-center h-[80px] w-full px-auto my-[10px] mx-auto bg-white">
-          <p className="block w-12/12 text-lg lg:text-2xl font-bold lg:mx-auto mx-4">
+          <p className="block w-12/12 text-[24px] lg:text-2xl font-bold lg:mx-auto mx-4 text-center">
             {propertyData[0]?.headerAdvertisement}
           </p>
         </div>

@@ -14,6 +14,7 @@ import { BsTranslate } from "react-icons/bs";
 import { GoLaw } from "react-icons/go";
 import { MdOutlineRealEstateAgent } from "react-icons/md";
 import { SiPowervirtualagents } from "react-icons/si";
+import HowWeWork from "../components/SearchEngine/howWeWork";
 
 export default function Aboutus() {
   const [searchShow, setSearchShow] = useState(true);
@@ -67,11 +68,11 @@ export default function Aboutus() {
             Profesjonalny, odpowiedzialny, nastawiony na kupujących Broker Nieruchomości
           </p>
           <div className="md:w-[850px] w-[90vw] mx-auto flex py-[90px] md:flex-row flex-col items-center border-b-2">
-            <div className="relative h-[200px] w-[200px]">
-              <Image src="/Maro_fota_strona.png" fill />
+            <div className="relative h-[250px] w-[200px] rounded-[10px] overflow-hidden">
+              <Image src="/Marek.png" fill />
             </div>
             <div className="lg:w-[620px] w-full md:ml-[30px] ml-[0px]">
-              <p className="text-[26px]">Marek Marszałek</p>
+              <p className="text-[26px] font-semibold">Marek Marszałek</p>
               <p>Założyciel</p>
               <p className="italic pt-[20px]">
                 Cieszę się, że treści i usługi, które tworzymy doprowdziły Cię tutaj i chcesz poznać
@@ -80,165 +81,39 @@ export default function Aboutus() {
                 nazwa &quot;Onesta&quot;. Wiemy, że branża pośrednictwa nieruchomości nie ma się
                 dobrze jeśli mówimy o jakości, transparentności i bazie w postaci wiedzy o rynku.
                 Chcemy być tego odwrotnością i ze swoim (uważam) dużym zapleczem czy też
-                doświadczeniem w pracy z drugim człowiekiem, rozumieniem Jego potrzeb oraz naszą
-                pomysłowością i elastycznąścią jesteśmy w stanie wysoką jakość zapewnić również
-                Tobie.
+                doświadczeniem w pracy z drugim człowiekiem, zrozumieniem Jego potrzeb oraz naszą
+                pomysłowością i elastycznąścią jesteśmy w stanie zapewnić wysoką jakość naszych
+                działań i usług.
               </p>
             </div>
           </div>
           <p className="w-10/12 mx-auto left-0 text-[34px] font-[800] leading-9 text-green-600 py-10">
-            Nasz zespoł.
+            Nasz zespół.
           </p>
           <p className="w-10/12 mx-auto lg:text-[22px] leading-7 pb-10">
-            Jesteśmy grupą ludzi, których pasją są dalekie i ciepłe kraje oraz tamtejsze rynki
+            Jesteśmy grupą ludzi, którzy kochają dalekie i ciepłe kraje oraz tamtejsze rynki
             nieruchomości.{" "}
             <span className="text-green-600 italic font-semibold">
-              Chcemy uczynić je zrozumiałymi dla naszych klientów, a procesy zakupu nieruchomości -
-              &quot;znośnymi&quot;.
+              Pomożemy Państwu w poznaniu tych regionów świata, uczynieniu ich drugim domem, a
+              proces zakupu nieruchomości - &quot;bezpiecznym&quot;.
             </span>{" "}
-            Wciąż rozwijamy i aktualizujemy aby na podstawie naszych pasji dostarczyć Wam wiedzy ale
-            też gotowości do działania w wypadku trudności. <br></br>
-            <br></br>W branży nieruchomości działamy od 4 lat wraz ze{" "}
+            Wciąż rozwijamy i aktualizujemy naszą wiedzę o rynku, atrakcjach na wybrzeżach stylu
+            życia w Hiszpanii aby dostarczyć Państwu wartościowej wiedzy. <br></br>
+            <br></br>W branży nieruchomości działamy od 8 lat. <br></br>
             <span className="text-green-600 italic font-semibold">
-              sprawdzonymi partnerami w każdym z krajów posiadających również wieloletnie
-              doświadczenie oraz wyspecjalizowanych w dziedzinach
+              Stawiamy na relacyjność, otwartość, cierpliwość i zrozumienie potrzeb kupującego co
+              jest naszym wyróżnikiem. W procesie sprzedaży dbamy o bezpieczeństwo, zapleczę prawne
+              oraz ścisłą komunikację.
             </span>{" "}
-            niezbędnych do odpowiedniego wyszukiwania, realizowana procesu zakupu oraz dalszego
-            wynajmu (jeśli taka jest wola klienta). Naszym celem jest bycie prawdziwymi doradcami,
-            znającymi rynek i ciągle doszkalającymi się. Chcemy i dzielimy się wiedzą na rzecz
-            naszych przyszłych klientów, chcemy móc odradzić jeśli decyzja zakupowa może nie być
-            korzystna.<br></br>
-            <br></br>
-            <span className="text-green-600 italic font-semibold">
-              Stawiamy na relacyjność w procesie sprzedaży i chcemy aby to nas wyróżniało na rynku.
-              Nie wywieramy presji, jesteśmy uczciwi, staramy się dobrze planować kolejne kroki
-            </span>{" "}
-            aby żadna ze stron nie czuła się niekomfortowo. Zapraszamy do sprawdzenia jak nam to
-            wychodzi. <br></br>
             <br></br>Możemy zrealizować dla Ciebie procesy zakupowe oraz zarządzanie nieruchomością
             w krajach: Polska, Hiszpania, Portugalia, Chorwacja, Cypr, Dubaj
           </p>
         </div>
         <ContactFormAboutUs />
         <MiniHomeView />
-        <div className="flex flex-col w-10/12 mx-auto">
-          <div className="flex w-full">
-            <p className="w-full text-center text-3xl font-bold py-10">Jak działamy?</p>
-          </div>
-          <div className="w-full flex flex-wrap justify-between items-center ">
-            <div className="element-how-we-work-container">
-              <div className="element-how-we-work-container-in">
-                <p className="element-how-we-work-container-in-p">
-                  1. Rozmowa i poznanie intencji klienta
-                </p>
-                <p className="element-how-we-work-container-in-desc">
-                  Chcemy jak najdokładniej zrozumieć w jakim momecie jest nasz potencjalny, klient,
-                  jak proces zakupowy został (lub nie) zaplanowany{" "}
-                </p>
-              </div>
-            </div>
-            <div className="element-how-we-work-container">
-              <div className="element-how-we-work-container-in">
-                <p className="element-how-we-work-container-in-p">2. Propozycje nieruchomości</p>
-                <p className="element-how-we-work-container-in-desc">
-                  Chcemy jak najdokładniej zrozumieć w jakim momecie jest nasz potencjalny, klient,
-                  jak proces zakupowy został (lub nie) zaplanowany{" "}
-                </p>
-              </div>
-            </div>
-            <div className="element-how-we-work-container">
-              <div className="element-how-we-work-container-in">
-                <p className="element-how-we-work-container-in-p">
-                  3. Prezentacje wybranych nieruchomości
-                </p>
-                <p className="element-how-we-work-container-in-desc">
-                  Na tym etapie praktycznie zawsze spotykamy się z naszym klientem w Hiszpanii.
-                  Planując wcześniej 1 lub 2 dni pokazujemy moliwe jak najbardziej dopasowane
-                  nieruchomości{" "}
-                </p>
-              </div>
-            </div>
-            <div className="element-how-we-work-container">
-              <div className="element-how-we-work-container-in">
-                <p className="element-how-we-work-container-in-p">
-                  4. Realizacja procesu sprzedaży
-                </p>
-                <p className="element-how-we-work-container-in-desc">
-                  Po decyzji zakupowej w pierwym kroku mamy rezerwację nieruchomości z płatnym
-                  depozytem w kwocie 3000 - 10000 euro w przypadku inwestycji deweloperskiej.
-                  Zaczynamy równiez (w rz){" "}
-                </p>
-              </div>
-            </div>
-            <div className="element-how-we-work-container">
-              <div className="element-how-we-work-container-in">
-                <p className="element-how-we-work-container-in-p">
-                  5. Prezetnacje wybranych nieruchomości
-                </p>
-                <p className="element-how-we-work-container-in-desc">
-                  Chcemy jak najdokładniej zrozumieć w jakim momecie jest nasz potencjalny, klient,
-                  jak proces zakupowy został (lub nie) zaplanowany{" "}
-                </p>
-              </div>
-            </div>
-            <div className="element-how-we-work-container">
-              <div className="element-how-we-work-container-in">
-                <p className="element-how-we-work-container-in-p">
-                  6. Prezetnacje wybranych nieruchomości
-                </p>
-                <p className="element-how-we-work-container-in-desc">
-                  Chcemy jak najdokładniej zrozumieć w jakim momecie jest nasz potencjalny, klient,
-                  jak proces zakupowy został (lub nie) zaplanowany{" "}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col w-10/12 mx-auto my-20 ">
-          <div className="flex flex-col justify-evenly w-full h-full">
-            <p className="text-center text-3xl text-gray-900 font-bold py-10">Nasze kompetencje</p>
-          </div>
-          <div className="w-full h-full flex flex-wrap">
-            <div className=" flex justify-start items-center xl:w-1/3 sm:w-1/2 w-full h-1/2 sm:py-2 py-5">
-              <FaRegHandshake className="w-16 h-16 pr-2" />
-              <p className="text-xl">
-                Relacyjna/partnerska <br></br>obsługa klienta
-              </p>
-            </div>
-            <div className=" flex justify-start items-center xl:w-1/3 sm:w-1/2 w-full h-1/2 sm:py-2 py-5">
-              <BsCashCoin className="w-16 h-16 pr-2" />
-              <p className="text-xl">
-                Pomagamy uzyskać <br></br>kredyt w banku
-              </p>
-            </div>
-            <div className=" flex justify-start items-center xl:w-1/3 sm:w-1/2 w-full h-1/2 sm:py-2 py-5">
-              <BsTranslate className="w-16 h-16 pr-2" />
-              <p className="text-xl">
-                Tłumacz<br></br>przysięgły
-              </p>
-            </div>
-            <div className=" flex justify-start items-center xl:w-1/3 sm:w-1/2 w-full h-1/2 sm:py-2 py-5">
-              <GoLaw className="w-16 h-16 pr-2" />
-              <p className="text-xl">
-                Wsparcie<br></br>prawne
-              </p>
-            </div>
-            <div className=" flex justify-start items-center xl:w-1/3 sm:w-1/2 w-full h-1/2 sm:py-2 py-5">
-              <MdOutlineRealEstateAgent className="w-16 h-16 pr-2" />
-              <p className="text-xl">
-                Współpraca z<br></br>deweloperami i
-              </p>
-            </div>
-            <div className=" flex justify-start items-center xl:w-1/3 sm:w-1/2 w-full h-1/2 sm:py-2 py-5">
-              <SiPowervirtualagents className="w-16 h-16 pr-2" />
-              <p className="text-xl">
-                Agenci na<br></br>miejscu
-              </p>
-            </div>
-          </div>
-        </div>
+        <HowWeWork />
       </div>
-      <div className="w-10/12 mx-auto">
+      <div className="w-10/12 mx-auto my-[30px]">
         <ContactFormMain />
       </div>
       <Footer />
