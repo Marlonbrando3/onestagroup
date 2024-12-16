@@ -49,8 +49,8 @@ export default function Aboutus() {
         </div>
       </div>
       <MiniHomeView />
-      <div className="bg-gray-900/[0.0]">
-        <div className="lg:w-[1000px] flex flex-col w-screen mx-auto justify-evenly">
+      <div className="bg-gray-900/[0.0] overflow-hidden">
+        <div className="lg:w-[1000px] flex flex-col w-full mx-auto justify-evenly">
           <Image
             src="/logotype_full.png"
             width={100}
@@ -110,7 +110,7 @@ export default function Aboutus() {
           </p>
         </div>
         <ContactFormAboutUs />
-        <MiniHomeView />
+        {/* <MiniHomeView /> */}
         <HowWeWork />
       </div>
       <div className="w-10/12 mx-auto my-[30px]">
