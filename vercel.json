@@ -1,8 +1,0 @@
-{
-  "build": {
-    "env": {
-      "CI": "false"
-    },
-    "ignoreCommand": "echo 'Ignoring all errors'"
-  }
-}
