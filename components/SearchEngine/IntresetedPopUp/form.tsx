@@ -65,10 +65,10 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
   };
 
   return (
-    <div className="w-[800px] h-[500px] bg-[url('/bg-form.png')] bg-[length:400px_auto] md:bg-cover overflow-hidden rounded-xl flex justify-end relative">
+    <div className="md:w-[800px] w-full h-[500px] bg-[url('/bg-form.png')] bg-[length:400px_auto] md:bg-cover overflow-hidden rounded-xl flex md:justify-end relative">
       <form
         onSubmit={handleSentingForm}
-        className="flex flex-col border w-[500px] h-full items-center justify-evenly bg-white p-[20px] rounded-xl shadow-[10px_25px_60px_20px_rgba(0,0,0,0.3)]"
+        className="flex flex-col border md:w-[500px] h-full items-center justify-evenly bg-white p-[20px] rounded-xl shadow-[10px_25px_60px_20px_rgba(0,0,0,0.3)]"
       >
         <p className="text-[20px]">Jakich informacji odnośnie nieruchomości potrzebujesz?</p>
         <input

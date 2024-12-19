@@ -263,12 +263,12 @@ export default function Property() {
           id="intrestedPopUp"
           className="hidden w-full h-full fixed z-40 top-0 bottom-0 left-0 right-0 m-auto shadow-[10px_25px_60px_20px_rgba(0,0,0,0.3)] bg-gray-900/[0.6] justify-center items-center"
         >
-          <div className="w-[800px] h-[500px] relative">
+          <div className="md:w-[800px] w-[90%] h-[500px] relative">
             <IoClose
               onClick={handleClosingIntresetedPopUp}
               className="absolute right-[10px] top-[10px] z-[70] cursor-pointer"
             />
-            <Form intrestedPopUp={intrestedPopUp} OfferNumber={propertyData[0]?.listingId}/>
+            <Form intrestedPopUp={intrestedPopUp} OfferNumber={propertyData[0]?.listingId} />
           </div>
         </div>
         <div className="fixed w-full bg-white z-[999]">
