@@ -22,6 +22,8 @@ import Properties from "../../public/properties.json";
 import Footer from "@/components/Footer";
 import { TenorsSans, QuicksandSans } from "../../fonts/fonts";
 import { CiParking1 } from "react-icons/ci";
+import Form from "@/components/SearchEngine/IntresetedPopUp/form";
+import { IoClose } from "react-icons/io5";
 
 export default function Property() {
   const router = useRouter();
@@ -35,6 +37,7 @@ export default function Property() {
   const photosContainer = useRef<any>();
   const photosContainerMain = useRef<any>();
   const photosRow = useRef<any>();
+  const intrestedPopUp: any = useRef();
 
   const [start, setStart] = useState();
   const [end, setEnd] = useState();
@@ -192,6 +195,14 @@ export default function Property() {
     console.log(e.changedTouches[0].clientX);
   };
 
+  const handleIntrestedPopUp = () => {
+    intrestedPopUp.current.style.display = "flex";
+  };
+
+  const handleClosingIntresetedPopUp = () => {
+    intrestedPopUp.current.style.display = "none";
+  };
+
   return (
     <>
       {/* <!-- Google tag (gtag.js) --> */}
@@ -245,9 +256,22 @@ export default function Property() {
         ></link>
       </Head>
       <div
-        className={`${TenorsSans.className} "max-w-[100vw] flex flex-col bg-gray-100 mx-[5px] sm:mx-auto" `}
+        className={`${TenorsSans.className} "max-w-[100vw] flex flex-col bg-gray-100 mx-[5px] sm:mx-auto relative" `}
       >
-        <div className="fixed w-full bg-white z-50">
+        <div
+          ref={intrestedPopUp}
+          id="intrestedPopUp"
+          className="hidden w-full h-full fixed z-40 top-0 bottom-0 left-0 right-0 m-auto shadow-[10px_25px_60px_20px_rgba(0,0,0,0.3)] bg-gray-900/[0.6] justify-center items-center"
+        >
+          <div className="w-[800px] h-[500px] relative">
+            <IoClose
+              onClick={handleClosingIntresetedPopUp}
+              className="absolute right-[10px] top-[10px] z-[70] cursor-pointer"
+            />
+            <Form intrestedPopUp={intrestedPopUp} OfferNumber={propertyData[0]?.listingId}/>
+          </div>
+        </div>
+        <div className="fixed w-full bg-white z-[999]">
           <Header />
         </div>
         <MiniHomeView />
@@ -258,14 +282,14 @@ export default function Property() {
         </div>
         <div className="lg:w-[1150px] md:w-[780px] max-w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
           <div className="flex flex-col lg:flex-row mx-auto">
-            <div className="md:w-[740px] md:h-[500px] w-full sm:h-[470px] h-[400px]  overflow-hidden mr-[20px] ">
+            <div className="md:w-[740px] md:h-[570px] w-full sm:h-[470px] h-[400px] overflow-hidden mr-[20px] ">
               <div className="flex md:h-full sm:h-full h-[400px] w-full flex-col justify-between">
                 <div className="lg:w-[800px] md:w-[740px] h-[500px] sm:h-full w-[700px] overflow-hidden hidden sm:block select-none relative rounded-md mx-auto">
                   <Image
-                    className="w-[400px] object-cover"
+                    className="w-[300px] object-cover relative"
                     src={showedImage}
                     fill
-                    // responsive
+                    objectFit="cover"
                     alt="photo"
                   ></Image>
                 </div>
@@ -273,7 +297,7 @@ export default function Property() {
                   <div
                     onClick={handleChangeSlideLeft}
                     // ref={buttonLeft}
-                    className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex left-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
+                    className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex left-0 z-30 h-full justify-center items-center cursor-pointer duration-300"
                   >
                     <FaChevronLeft
                       className="h-[20px] w-[20px] text-black block"
@@ -283,7 +307,7 @@ export default function Property() {
                   <div
                     onClick={handleChangeSlideRight}
                     ref={buttonRight}
-                    className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex right-0 z-40 h-full justify-center items-center cursor-pointer duration-300"
+                    className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex right-0 z-30 h-full justify-center items-center cursor-pointer duration-300"
                   >
                     <FaChevronRight
                       className="h-[20px] w-[20px] text-black block"
@@ -319,7 +343,7 @@ export default function Property() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col justify-center lg:w-[45%] w-full bg-gray-50">
+            <div className="flex flex-col justify-center lg:w-[37%] w-full bg-gray-50">
               <div className="w-full h-[100px]">
                 <div className="flex h-[90px] items-center">
                   <div className="h-[40px] w-[40px] flex items-center justify-center">
@@ -379,12 +403,13 @@ export default function Property() {
                     <div className="font-bold text-md">1</div>
                   </div>
                 </div>
-                <div className="w-full h-64 relative">
+                <div className="w-full h-[240px] relative">
                   <iframe
                     src={`https://www.google.com/maps?q=${propertyData[0]?.foreignStreet}, ${propertyData[0]?.country.name}&output=embed`}
-                    width="438"
-                    height="254"
+                    // width="408"
+                    // height="200"
                     loading="lazy"
+                    className="w-full h-full"
                   ></iframe>
                 </div>
                 <div className="bg-white w-full h-[90px] flex flex-col justify-center items-end pl-4">
@@ -397,6 +422,12 @@ export default function Property() {
                   <p className="text-md text-black font-bold block">
                     nr ref. {propertyData[0]?.listingId}
                   </p>
+                </div>
+                <div
+                  onClick={handleIntrestedPopUp}
+                  className="w-full border border-transparent bg-blue-500 h-[60px] place-content-center grid text-white font-bold text-[24px] cursor-pointer duration-150 hover:bg-white hover:border hover:border-gray-900 hover:text-black"
+                >
+                  Jestem zainteresowany
                 </div>
               </div>
             </div>
