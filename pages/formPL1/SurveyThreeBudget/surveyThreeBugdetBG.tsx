@@ -19,6 +19,7 @@ export default function SurveyThreeBugdetBG({ PageNumber, setPageNumber }: Page)
 
   const showedTypes = Budget[0].options.map((i) => (
     <SurveyThreeBudgetItem
+      key={i.id}
       types={i}
       type={Budget[0].type}
       ArrowBudget={ArrowBudget}

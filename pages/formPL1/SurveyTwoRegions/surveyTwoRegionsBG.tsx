@@ -20,7 +20,12 @@ export default function SurveyTwoRegionsBG({ PageNumber, setPageNumber }: Page) 
   console.log(ArrowRegions);
 
   const showedTypes = Regions[0].options.map((i) => (
-    <SurveyTwoRegionsItem types={i} ArrowRegions={ArrowRegions} setArrowRegions={setArrowRegions} />
+    <SurveyTwoRegionsItem
+      key={i.id}
+      types={i}
+      ArrowRegions={ArrowRegions}
+      setArrowRegions={setArrowRegions}
+    />
   ));
 
   return (

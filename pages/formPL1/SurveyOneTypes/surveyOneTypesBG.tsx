@@ -20,7 +20,7 @@ export default function SurveyOneTypesBG({ PageNumber, setPageNumber }: Page) {
   console.log(ArrowTypes);
 
   const showedTypes = Types[0].options.map((i) => (
-    <SurveyOneTypes types={i} ArrowTypes={ArrowTypes} setArrowTypes={setArrowTypes} />
+    <SurveyOneTypes key={i.id} types={i} ArrowTypes={ArrowTypes} setArrowTypes={setArrowTypes} />
   ));
 
   return (

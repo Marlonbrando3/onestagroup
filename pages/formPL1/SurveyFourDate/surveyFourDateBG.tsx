@@ -18,7 +18,7 @@ export default function SurveyFourDateBG({ PageNumber, setPageNumber }: Page) {
   const [ArrowTime, setArrowTime] = useState([]);
 
   const showedTime = Time[0].options.map((i) => (
-    <SurveyFourDateItem types={i} ArrowTime={ArrowTime} setArrowTime={setArrowTime} />
+    <SurveyFourDateItem key={i.id} types={i} ArrowTime={ArrowTime} setArrowTime={setArrowTime} />
   ));
 
   return (
