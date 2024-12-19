@@ -26,14 +26,6 @@ export default function SurveyFourDateItem({ types, ArrowTime, setArrowTime }: T
             : "border-[5px] border-transparent"
         } border-yellow-800 h-[80px] w-full flex items-center justify-center py-[6px] rounded-md`}
       >
-        {/* <div className="h-full w-[100px] border rounded-xl overflow-hidden relative">
-          {ArrowTime.includes(types.name) && (
-            <div className="w-full h-full absolute top-0 z-10 bg-white/[0.7]">
-              <Image src="/Survey/Types/checked.png" objectFit="cover" fill alt="bungalow" />
-            </div>
-          )}
-          <Image src={`/${types.photo}`} objectFit="cover" fill alt="bungalow" />
-        </div> */}
         <p className="w-[90%] font-semibold text-[16px] leading-[24px] mx-auto text-center">
           {types.name}
         </p>

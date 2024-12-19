@@ -14,11 +14,7 @@ import Thankyoupageform from "../formPL1/thankyoupageform";
 export default function Index() {
   const emptyFieldPopUp: any = useRef();
 
-  const hidingPopUpWithInfo = () => {
-    emptyFieldPopUp.current.style.display = "none";
-  };
-
-  const [PageNumber, setPageNumber] = useState<number>(1);
+  const [PageNumber, setPageNumber] = useState<number>(3);
 
   const [region, setRegion] = useState("");
   const [type, setType] = useState("");
