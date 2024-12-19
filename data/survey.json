@@ -8,7 +8,7 @@
         "name": "Apartamenty w wyższych niż bungalow budynkach",
         "photo": "Survey/Types/apartment_bulding.webp"
       },
-      { "id": 3, "name": "Niezależne wille lub domy", "photo": "Survey/Types/House.webp" },
+      { "id": 3, "name": "Niezależne wille lub domy", "photo": "Survey/Types/house.webp" },
       {
         "id": 4,
         "name": "Jeszcze nie zdecydowałem",
