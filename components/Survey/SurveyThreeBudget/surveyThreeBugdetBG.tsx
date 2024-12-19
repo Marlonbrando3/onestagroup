@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DataSurvey from "../../../data/survey.json";
-import SurveyThreeBudgetItem from "../SurveyThreeBudget/surveyThreeBudgetItem";
+import SurveyThreeBudgetItem from "./surveyThreeBudgetItem";
 
 type Page = {
   PageNumber: any;

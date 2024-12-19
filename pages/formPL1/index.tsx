@@ -2,14 +2,14 @@ import Image from "next/image";
 import React, { useState, useRef } from "react";
 import Head from "next/head";
 import { Dancing, TenorsSans, GreatVibes } from "../../fonts/fonts";
-import Firstview from "./firstview";
+import Firstview from "../../components/Survey/firstview";
 
 import DataSurvey from "../../data/survey.json";
-import SurveyOneTypesBG from "./SurveyOneTypes/surveyOneTypesBG";
-import SurveyTwoRegionsBG from "./SurveyTwoRegions/surveyTwoRegionsBG";
-import SurveyThreeBugdetBG from "./SurveyThreeBudget/surveyThreeBugdetBG";
-import SurveyFourDateBG from "./SurveyFourDate/surveyFourDateBG";
-import Thankyoupageform from "../formPL1/thankyoupageform";
+import SurveyOneTypesBG from "../../components/Survey/SurveyOneTypes/surveyOneTypesBG";
+import SurveyTwoRegionsBG from "../../components/Survey/SurveyTwoRegions/surveyTwoRegionsBG";
+import SurveyThreeBugdetBG from "../../components/Survey/SurveyThreeBudget/surveyThreeBugdetBG";
+import SurveyFourDateBG from "../../components/Survey/SurveyFourDate/surveyFourDateBG";
+import Thankyoupageform from "../../components/Survey/thankyoupageform";
 
 export default function Index() {
   const emptyFieldPopUp: any = useRef();
