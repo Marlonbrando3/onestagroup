@@ -32,8 +32,15 @@ export default function SearchResults() {
   } = router.query;
   // console.log(Properties[0].apartmentTypeList);
 
-  let PropertiesSelected = Properties.filter((p) => {
-    console.log(p);
+  let PropertiesSorted = Properties.sort(
+    (a: any, b: any) =>
+      new Date(b.actualisationDate).getTime() - new Date(a.actualisationDate).getTime(),
+  );
+
+  console.log(PropertiesSorted);
+
+  let PropertiesSelected = PropertiesSorted.filter((p) => {
+    // console.log(p);
 
     if (
       p.country.name.toLowerCase() == (country as string) &&
