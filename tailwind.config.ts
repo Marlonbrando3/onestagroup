@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  mode: "jit",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -17,5 +18,6 @@ const config: Config = {
     },
   },
   plugins: [],
+  safelist: ["bg-green-600", "bg-red-600", "bg-blue-600", "bg-yellow-600", "bg-emerald-600"],
 };
 export default config;

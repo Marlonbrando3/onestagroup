@@ -2,7 +2,7 @@ import React from "react";
 import { Dancing, TenorsSans, GreatVibes } from "../../fonts/fonts";
 
 type Page = {
-  PageNumber: any;
+PageNumber: any;
   setPageNumber: any;
 };
 

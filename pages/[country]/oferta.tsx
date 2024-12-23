@@ -275,6 +275,9 @@ export default function Property() {
           <Header />
         </div>
         <MiniHomeView />
+        <div className="mx-[150px] h-[15px] mt-[5px] text-[14px] text-gray-700">
+          Onesta &gt; Nieruchmości Hiszpania &gt; Wyjątkowa willa{" "}
+        </div>
         <div className="flex items-center justify-center h-[80px] w-full px-auto my-[10px] mx-auto bg-white">
           <p className="block w-12/12 text-[24px] lg:text-2xl font-bold lg:mx-auto mx-4 text-center">
             {propertyData[0]?.headerAdvertisement}
