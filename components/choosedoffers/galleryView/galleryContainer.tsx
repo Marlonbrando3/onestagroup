@@ -34,6 +34,7 @@ export default function GalleryContainer() {
 
   const PropertyImages = PropertyImagesArray.map((i, index) => (
     <div
+      key={index}
       onClick={(e) => handleChoosingImage(index)}
       className="w-[186px] h-[100px] relative flex-none cursor-pointer"
     >
