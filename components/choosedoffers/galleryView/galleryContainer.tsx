@@ -6,13 +6,11 @@ import { IoIosArrowForward } from "react-icons/io";
 import Index from "@/pages/form";
 
 export default function GalleryContainer() {
-  const choosedProperty = Properties.filter((i: any) => i.listingId === "4/15982/OMS");
+  const choosedProperty = Properties.filter((i: any) => i.listingId === "6/15982/OMS");
   const PropertyImagesArray = choosedProperty[0].images;
 
   const [indexImage, setIndexImage] = useState(0);
   const choosedImage = choosedProperty[0].images[indexImage].id;
-
-  const [number, setNumber] = useState(0);
 
   //slider varables
   const ImagesPerViewMiniSlider = 3;
@@ -32,6 +30,9 @@ export default function GalleryContainer() {
     setIndexImage(index);
   };
 
+  // console.log(choosedImage);
+  // console.log(choosedProperty[0].images[indexImage].id);
+
   const PropertyImages = PropertyImagesArray.map((i, index) => (
     <div
       key={index}
@@ -44,10 +45,8 @@ export default function GalleryContainer() {
         fill
         objectFit="cover"
         className={`${
-          choosedImage === choosedProperty[0].images[index].id
-            ? "border-orange-600"
-            : "border-white"
-        } "border border-[3px] border-white hover:border-orange-400 duration-200 rounded-md`}
+          i.id === choosedProperty[0].images[indexImage].id ? "border-orange-600" : "border-white"
+        } border-[3px] hover:border-orange-400 duration-200 rounded-md`}
       />
     </div>
   ));
