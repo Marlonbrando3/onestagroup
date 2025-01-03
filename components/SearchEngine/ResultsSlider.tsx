@@ -147,9 +147,9 @@ export default function ResultsSlider({
       <div className="absolute text-[14px] z-20 bg-yellow-500 text-white top-2 px-[6px] font-bold rounded-r-xl h-[24px] leading-[24px] shadow-sm">
         {market}
       </div>
-      {market !== "Secondary" && (
+      {market !== "Rynek Wtórny" && (
         <div className="bg-orange absolute z-20 text-[14px] bg-yellow-500 text-white bottom-0 px-[6px] font-bold rounded-r-xl h-[24px] leading-[24px] ">
-          Data oddania {deliveryDate?.toString().slice(0, 7)}
+          Dostępne od {deliveryDate?.toString().slice(0, 7)}
         </div>
       )}
       <div
