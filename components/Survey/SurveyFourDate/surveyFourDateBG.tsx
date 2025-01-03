@@ -7,6 +7,8 @@ type Page = {
   setPageNumber: any;
 };
 
+const handleValidation = () => {};
+
 export default function SurveyFourDateBG({ PageNumber, setPageNumber }: Page) {
   const handleStartingSurvey = () => {
     if (ArrowTime.length > 0) {

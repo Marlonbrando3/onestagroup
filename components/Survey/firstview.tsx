@@ -46,34 +46,34 @@ export default function Firstview({ PageNumber, setPageNumber }: Page) {
   const handlingMassegeSend = async (e: any) => {
     e.preventDefault();
 
-    try {
-      let res = await fetch("/api/sendFormPL1", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          phone,
-          email,
-          msg,
-        }),
-      });
+    // try {
+    //   let res = await fetch("/api/sendFormPL1", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       name,
+    //       phone,
+    //       email,
+    //       msg,
+    //     }),
+    //   });
 
-      const data = await res.status;
-      console.log(data);
-      if (data === 200) {
-        // router.push("https://onesta.com.pl/form/thankyoupageform");
+    //   const data = await res.status;
+    //   console.log(data);
+    //   if (data === 200) {
+    //     // router.push("https://onesta.com.pl/form/thankyoupageform");
         setPageNumber(2);
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   return (
     <div className="md:w-[800px] md:h-auto w-full py-[20px] bg-white mx-auto flex flex-col items-center justify-center mt-[180px] md:mt-[110px] rounded-[30px] relative">
-      <div className="h-[4px] w-[130px] absolute bg-gray-800 z-20 top-4 rounded-[10px] md:hidden"></div>
+      <div className="h-[4px] w-[130px] absolute bg-gray-700 z-20 top-4 rounded-[10px] md:hidden"></div>
       <p className="text-[20px] md:text-[30px] md:w-[500px] w-[90%] text-center lg:leading-[35px] leading-[23px] mt-[20px] md:mt-auto">
         Wyświetl i pobierz <strong>szczegółowe informacje</strong> o wybranej inwestycji tj:
         {/* <span className="text-red-600 font-bold"> w Hiszpanii</span> */}
@@ -127,7 +127,7 @@ export default function Firstview({ PageNumber, setPageNumber }: Page) {
           <div className="flex flex-col h-[60px] justify-evenly ">
             <input
               id="fullname"
-              className="border rounded-[8px] border-gray-600 text-[20px] pl-[5px] h-[40px]"
+              className="border rounded-[8px] border-gray-400 text-[20px] pl-[5px] h-[40px]"
               placeholder="Imię i nazwisko"
               onChange={handlingDataChanges}
               required
@@ -136,7 +136,7 @@ export default function Firstview({ PageNumber, setPageNumber }: Page) {
           <div className="flex flex-col h-[60px] justify-evenly">
             <input
               id="phone"
-              className="border rounded-[8px] border-gray-600 text-[20px] pl-[5px] h-[40px]"
+              className="border rounded-[8px] border-gray-400 text-[20px] pl-[5px] h-[40px]"
               placeholder="Twój numer telefonu"
               onChange={handlingDataChanges}
               required
@@ -145,7 +145,7 @@ export default function Firstview({ PageNumber, setPageNumber }: Page) {
           <div className="flex flex-col h-[60px] justify-evenly ">
             <input
               id="mail"
-              className="border rounded-[8px] border-gray-600 text-[20px] pl-[5px] h-[40px]"
+              className="border rounded-[8px] border-gray-400 text-[20px] pl-[5px] h-[40px]"
               placeholder="E-mail"
               onChange={handlingDataChanges}
               required
@@ -154,12 +154,12 @@ export default function Firstview({ PageNumber, setPageNumber }: Page) {
           <div className="flex flex-col h-[180px] justify-evenly ">
             <textarea
               id="msg"
-              className="border rounded-[8px] border-gray-600 text-[20px] pl-[5px] h-[160px]"
+              className="border rounded-[8px] border-gray-400 text-[20px] pl-[5px] h-[160px]"
               placeholder="Twoja wiadomość"
               onChange={handlingDataChanges}
             ></textarea>
           </div>
-          <div className="flex h-[60px] mb-[30px] items-start justify-start">
+          <div className="flex h-[60px] md:h-auto mb-[30px] items-start justify-start ">
             {" "}
             <input
               type="checkbox"
@@ -173,7 +173,7 @@ export default function Firstview({ PageNumber, setPageNumber }: Page) {
           </div>
           <button
             type="submit"
-            className="border border-white w-[200px] mx-auto bg-yellow-500 text-white text-[26px] rounded-xl mt-[20px] cursor-pointer py-[5px] hover:bg-white hover:text-black duration-150 hover:border hover:border-black"
+            className="border border-white w-[200px] mx-auto bg-yellow-500 text-white text-[26px] rounded-xl mt-[5px] cursor-pointer py-[5px] hover:bg-white hover:text-black duration-150 hover:border hover:border-black"
           >
             Wyślij
           </button>

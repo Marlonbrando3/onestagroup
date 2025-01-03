@@ -22,9 +22,9 @@ export default function SurveyFourDateItem({ types, ArrowTime, setArrowTime }: T
       <div
         className={`${
           ArrowTime === types.name
-            ? "border-[5px] border-orange-200 "
+            ? "border-[5px] border-orange-400 "
             : "border-[5px] border-transparent"
-        } border-yellow-800 h-[80px] w-full flex items-center justify-center py-[6px] rounded-md`}
+        }  h-[80px] w-full flex items-center justify-center py-[6px] rounded-md`}
       >
         <p className="w-[90%] font-semibold text-[16px] leading-[24px] mx-auto text-center">
           {types.name}

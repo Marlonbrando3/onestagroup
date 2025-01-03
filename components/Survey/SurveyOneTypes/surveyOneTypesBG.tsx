@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DataSurvey from "../../../data/survey.json";
 import SurveyOneTypes from "./surveyOneTypesItem";
+import { useMyContext } from "@/components/context/myContext";
 
 type Page = {
   PageNumber: any;

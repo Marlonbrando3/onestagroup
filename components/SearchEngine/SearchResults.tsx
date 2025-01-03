@@ -11,7 +11,7 @@ export default function SearchResults() {
   const { page } = router.query;
 
   const [actualPage, setActualPage] = useState(parseInt(page as string) || 1);
-  const [propertiesPerPage, setPropertiesPerPage] = useState(6);
+  const [propertiesPerPage, setPropertiesPerPage] = useState(9);
   const startProperty = (parseInt(page as string) - 1) * propertiesPerPage;
   const endProperty = startProperty + propertiesPerPage;
 
@@ -71,8 +71,8 @@ export default function SearchResults() {
     (p, index) => index <= propertiesSubSitesLengt,
   );
 
-  console.log(PropertiesDataSubSites);
-  // console.log(bathsmax);
+  console.log(PropertiesSelected);
+  console.log(propertiesSubSitesLengt);
 
   return (
     <div className="mx-auto">
@@ -82,7 +82,7 @@ export default function SearchResults() {
         ))}
       </div>
       <ChangeSite
-        PropertiesDataSubSites={PropertiesDataSubSites}
+        propertiesSubSitesLengt={propertiesSubSitesLengt}
         actualPage={actualPage}
         setActualPage={setActualPage}
       />

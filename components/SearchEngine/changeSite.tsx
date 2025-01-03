@@ -2,15 +2,23 @@ import React from "react";
 import { useRouter } from "next/router";
 
 type Props = {
-  PropertiesDataSubSites: any;
+  propertiesSubSitesLengt: any;
   actualPage: any;
   setActualPage: any;
 };
 
-export default function ChangeSite({ PropertiesDataSubSites, actualPage, setActualPage }: Props) {
+export default function ChangeSite({ propertiesSubSitesLengt, actualPage, setActualPage }: Props) {
   const router = useRouter();
 
   const { page } = router.query;
+
+  const sites = [];
+
+  for (let i = 0; i < propertiesSubSitesLengt; i++) {
+    sites.push(i);
+  }
+
+  console.log(sites);
 
   const handleChanginSite = (index: any) => {
     router.query.page = index + 1;
@@ -22,13 +30,11 @@ export default function ChangeSite({ PropertiesDataSubSites, actualPage, setActu
     <div className="w-full h-[50px] flex items-center ">
       <div className="w-[300px] mx-auto flex justify-center">
         <p
-          className={`mr-[8px] font-boldz ${
-            PropertiesDataSubSites.length === 0 ? "hidden" : "visible"
-          }`}
+          className={`mr-[8px] font-boldz ${propertiesSubSitesLengt === 0 ? "hidden" : "visible"}`}
         >
           Strony{" "}
         </p>{" "}
-        {PropertiesDataSubSites.map((p: any, index: any) => (
+        {sites.map((p: any, index: any) => (
           <div
             key={index}
             onClick={() => handleChanginSite(index)}
