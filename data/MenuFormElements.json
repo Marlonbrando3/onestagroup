@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "Galeria",
+    "color": "yellow"
+  },
+  {
+    "id": 2,
+    "title": "Plany",
+    "color": "green"
+  },
+  {
+    "id": 3,
+    "title": "Cennik",
+    "color": "blue"
+  },
+  {
+    "id": 4,
+    "title": "Lokalizacja",
+    "color": "emerald"
+  }
+]

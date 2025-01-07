@@ -1,0 +1,173 @@
+[
+  {
+    "country": "hiszpania",
+    "region": ["Costa Blanca", "Costa Calida", "Costa del Sol", "Costa Dorata", "Costa Brava"],
+    "cities": [
+      {
+        "name": "Costa Blanca",
+        "city": [
+          "Gandia",
+          "Denia",
+          "Javea",
+          "Benissa",
+          "Moraira",
+          "Calpe",
+          "Altea",
+          "Villajoyosa",
+          "Benidorm",
+          "Elche",
+          "Santa Pola",
+          "Orihuela",
+          "Murcia",
+          "Torrevieja",
+          "Guardamar",
+          "Cabo Roig",
+          "Punta Prima"
+        ]
+      },
+      {
+        "name": "Costa del Sol",
+        "city": ["Manillva", "Marbella", "Mijas", "Malaga"]
+      },
+      {
+        "name": "Costa Calida",
+        "city": [
+          "Cartagena",
+          "La Unión",
+          "Los Alcázares",
+          "San Pedro del Pinatar",
+          "San Javier",
+          "Torre Pacheco",
+          "Fuente Álamo",
+          "Mazarrón"
+        ]
+      }
+    ]
+  },
+  {
+    "country": "portugalia",
+    "region": ["PT Północna", "PT Centralna", "Alentejo", "Algavre", "Lisbona"],
+    "cities": [
+      {
+        "name": "PT Północna",
+        "city": [
+          "Gandia",
+          "Denia",
+          "Javea",
+          "Benissa",
+          "Moraira",
+          "Calpe",
+          "Altea",
+          "Villajoyosa",
+          "Benidorm",
+          "Elche",
+          "Santa Pola",
+          "Orihuela",
+          "Murcia",
+          "Torrevieja",
+          "Guardamar",
+          "Cabo Roig",
+          "Punta Prima"
+        ]
+      },
+      {
+        "name": "PT Centralna",
+        "city": ["Centrlana-1", "Centralna-2", "Centralna-3"]
+      },
+      {
+        "name": "Alentejo",
+        "city": ["Alentejo-1", "Alentejo-2"]
+      }
+    ]
+  },
+  {
+    "country": "dominikana",
+    "region": ["Samaná"],
+    "cities": [
+      {
+        "name": "Costa Blanca",
+        "city": [
+          "Gandia",
+          "Denia",
+          "Javea",
+          "Benissa",
+          "Moraira",
+          "Calpe",
+          "Altea",
+          "Villajoyosa",
+          "Benidorm",
+          "Elche",
+          "Santa Pola",
+          "Orihuela",
+          "Murcia",
+          "Torrevieja",
+          "Guardamar",
+          "Cabo Roig",
+          "Punta Prima"
+        ]
+      },
+      {
+        "name": "Costa del Sol",
+        "city": ["Manillva", "Marbella", "Mijas", "Malaga"]
+      },
+      {
+        "name": "Costa Calida",
+        "city": [
+          "Cartagena",
+          "La Unión",
+          "Los Alcázares",
+          "San Pedro del Pinatar",
+          "San Javier",
+          "Torre Pacheco",
+          "Fuente Álamo",
+          "Mazarrón"
+        ]
+      }
+    ]
+  },
+  {
+    "country": "włochy",
+    "region": ["Sycylia", "Toskania", "Sardynia", "Piemont", "Marche"],
+    "cities": [
+      {
+        "name": "Costa Blanca",
+        "city": [
+          "Gandia",
+          "Denia",
+          "Javea",
+          "Benissa",
+          "Moraira",
+          "Calpe",
+          "Altea",
+          "Villajoyosa",
+          "Benidorm",
+          "Elche",
+          "Santa Pola",
+          "Orihuela",
+          "Murcia",
+          "Torrevieja",
+          "Guardamar",
+          "Cabo Roig",
+          "Punta Prima"
+        ]
+      },
+      {
+        "name": "Costa del Sol",
+        "city": ["Manillva", "Marbella", "Mijas", "Malaga"]
+      },
+      {
+        "name": "Costa Calida",
+        "city": [
+          "Cartagena",
+          "La Unión",
+          "Los Alcázares",
+          "San Pedro del Pinatar",
+          "San Javier",
+          "Torre Pacheco",
+          "Fuente Álamo",
+          "Mazarrón"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "Bezpieczeństwo",
+    "desc": "Nasza obecność, tłumacz przysięgły oraz prawnicy na miejscu gwarantują bezpieczną transakcję."
+  },
+  {
+    "id": 2,
+    "title": "Rozumiemy Twoje potrzeby",
+    "desc": "Stawiamy na porozumienie na wysokim poziomie. Relacyjność, transparentność wraz z otwartością na Twoje potrzeby jest dla nas najważniejsza."
+  },
+  {
+    "id": 3,
+    "title": "Finansowanie",
+    "desc": "W razie chęci skorzystania z kredyt mieszkaniowego na terenie Hiszpanii, pomaga załatwić wszelkie formalności."
+  },
+  {
+    "id": 4,
+    "title": "Zarządzanie",
+    "desc": "Po zakupie wymarzonej nieruchomości oferujemy możliwość umeblowania jej oraz dlaszego zarządzania najmem."
+  },
+  {
+    "id": 5,
+    "title": "Oferty",
+    "desc": "Współpracujemy ze wszystkimi deweloperami na rynku i mamy dostęp do 95% ogłoszeń z rynku wtórnego."
+  },
+  {
+    "id": 6,
+    "title": "Obsługa języku Polskim",
+    "desc": "Nasz zespoł oraz podmioty współpracujące mówią w kilku językach w tym po Polsku co zapewnie klarowność procesu."
+  }
+]
