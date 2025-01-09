@@ -6,7 +6,7 @@ import ViewsContainer from "@/components/choosedoffers/viewsContainer";
 
 export default function Index() {
   return (
-    <div className="h-screen bg-[url('/bg_calp.jpg')] bg-[length:400px_auto] md:bg-cover relative">
+    <div className="h-screen bg-[url('/bg_calp.jpg')] bg-cover relative">
       <Header />
       <Menu />
       <ViewsContainer />

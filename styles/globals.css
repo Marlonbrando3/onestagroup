@@ -24,6 +24,40 @@ body {
   scroll-behavior: smooth;
 } */
 
+.slider_move {
+  width: 100px;
+  height: 100px;
+  animation: move-and-hide 2.5s forwards;
+}
+
+@keyframes move-and-hide {
+  0% {
+    opacity: 0;
+  }
+
+  45% {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  50% {
+    transform: translateX(-70px);
+    opacity: 1;
+  }
+  60% {
+    transform: translateX(-260px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-70px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-70px);
+    opacity: 0;
+  }
+}
+
 .main-index {
   /* position: fixed; */
   inset: 0;

@@ -3,7 +3,9 @@ import Image from "next/image";
 import Properties from "../../../public/properties.json";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
+import Head from "next/head";
 import Index from "@/pages/form";
+import { MdTouchApp } from "react-icons/md";
 
 export default function GalleryContainer() {
   const choosedProperty = Properties.filter((i: any) => i.listingId === "6/15982/OMS");
@@ -12,9 +14,12 @@ export default function GalleryContainer() {
   const [indexImage, setIndexImage] = useState(0);
   const choosedImage = choosedProperty[0].images[indexImage].id;
 
+  const [slideWidth, setSlideWidth] = useState({ width: 0 });
+  // console.log(slideWidth);
+
   //slider varables
   const ImagesPerViewMiniSlider = 3;
-  const marginPerImage = 186;
+  const marginPerImage: any = slideWidth;
   const jumpFor = 3 * marginPerImage;
   const propertyImagesLength = PropertyImagesArray.length;
   const marginFullLength = PropertyImagesArray.length * marginPerImage;
@@ -25,6 +30,7 @@ export default function GalleryContainer() {
   const [margin, setMargin] = useState(0);
 
   const miniSlider: any = useRef();
+  const miniSlide: any = useRef();
 
   const handleChoosingImage = (index: any) => {
     setIndexImage(index);
@@ -36,8 +42,9 @@ export default function GalleryContainer() {
   const PropertyImages = PropertyImagesArray.map((i, index) => (
     <div
       key={index}
+      ref={miniSlide}
       onClick={(e) => handleChoosingImage(index)}
-      className="w-[186px] h-[100px] relative flex-none cursor-pointer"
+      className="lg:w-[186px] w-1/3 lg:h-[100px] h-[79px] relative flex-none cursor-pointer"
     >
       <Image
         src={`https://img.asariweb.pl/normal/${i.id}`}
@@ -60,16 +67,16 @@ export default function GalleryContainer() {
       miniSlider.current.style.marginLeft = `-${newMaring}px`;
       setMargin(newMaring);
     } else {
-      console.log("OKOKOK");
       miniSlider.current.style.marginLeft = `0px`;
       setMargin(0);
     }
 
-    console.log(marginFullLength - marginPerView);
-    console.log(margin);
+    // console.log(marginFullLength - marginPerView);
+    // console.log(margin);
   };
 
   const handleChangingSlideBack = () => {
+    console.log("dziala");
     if (margin !== 0) {
       const maringData = margin;
       const newMaring = maringData - jumpFor;
@@ -106,68 +113,178 @@ export default function GalleryContainer() {
     }
   };
 
+  useEffect(() => {
+    // Funkcja aktualizująca rozmiar okna
+    const handleResize = () => {
+      setSlideWidth(miniSlide.current.offsetWidth);
+      console.log(miniSlide.current.offsetWidth);
+    };
+
+    // Nasłuchuj zmiany rozdzielczości
+    window.addEventListener("resize", handleResize);
+
+    // Ustaw początkowy rozmiar
+    handleResize();
+
+    // Czyszczenie nasłuchiwania
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  // touch BigIamge sliding events
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  const handleTouchStartBig = (e: React.TouchEvent) => {
+    touchStartX = e.touches[0].clientX;
+    console.log("ts");
+  };
+
+  const handleTouchEndBig = (e: React.TouchEvent) => {
+    touchEndX = e.changedTouches[0].clientX;
+
+    if (touchStartX - touchEndX > 50) {
+      handleChangingSlideForwardMain();
+    } else {
+      handleChangingSlideBackMain();
+    }
+  };
+
+  // touch slider sliding events
+  let touchStartXSlider = 0;
+  let touchEndXSlider = 0;
+
+  const handleTouchStartSlider = (e: React.TouchEvent) => {
+    touchStartXSlider = e.touches[0].clientX;
+  };
+
+  const handleTouchEndSlider = (e: React.TouchEvent) => {
+    touchEndXSlider = e.changedTouches[0].clientX;
+    console.log("end " + touchEndXSlider);
+    console.log("start " + touchStartXSlider);
+
+    if (touchStartXSlider - touchEndXSlider > 50) {
+      console.log("fire 1");
+      handleChangingSlideForward();
+      // console.log(e.changedTouches[0].clientX);
+    } else if (touchStartXSlider - touchEndXSlider < -50) {
+      handleChangingSlideBack();
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    let touchMoveStart = e.touches[0].clientX;
+    let calculate = margin;
+
+    if (touchStartXSlider - touchMoveStart > 30) {
+      calculate = margin + (touchStartXSlider - touchMoveStart);
+      // console.log(TouchMoveActual);
+      miniSlider.current.style.marginLeft = `-${calculate}px`;
+    } else if (touchStartXSlider - touchMoveStart < -30) {
+      calculate = margin + (touchStartXSlider - touchMoveStart);
+      // console.log("lower");
+      // console.log(touchStartXSlider - TouchMoveActual);
+      miniSlider.current.style.marginLeft = `-${calculate}px`;
+    }
+  };
+
   return (
-    <div className="w-[700px] h-[600px] bg-white place-content-center rounded-xl">
-      <div className="w-[80%] h-[80%] mx-auto relative">
-        <div
-          onClick={handleChangingSlideBackMain}
-          className="h-[80%] w-[50px] absolute -left-[50px] place-content-center grid cursor-pointer"
-        >
-          <IoIosArrowBack
-            onClick={handleChangingSlideBackMain}
-            className="w-[50px] h-[50px] cursor-pointer"
-          />
+    <>
+      <Head>
+        {/* <html lang="en_US" /> */}
+        <meta property="Properties in Spain" content="image" />
+        <title>Zdobądź oferty nieruchomości</title>
+        <meta
+          name="Keywords"
+          content="Nieruchomości Hiszpania, nieruchomości w Hiszpanii, apartamenty w Hiszpanii, polska agencja nieruchomości w Hiszpanii, nieruchomości Portugalia, nieruchomości w Portugali, apartamenty w Portugalii, polska agencja nieruchomości w Portugalii, nieruchomości na Dominikanie, apartamenty Dominikana, apartamenty na Dominikanie"
+        />
+        <meta
+          name="Description"
+          content="Biuro sprzedaży nieruchomości w Hiszpanii, Portugalii, Chorwacji, Dominikanie. Przeprowdzimy Cię przez cały proces zakupowy od przedstawienia ofer poprzez proces zakupowy do finalnego zarządzania najmem jeśli tak zdecydujesz."
+        />
+        <meta
+          name="viewport"
+          content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
+        />
+        <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
+        {/* <meta property="og:locale" content="en_US" /> */}
+      </Head>
+      <div className="lg:w-[700px] w-[98vw] lg:h-[550px] h-[450px] bg-white rounded-xl overflow-hidden relative">
+        <div className="absolute w-[100px] h-[90px] top-20 right-[10px] z-20 slider_move">
+          <MdTouchApp className="w-full h-full text-white" />
         </div>
-        <div
-          onClick={handleChangingSlideForwardMain}
-          className="h-[80%] w-[50px] absolute -right-[50px] place-content-center grid cursor-pointer"
-        >
-          <IoIosArrowForward
-            onClick={handleChangingSlideForwardMain}
-            className="w-[50px] h-[50px] cursor-pointer"
-          />
-        </div>
-        <div className="font-bold text-[12px]">
-          {indexImage + 1} / {propertyImagesLength}
-        </div>
-        <div className="w-[100%] h-[80%] relative mb-[5px]">
-          <Image
-            src={`https://img.asariweb.pl/normal/${choosedImage}`}
-            fill
-            objectFit="cover"
-            alt="Hiszpania"
-            className="rounded-md"
-          />
-        </div>
-        {/* //slider mini */}
-        <div className="w-full h-[22%] flex relative">
+        <div className="lg:w-[80%] w-[95%] h-[80%] mx-auto relative">
           <div
-            onClick={handleChangingSlideBack}
-            className={`${
-              margin === 0 && "text-gray-200"
-            } h-[100%] w-[50px] absolute -left-[50px] place-content-center grid cursor-pointer`}
+            onClick={handleChangingSlideBackMain}
+            className="h-[80%] w-[50px] absolute -left-[50px] place-content-center grid cursor-pointer"
           >
             <IoIosArrowBack
-              onClick={handleChangingSlideBack}
-              className="w-[30px] h-[30px] cursor-pointer"
+              onClick={handleChangingSlideBackMain}
+              className="w-[50px] h-[50px] cursor-pointer hidden md:block"
             />
-          </div>
-          <div className="w-full overflow-hidden">
-            <div ref={miniSlider} className="w-full flex duration-200">
-              {PropertyImages}
-            </div>
           </div>
           <div
-            onClick={handleChangingSlideForward}
-            className="h-[100%] w-[50px] absolute -right-[50px] place-content-center grid cursor-pointer"
+            onClick={handleChangingSlideForwardMain}
+            className="h-[80%] w-[50px] absolute -right-[50px] place-content-center grid cursor-pointer"
           >
             <IoIosArrowForward
-              onClick={handleChangingSlideForward}
-              className="w-[30px] h-[30px] cursor-pointer"
+              onClick={handleChangingSlideForwardMain}
+              className="w-[50px] h-[50px] cursor-pointer hidden md:block"
             />
+          </div>
+          <div className="font-bold text-[20px] my-[20px]">
+            {indexImage + 1} / {propertyImagesLength}
+          </div>
+          <div
+            onTouchStart={handleTouchStartBig}
+            onTouchEnd={handleTouchEndBig}
+            className="w-[100%] h-[80%] relative mb-[5px]"
+          >
+            <Image
+              src={`https://img.asariweb.pl/normal/${choosedImage}`}
+              fill
+              objectFit="cover"
+              alt="Hiszpania"
+              className="rounded-md"
+            />
+          </div>
+          {/* //slider mini */}
+          <div className="w-full h-[22%] flex relative">
+            <div
+              onClick={handleChangingSlideBack}
+              className={`${
+                margin === 0 && "text-gray-200"
+              } lg:h-[100%] h-[50%] w-[40px] lg:w-[50px] bg-white lg:-left-[50px] -left-[10px] place-content-center grid cursor-pointer absolute z-10 top-0 bottom-0 my-auto border`}
+            >
+              <IoIosArrowBack
+                onClick={handleChangingSlideBack}
+                className="w-[30px] h-[30px] cursor-pointer "
+              />
+            </div>
+            <div className="w-full overflow-hidden">
+              <div
+                onTouchStart={handleTouchStartSlider}
+                onTouchEnd={handleTouchEndSlider}
+                onTouchMove={handleTouchMove}
+                ref={miniSlider}
+                className="w-full flex duration-200"
+              >
+                {PropertyImages}
+              </div>
+            </div>
+            <div
+              onClick={handleChangingSlideForward}
+              className="lg:h-[100%] h-[50%] w-[40px] lg:w-[50px] absolute lg:-right-[50px] -right-[5px] place-content-center grid cursor-pointer bg-white top-0 bottom-0 my-auto border"
+            >
+              <IoIosArrowForward
+                onClick={handleChangingSlideForward}
+                className="w-[30px] h-[30px] cursor-pointer"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

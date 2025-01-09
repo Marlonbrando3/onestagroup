@@ -14,7 +14,7 @@ import Thankyoupageform from "../../components/Survey/thankyoupageform";
 export default function Index() {
   const emptyFieldPopUp: any = useRef();
 
-  const [PageNumber, setPageNumber] = useState<number>(1);
+  const [PageNumber, setPageNumber] = useState<number>(2);
 
   const [region, setRegion] = useState("");
   const [type, setType] = useState("");

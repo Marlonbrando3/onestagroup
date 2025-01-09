@@ -13,5 +13,9 @@ export default function Menu() {
     );
   });
 
-  return <div className="h-[30px] w-full flex justify-end absolute top-[50px]">{MenuElements}</div>;
+  return (
+    <div className="h-[30px] w-full flex justify-end absolute md:top-[50px] top-[80px]">
+      {MenuElements}
+    </div>
+  );
 }
