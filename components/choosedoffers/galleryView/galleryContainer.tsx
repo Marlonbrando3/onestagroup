@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Properties from "../../../public/properties.json";
 import { IoIosArrowBack } from "react-icons/io";
@@ -7,16 +7,12 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 export default function GalleryContainer() {
-  const miniSlider: any = useRef();
-  const miniSlide: any = useRef();
-  
   const router = useRouter();
   const { offer } = router.query;
   console.log(offer);
 
-  if (!router.isReady) {
-    return <p>Ładowanie...</p>;
-  }
+  const miniSlider: any = useRef();
+  const miniSlide: any = useRef();
 
   const choosedProperty = Properties.filter((i: any) => i.listingId === offer);
   const PropertyImagesArray = choosedProperty[0].images;
@@ -42,9 +38,6 @@ export default function GalleryContainer() {
   const handleChoosingImage = (index: any) => {
     setIndexImage(index);
   };
-
-  // console.log(choosedImage);
-  // console.log(choosedProperty[0].images[indexImage].id);
 
   const PropertyImages = PropertyImagesArray.map((i, index) => (
     <div
@@ -122,25 +115,6 @@ export default function GalleryContainer() {
     }
   };
 
-  useEffect(() => {
-    // Funkcja aktualizująca rozmiar okna
-    const handleResize = () => {
-      setSlideWidth(miniSlide.current.offsetWidth);
-      console.log(miniSlide.current.offsetWidth);
-    };
-
-    // Nasłuchuj zmiany rozdzielczości
-    window.addEventListener("resize", handleResize);
-
-    // Ustaw początkowy rozmiar
-    handleResize();
-
-    // Czyszczenie nasłuchiwania
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   // touch BigIamge sliding events
   let touchStartX = 0;
   let touchEndX = 0;
@@ -197,6 +171,29 @@ export default function GalleryContainer() {
       miniSlider.current.style.marginLeft = `-${calculate}px`;
     }
   };
+
+  useEffect(() => {
+    // Funkcja aktualizująca rozmiar okna
+    const handleResize = () => {
+      setSlideWidth(miniSlide.current.offsetWidth);
+      console.log(miniSlide.current.offsetWidth);
+    };
+
+    // Nasłuchuj zmiany rozdzielczości
+    window.addEventListener("resize", handleResize);
+
+    // Ustaw początkowy rozmiar
+    handleResize();
+
+    // Czyszczenie nasłuchiwania
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  if (!router.isReady) {
+    return <p>Ładowanie...</p>;
+  }
 
   return (
     <>
