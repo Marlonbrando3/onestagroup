@@ -7,6 +7,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 export default function GalleryContainer() {
+  const miniSlider: any = useRef();
+  const miniSlide: any = useRef();
+  
   const router = useRouter();
   const { offer } = router.query;
   console.log(offer);
@@ -35,9 +38,6 @@ export default function GalleryContainer() {
   const [whichSliderSetIsActive, setWhichSliderSetIsActive] = useState(0);
 
   const [margin, setMargin] = useState(0);
-
-  const miniSlider: any = useRef();
-  const miniSlide: any = useRef();
 
   const handleChoosingImage = (index: any) => {
     setIndexImage(index);
