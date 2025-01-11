@@ -51,7 +51,7 @@ export default function Property() {
   if (images !== undefined) {
     images?.filter((img) => {
       if (img.showed === true) {
-        showedImage = img.image;
+        showedImage = img.image.replace("thumbnail", "normal");
       }
     });
   }
@@ -72,14 +72,14 @@ export default function Property() {
         if (index === 0) {
           return {
             id: index + 1,
-            image: `https://img.asariweb.pl/normal/${image.id}`,
+            image: `https://img.asariweb.pl/thumbnail/${image.id}`,
             count: 1,
             showed: true,
           };
         } else
           return {
             id: index + 1,
-            image: `https://img.asariweb.pl/normal/${image.id}`,
+            image: `https://img.asariweb.pl/thumbnail/${image.id}`,
             count: 0,
             showed: false,
           };

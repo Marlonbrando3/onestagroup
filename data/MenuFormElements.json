@@ -2,21 +2,25 @@
   {
     "id": 1,
     "title": "Galeria",
-    "color": "yellow"
+    "color": "yellow",
+    "query": "Galeria"
   },
   {
     "id": 2,
     "title": "Plany",
-    "color": "green"
+    "color": "green",
+    "query": "Plany"
   },
   {
     "id": 3,
     "title": "Cennik",
-    "color": "blue"
+    "color": "blue",
+    "query": "Cennik"
   },
   {
     "id": 4,
     "title": "Lokalizacja",
-    "color": "emerald"
+    "color": "emerald",
+    "query": "Lokalizacja"
   }
 ]

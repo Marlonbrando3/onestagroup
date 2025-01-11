@@ -4,11 +4,18 @@ import Properties from "../../../public/properties.json";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import Head from "next/head";
-import Index from "@/pages/form";
-import { MdTouchApp } from "react-icons/md";
+import { useRouter } from "next/router";
 
 export default function GalleryContainer() {
-  const choosedProperty = Properties.filter((i: any) => i.listingId === "6/15982/OMS");
+  const router = useRouter();
+  const { offer } = router.query;
+  console.log(offer);
+
+  if (!router.isReady) {
+    return <p>Ładowanie...</p>;
+  }
+
+  const choosedProperty = Properties.filter((i: any) => i.listingId === offer);
   const PropertyImagesArray = choosedProperty[0].images;
 
   const [indexImage, setIndexImage] = useState(0);
@@ -47,10 +54,12 @@ export default function GalleryContainer() {
       className="lg:w-[186px] w-1/3 lg:h-[100px] h-[79px] relative flex-none cursor-pointer"
     >
       <Image
-        src={`https://img.asariweb.pl/normal/${i.id}`}
+        src={`https://img.asariweb.pl/thumbnail/${i.id}`}
         alt="lala"
         fill
         objectFit="cover"
+        placeholder="blur"
+        blurDataURL={`https://img.asariweb.pl/thumbnail/${choosedImage}`}
         className={`${
           i.id === choosedProperty[0].images[indexImage].id ? "border-orange-600" : "border-white"
         } border-[3px] hover:border-orange-400 duration-200 rounded-md`}
@@ -210,14 +219,14 @@ export default function GalleryContainer() {
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
-      <div className="lg:w-[700px] w-[98vw] lg:h-[550px] h-[450px] bg-white rounded-xl overflow-hidden relative">
-        <div className="absolute w-[100px] h-[90px] top-20 right-[10px] z-20 slider_move">
+      <div className="lg:w-[700px] w-[98vw] md:h-[480px] h-[370px] bg-white rounded-xl overflow-hidden relative">
+        {/* <div className="absolute w-[100px] h-[90px] top-20 right-[10px] z-20 slider_move">
           <MdTouchApp className="w-full h-full text-white" />
-        </div>
+        </div> */}
         <div className="lg:w-[80%] w-[95%] h-[80%] mx-auto relative">
           <div
             onClick={handleChangingSlideBackMain}
-            className="h-[80%] w-[50px] absolute -left-[50px] place-content-center grid cursor-pointer"
+            className="h-[100%] w-[50px] absolute -left-[50px] place-content-center grid cursor-pointer"
           >
             <IoIosArrowBack
               onClick={handleChangingSlideBackMain}
@@ -226,14 +235,14 @@ export default function GalleryContainer() {
           </div>
           <div
             onClick={handleChangingSlideForwardMain}
-            className="h-[80%] w-[50px] absolute -right-[50px] place-content-center grid cursor-pointer"
+            className="h-[100%] w-[50px] absolute -right-[50px] place-content-center grid cursor-pointer"
           >
             <IoIosArrowForward
               onClick={handleChangingSlideForwardMain}
               className="w-[50px] h-[50px] cursor-pointer hidden md:block"
             />
           </div>
-          <div className="font-bold text-[20px] my-[20px]">
+          <div className="font-bold text-[14px] my-[5px] md:my-[10px]">
             {indexImage + 1} / {propertyImagesLength}
           </div>
           <div
@@ -246,23 +255,25 @@ export default function GalleryContainer() {
               fill
               objectFit="cover"
               alt="Hiszpania"
-              className="rounded-md"
+              className="rounded-md slider_move"
+              placeholder="blur"
+              blurDataURL={`https://img.asariweb.pl/normal/${choosedImage}`}
             />
           </div>
           {/* //slider mini */}
-          <div className="w-full h-[22%] flex relative">
+          <div className="w-full md:h-[30%] h-[28%] flex relative">
             <div
               onClick={handleChangingSlideBack}
               className={`${
                 margin === 0 && "text-gray-200"
-              } lg:h-[100%] h-[50%] w-[40px] lg:w-[50px] bg-white lg:-left-[50px] -left-[10px] place-content-center grid cursor-pointer absolute z-10 top-0 bottom-0 my-auto border`}
+              } lg:h-[100%] h-[50%] w-[40px] lg:w-[50px] bg-white lg:-left-[50px] -left-[5px] md:-top-[10px] place-content-center grid cursor-pointer absolute top-0 bottom-0 my-auto shadow-[0_0px_10px_0_rgba(0,0,0,0.3)] rounded-xl md:shadow-[0px]`}
             >
               <IoIosArrowBack
                 onClick={handleChangingSlideBack}
                 className="w-[30px] h-[30px] cursor-pointer "
               />
             </div>
-            <div className="w-full overflow-hidden">
+            <div className="md:w-full w-[90%] overflow-hidden mx-auto">
               <div
                 onTouchStart={handleTouchStartSlider}
                 onTouchEnd={handleTouchEndSlider}
@@ -275,7 +286,7 @@ export default function GalleryContainer() {
             </div>
             <div
               onClick={handleChangingSlideForward}
-              className="lg:h-[100%] h-[50%] w-[40px] lg:w-[50px] absolute lg:-right-[50px] -right-[5px] place-content-center grid cursor-pointer bg-white top-0 bottom-0 my-auto border"
+              className="lg:h-[100%] h-[50%] w-[40px] lg:w-[50px] absolute lg:-right-[50px] -right-[5px] md:-top-[10px] place-content-center grid cursor-pointer bg-white top-0 bottom-0 my-auto shadow-[0_0px_10px_0_rgba(0,0,0,0.3)] rounded-xl md:shadow-[0px] "
             >
               <IoIosArrowForward
                 onClick={handleChangingSlideForward}
