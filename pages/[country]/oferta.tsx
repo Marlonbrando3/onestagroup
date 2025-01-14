@@ -57,16 +57,23 @@ export default function Property() {
   }
 
   useEffect(() => {
-    console.log(router);
+    // console.log(router);
     if (router.isReady === true) {
       const QueryIdTemp: any = searchParams.get("id");
       const QueryId = parseInt(QueryIdTemp);
       const propertyDataTemp = Properties.filter((i) => i.id === QueryId);
       console.log(propertyDataTemp);
-      const PropertyImages = propertyDataTemp[0]?.images.filter((i) => i.id);
+      const PropertyImages = propertyDataTemp[0]?.images.filter(
+        (i) =>
+          (i.id && i.isScheme === false && i.description === null) || i.description === "strona",
+      );
+
+      //delete secheme from images
 
       setPropertyData(propertyDataTemp);
       setPropertyImages(PropertyImages);
+
+      console.log(PropertyImages);
 
       const imagesTemp = PropertyImages?.map((image, index) => {
         if (index === 0) {
@@ -86,7 +93,7 @@ export default function Property() {
       });
 
       setImages(imagesTemp);
-      console.log(imagesTemp);
+      // console.log(imagesTemp);
     }
   }, [searchParams]);
 

@@ -1,26 +1,37 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import Properties from "../../../public/properties.json";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Data from "../../../data/formData.json";
+import Image from "next/image";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export default function Plans() {
-  const choosedProperty = Properties.filter((i: any) => i.listingId === "6/15982/OMS");
-  const PropertyImagesArray = choosedProperty[0].images;
+  const router = useRouter();
+  const { offer } = router.query;
 
-  const [indexPDF, setIndexPDF] = useState(0);
+  const choosedProperty = Properties.filter((i: any) => i.listingId === offer)
+    .flatMap((i) => i.images)
+    .filter((i) => i.isScheme === true);
+
+  console.log(choosedProperty);
+
+  const [indexPlan, setIndexPlan] = useState(0);
 
   const handlePDFnumber = (index: any) => {
-    setIndexPDF(index);
+    setIndexPlan(index);
   };
 
-  const selectedPDF = Data.find((item) => item.id === "Higuericas")?.images[indexPDF];
-  console.log(selectedPDF);
+  const selectedPlan = choosedProperty[indexPlan];
+  console.log(selectedPlan);
 
-  const subpage = Data.find((i) => i.id === "Higuericas")?.images.map((i, index) => (
+  const subpage = choosedProperty.map((i, index) => (
     <p
       key={index}
       onClick={() => handlePDFnumber(index)}
-      className="cursor-pointer text-[30px] w-[40px] h-[40px] place-content-center grid bg-white mx-[2px] rounded-md"
+      className={`${
+        indexPlan === index ? "bg-orange-500 text-white" : "bg-white"
+      } "cursor-pointer text-[30px] w-[40px] h-[40px] place-content-center grid mx-[2px] rounded-md cursor-pointer`}
     >
       {index + 1}
     </p>
@@ -49,8 +60,36 @@ export default function Plans() {
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
-      <div className="lg:w-[700px] w-[98vw] md:h-[480px] h-[370px] bg-white rounded-xl overflow-hidden relative">
-        <iframe src={`${selectedPDF}`} width="100%" height="500px" style={{ border: "none" }} />
+      <div className="lg:w-[700px] w-[98vw] md:h-[480px] h-[370px] bg-white rounded-xl overflow-hidden">
+        <TransformWrapper initialScale={1} minScale={1} maxScale={5}>
+          {({ zoomIn, zoomOut }) => (
+            <>
+              <div className="flex justify-center">
+                <button
+                  onClick={() => zoomIn()}
+                  className="border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] leading-[0px] flex items-center justify-center"
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => zoomOut()}
+                  className="mr-[10px] border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] flex items-center justify-center"
+                >
+                  -
+                </button>
+              </div>
+              <TransformComponent>
+                <Image
+                  src={`https://img.asariweb.pl/normal/${selectedPlan.id}`}
+                  alt="Opis obrazka"
+                  width={2600}
+                  height={2400}
+                />
+              </TransformComponent>
+            </>
+          )}
+        </TransformWrapper>
+        {/* <Image src={`${selectedPlan}`} alt="Opis obrazka" width={2600} height={2400} /> */}
       </div>
       <div className="flex mt-[10px]"> {subpage}</div>
     </>

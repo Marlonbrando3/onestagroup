@@ -1,18 +1,27 @@
 import React, { useState } from "react";
 import DataSurvey from "../../../data/survey.json";
 import SurveyFourDateItem from "./surveyFourDateItem";
+import { useRouter } from "next/router";
+import { PathnameContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
 type Page = {
   PageNumber: any;
   setPageNumber: any;
 };
 
-const handleValidation = () => {};
-
 export default function SurveyFourDateBG({ PageNumber, setPageNumber }: Page) {
+  const router = useRouter();
+
+  const { offer } = router.query;
+
+  const handleValidation = () => {};
+
   const handleStartingSurvey = () => {
     if (ArrowTime.length > 0) {
-      setPageNumber(7);
+      router.push({
+        pathname: "https://localhost:3000/choosedoffers",
+        query: { offer: offer, id: "Galeria" },
+      });
     }
   };
 

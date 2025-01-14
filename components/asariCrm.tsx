@@ -78,6 +78,28 @@ export default function AsariCrm() {
     }
   };
 
+  const handleCheckingOneOffer = async () => {
+    finish.current.style.display = "hidden";
+    spinner.current.style.display = "flex";
+    const propertiesId: any = [];
+
+    try {
+      let res = await fetch("/api/asarigetListingId", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      // const resultsData = await res.json();
+      // resultsData.list.data.map((propId: any) => {
+      //   propertiesId.push(propId.id);
+      // });
+
+      console.log(await res.json());
+      // await handleDownloadingAllProperties(propertiesId);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     console.log("refreshed");
   }, []);
@@ -89,6 +111,12 @@ export default function AsariCrm() {
         className="bg-blue-500 text-white w-[200px] text-center cursor-pointer"
       >
         Ściągnij dane z Asari
+      </div>
+      <div
+        onClick={handleCheckingOneOffer}
+        className="bg-orange-600 text-white w-[200px] text-center cursor-pointer mt-[20px]"
+      >
+        Sprawdź jedną ofertę
       </div>
       <div ref={spinner} className="hidden justify-evenly items-center w-[180px] py-[20px]">
         <div role="status">

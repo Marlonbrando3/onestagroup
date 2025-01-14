@@ -1,12 +1,20 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import Properties from "../../../public/properties.json";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Data from "../../../data/formData.json";
+import Image from "next/image";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export default function Prices() {
-  const choosedProperty = Properties.filter((i: any) => i.listingId === "6/15982/OMS");
+  const router = useRouter();
+  const { offer } = router.query;
 
-  const priceList = Data.find((item) => item.id === "Higuericas")?.prices;
+  const priceList = Properties.filter((i: any) => i.listingId === offer)
+    .flatMap((i) => i.images)
+    .filter((i) => i.description === "cennik");
+
+  console.log(priceList);
 
   const [indexImage, setIndexImage] = useState(0);
 
@@ -32,7 +40,34 @@ export default function Prices() {
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
       <div className="lg:w-[700px] w-[98vw] md:h-[480px] h-[370px] bg-white rounded-xl overflow-hidden relative">
-        <iframe src={`${priceList}`} width="100%" height="500px" style={{ border: "none" }} />
+        <TransformWrapper initialScale={1} minScale={1} maxScale={5}>
+          {({ zoomIn, zoomOut }) => (
+            <>
+              <div className="flex justify-center">
+                <button
+                  onClick={() => zoomIn()}
+                  className="border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] leading-[0px] flex items-center justify-center"
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => zoomOut()}
+                  className="mr-[10px] border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] flex items-center justify-center"
+                >
+                  -
+                </button>
+              </div>
+              <TransformComponent>
+                <Image
+                  src={`https://img.asariweb.pl/normal/${priceList[0].id}`}
+                  alt="Opis obrazka"
+                  width={2600}
+                  height={2400}
+                />
+              </TransformComponent>
+            </>
+          )}
+        </TransformWrapper>
       </div>
     </>
   );

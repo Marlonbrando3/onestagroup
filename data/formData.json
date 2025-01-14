@@ -1,13 +1,42 @@
 [
   {
-    "id": "Higuericas",
-    "ref": "4/15982/OMS",
-    "images": [
-      "/Higuericas/PLANO.HIGUERICASBAY.CONJUNTO.240605.pdf",
-      "/Higuericas/PLANO.HIGUERICASBAY.III.43.240604.pdf",
-      "/Higuericas/PLANO.HIGUERICASBAY.III.45A.240604.pdf"
-    ],
-    "localization": "/Higuericas/Location.jpg",
-    "prices": "/Higuericas/prices.pdf"
+    "id": "Higuericas_Bay",
+    "ref": "5/15982/OMS"
+  },
+  {
+    "id": "Lago_Di_Como",
+    "ref": "4/15982/OMS "
+  },
+  {
+    "id": "Lago_Di_verde",
+    "ref": "141/15982/OMS"
+  },
+  {
+    "id": "Lallana_Towers",
+    "ref": "9/15982/OMS"
+  },
+  {
+    "id": "Lallana_Premium",
+    "ref": "84/15982/OMS"
+  },
+  {
+    "id": "Lago_Di_Verde_app",
+    "ref": "141/15982/OMS"
+  },
+  {
+    "id": "Lago_Di_Verde_Bungalow",
+    "ref": "140/15982/OMS"
+  },
+  {
+    "id": "Nova_II",
+    "ref": "26/15982/OMS"
+  },
+  {
+    "id": "Nature_View",
+    "ref": "39/15982/OMS"
+  },
+  {
+    "id": "Tokai_Playa",
+    "ref": "92/15982/OMS"
   }
 ]
