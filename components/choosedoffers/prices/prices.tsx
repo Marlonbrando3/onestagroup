@@ -14,8 +14,6 @@ export default function Prices() {
     .flatMap((i) => i.images)
     .filter((i) => i.description === "cennik");
 
-  console.log(priceList);
-
   const [indexImage, setIndexImage] = useState(0);
 
   return (
@@ -44,22 +42,22 @@ export default function Prices() {
           {({ zoomIn, zoomOut }) => (
             <>
               <div className="flex justify-center items-center">
-                <p className="mr-[15px] text-[16px] font-bold">Powiększenie</p>
+                <p className="mr-[15px] text-[16px] font-semibold">Powiększenie</p>
                 <button
                   onClick={() => zoomIn()}
-                  className="border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] leading-[0px] flex items-center justify-center"
+                  className="border w-[40px] h-[40px] bg-gray-100 border-gray-400 text-black rounded-md text-[20px] leading-[0px] flex items-center justify-center mr-[3px]"
                 >
                   +
                 </button>
                 <button
                   onClick={() => zoomOut()}
-                  className="mr-[10px] border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] flex items-center justify-center"
+                  className="border w-[40px] h-[40px] bg-gray-100 border-gray-400 text-black rounded-md text-[20px] leading-[0px] flex items-center justify-center"
                 >
                   -
                 </button>
               </div>
               <TransformComponent>
-                <div className="w-[98vw] md:h-[480px] h-[370px] relative ">
+                <div className="md:w-[700px] w-[98vw] md:h-[480px] h-[370px] relative">
                   <Image
                     src={`https://img.asariweb.pl/normal/${priceList[0].id}`}
                     alt="Opis obrazka"

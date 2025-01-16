@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import GalleryContainer from "./galleryView/galleryContainer";
 import { useRouter } from "next/router";
 import Plans from "./plans/plans";
@@ -6,7 +6,19 @@ import Other from "../otherOffers/other";
 import Localization from "./localization/localization";
 import Prices from "./prices/prices";
 
-export default function ViewsContainer() {
+type Data = {
+  handleMoreOffers: any;
+  moreoffers: any;
+  moreoffersTXT: any;
+  moreoffersArrow: any;
+};
+
+export default function ViewsContainer({
+  handleMoreOffers,
+  moreoffers,
+  moreoffersTXT,
+  moreoffersArrow,
+}: Data) {
   const router = useRouter();
   const { offer, id } = router.query;
 
@@ -20,7 +32,12 @@ export default function ViewsContainer() {
       {id === "Plany" && <Plans />}
       {id === "Lokalizacja" && <Localization />}
       {id === "Cennik" && <Prices />}
-      <Other />
+      <Other
+        handleMoreOffers={handleMoreOffers}
+        moreoffers={moreoffers}
+        moreoffersTXT={moreoffersTXT}
+        moreoffersArrow={moreoffersArrow}
+      />
     </div>
   );
 }

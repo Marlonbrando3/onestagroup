@@ -39,16 +39,17 @@ export default function Localization() {
         <TransformWrapper initialScale={1} minScale={1} maxScale={5}>
           {({ zoomIn, zoomOut }) => (
             <>
-              <div className="flex justify-center">
+              <div className="flex justify-center items-center">
+                <p className="mr-[15px] text-[16px] font-semibold">Powiększenie</p>
                 <button
                   onClick={() => zoomIn()}
-                  className="border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] leading-[0px] flex items-center justify-center"
+                  className="border w-[40px] h-[40px] bg-gray-100 border-gray-400 text-black rounded-md text-[20px] leading-[0px] flex items-center justify-center mr-[3px]"
                 >
                   +
                 </button>
                 <button
                   onClick={() => zoomOut()}
-                  className="mr-[10px] border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] flex items-center justify-center"
+                  className="border w-[40px] h-[40px] bg-gray-100 border-gray-400 text-black rounded-md text-[20px] leading-[0px] flex items-center justify-center"
                 >
                   -
                 </button>

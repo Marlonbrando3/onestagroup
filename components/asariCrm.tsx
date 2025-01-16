@@ -14,6 +14,8 @@ export default function AsariCrm() {
     return `${progress} %`;
   }, [progress]);
 
+  // 11956264;
+
   const handleDownloadingAllProperties = async (propertiesId: any) => {
     for (const id of propertiesId) {
       console.log(i);

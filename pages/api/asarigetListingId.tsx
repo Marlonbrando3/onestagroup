@@ -1,8 +1,6 @@
 export default async function GET(req: any, res: any) {
-  // 84 / 15982 / OMS;
-
   try {
-    let result = await fetch("https://api.asari.pro/site/listing?listingId=84/15982/OMS", {
+    let result = await fetch("https://api.asari.pro/site/listing?id=11954574", {
       method: "GET",
       cache: "no-store",
       headers: {

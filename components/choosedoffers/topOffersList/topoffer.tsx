@@ -5,6 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Properties from "../../../public/properties.json";
 
+type Data = {
+  handleMoreOffers: any;
+  moreoffers: any;
+  moreoffersTXT: any;
+  moreoffersArrow: any;
+};
+
 export default function Topoffer() {
   const router = useRouter();
 
@@ -13,9 +20,10 @@ export default function Topoffer() {
       if (i.listingId === p.ref) {
         // console.log(p.ref);
         return (
-          <div
+          <Link
+            href={{ pathname: "/choosedoffers", query: { offer: p.ref, id: "Galeria" } }}
             key={p.ref}
-            className="shadow-xl sm:w-[400px] h-auto my-[5px] rounded-md p-[5px] lg:w-[300px]"
+            className="block shadow-[0_0px_7px_0_rgba(0,0,0,0.3)] rounded-xl sm:w-[400px] h-auto my-[5px] p-[8px] lg:w-[300px] mx-[5px]"
           >
             <div className="w-full relative h-[200px]">
               <Image
@@ -23,22 +31,21 @@ export default function Topoffer() {
                 alt="lala"
                 fill
                 objectFit="cover"
+                className="rounded-md"
               />
-              {i.price.amount}
             </div>
             <div className="px-[10px]">
               <p className="text-[22px] my-[10px]">{i.headerAdvertisement}</p>
               <p className="text-[26px] my-[10px] text-right font-bold">
-                od {i.price.amount.toLocaleString()} €
+                <p className="text-[12px] inline">od</p>{" "}
+                <p className="inline text-slate-700">{i.price.amount.toLocaleString()} € </p>
+                <p className="text-[10px]">{p.ref}</p>
               </p>
-              <Link
-                href={{ pathname: "/choosedoffers", query: { offer: p.ref, id: "Galeria" } }}
-                className="mx-auto block w-[210px] py-[5px] bg-blue-600 text-center text-white text-[22px] my-[20px] rounded-md"
-              >
+              <div className="mx-auto block w-9/11 py-[5px] bg-orange-400 text-center text-white text-[22px] my-[20px] rounded-md">
                 Więcej informacji
-              </Link>
+              </div>
             </div>
-          </div>
+          </Link>
         );
       }
     });
