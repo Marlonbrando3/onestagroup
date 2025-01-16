@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import Link from "next/link";
-import { LuArrowUpRightSquare } from "react-icons/lu";
 
 export default function Blogbuttonoffers() {
   const showPropertiesOffers = useRef();
@@ -18,7 +17,6 @@ export default function Blogbuttonoffers() {
         className="text-white md:text-[20px] text-[12px] font-normal flex items-center py-[5px] rounded-b-2xl justify-center bg-red-500 md:w-[330px] md:px-0 px-[5px] shadow-xl mb-[200px] mx-auto z-[999] md:z-auto"
       >
         Oferty nieruchomości
-        <LuArrowUpRightSquare />
       </Link>
     </div>
   );
