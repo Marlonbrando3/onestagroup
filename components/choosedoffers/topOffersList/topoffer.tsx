@@ -13,7 +13,10 @@ export default function Topoffer() {
       if (i.listingId === p.ref) {
         // console.log(p.ref);
         return (
-          <div className="shadow-xl sm:w-[400px] h-auto my-[5px] rounded-md p-[5px] lg:w-[300px]">
+          <div
+            key={p.ref}
+            className="shadow-xl sm:w-[400px] h-auto my-[5px] rounded-md p-[5px] lg:w-[300px]"
+          >
             <div className="w-full relative h-[200px]">
               <Image
                 src={`https://img.asariweb.pl/normal/${i.images[0].id}`}
