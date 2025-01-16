@@ -10,7 +10,6 @@ import HeaderBlogPost from "../../components/HeaderBlogPost";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
 import Newsletter from "../../components/newsletter";
 import Blogbuttonoffers from "../../components/blogbuttonoffers";
-import { LuArrowUpRightSquare } from "react-icons/lu";
 
 export default function Okupados() {
   const temat = "Okupados, Okupas, Okupado... a inwestowanie w nieruchomości w Hiszpanii";
@@ -277,7 +276,6 @@ export default function Okupados() {
           className="text-white md:text-[26px] text-auto font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 md:w-[500px] shadow-xl mb-[50px] mx-auto"
         >
           Przeglądaj oferty nieruchomości
-          <LuArrowUpRightSquare />
         </Link>
       </div>
       <ContactFormBlogPost temat={temat} />

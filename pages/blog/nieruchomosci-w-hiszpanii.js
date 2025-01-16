@@ -10,7 +10,6 @@ import Blogbuttonoffers from "../../components/blogbuttonoffers";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
 import Footer from "../../components/Footer";
 import Newsletter from "../../components/newsletter";
-import { LuArrowUpRightSquare } from "react-icons/lu";
 
 export default function BlogPost() {
   const temat = "Nieruchomości w Hiszpanii";

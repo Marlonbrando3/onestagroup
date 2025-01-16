@@ -9,7 +9,6 @@ import HeaderBlogPost from "../../components/HeaderBlogPost";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
 import Newsletter from "../../components/newsletter";
 import Blogbuttonoffers from "../../components/blogbuttonoffers";
-import { LuArrowUpRightSquare } from "react-icons/lu";
 
 export default function BlogPost() {
   const temat = "Nieruchomości w Hiszpanii, jak rynek się zmienił";
@@ -287,7 +286,6 @@ export default function BlogPost() {
         className="text-white text-[26px] font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 w-[500px] shadow-xl"
       >
         Przeglądaj oferty nieruchomości
-        <LuArrowUpRightSquare />
       </Link>
       <ContactFormBlogPost temat="Nieruchomości w Hiszpanii, co się zmieniło?" />
     </>

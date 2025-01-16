@@ -10,7 +10,6 @@ import Blogbuttonoffers from "../../components/blogbuttonoffers";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
 import Footer from "../../components/Footer";
 import Newsletter from "../../components/newsletter";
-import { LuArrowUpRightSquare } from "react-icons/lu";
 
 export default function BlogPost() {
   const temat = "Jak kupować nieruchomości w Hiszpanii (cz.1 określ swoje cele)";
@@ -444,7 +443,6 @@ export default function BlogPost() {
           className="text-white md:text-[26px] w-auto font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 md:w-[500px] shadow-xl mb-[50px]"
         >
           Przeglądaj oferty nieruchomości
-          <LuArrowUpRightSquare />
         </Link>
       </div>
       <ContactFormBlogPost temat="Jak kupić nieruchomość w Hiszpanii cz.1" />

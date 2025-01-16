@@ -7,7 +7,6 @@ import Header from "../../components/Header";
 import HeaderBlog from "../../components/HeaderBlog";
 import HeaderBlogPost from "../../components/HeaderBlogPost";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
-import { LuArrowUpRightSquare } from "react-icons/lu";
 import Footer from "../../components/Footer";
 import Blogbuttonoffers from "../../components/blogbuttonoffers";
 import Newsletter from "../../components/newsletter";
@@ -271,7 +270,6 @@ export default function BlogPost() {
           className="text-white text-[26px] font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 w-[500px] shadow-xl"
         >
           Przeglądaj oferty nieruchomości
-          <LuArrowUpRightSquare />
         </Link>
       </div>
       <ContactFormBlogPost temat="Nieruchomości w Hiszpanii, co się zmieniło?" />

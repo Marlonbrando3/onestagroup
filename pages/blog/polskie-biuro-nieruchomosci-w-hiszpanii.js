@@ -9,7 +9,6 @@ import HeaderBlogPost from "../../components/HeaderBlogPost";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
 import Footer from "../../components/Footer";
 import Blogbuttonoffers from "../../components/blogbuttonoffers";
-import { LuArrowUpRightSquare } from "react-icons/lu";
 
 export default function BlogPost() {
   const temat = "Polskie Biuro Nieruchomości w Hiszpanii, czy jest potrzebna i dlaczego?";
@@ -235,7 +234,6 @@ export default function BlogPost() {
           className="text-white md:text-[26px] text-auto font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 md:w-[500px] shadow-xl mb-[50px] mx-auto"
         >
           Przeglądaj oferty nieruchomości
-          <LuArrowUpRightSquare />
         </Link>
       </div>
       <ContactFormBlogPost temat="Jak kupić nieruchomość w Hiszpanii cz.1" />
