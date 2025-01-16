@@ -49250,7 +49250,7 @@
     "mediaList": null,
     "monitoring": null,
     "mortgageMarket": "Primary",
-    "noOfBathrooms": null,
+    "noOfBathrooms": 2,
     "noOfFloors": 1,
     "noOfGarageSpaces": null,
     "noOfRooms": 4,
