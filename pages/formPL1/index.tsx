@@ -3,7 +3,6 @@ import React, { useState, useRef } from "react";
 import Head from "next/head";
 import { Dancing, TenorsSans, GreatVibes } from "../../fonts/fonts";
 import Firstview from "../../components/Survey/firstview";
-
 import DataSurvey from "../../data/survey.json";
 import SurveyOneTypesBG from "../../components/Survey/SurveyOneTypes/surveyOneTypesBG";
 import SurveyTwoRegionsBG from "../../components/Survey/SurveyTwoRegions/surveyTwoRegionsBG";

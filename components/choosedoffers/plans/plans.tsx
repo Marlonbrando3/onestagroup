@@ -60,11 +60,12 @@ export default function Plans() {
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
-      <div className="lg:w-[700px] w-[98vw] md:h-[480px] h-[370px] bg-white rounded-xl overflow-hidden">
+      <div className="lg:w-[700px] w-[98vw] md:h-[480px] h-[370px] rounded-xl overflow-hidden bg-white flex flex-col items-center">
         <TransformWrapper initialScale={1} minScale={1} maxScale={5}>
           {({ zoomIn, zoomOut }) => (
             <>
-              <div className="flex justify-center">
+              <div className="flex justify-center items-center">
+                <p className="mr-[15px] text-[16px] font-bold">Powiększenie</p>
                 <button
                   onClick={() => zoomIn()}
                   className="border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] leading-[0px] flex items-center justify-center"
@@ -79,17 +80,18 @@ export default function Plans() {
                 </button>
               </div>
               <TransformComponent>
-                <Image
-                  src={`https://img.asariweb.pl/normal/${selectedPlan.id}`}
-                  alt="Opis obrazka"
-                  width={2600}
-                  height={2400}
-                />
+                <div className="w-[98vw] md:h-[480px] h-[370px] relative">
+                  <Image
+                    src={`https://img.asariweb.pl/normal/${selectedPlan.id}`}
+                    alt="Opis obrazka"
+                    fill
+                    objectFit="contain"
+                  />
+                </div>
               </TransformComponent>
             </>
           )}
         </TransformWrapper>
-        {/* <Image src={`${selectedPlan}`} alt="Opis obrazka" width={2600} height={2400} /> */}
       </div>
       <div className="flex mt-[10px]"> {subpage}</div>
     </>

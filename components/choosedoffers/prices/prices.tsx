@@ -39,11 +39,12 @@ export default function Prices() {
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
-      <div className="lg:w-[700px] w-[98vw] md:h-[480px] h-[370px] bg-white rounded-xl overflow-hidden relative">
+      <div className="lg:w-[700px] w-[98vw] md:h-[480px] h-[370px] bg-white rounded-xl overflow-hidden flex flex-col items-center">
         <TransformWrapper initialScale={1} minScale={1} maxScale={5}>
           {({ zoomIn, zoomOut }) => (
             <>
-              <div className="flex justify-center">
+              <div className="flex justify-center items-center">
+                <p className="mr-[15px] text-[16px] font-bold">Powiększenie</p>
                 <button
                   onClick={() => zoomIn()}
                   className="border w-[40px] h-[40px] bg-gray-900 text-white text-[20px] leading-[0px] flex items-center justify-center"
@@ -58,12 +59,15 @@ export default function Prices() {
                 </button>
               </div>
               <TransformComponent>
-                <Image
-                  src={`https://img.asariweb.pl/normal/${priceList[0].id}`}
-                  alt="Opis obrazka"
-                  width={2600}
-                  height={2400}
-                />
+                <div className="w-[98vw] md:h-[480px] h-[370px] relative ">
+                  <Image
+                    src={`https://img.asariweb.pl/normal/${priceList[0].id}`}
+                    alt="Opis obrazka"
+                    fill
+                    objectFit="contain"
+                    className="mx-auto"
+                  />
+                </div>
               </TransformComponent>
             </>
           )}

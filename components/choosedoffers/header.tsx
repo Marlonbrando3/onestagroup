@@ -1,15 +1,25 @@
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import Properties from "../../public/properties.json";
 
 export default function Header() {
+  const router = useRouter();
+  const { offer } = router.query;
+
+  const title = Properties.find((i) => i.listingId === offer);
+
   return (
     <div className="w-full bg-white overflow-hidden">
-      <div className="h-[80px] lg:w-[1100px] mx-auto place-content-center">
+      <div className="h-[80px] lg:w-[1100px] mx-auto flex items-center">
         <div className="w-[260px] h-[70px] bg-white rounded-b-xl place-content-center">
-          <div className="md:w-[90%] w-[79%] md:h-[80%] h-[60%] relative md:mx-auto">
+          <div className="md:w-[90%] w-[79%] md:h-[50%] h-[60%] relative md:mx-auto">
             <Image src="/logotype_full.png" fill objectFit="contain" alt="logo" />
           </div>
-        </div>
+        </div>{" "}
+        <p className="md:text-[22px] md:ml-[60px] ml-[20px] font-bold">
+          {title?.headerAdvertisement}
+        </p>
       </div>
     </div>
   );

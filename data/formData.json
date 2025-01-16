@@ -5,15 +5,7 @@
   },
   {
     "id": "Lago_Di_Como",
-    "ref": "4/15982/OMS "
-  },
-  {
-    "id": "Lago_Di_verde",
-    "ref": "141/15982/OMS"
-  },
-  {
-    "id": "Lallana_Towers",
-    "ref": "9/15982/OMS"
+    "ref": "4/15982/OMS"
   },
   {
     "id": "Lallana_Premium",
@@ -28,8 +20,12 @@
     "ref": "140/15982/OMS"
   },
   {
+    "id": "Coś Nowego",
+    "ref": "95/15982/OMS"
+  },
+  {
     "id": "Nova_II",
-    "ref": "26/15982/OMS"
+    "ref": "26/15982/OMS "
   },
   {
     "id": "Nature_View",
@@ -38,5 +34,17 @@
   {
     "id": "Tokai_Playa",
     "ref": "92/15982/OMS"
+  },
+  {
+    "id": "Portomarina",
+    "ref": "99/15982/OMS"
+  },
+  {
+    "id": "Higuericastores",
+    "ref": "100/15982/OMS"
+  },
+  {
+    "id": "Ocean_Dream",
+    "ref": "89/15982/OMS"
   }
 ]

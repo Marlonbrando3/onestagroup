@@ -6,8 +6,6 @@ export default function Menu() {
   const router = useRouter();
   const { id } = router.query;
 
-  console.log(id);
-
   const MenuElements = MenuFormElements.map((i) => {
     const handleChangingQuery = () => {
       router.push({
@@ -24,7 +22,7 @@ export default function Menu() {
           i.title === id
             ? "font-bold h-[40px] -mt-[10px] border rounded-md bg-white text-black"
             : `bg-${i.color}-600 text-white`
-        }  border-l border-b w-[100px] rounded-l-[5px] rounded-b-[0px] place-content-center grid border-gray-700 -ml-[2px] cursor-pointer  hover:bg-white hover:text-black duration-200 top-[50px]`}
+        }  border-l border-b md:w-[100px] w-1/4 rounded-l-[5px] rounded-b-[0px] place-content-center grid border-gray-700 md:-ml-[2px] cursor-pointer hover:bg-white hover:text-black duration-200 top-[50px]`}
       >
         {i.title}
       </div>
