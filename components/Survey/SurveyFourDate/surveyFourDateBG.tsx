@@ -19,7 +19,7 @@ export default function SurveyFourDateBG({ PageNumber, setPageNumber }: Page) {
   const handleStartingSurvey = () => {
     if (ArrowTime.length > 0) {
       router.push({
-        pathname: "https://localhost:3000/choosedoffers",
+        pathname: "/choosedoffers",
         query: { offer: offer, id: "Galeria" },
       });
     }

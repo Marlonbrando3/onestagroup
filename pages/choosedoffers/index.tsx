@@ -5,25 +5,40 @@ import GalleryContainer from "@/components/choosedoffers/galleryView/galleryCont
 import ViewsContainer from "@/components/choosedoffers/viewsContainer";
 
 export default function Index() {
-  const moreoffers: any = useRef();
+  const moreOffersRef: any = useRef(null);
+  const imIntresetedRef: any = useRef(null);
+
+  const refs: any = {
+    moreOffers: moreOffersRef,
+    imIntreseted: imIntresetedRef,
+  };
+
   const moreoffersTXT: any = useRef();
   const moreoffersArrow: any = useRef();
 
   const [slideWidth, setSlideWidth]: any = useState();
 
-  const handleMoreOffers = () => {
-    // console.log(moreoffers.current.style.top);
-    if (moreoffers.current.style.top === "20vh" && slideWidth > 600) {
-      moreoffers.current.style.top = "94vh";
+  const handleMoreOffers = (event: any) => {
+    console.log(event);
+    if (
+      (refs[event].current.style.top === "0vh" || refs[event].current.style.top === "") &&
+      slideWidth > 600
+    ) {
+      console.log("1");
+      refs[event].current.style.top = "-60vh";
       moreoffersTXT.current.innerHTML = "Pozostałe oferty";
       moreoffersArrow.current.style.transform = "rotate(0deg)";
-    } else if (moreoffers.current.style.top === "20vh" && slideWidth < 600) {
-      moreoffers.current.style.top = "83vh";
-      moreoffersTXT.current.innerHTML = "Pozostałe oferty";
+    } else if (
+      (refs[event].current.style.top === "0vh" || refs[event].current.style.top === "") &&
+      slideWidth < 600
+    ) {
+      console.log("2");
+      refs[event].current.style.top = "-60vh";
+      moreoffersTXT.current.innerHTML = "Zamknij";
       moreoffersArrow.current.style.transform = "rotate(0deg)";
     } else {
-      moreoffers.current.style.top = "20vh";
-      moreoffersTXT.current.innerHTML = "Zamknij";
+      refs[event].current.style.top = "0vh";
+      moreoffersTXT.current.innerHTML = "Rekomendowane oferty";
       moreoffersArrow.current.style.transform = "rotate(180deg)";
     }
   };
@@ -52,7 +67,8 @@ export default function Index() {
       <Menu />
       <ViewsContainer
         handleMoreOffers={handleMoreOffers}
-        moreoffers={moreoffers}
+        moreOffersRef={moreOffersRef}
+        imIntresetedRef={imIntresetedRef}
         moreoffersTXT={moreoffersTXT}
         moreoffersArrow={moreoffersArrow}
       />

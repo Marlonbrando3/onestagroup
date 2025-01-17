@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "title": "co-founder & COO",
+    "title": "Co-founder & COO",
     "name": "Marek Marszałek",
     "desc": "W pracy z klientami jestem nastawiony na relacyjność z dużą otwartością. Dużo energi wkładam w dokładne rozumienie potrzeb rozmówców, poszerzanie wiedzy rynkowej oraz atrakcji w Hiszpanii co pozwala mi przedstawiać trafne oferty oraz udzielać rzeczowych odpowiedzi. Moje nastawienie wynika z 15-sto letniego doświadczenia w sprzedaży. Zwracam uwagę na szczegóły oraz poprawność i bezpieczeństwo wszelkich procesów oraz ścisłą komunikację.",
     "photo": "Marek.png",
@@ -10,7 +10,7 @@
   },
   {
     "id": 2,
-    "title": "co-founder & CEO",
+    "title": "Co-founder & CEO",
     "name": "Karolina Bakowicz",
     "desc": "Jestem osobą kreatywną, zakochaną w Hiszpanii. Prócz doskonałej znajomości rynku nieruchomości równie doskonale znam miejscowe atrakcje, co pozwala mi sugerować idealne miejsca do zakupu nieruchomości w Hiszpanii. Chętnie dzielę się swoją wiedzą dzięki czemu w krótkim czasie mogę przybliżyć Ci Hiszpanię aby szybciej stała się dla Ciebie drugim domem.",
     "photo": "Karolina.jpg",
@@ -33,6 +33,6 @@
     "desc": "Jako osobowość ścisła, wnikliwa, komunikatywna, o przyjaznym usposobieniu potrafię zrozumieć Twoje potrzeby i przeprowadzić Cię przez proces decyzyjny w jasny i klarowny dla Ciebie sposób. Nieodłącznym element moich działań jest ciągłe poszerzanie wiedzy o rynku, możliwościach inwestycyjnych, szansach oraz bezpieczeństwie procesu zakupu. ",
     "photo": "Michał.jpeg",
     "languages": ["PL", "EN"],
-    "phone": "+48 575 288 322"
+    "phone": "+48 500 469 029"
   }
 ]

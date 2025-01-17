@@ -18,6 +18,13 @@ const config: Config = {
     },
   },
   plugins: [],
-  safelist: ["bg-green-600", "bg-red-600", "bg-blue-600", "bg-yellow-600", "bg-emerald-600"],
+  safelist: [
+    "bg-green-600",
+    "bg-red-600",
+    "bg-blue-600",
+    "bg-yellow-600",
+    "bg-emerald-600",
+    "top-[0vh]",
+  ],
 };
 export default config;
