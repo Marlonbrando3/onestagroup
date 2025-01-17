@@ -5,9 +5,16 @@ import SurveyTwoRegionsItem from "./surveyTwoRegionsItem";
 type Page = {
   PageNumber: any;
   setPageNumber: any;
+  ArrowRegions: any;
+  setArrowRegions: any;
 };
 
-export default function SurveyTwoRegionsBG({ PageNumber, setPageNumber }: Page) {
+export default function SurveyTwoRegionsBG({
+  PageNumber,
+  setPageNumber,
+  ArrowRegions,
+  setArrowRegions,
+}: Page) {
   const handleStartingSurvey = () => {
     if (ArrowRegions.length > 0) {
       setPageNumber(5);
@@ -15,7 +22,6 @@ export default function SurveyTwoRegionsBG({ PageNumber, setPageNumber }: Page) 
   };
 
   const Regions = DataSurvey.filter((i) => i.type === "Regions");
-  const [ArrowRegions, setArrowRegions] = useState([]);
 
   console.log(ArrowRegions);
 

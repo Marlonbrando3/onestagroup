@@ -9,9 +9,9 @@ export default function (req: any, res: any) {
     port: 465,
     host: "mail-serwer141299.lh.pl",
     secure: true,
-    // tls: {
-    //   ciphers: "SSLv3",
-    // },
+    tls: {
+      ciphers: "SSLv3",
+    },
     auth: {
       // type: "OAuth2",
       user: fromEmail,
@@ -20,15 +20,13 @@ export default function (req: any, res: any) {
   });
 
   const mailData = {
-    from: "Onesta Group <www@onesta.com.pl>",
+    from: fromEmail,
     to: endEmail,
-    subject: `Facebook Ankieta www: ${req.body.name}`,
+    subject: `Zainteresowanie daną ofertą: ${req.body.OfferNumber}`,
     text: "Hello. This email is for your email verification.",
     html:
-      `Kontakt przed uzupełnieniem ankiety:` +
+      `Zainteresowany ofertą nr ${req.body.OfferNumber}:` +
       `<br><br>` +
-      `Klient wybrał ofertę nr : ${req.body.offer}` +
-      `<br>` +
       `Dane personalne` +
       `<br><br>` +
       `Imię i nazwisko: ${req.body.name}` +

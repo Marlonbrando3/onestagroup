@@ -12,16 +12,32 @@ import { MdOutlineRecommend } from "react-icons/md";
 type Page = {
   PageNumber: any;
   setPageNumber: any;
+  name: any;
+  setName: any;
+  phone: any;
+  setPhone: any;
+  msg: any;
+  setMsg: any;
+  email: any;
+  setEmail: any;
 };
 
-export default function Firstview({ PageNumber, setPageNumber }: Page) {
+export default function Firstview({
+  PageNumber,
+  setPageNumber,
+  name,
+  setName,
+  phone,
+  setPhone,
+  msg,
+  setMsg,
+  email,
+  setEmail,
+}: Page) {
   const router = useRouter();
+  const { offer } = router.query;
 
   //personal details
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [msg, setMsg] = useState("");
-  const [email, setEmail] = useState("");
 
   const emptyFieldPopUp: any = useRef();
 
@@ -46,36 +62,38 @@ export default function Firstview({ PageNumber, setPageNumber }: Page) {
   const handlingMassegeSend = async (e: any) => {
     e.preventDefault();
 
-    // try {
-    //   let res = await fetch("/api/sendFormPL1", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       name,
-    //       phone,
-    //       email,
-    //       msg,
-    //     }),
-    //   });
+    try {
+      let res = await fetch("/api/sendFormPL1", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          offer: offer,
+          name,
+          phone,
+          email,
+          msg,
+        }),
+      });
 
-    //   const data = await res.status;
-    //   console.log(data);
-    //   if (data === 200) {
-    //     // router.push("https://onesta.com.pl/form/thankyoupageform");
+      const data = await res.status;
+      console.log(data);
+      if (data === 200) {
+        // router.push("https://onesta.com.pl/form/thankyoupageform");
         setPageNumber(2);
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <div className="md:w-[800px] md:h-auto w-full py-[20px] bg-white mx-auto flex flex-col items-center justify-center mt-[180px] md:mt-[110px] rounded-[30px] relative">
       <div className="h-[4px] w-[130px] absolute bg-gray-700 z-20 top-4 rounded-[10px] md:hidden"></div>
       <p className="text-[20px] md:text-[30px] md:w-[500px] w-[90%] text-center lg:leading-[35px] leading-[23px] mt-[20px] md:mt-auto">
-        Wyświetl i pobierz <strong>szczegółowe informacje</strong> o wybranej inwestycji tj:
+        Wyświetl i <p className="text-orange-500 font-bold inline">wyślij natychmiast </p>
+        <strong>szczegółowe informacje</strong> o wybranej inwestycji tj:
         {/* <span className="text-red-600 font-bold"> w Hiszpanii</span> */}
       </p>
       <div className="md:w-[90%] w-[90%] h-auto mt-[30px] flex flex-wrap justify-start items-center">

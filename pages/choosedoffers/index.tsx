@@ -5,42 +5,18 @@ import GalleryContainer from "@/components/choosedoffers/galleryView/galleryCont
 import ViewsContainer from "@/components/choosedoffers/viewsContainer";
 
 export default function Index() {
-  const moreOffersRef: any = useRef(null);
-  const imIntresetedRef: any = useRef(null);
-
-  const refs: any = {
-    moreOffers: moreOffersRef,
-    imIntreseted: imIntresetedRef,
-  };
-
-  const moreoffersTXT: any = useRef();
-  const moreoffersArrow: any = useRef();
+  const showPopUp: any = useRef(null);
 
   const [slideWidth, setSlideWidth]: any = useState();
 
-  const handleMoreOffers = (event: any) => {
+  const handlePopUpOpen = (event: any) => {
     console.log(event);
-    if (
-      (refs[event].current.style.top === "0vh" || refs[event].current.style.top === "") &&
-      slideWidth > 600
-    ) {
-      console.log("1");
-      refs[event].current.style.top = "-60vh";
-      moreoffersTXT.current.innerHTML = "Pozostałe oferty";
-      moreoffersArrow.current.style.transform = "rotate(0deg)";
-    } else if (
-      (refs[event].current.style.top === "0vh" || refs[event].current.style.top === "") &&
-      slideWidth < 600
-    ) {
-      console.log("2");
-      refs[event].current.style.top = "-60vh";
-      moreoffersTXT.current.innerHTML = "Zamknij";
-      moreoffersArrow.current.style.transform = "rotate(0deg)";
-    } else {
-      refs[event].current.style.top = "0vh";
-      moreoffersTXT.current.innerHTML = "Rekomendowane oferty";
-      moreoffersArrow.current.style.transform = "rotate(180deg)";
-    }
+    showPopUp.current.style.top = "-70vh";
+  };
+
+  const handlePopUpClosing = (event: any) => {
+    console.log(event);
+    showPopUp.current.style.top = "10vh";
   };
 
   useEffect(() => {
@@ -63,14 +39,16 @@ export default function Index() {
   }, []);
   return (
     <div className="h-[89vh] md:h-screen bg-[url('/bg_calp.jpg')] bg-cover bg-center relative overflow-hidden">
-      <Header handleMoreOffers={handleMoreOffers} />
+      <Header handlePopUpOpen={handlePopUpOpen} />
       <Menu />
       <ViewsContainer
-        handleMoreOffers={handleMoreOffers}
-        moreOffersRef={moreOffersRef}
-        imIntresetedRef={imIntresetedRef}
-        moreoffersTXT={moreoffersTXT}
-        moreoffersArrow={moreoffersArrow}
+        handlePopUpOpen={handlePopUpOpen}
+        handlePopUpClosing={handlePopUpClosing}
+        // moreOffersRef={moreOffersRef}
+        showPopUp={showPopUp}
+        // imIntresetedRef={imIntresetedRef}
+        // moreoffersTXT={moreoffersTXT}
+        // moreoffersArrow={moreoffersArrow}
       />
     </div>
   );

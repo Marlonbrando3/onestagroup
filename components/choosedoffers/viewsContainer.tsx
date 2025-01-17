@@ -8,20 +8,24 @@ import Intrested from "../otherOffers/intrested";
 import Buttons from "../otherOffers/buttons";
 
 type Data = {
-  handleMoreOffers: any;
-  moreOffersRef: any;
-  imIntresetedRef: any;
-  moreoffersTXT: any;
-  moreoffersArrow: any;
+  handlePopUpOpen: any;
+  handlePopUpClosing: any;
+  showPopUp: any;
+  // moreOffersRef: any;
+  // imIntresetedRef: any;
+  // moreoffersTXT: any;
+  // moreoffersArrow: any;
 };
 
 export default function ViewsContainer({
-  handleMoreOffers,
-  moreOffersRef,
-  imIntresetedRef,
-  moreoffersTXT,
-  moreoffersArrow,
-}: Data) {
+  handlePopUpOpen,
+  handlePopUpClosing,
+  showPopUp,
+}: // moreOffersRef,
+// imIntresetedRef,
+// moreoffersTXT,
+// moreoffersArrow,
+Data) {
   const router = useRouter();
   const { offer, id } = router.query;
 
@@ -35,13 +39,12 @@ export default function ViewsContainer({
       {id === "Plany" && <Plans />}
       {id === "Lokalizacja" && <Localization />}
       {id === "Cennik" && <Prices />}
-      <div className="h-[50px] absolute  w-full bottom-0 left-0 right-0 mx-auto border ">
-        <div className="relative h-full border w-full mx-auto">
+      <div className="h-[50px] absolute  w-full bottom-0 left-0 right-0 mx-auto">
+        <div className="relative h-full  w-full mx-auto">
           <Buttons
-            handleMoreOffers={handleMoreOffers}
-            moreOffersRef={moreOffersRef}
-            moreoffersTXT={moreoffersTXT}
-            moreoffersArrow={moreoffersArrow}
+            handlePopUpOpen={handlePopUpOpen}
+            showPopUp={showPopUp}
+            handlePopUpClosing={handlePopUpClosing}
           />
         </div>
       </div>

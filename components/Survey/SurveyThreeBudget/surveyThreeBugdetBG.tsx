@@ -5,9 +5,16 @@ import SurveyThreeBudgetItem from "./surveyThreeBudgetItem";
 type Page = {
   PageNumber: any;
   setPageNumber: any;
+  ArrowBudget: any;
+  setArrowBudget: any;
 };
 
-export default function SurveyThreeBugdetBG({ PageNumber, setPageNumber }: Page) {
+export default function SurveyThreeBugdetBG({
+  PageNumber,
+  setPageNumber,
+  ArrowBudget,
+  setArrowBudget,
+}: Page) {
   const handleStartingSurvey = () => {
     if (ArrowBudget.length > 0) {
       setPageNumber(6);
@@ -15,7 +22,6 @@ export default function SurveyThreeBugdetBG({ PageNumber, setPageNumber }: Page)
   };
 
   const Budget = DataSurvey.filter((i) => i.type === "Budget");
-  const [ArrowBudget, setArrowBudget] = useState([]);
 
   const showedTypes = Budget[0].options.map((i) => (
     <SurveyThreeBudgetItem

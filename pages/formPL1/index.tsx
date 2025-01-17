@@ -9,17 +9,22 @@ import SurveyTwoRegionsBG from "../../components/Survey/SurveyTwoRegions/surveyT
 import SurveyThreeBugdetBG from "../../components/Survey/SurveyThreeBudget/surveyThreeBugdetBG";
 import SurveyFourDateBG from "../../components/Survey/SurveyFourDate/surveyFourDateBG";
 import Thankyoupageform from "../../components/Survey/thankyoupageform";
+import Thankyoupageafter from "@/components/Survey/SurveyFourDate/thankyoupageafter";
 
 export default function Index() {
   const emptyFieldPopUp: any = useRef();
 
-  const [PageNumber, setPageNumber] = useState<number>(1);
+  const [PageNumber, setPageNumber] = useState<number>(3);
 
-  const [region, setRegion] = useState("");
-  const [type, setType] = useState("");
-  const [purchaseDate, setPurchaseDate] = useState("");
-  const [exclusive, setExclusite] = useState("");
-  const [price, setPrice] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [msg, setMsg] = useState("");
+  const [email, setEmail] = useState("");
+
+  const [ArrowTypes, setArrowTypes] = useState([]);
+  const [ArrowRegions, setArrowRegions] = useState([]);
+  const [ArrowBudget, setArrowBudget] = useState([]);
+  const [ArrowTime, setArrowTime] = useState([]);
 
   return (
     <>
@@ -57,21 +62,67 @@ export default function Index() {
           </div>
         </div>
 
-        {PageNumber === 1 && <Firstview PageNumber={PageNumber} setPageNumber={setPageNumber} />}
+        {PageNumber === 1 && (
+          <Firstview
+            PageNumber={PageNumber}
+            setPageNumber={setPageNumber}
+            name={name}
+            setName={setName}
+            phone={phone}
+            setPhone={setPhone}
+            msg={msg}
+            setMsg={setMsg}
+            email={email}
+            setEmail={setEmail}
+          />
+        )}
         {PageNumber === 2 && (
           <Thankyoupageform PageNumber={PageNumber} setPageNumber={setPageNumber} />
         )}
         {PageNumber === 3 && (
-          <SurveyOneTypesBG PageNumber={PageNumber} setPageNumber={setPageNumber} />
+          <SurveyOneTypesBG
+            PageNumber={PageNumber}
+            setPageNumber={setPageNumber}
+            ArrowTypes={ArrowTypes}
+            setArrowTypes={setArrowTypes}
+          />
         )}
         {PageNumber === 4 && (
-          <SurveyTwoRegionsBG PageNumber={PageNumber} setPageNumber={setPageNumber} />
+          <SurveyTwoRegionsBG
+            PageNumber={PageNumber}
+            setPageNumber={setPageNumber}
+            ArrowRegions={ArrowRegions}
+            setArrowRegions={setArrowRegions}
+          />
         )}
         {PageNumber === 5 && (
-          <SurveyThreeBugdetBG PageNumber={PageNumber} setPageNumber={setPageNumber} />
+          <SurveyThreeBugdetBG
+            PageNumber={PageNumber}
+            setPageNumber={setPageNumber}
+            ArrowBudget={ArrowBudget}
+            setArrowBudget={setArrowBudget}
+          />
         )}
         {PageNumber === 6 && (
-          <SurveyFourDateBG PageNumber={PageNumber} setPageNumber={setPageNumber} />
+          <SurveyFourDateBG
+            PageNumber={PageNumber}
+            setPageNumber={setPageNumber}
+            ArrowTime={ArrowTime}
+            setArrowTime={setArrowTime}
+          />
+        )}
+        {PageNumber === 7 && (
+          <Thankyoupageafter
+            PageNumber={PageNumber}
+            ArrowTime={ArrowTime}
+            ArrowTypes={ArrowTypes}
+            ArrowRegions={ArrowRegions}
+            ArrowBudget={ArrowBudget}
+            name={name}
+            phone={phone}
+            msg={msg}
+            email={email}
+          />
         )}
       </div>
     </>

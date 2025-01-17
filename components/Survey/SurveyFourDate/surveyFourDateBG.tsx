@@ -2,31 +2,29 @@ import React, { useState } from "react";
 import DataSurvey from "../../../data/survey.json";
 import SurveyFourDateItem from "./surveyFourDateItem";
 import { useRouter } from "next/router";
-import { PathnameContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
 type Page = {
   PageNumber: any;
   setPageNumber: any;
+  ArrowTime: any;
+  setArrowTime: any;
 };
 
-export default function SurveyFourDateBG({ PageNumber, setPageNumber }: Page) {
+export default function SurveyFourDateBG({
+  PageNumber,
+  setPageNumber,
+  ArrowTime,
+  setArrowTime,
+}: Page) {
   const router = useRouter();
 
   const { offer } = router.query;
 
-  const handleValidation = () => {};
-
   const handleStartingSurvey = () => {
-    if (ArrowTime.length > 0) {
-      router.push({
-        pathname: "/choosedoffers",
-        query: { offer: offer, id: "Galeria" },
-      });
-    }
+    setPageNumber(7);
   };
 
   const Time = DataSurvey.filter((i) => i.type === "Time");
-  const [ArrowTime, setArrowTime] = useState([]);
 
   const showedTime = Time[0].options.map((i) => (
     <SurveyFourDateItem key={i.id} types={i} ArrowTime={ArrowTime} setArrowTime={setArrowTime} />

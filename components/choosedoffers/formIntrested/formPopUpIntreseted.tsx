@@ -1,11 +1,15 @@
 import React, { useRef, useState } from "react";
+import { useRouter } from "next/router";
 
 type Ref = {
   intrestedPopUp: any;
   OfferNumber: any;
 };
 
-export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
+export default function FormPoUpIntrested({ intrestedPopUp, OfferNumber }: Ref) {
+  const router = useRouter();
+  const { offer } = router.query;
+
   const [name, setName] = useState();
   const [phone, setPhone] = useState();
   const [email, setEMail] = useState();
@@ -32,15 +36,16 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
   const handleSendingForm = async (e: any) => {
     e.preventDefault();
     console.log(name, phone, email, msg);
+    console.log(offer);
 
     try {
-      let res = await fetch("/api/sendFormItresetedOffers", {
+      let res = await fetch("/api/sendFormIntresetedThisOneOffer", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          OfferNumber,
+          OfferNumber: offer,
           name,
           phone,
           email,
@@ -55,9 +60,9 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
         // router.push("https://onesta.com.pl/form/thankyoupageform");
         // setPageNumber(2);
 
-        setTimeout(() => {
-          intrestedPopUp.current.style.display = "none";
-        }, 2000);
+        // setTimeout(() => {
+        //   intrestedPopUp.current.style.display = "none";
+        // }, 2000);
       }
     } catch (err) {
       console.log(err);
@@ -65,10 +70,10 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
   };
 
   return (
-    <div className="md:w-[800px] w-full h-[500px] bg-[url('/bg-form.png')] bg-[length:400px_auto] md:bg-cover overflow-hidden rounded-xl flex md:justify-end relative">
+    <div className="md:w-[800px] w-full h-[500px] bg-[url('/bg-form.png')] bg-[length:400px_auto] md:bg-cover overflow-hidden rounded-xl flex md:justify-end relative mx-auto">
       <form
         onSubmit={handleSendingForm}
-        className="flex flex-col border md:w-[500px] h-full items-center justify-evenly bg-white p-[20px] rounded-xl shadow-[10px_25px_60px_20px_rgba(0,0,0,0.3)]"
+        className="flex flex-col md:w-[500px] h-full items-center justify-evenly bg-white p-[20px]"
       >
         <p className="text-[20px]">Jakich informacji odnośnie nieruchomości potrzebujesz?</p>
         <input

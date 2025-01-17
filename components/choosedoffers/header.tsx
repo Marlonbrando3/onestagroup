@@ -4,10 +4,10 @@ import { useRouter } from "next/router";
 import Properties from "../../public/properties.json";
 
 type Data = {
-  handleMoreOffers: any;
+  handlePopUpOpen: any;
 };
 
-export default function Header({ handleMoreOffers }: Data) {
+export default function Header({ handlePopUpOpen }: Data) {
   const router = useRouter();
   const { offer } = router.query;
 
@@ -18,7 +18,7 @@ export default function Header({ handleMoreOffers }: Data) {
       <div className="h-[80px] lg:w-[1100px] mx-auto flex items-center">
         <div className="w-[260px] h-[70px] bg-white rounded-b-xl place-content-center">
           <div
-            onClick={handleMoreOffers}
+            onClick={handlePopUpOpen}
             className="md:w-[90%] w-[79%] md:h-[50%] h-[60%] relative md:mx-auto cursor-pointer"
           >
             <Image src="/logotype_full.png" fill objectFit="contain" alt="logo" />

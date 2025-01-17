@@ -23,6 +23,8 @@ export default function SurveyTwoRegionsItem({ types, ArrowRegions, setArrowRegi
     }
   };
 
+  console.log(ArrowRegions);
+
   return (
     <div
       onClick={handleChangingType}

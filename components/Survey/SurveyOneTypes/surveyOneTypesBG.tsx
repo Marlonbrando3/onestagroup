@@ -6,9 +6,16 @@ import { useMyContext } from "@/components/context/myContext";
 type Page = {
   PageNumber: any;
   setPageNumber: any;
+  ArrowTypes: any;
+  setArrowTypes: any;
 };
 
-export default function SurveyOneTypesBG({ PageNumber, setPageNumber }: Page) {
+export default function SurveyOneTypesBG({
+  PageNumber,
+  setPageNumber,
+  ArrowTypes,
+  setArrowTypes,
+}: Page) {
   const handleStartingSurvey = () => {
     if (ArrowTypes.length > 0) {
       setPageNumber(4);
@@ -16,7 +23,6 @@ export default function SurveyOneTypesBG({ PageNumber, setPageNumber }: Page) {
   };
 
   const Types = DataSurvey.filter((i) => i.type === "TypeOfProperty");
-  const [ArrowTypes, setArrowTypes] = useState([]);
 
   console.log(ArrowTypes);
 
