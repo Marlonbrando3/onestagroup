@@ -1,12 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
 
-type Ref = {
-  intrestedPopUp: any;
-  OfferNumber: any;
-};
-
-export default function FormPoUpIntrested({ intrestedPopUp, OfferNumber }: Ref) {
+export default function FormPoUpIntrested() {
   const router = useRouter();
   const { offer } = router.query;
 
