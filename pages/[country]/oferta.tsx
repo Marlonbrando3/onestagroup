@@ -79,14 +79,14 @@ export default function Property() {
         if (index === 0) {
           return {
             id: index + 1,
-            image: `https://img.asariweb.pl/thumbnail/${image.id}`,
+            image: `https://img.asariweb.pl/normal/${image.id}`,
             count: 1,
             showed: true,
           };
         } else
           return {
             id: index + 1,
-            image: `https://img.asariweb.pl/thumbnail/${image.id}`,
+            image: `https://img.asariweb.pl/normal/${image.id}`,
             count: 0,
             showed: false,
           };
@@ -310,7 +310,7 @@ export default function Property() {
                     className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex left-0 z-30 h-full justify-center items-center cursor-pointer duration-300"
                   >
                     <FaChevronLeft
-                      className="h-[20px] w-[20px] text-black block"
+                      className="h-[30px] w-[30px] text-yellow-500 block"
                       onClick={handleChangeSlideLeft}
                     />
                   </div>
@@ -320,7 +320,7 @@ export default function Property() {
                     className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex right-0 z-30 h-full justify-center items-center cursor-pointer duration-300"
                   >
                     <FaChevronRight
-                      className="h-[20px] w-[20px] text-black block"
+                      className="h-[30px] w-[30px] text-yellow-500 block"
                       onClick={handleChangeSlideRight}
                     />
                   </div>
@@ -435,7 +435,7 @@ export default function Property() {
                 </div>
                 <div
                   onClick={handleIntrestedPopUp}
-                  className="w-full border border-transparent bg-blue-500 h-[60px] place-content-center grid text-white font-bold text-[24px] cursor-pointer duration-150 hover:bg-white hover:border hover:border-gray-900 hover:text-black"
+                  className="w-full border rounded-[5px] border-transparent bg-blue-500 h-[60px] place-content-center grid text-white font-bold text-[24px] cursor-pointer duration-150 hover:bg-white hover:border hover:border-gray-900 hover:text-black"
                 >
                   Jestem zainteresowany
                 </div>
