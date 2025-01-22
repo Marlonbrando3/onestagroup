@@ -11,7 +11,7 @@ export default function SearchResults() {
   const { page } = router.query;
 
   const [actualPage, setActualPage] = useState(parseInt(page as string) || 1);
-  const [propertiesPerPage, setPropertiesPerPage] = useState(12);
+  const [propertiesPerPage, setPropertiesPerPage] = useState(18);
   const startProperty = (parseInt(page as string) - 1) * propertiesPerPage;
   const endProperty = startProperty + propertiesPerPage;
 
