@@ -176,7 +176,7 @@ export default function Header() {
             >
               <a
                 href="tel:+48576652525"
-                className="text-black hover:text-white hover:bg-yellow-500 rounded-2xl my-[3px]"
+                className="text-black hover:text-white hover:bg-yellow-500 rounded-[5px] my-[3px]"
               >
                 <div className="lg:mt-0 x-1 font-bold text-xs border-red-600 lg:px-2 rounded-md md:flex items-center cursor-pointer md:w-40 w-[30px] h-[30px] lg:static absolute top-2 right-10 ">
                   <CiPhone className="lg:w-6 lg:h-4 lg:p-[1px] p-2 w-[30px] h-[30px] p-auto" />
@@ -185,7 +185,7 @@ export default function Header() {
               </a>
               <a
                 href="maito:biuro@onesta.com.pl"
-                className="hover:bg-yellow-500 duration-200 rounded-2xl  text-black hover:text-white"
+                className="hover:bg-yellow-500 duration-200 rounded-[5px]  text-black hover:text-white"
               >
                 <div className="mt-[12px] lg:mt-0 font-bold text-xs border-red-600 lg:px-2 rounded-md md:flex items-center cursor-pointer md:w-auto w-[30px] h-[30px] lg:static absolute top-2 right-10 hover:text-white ">
                   <IoMailOutline className="lg:w-6 lg:h-4 lg:p-[1px] p-2 w-[30px] h-[30px] p-auto" />
