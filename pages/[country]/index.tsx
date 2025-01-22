@@ -9,6 +9,7 @@ import Footer from "../../components/Footer";
 import ContactFormMain from "../../components/ContactFormMain";
 import MobileFilters from "@/components/MobileFilters";
 import Properties from "../../public/properties.json";
+import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 
 export default function Home() {
   const menu = useRef<any>();
@@ -94,6 +95,7 @@ export default function Home() {
         <meta property="og:title" content="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"></meta>
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
       </Head>
+      <WhatsAppButton />
       <div ref={menu} className=" duration-700 w-full z-50 bg-white">
         <Header />
       </div>

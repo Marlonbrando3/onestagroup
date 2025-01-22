@@ -24,6 +24,7 @@ import { TenorsSans, QuicksandSans } from "../../fonts/fonts";
 import { CiParking1 } from "react-icons/ci";
 import Form from "@/components/SearchEngine/IntresetedPopUp/form";
 import { IoClose } from "react-icons/io5";
+import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 
 export default function Property() {
   const router = useRouter();
@@ -265,6 +266,7 @@ export default function Property() {
       <div
         className={`${TenorsSans.className} "max-w-[100vw] flex flex-col bg-gray-100 mx-[5px] sm:mx-auto relative" `}
       >
+        <WhatsAppButton />
         <div
           ref={intrestedPopUp}
           id="intrestedPopUp"
