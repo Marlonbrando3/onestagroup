@@ -12,14 +12,14 @@ function HomeView() {
       <iframe
         width="100%"
         height="845"
-        src="https://www.youtube.com/embed/YdGdmLXjaK4?si=k2HZL3B6xM_j9fVq&autoplay=1&mute=1&showinfo=0&controls=0&vq=hd1080&loop=1&playlist=YdGdmLXjaK4"
+        src="https://www.youtube.com/embed/QSKrrqmxpaw?si=g_hflB_vSSZLszs5&autoplay=1&mute=1&showinfo=0&controls=0&vq=hd1080&loop=1"
         title="YouTube video player"
         frameborder="0"
         autoplay
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerpolicy="strict-origin-when-cross-origin"
         allowfullscreen
-        className="-mt-[20px] hidden md:block"
+        className="-mt-[170px] hidden md:block"
       ></iframe>
       {/* </div> */}
       {/* <div className="w-[70px] h-[70px] z-50 absolute bottom-32 left-0 right-0 mx-auto md:hidden visible">
