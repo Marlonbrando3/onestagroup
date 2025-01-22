@@ -3,11 +3,12 @@ import { IoIosArrowUp } from "react-icons/io";
 import Topofferslist from "../choosedoffers/topOffersList/topofferslist";
 
 type Data = {
+  handlePopUpClosing: any;
   handleMoreOffers: any;
   imIntresetedRef: any;
 };
 
-export default function Intrested({ handleMoreOffers, imIntresetedRef }: Data) {
+export default function Intrested({ handleMoreOffers, imIntresetedRef, handlePopUpClosing }: Data) {
   const [slideWidth, setSlideWidth]: any = useState();
 
   return (
@@ -24,7 +25,7 @@ export default function Intrested({ handleMoreOffers, imIntresetedRef }: Data) {
         </div>{" "}
       </div>
       <div className="w-screen h-screen bg-white pt-[30px] ">
-        <Topofferslist />
+        <Topofferslist handlePopUpClosing={handlePopUpClosing} />
       </div>
     </div>
   );
