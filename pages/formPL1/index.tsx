@@ -14,17 +14,17 @@ import Thankyoupageafter from "@/components/Survey/SurveyFourDate/thankyoupageaf
 export default function Index() {
   const emptyFieldPopUp: any = useRef();
 
-  const [PageNumber, setPageNumber] = useState<number>(3);
+  const [PageNumber, setPageNumber] = useState<number>(1);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [msg, setMsg] = useState("");
   const [email, setEmail] = useState("");
 
-  const [ArrowTypes, setArrowTypes] = useState([]);
-  const [ArrowRegions, setArrowRegions] = useState([]);
-  const [ArrowBudget, setArrowBudget] = useState([]);
-  const [ArrowTime, setArrowTime] = useState([]);
+  const [ArrowTypes, setArrowTypes] = useState();
+  const [ArrowRegions, setArrowRegions] = useState();
+  const [ArrowBudget, setArrowBudget] = useState();
+  const [ArrowTime, setArrowTime] = useState();
 
   return (
     <>

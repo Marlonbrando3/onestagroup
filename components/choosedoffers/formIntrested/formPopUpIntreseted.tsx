@@ -8,7 +8,7 @@ export default function FormPoUpIntrested() {
   const [name, setName] = useState();
   const [phone, setPhone] = useState();
   const [email, setEMail] = useState();
-  const [msg, setMsg] = useState();
+  const [msg, setMsg] = useState("");
   const sendButton: any = useRef();
 
   const handleChangingValue = (e: any) => {
@@ -40,7 +40,7 @@ export default function FormPoUpIntrested() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          OfferNumber: offer,
+          offer,
           name,
           phone,
           email,

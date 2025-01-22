@@ -20,25 +20,28 @@ export default function SurveyFourDateBG({
 
   const { offer } = router.query;
 
-  const handleStartingSurvey = () => {
-    setPageNumber(7);
-  };
-
   const Time = DataSurvey.filter((i) => i.type === "Time");
 
   const showedTime = Time[0].options.map((i) => (
-    <SurveyFourDateItem key={i.id} types={i} ArrowTime={ArrowTime} setArrowTime={setArrowTime} />
+    <SurveyFourDateItem
+      key={i.id}
+      date={i}
+      ArrowTime={ArrowTime}
+      setArrowTime={setArrowTime}
+      PageNumber={PageNumber}
+      setPageNumber={setPageNumber}
+    />
   ));
 
   return (
     <div className="w-full md:h-[86.7vh] h-screen md:w-[800px] flex items-center md:justify-center justify-center mx-auto">
       <div className="bg-white w-[90%] h-auto rounded-2xl flex flex-col md:flex-row md:flex-wrap items-center justify-center py-[20px] shadow-[0px_0px_25px_10px_rgba(0,0,0,0.3)] md:space-x-2">
-        <p className="mx-[30px] text-center text-[18px] md:text-[22px] font-semibold mb-[15px] inline">
+        <p className="mx-[30px] text-center text-[18px] md:text-[22px] font-semibold mb-[15px] inline w-full">
           Na jakim etapie decyzji jesteś{" "}
-          <p className="inline font-thin text-[16px]">(jednokrotny wybór)</p>
+          {/* <p className="inline font-thin text-[16px]">(jednokrotny wybór)</p> */}
         </p>
         {showedTime}
-        <div className="w-full place-items-center grid">
+        {/* <div className="w-full place-items-center grid">
           <div
             onClick={handleStartingSurvey}
             className={`${
@@ -47,7 +50,7 @@ export default function SurveyFourDateBG({
           >
             Dalej
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

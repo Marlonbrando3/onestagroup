@@ -20,9 +20,9 @@ export default function Menu() {
         key={i.id}
         className={`${
           i.title === id
-            ? "font-bold h-[40px] -mt-[10px] border rounded-md bg-white text-black"
-            : `bg-${i.color}-600 text-white`
-        }  border-l border-b md:w-[100px] w-1/4 rounded-l-[5px] rounded-b-[0px] place-content-center grid border-gray-700 md:-ml-[2px] cursor-pointer hover:bg-white hover:text-black duration-200 top-[50px]`}
+            ? "font-bold h-[40px] border rounded-md bg-white text-black rounded-b-md"
+            : `bg-${i.color}-600 text-white rounded-l-[5px] rounded-b-[0px]`
+        }  border-l border-b md:w-[100px] w-1/4  place-content-center grid border-gray-700 md:-ml-[2px] cursor-pointer hover:bg-white hover:text-black duration-200 top-[50px]`}
       >
         {i.title}
       </div>

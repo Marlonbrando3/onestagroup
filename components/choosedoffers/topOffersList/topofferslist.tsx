@@ -1,10 +1,14 @@
 import React from "react";
 import Topoffer from "./topoffer";
 
-export default function Topofferslist() {
+type Pop = {
+  handlePopUpClosing: any;
+};
+
+export default function Topofferslist({ handlePopUpClosing }: Pop) {
   return (
     <div className="h-[550px] overflow-scroll">
-      <Topoffer />
+      <Topoffer handlePopUpClosing={handlePopUpClosing} />
     </div>
   );
 }

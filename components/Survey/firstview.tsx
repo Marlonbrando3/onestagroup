@@ -69,7 +69,7 @@ export default function Firstview({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          offer: offer,
+          offer,
           name,
           phone,
           email,
@@ -137,15 +137,19 @@ export default function Firstview({
       <div>
         <form
           onSubmit={handlingMassegeSend}
-          className={`${TenorsSans.className} flex flex-col md:w-[550px] w-[90%] mt-[30px] mx-auto`}
+          className={`flex flex-col md:w-[550px] w-[90%] mt-[30px] mx-auto`}
         >
-          <p className="text-[22px] text-center my-[20px]">
-            Uzupełnij formularz aby otrzymać materiały.
+          <p className="text-[24px] text-center my-[20px] font-normal">
+            Uzupełnij{" "}
+            <span className="inline bg-orange-400 text-white px-[4px] font-semibold">
+              poniższy formularz
+            </span>{" "}
+            aby otrzymać materiały.
           </p>
           <div className="flex flex-col h-[60px] justify-evenly ">
             <input
               id="fullname"
-              className="border rounded-[8px] border-gray-400 text-[20px] pl-[5px] h-[40px]"
+              className="border rounded-[5px] border-gray-600 text-[20px] pl-[8px] h-[50px]"
               placeholder="Imię i nazwisko"
               onChange={handlingDataChanges}
               required
@@ -154,7 +158,7 @@ export default function Firstview({
           <div className="flex flex-col h-[60px] justify-evenly">
             <input
               id="phone"
-              className="border rounded-[8px] border-gray-400 text-[20px] pl-[5px] h-[40px]"
+              className="border rounded-[5px] border-gray-600 text-[20px] pl-[8px] h-[50px]"
               placeholder="Twój numer telefonu"
               onChange={handlingDataChanges}
               required
@@ -163,7 +167,7 @@ export default function Firstview({
           <div className="flex flex-col h-[60px] justify-evenly ">
             <input
               id="mail"
-              className="border rounded-[8px] border-gray-400 text-[20px] pl-[5px] h-[40px]"
+              className="border rounded-[5px] border-gray-600 text-[20px] pl-[8px] h-[50px]"
               placeholder="E-mail"
               onChange={handlingDataChanges}
               required
@@ -172,7 +176,7 @@ export default function Firstview({
           <div className="flex flex-col h-[180px] justify-evenly ">
             <textarea
               id="msg"
-              className="border rounded-[8px] border-gray-400 text-[20px] pl-[5px] h-[160px]"
+              className="border rounded-[5px] border-gray-600 text-[20px] pl-[8px] pt-[5px] h-[170px]"
               placeholder="Twoja wiadomość"
               onChange={handlingDataChanges}
             ></textarea>
@@ -191,7 +195,7 @@ export default function Firstview({
           </div>
           <button
             type="submit"
-            className="border border-white w-[200px] mx-auto bg-yellow-500 text-white text-[26px] rounded-xl mt-[5px] cursor-pointer py-[5px] hover:bg-white hover:text-black duration-150 hover:border hover:border-black"
+            className="uppercase border border-white w-[200px] mx-auto bg-yellow-500 text-white text-[22px] rounded-xl mt-[5px] cursor-pointer py-[5px] hover:bg-white hover:text-black duration-150 hover:border hover:border-black"
           >
             Wyślij
           </button>

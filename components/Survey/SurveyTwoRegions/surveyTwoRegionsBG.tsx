@@ -15,11 +15,11 @@ export default function SurveyTwoRegionsBG({
   ArrowRegions,
   setArrowRegions,
 }: Page) {
-  const handleStartingSurvey = () => {
-    if (ArrowRegions.length > 0) {
-      setPageNumber(5);
-    }
-  };
+  // const handleStartingSurvey = () => {
+  //   if (ArrowRegions.length > 0) {
+  //     setPageNumber(5);
+  //   }
+  // };
 
   const Regions = DataSurvey.filter((i) => i.type === "Regions");
 
@@ -28,9 +28,11 @@ export default function SurveyTwoRegionsBG({
   const showedTypes = Regions[0].options.map((i) => (
     <SurveyTwoRegionsItem
       key={i.id}
-      types={i}
+      regions={i}
       ArrowRegions={ArrowRegions}
       setArrowRegions={setArrowRegions}
+      PageNumber={PageNumber}
+      setPageNumber={setPageNumber}
     />
   ));
 
@@ -39,10 +41,10 @@ export default function SurveyTwoRegionsBG({
       <div className="bg-white w-[90%] h-auto rounded-2xl flex flex-col md:flex-row md:flex-wrap items-center justify-center py-[20px] shadow-[0px_0px_25px_10px_rgba(0,0,0,0.3)] md:space-x-2">
         <p className="md:mx-[30px] text-center text-[18px] md:text-[22px] font-semibold mb-[15px]">
           W jakim regionie szukasz nieruchomości?{" "}
-          <p className="inline  font-thin text-[16px]">(wielokrotny wybór)</p>
+          {/* <p className="inline  font-thin text-[16px]">(wielokrotny wybór)</p> */}
         </p>
         {showedTypes}
-        <div className="w-full place-items-center grid">
+        {/* <div className="w-full place-items-center grid">
           <div
             onClick={handleStartingSurvey}
             className={`${
@@ -51,7 +53,7 @@ export default function SurveyTwoRegionsBG({
           >
             Dalej
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

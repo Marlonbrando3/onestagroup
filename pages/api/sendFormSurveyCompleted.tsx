@@ -27,18 +27,17 @@ export default function (req: any, res: any) {
     html:
       `Dzień dobry,` +
       `<br><br>` +
-      `Dziękujemy za zainteresowanie naszymi ofertami nieruchomości.` +
-      `<br>` +
-      `Przesyłamy Państwu link do wybranej wcześniej inwestycji, niemniej dostępne są tam również inne TOP-owe i rekomendowane inwestycje o podobnym charakterze.
+      `Dziękujemy za zainteresowanie naszymi ofertami nieruchomości.<br>
+      Przesyłamy Państwu link do wybranej wcześniej inwestycji, niemniej dostępne są tam również inne TOP-owe i rekomendowane inwestycje o podobnym charakterze.
       <br><br>
       <a href=https://onesta.com.pl/choosedoffers?offer=${req.body.offer}&id=Galeria>Kliknij tutaj aby przejść do szczegółów nt. wybranej nieruchomości</a><br><br> 
       Mamy nadzieję, że kilka z nich przypadnie Państwu do gustu. <br> 
-      Jeśli jednak potrzebujecie Państwo więcej ogłoszeń, zapraszamy na naszą stronę internetową <a href=https://onesta.com.pl/hiszpania>(klikając tutaj)</a> na której jest ich blisko 200.
+      Jeśli jednak potrzebujecie Państwo więcej ogłoszeń, zapraszamy na naszą stronę internetową <a href=https://onesta.com.pl/hiszpania?page=1>(klikając tutaj)</a> na której jest ich blisko 200.
       <br><br>
       Zapraszamy również do kontaktu telefonicznego lub mailowego
       <br>
-      Marek  +48 576 65 25 25<br>
-      Karolina + 48 333 333 333 
+      Marek  <a href=tel:+48576652525>+48 576 65 25 25</a><br>
+      Karolina <a href=tel:+48505055846>+48 505 055 846</a>
       <br><br>
       Pozdrawiamy!<br>
       Zespół Onesta Group || Nieruchomości w Hiszpanii
@@ -50,9 +49,9 @@ export default function (req: any, res: any) {
     to: endEmail,
     subject: `Formularz FB - WWW po ankiecie ${req.body.name}`,
     text: "Hello. This email is for your email verification.",
-    html: `Zainteresowany ofertą nr ${req.body.OfferNumber}:
+    html: `<strong>Zainteresowany ofertą nr: </strong> ${req.body.offer}:
       <br><br>
-      Dane personalne: 
+      <strong>Dane personalne: </strong>
       <br><br>
       Imię i nazwisko: ${req.body.name}
       <br>
@@ -61,16 +60,16 @@ export default function (req: any, res: any) {
       Telefon kontaktowy: ${req.body.phone}
       <br><br>
       Wiadomość: ${req.body.msg}
-      <br><br><br>
-      Ankieta:
       <br><br>
-      Region/y: ${req.body.region},
+      <strong>PREFERENCJE: </strong>
       <br>
-      Typ/y nieruchomości: ${req.body.type},
+      <strong>Region: </strong>${req.body.region},
       <br>
-      Planowa Data zakupu: ${req.body.time}
+      <strong>Typy nieruchomości: </strong>${req.body.type},
       <br>
-      Zakładany budżet: ${req.body.price}`,
+      <strong>Planowa Data zakupu: </strong>${req.body.time}
+      <br>
+      <strong>Zakładany budżet: </strong>${req.body.price}`,
   };
 
   new Promise((resolve, reject) => {

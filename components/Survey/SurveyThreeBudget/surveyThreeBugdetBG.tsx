@@ -26,7 +26,9 @@ export default function SurveyThreeBugdetBG({
   const showedTypes = Budget[0].options.map((i) => (
     <SurveyThreeBudgetItem
       key={i.id}
-      types={i}
+      budget={i}
+      PageNumber={PageNumber}
+      setPageNumber={setPageNumber}
       type={Budget[0].type}
       ArrowBudget={ArrowBudget}
       setArrowBudget={setArrowBudget}
@@ -36,12 +38,12 @@ export default function SurveyThreeBugdetBG({
   return (
     <div className="w-full md:h-[86.7vh] h-screen md:w-[800px] flex items-center md:justify-center justify-center mx-auto">
       <div className="bg-white w-[90%] h-auto rounded-2xl flex flex-col md:flex-row md:flex-wrap items-center justify-center py-[20px] shadow-[0px_0px_25px_10px_rgba(0,0,0,0.3)] md:space-x-2">
-        <p className="mx-[30px] text-center text-[18px] md:text-[22px] font-semibold mb-[15px] inline">
+        <p className="mx-[30px] text-center text-[18px] md:text-[22px] font-semibold mb-[15px] inline w-full">
           W jakim budżecie szukasz?{" "}
-          <p className="inline font-thin text-[16px]">(wielokrotny wybór)</p>
+          {/* <p className="inline font-thin text-[16px]">(wielokrotny wybór)</p> */}
         </p>
         {showedTypes}
-        <div className="w-full place-items-center grid">
+        {/* <div className="w-full place-items-center grid">
           <div
             onClick={handleStartingSurvey}
             className={`${
@@ -50,7 +52,7 @@ export default function SurveyThreeBugdetBG({
           >
             Dalej
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

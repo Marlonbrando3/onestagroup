@@ -25,7 +25,7 @@ export default function (req: any, res: any) {
     subject: `Zainteresowanie daną ofertą: ${req.body.OfferNumber}`,
     text: "Hello. This email is for your email verification.",
     html:
-      `Zainteresowany ofertą nr ${req.body.OfferNumber}:` +
+      `Zainteresowany ofertą nr ${req.body.offer}:` +
       `<br><br>` +
       `Dane personalne` +
       `<br><br>` +

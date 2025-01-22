@@ -80,8 +80,10 @@ export default function Thankyoupageafter({
         <div className="h-[1px] w-[70%] bg-gray-600 mx-auto mb-[10px]"></div>
         <p className={`text-[20px] leading-[24px] md:px-[80px] mx-auto `}>
           <br />
-          Link z materiałami do wybranych ogłoszeń{" "}
-          <strong>właśnie został wysłany na wskazany adres mailowy.</strong>
+          Przejdź do szczegółów ogłoszeń i jednocześnie <br></br>
+          <strong className="font-semibold">
+            wyślij szczegóły wybranych ogłoszeń na wskazny wcześniej adres mailowy.
+          </strong>
         </p>
         <div
           onClick={handlingMassegeSend}

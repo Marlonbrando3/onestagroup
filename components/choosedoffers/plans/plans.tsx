@@ -30,7 +30,7 @@ export default function Plans() {
       key={index}
       onClick={() => handlePDFnumber(index)}
       className={`${
-        indexPlan === index ? "bg-orange-500 text-white" : "bg-white"
+        indexPlan === index ? "bg-orange-500 text-white border-white border" : "bg-white"
       } "cursor-pointer text-[30px] w-[40px] h-[40px] place-content-center grid mx-[2px] rounded-md cursor-pointer`}
     >
       {index + 1}
@@ -93,7 +93,12 @@ export default function Plans() {
           )}
         </TransformWrapper>
       </div>
-      <div className="flex mt-[10px]"> {subpage}</div>
+      <div className="flex mt-[10px]">
+        <div className="h-full place-content-center bg-white rounded-md mr-[5px] px-[5px] font-semibold">
+          Numer planu
+        </div>{" "}
+        {subpage}
+      </div>
     </>
   );
 }

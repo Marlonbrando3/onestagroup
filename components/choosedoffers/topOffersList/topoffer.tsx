@@ -6,24 +6,21 @@ import { useRouter } from "next/router";
 import Properties from "../../../public/properties.json";
 
 type Data = {
-  handleMoreOffers: any;
-  moreoffers: any;
-  moreoffersTXT: any;
-  moreoffersArrow: any;
+  handlePopUpClosing: any;
 };
 
-export default function Topoffer() {
+export default function Topoffer({ handlePopUpClosing }: Data) {
   const router = useRouter();
 
   const propsData = Data.map((p) => {
     const match = Properties.map((i) => {
       if (i.listingId === p.ref) {
-        // console.log(p.ref);
         return (
           <Link
             href={{ pathname: "/choosedoffers", query: { offer: p.ref, id: "Galeria" } }}
             key={p.ref}
             className="block shadow-[0_0px_7px_0_rgba(0,0,0,0.3)] rounded-xl sm:w-[400px] h-auto my-[5px] p-[8px] lg:w-[300px] mx-[5px]"
+            onClick={handlePopUpClosing}
           >
             <div className="w-full relative h-[200px]">
               <Image
@@ -35,7 +32,7 @@ export default function Topoffer() {
               />
             </div>
             <div className="px-[10px]">
-              <p className="text-[22px] my-[10px]">{i.headerAdvertisement}</p>
+              <p className="text-[20px] my-[10px] h-[65px]">{i.headerAdvertisement}</p>
               <p className="text-[26px] my-[10px] text-right font-bold">
                 <p className="text-[12px] inline">od</p>{" "}
                 <p className="inline text-slate-700">{i.price.amount.toLocaleString()} € </p>

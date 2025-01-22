@@ -11,32 +11,35 @@ export default function Index() {
 
   const handlePopUpOpen = (event: any) => {
     console.log(event);
-    showPopUp.current.style.top = "-70vh";
+    showPopUp.current.classList.remove("top-[10vh]", "md:top-[10vh]");
+    showPopUp.current.classList.add("-top-[65vh]", "md:-top-[80vh]");
   };
 
   const handlePopUpClosing = (event: any) => {
     console.log(event);
-    showPopUp.current.style.top = "10vh";
+    showPopUp.current.classList.remove("-top-[65vh]", "md:-top-[80vh]");
+    showPopUp.current.classList.add("top-[10vh]", "md:top-[10vh]");
   };
 
-  useEffect(() => {
-    // Funkcja aktualizująca rozmiar okna
-    const handleResize = () => {
-      setSlideWidth(window.innerWidth);
-      console.log(window.innerWidth);
-    };
+  // useEffect(() => {
+  //   // Funkcja aktualizująca rozmiar okna
+  //   const handleResize = () => {
+  //     setSlideWidth(window.innerWidth);
+  //     console.log(window.innerWidth);
+  //   };
 
-    // Nasłuchuj zmiany rozdzielczości
-    window.addEventListener("resize", handleResize);
+  //   // Nasłuchuj zmiany rozdzielczości
+  //   window.addEventListener("resize", handleResize);
 
-    // Ustaw początkowy rozmiar
-    handleResize();
+  //   // Ustaw początkowy rozmiar
+  //   handleResize();
 
-    // Czyszczenie nasłuchiwania
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  //   // Czyszczenie nasłuchiwania
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
+
   return (
     <div className="h-[89vh] md:h-screen bg-[url('/bg_calp.jpg')] bg-cover bg-center relative overflow-hidden">
       <Header handlePopUpOpen={handlePopUpOpen} />
@@ -44,11 +47,7 @@ export default function Index() {
       <ViewsContainer
         handlePopUpOpen={handlePopUpOpen}
         handlePopUpClosing={handlePopUpClosing}
-        // moreOffersRef={moreOffersRef}
         showPopUp={showPopUp}
-        // imIntresetedRef={imIntresetedRef}
-        // moreoffersTXT={moreoffersTXT}
-        // moreoffersArrow={moreoffersArrow}
       />
     </div>
   );

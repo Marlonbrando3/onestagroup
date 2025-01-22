@@ -9,14 +9,7 @@ type Data = {
   showPopUp: any;
 };
 
-export default function Buttons({
-  handlePopUpOpen,
-  handlePopUpClosing,
-  showPopUp,
-}: // moreOffersRef,
-// moreoffersTXT,
-// moreoffersArrow,
-Data) {
+export default function Buttons({ handlePopUpOpen, handlePopUpClosing, showPopUp }: Data) {
   const [optionButton, setOptionButton]: any = useState();
 
   return (
@@ -48,14 +41,14 @@ Data) {
           </p>
         </div>
       </div>
-      <div ref={showPopUp} className="absolute w-screen h-screen bg-white pt-[80px] duration-200">
+      <div ref={showPopUp} className="absolute w-screen h-screen bg-white pt-[50px] duration-200">
         <p
           onClick={handlePopUpClosing}
-          className="absolute rounded-md px-[15px] py-[4px] top-5 right-5 bg-red-500 text-white"
+          className="absolute rounded-md px-[15px] py-[4px] top-2 right-5 bg-red-500 text-white"
         >
           Zamknij
         </p>
-        {optionButton === 1 && <Topofferslist />}
+        {optionButton === 1 && <Topofferslist handlePopUpClosing={handlePopUpClosing} />}
         {optionButton === 2 && <FormPoUpIntrested />}
       </div>
     </div>

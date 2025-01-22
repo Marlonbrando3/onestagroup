@@ -59,7 +59,6 @@ export default function PropertyCard({ property }: Property) {
           </div>
         </span>
         <Link
-          // onClick={wa}
           href={{
             pathname: "/[country]/oferta",
             query: {
