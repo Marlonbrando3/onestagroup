@@ -35,7 +35,7 @@ export default function Firstview({
   setEmail,
 }: Page) {
   const router = useRouter();
-  const { offer } = router.query;
+  const { offer, id } = router.query;
 
   //personal details
 
@@ -80,7 +80,10 @@ export default function Firstview({
       const data = await res.status;
       console.log(data);
       if (data === 200) {
-        // router.push("https://onesta.com.pl/form/thankyoupageform");
+        router.push({
+          pathname: router.pathname,
+          query: { offer: offer, id: id, site: "thankyoupage" },
+        });
         setPageNumber(2);
       }
     } catch (err) {
