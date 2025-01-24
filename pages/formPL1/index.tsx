@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useState, useRef } from "react";
 import Head from "next/head";
-import { Dancing, TenorsSans, GreatVibes } from "../../fonts/fonts";
+import Script from "next/script";
 import Firstview from "../../components/Survey/firstview";
 import DataSurvey from "../../data/survey.json";
 import SurveyOneTypesBG from "../../components/Survey/SurveyOneTypes/surveyOneTypesBG";
@@ -46,6 +46,19 @@ export default function Index() {
         />
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
         {/* <meta property="og:locale" content="en_US" /> */}
+        <Script id="facebook-pixel">
+          {`!function(f,b,e,v,n,t,s)
+                  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                  n.queue=[];t=b.createElement(e);t.async=!0;
+                  t.src=v;s=b.getElementsByTagName(e)[0];
+                  s.parentNode.insertBefore(t,s)}(window, document,'script',
+                  'https://connect.facebook.net/en_US/fbevents.js');
+                  fbq('init', '178665974358939');
+                  fbq('track', 'PageView');
+                `}
+        </Script>
       </Head>
       <div
         className={`bg-[url('/bg-form.png')] h-auto bg-[length:400px_auto] md:bg-cover bg-fixed pb-[20px]`}
