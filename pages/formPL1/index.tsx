@@ -45,6 +45,7 @@ export default function Index() {
                   'https://connect.facebook.net/en_US/fbevents.js');
                   fbq('init', '178665974358939');
                   fbq('track', 'PageView');
+                  fbq('trackCustom', 'Form www (thx page)')
                 `}
       </Script>
       <Head>
