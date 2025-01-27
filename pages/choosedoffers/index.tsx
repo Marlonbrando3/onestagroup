@@ -3,9 +3,13 @@ import Header from "@/components/choosedoffers/header";
 import Menu from "@/components/choosedoffers/menu";
 import GalleryContainer from "@/components/choosedoffers/galleryView/galleryContainer";
 import ViewsContainer from "@/components/choosedoffers/viewsContainer";
+import Hotjar from "@hotjar/browser";
 
 export default function Index() {
   const showPopUp: any = useRef(null);
+
+  const siteId = 3555670;
+  const hotjarVersion = 6;
 
   const [slideWidth, setSlideWidth]: any = useState();
 

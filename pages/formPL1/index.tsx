@@ -3,16 +3,21 @@ import React, { useState, useRef } from "react";
 import Head from "next/head";
 import Script from "next/script";
 import Firstview from "../../components/Survey/firstview";
-import DataSurvey from "../../data/survey.json";
 import SurveyOneTypesBG from "../../components/Survey/SurveyOneTypes/surveyOneTypesBG";
 import SurveyTwoRegionsBG from "../../components/Survey/SurveyTwoRegions/surveyTwoRegionsBG";
 import SurveyThreeBugdetBG from "../../components/Survey/SurveyThreeBudget/surveyThreeBugdetBG";
 import SurveyFourDateBG from "../../components/Survey/SurveyFourDate/surveyFourDateBG";
 import Thankyoupageform from "../../components/Survey/thankyoupageform";
 import Thankyoupageafter from "@/components/Survey/SurveyFourDate/thankyoupageafter";
+import Hotjar from "@hotjar/browser";
 
 export default function Index() {
   const emptyFieldPopUp: any = useRef();
+
+  const siteId = 3555670;
+  const hotjarVersion = 6;
+
+  Hotjar.init(siteId, hotjarVersion);
 
   const [PageNumber, setPageNumber] = useState<number>(1);
 
