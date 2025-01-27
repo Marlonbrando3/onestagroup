@@ -8,6 +8,7 @@ import { MdOutlineVideoLibrary } from "react-icons/md";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { Dancing, TenorsSans, GreatVibes } from "../../fonts/fonts";
 import { MdOutlineRecommend } from "react-icons/md";
+import Link from "next/link";
 
 type Page = {
   PageNumber: any;
@@ -92,53 +93,59 @@ export default function Firstview({
   };
 
   return (
-    <div className="md:w-[800px] md:h-auto w-full py-[20px] bg-white mx-auto flex flex-col items-center justify-center mt-[180px] md:mt-[110px] rounded-[30px] relative">
+    <div className="md:w-[800px] md:h-auto w-full py-[20px] bg-white mx-auto flex flex-col items-center justify-center mt-[110px] md:mt-[110px] rounded-[30px] relative">
       <div className="h-[4px] w-[130px] absolute bg-gray-700 z-20 top-4 rounded-[10px] md:hidden"></div>
       <p className="text-[20px] md:text-[30px] md:w-[500px] w-[90%] text-center lg:leading-[35px] leading-[23px] mt-[20px] md:mt-auto">
         Wyświetl i <p className="text-orange-500 font-bold inline">wyślij natychmiast </p>
         <strong>szczegółowe informacje</strong> o wybranej inwestycji tj:
         {/* <span className="text-red-600 font-bold"> w Hiszpanii</span> */}
       </p>
-      <div className="md:w-[90%] w-[90%] h-auto mt-[30px] flex flex-wrap justify-start items-center">
-        <div className="w-full md:w-[50%] flex items-center justify-evenly my-[20px]">
-          <FaPhotoVideo className="w-[50px] h-[50px] text-green-700" />
-          <p className="text-[20px] md:text-[22px] w-[60%] text-left font-normal leading-[24px] md:leading-[30px]">
+      <div className="md:w-[80%] w-[90%] h-auto mt-[30px] flex flex-wrap justify-center items-center">
+        <div className="text-[20px] md:text-[22px] md:w-[50%] w-[45%] md:text-left font-normal leading-[24px] md:leading-[30px] text-center md:flex mb-[20px]">
+          <FaPhotoVideo className="md:w-[50px] w-[40px] md:h-[50px] h-[40px] text-green-700 mx-auto" />
+          <p className="text-[20px] md:text-[22px] md:w-[60%] w-full md:text-left font-normal leading-[24px] md:leading-[30px] text-center">
             Galeria zdjęć i wizualizacji
           </p>
         </div>{" "}
-        <div className="w-full md:w-[50%] flex items-center justify-evenly my-[20px]">
-          <TbViewportWide className="w-[50px] h-[50px] text-green-700" />
-          <p className="text-[20px] md:text-[22px] w-[60%] text-left font-normal leading-[24px] md:leading-[30px]">
+        <div className="text-[20px] md:text-[22px] md:w-[50%] w-[45%] md:text-left font-normal leading-[24px] md:leading-[30px] text-center md:flex mb-[20px]">
+          <TbViewportWide className="md:w-[50px] w-[40px] md:h-[50px] h-[40px] text-green-700 mx-auto" />
+          <p className="text-[20px] md:text-[22px] md:w-[60%] w-full md:text-left font-normal leading-[24px] md:leading-[30px] text-center">
             Plany i/lub rzuty apartamentów
           </p>
         </div>{" "}
-        <div className="w-full md:w-[50%] flex items-center justify-evenly my-[20px]">
-          <FaRegListAlt className="w-[50px] h-[50px] text-green-700" />
-          <p className="text-[20px] md:text-[22px] w-[60%] text-left font-normal leading-[24px md:leading-[30px]]">
-            Aktualne ceny wraz z dostępnością
+        <div className="text-[20px] md:text-[22px] md:w-[50%] w-[45%] md:text-left font-normal leading-[24px] md:leading-[30px] text-center md:flex mb-[20px]">
+          <FaRegListAlt className="md:w-[50px] w-[40px] md:h-[50px] h-[40px] text-green-700 mx-auto" />
+          <p className="text-[20px] md:text-[22px] md:w-[60%] w-full md:text-left font-normal leading-[24px] md:leading-[30px] text-center">
+            Aktualne ceny i dostepność
           </p>
         </div>{" "}
-        <div className="w-full md:w-[50%] flex items-center justify-evenly my-[20px]">
-          <MdOutlineVideoLibrary className="w-[50px] h-[50px] text-green-700" />
-          <p className="text-[20px] md:text-[22px] w-[60%] text-left font-normal leading-[24px] md:leading-[30px]">
+        <div className="text-[20px] md:text-[22px] md:w-[50%] w-[45%] md:text-left font-normal leading-[24px] md:leading-[30px] text-center md:flex mb-[20px]">
+          <MdOutlineVideoLibrary className="md:w-[50px] w-[40px] md:h-[50px] h-[40px] text-green-700 mx-auto" />
+          <p className="text-[20px] md:text-[22px] md:w-[60%] w-full md:text-left font-normal leading-[24px] md:leading-[30px] text-center">
             Materiały video (jeśli dostępne)
           </p>
         </div>{" "}
-        <div className="w-full md:w-[50%] flex items-center justify-evenly my-[20px]">
-          <MdOutlineLocationOn className="w-[50px] h-[50px] text-green-700" />
-          <p className="text-[20px] md:text-[22px] w-[60%] text-left font-normal leading-[24px]">
+        <div className="text-[20px] md:text-[22px] md:w-[50%] w-[45%] md:text-left font-normal leading-[24px] md:leading-[30px] text-center md:flex mb-[20px]">
+          <MdOutlineLocationOn className="md:w-[50px] w-[40px] md:h-[50px] h-[40px] text-green-700 mx-auto" />
+          <p className="text-[20px] md:text-[22px] md:w-[60%] w-full md:text-left font-normal leading-[24px] md:leading-[30px] text-center">
             Lokalizację całej inwestycji
           </p>
         </div>{" "}
-        <div className="w-full md:w-[50%] flex items-center justify-evenly my-[20px]">
-          <MdOutlineRecommend className="w-[50px] h-[50px] text-green-700" />
-          <p className="text-[20px] md:text-[22px] w-[60%] text-left font-normal leading-[24px]">
+        <div className="text-[20px] md:text-[22px] md:w-[50%] w-[45%] md:text-left font-normal leading-[24px] md:leading-[30px] text-center md:flex mb-[20px]">
+          <MdOutlineRecommend className="md:w-[50px] w-[40px] md:h-[50px] h-[40px] text-green-700 mx-auto" />
+          <p className="text-[20px] md:text-[22px] md:w-[60%] w-full md:text-left font-normal leading-[24px] md:leading-[30px] text-center">
             Inne podobne oferty
           </p>
-        </div>{" "}
+        </div>
+        <Link href="#form" scroll={false} className="mx-auto">
+          <div className="bg-green-600 text-white text-[26px] mx-auto my-[40px] px-[10px] rounded-md">
+            Więcej informacji
+          </div>
+        </Link>
       </div>
       <div>
         <form
+          id="form"
           onSubmit={handlingMassegeSend}
           className={`flex flex-col md:w-[550px] w-[90%] mt-[30px] mx-auto`}
         >
