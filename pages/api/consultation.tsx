@@ -40,5 +40,18 @@ export default function (req: any, res: any) {
     });
   }
 
-  send();
+  new Promise((resolve, reject) => {
+    transporter.sendMail(mailData, (err: any, info: any) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+        res.json({ msg: err, status: 400 }).status(400);
+      } else {
+        resolve(info);
+        res.json({ msg: "sended", status: 200 }).status(200);
+      }
+    });
+  });
+
+  // send();
 }

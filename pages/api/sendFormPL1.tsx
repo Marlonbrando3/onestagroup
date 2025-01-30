@@ -1,7 +1,7 @@
 export default function (req: any, res: any) {
   let nodemailer = require("nodemailer");
 
-  const endEmail = "marek.marszalek@onesta.com.pl";
+  const endEmail = "leady@onesta.com.pl";
   const fromEmail = process.env.FROM_EMAIL;
   const pass = process.env.EMAIL_PASS;
 

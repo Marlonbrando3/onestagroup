@@ -1,7 +1,7 @@
 export default function (req: any, res: any) {
   let nodemailer = require("nodemailer");
 
-  const endEmail = "marek.marszalek@onesta.com.pl";
+  const endEmail = "leady@onesta.com.pl";
   const fromEmail = process.env.FROM_EMAIL;
   const pass = process.env.EMAIL_PASS;
 
@@ -20,8 +20,8 @@ export default function (req: any, res: any) {
   });
 
   const clientMailData = {
-    from: "Onesta || Group <www@onesta.com.pl>",
-    to: "marek.marszalek85@gmail.com",
+    from: "Onesta Group <www@onesta.com.pl>",
+    to: req.body.email,
     subject: `Onesta Group || Nieruchomości w Hiszpanii`,
     text: "Hello. This email is for your email verification.",
     html:

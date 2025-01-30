@@ -4,9 +4,13 @@ import { useRouter } from "next/router";
 import { secret } from "./api/secret";
 // import AdminInputs from "/components/AdminInputs";
 import AsariCrm from "../components/asariCrm";
+import FacebookVeryfication from "@/components/facebookVeryfication";
+import FacebookGetLeads from "@/components/facebookGetLeads";
+import FacebookGetForms from "@/components/facebookGetForms";
 
 export default function Panel() {
   const [permission, setPermission] = useState(false);
+  const [dataToShow, setDataToShow] = useState();
 
   adminapi();
 
@@ -35,5 +39,17 @@ export default function Panel() {
   }
   console.log(permission);
 
-  return permission && <AsariCrm />;
+  return (
+    permission && (
+      <div className="p-[40px]">
+        <div className="flex">
+          <AsariCrm />
+          <FacebookVeryfication />
+          <FacebookGetLeads />
+          <FacebookGetForms dataToShow={dataToShow} setDataToShow={setDataToShow} />{" "}
+        </div>
+        {dataToShow}
+      </div>
+    )
+  );
 }

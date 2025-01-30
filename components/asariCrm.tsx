@@ -107,7 +107,7 @@ export default function AsariCrm() {
   }, []);
 
   return (
-    <div className="p-[30px]">
+    <div>
       <div
         onClick={handleDownloadingDataFromAsari}
         className="bg-blue-500 text-white w-[200px] text-center cursor-pointer"
