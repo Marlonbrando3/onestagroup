@@ -42,7 +42,7 @@ export default function FacebookGetForms({ dataToShow, setDataToShow }: Forms) {
           Zwiń listę formularzy
         </div>
         {data.map((i: any) => (
-          <div className="flex border w-full justify-start">
+          <div key={i.id} className="flex border w-full justify-start">
             <div className="w-[250px]">
               Form ID: <p className="font-bold inline">{i.id}</p>
             </div>
