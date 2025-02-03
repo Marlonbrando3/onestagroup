@@ -12,7 +12,7 @@ export default function Prices() {
 
   const priceList = Properties.filter((i: any) => i.listingId === offer)
     .flatMap((i) => i.images)
-    .filter((i) => i.description === "cennik");
+    .filter((i) => i.description?.toLowerCase() === "cennik");
 
   const [indexImage, setIndexImage] = useState(0);
 
