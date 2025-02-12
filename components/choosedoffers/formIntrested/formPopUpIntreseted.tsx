@@ -65,7 +65,7 @@ export default function FormPoUpIntrested() {
   };
 
   return (
-    <div className="md:w-[800px] w-full h-[500px] bg-[url('/bg-form.png')] bg-[length:400px_auto] md:bg-cover overflow-hidden rounded-xl flex md:justify-end relative mx-auto">
+    <div className="z-30 md:w-[800px] w-full h-[500px] bg-[url('/bg-form.png')] bg-[length:400px_auto] md:bg-cover overflow-hidden rounded-xl flex md:justify-end relative mx-auto">
       <form
         onSubmit={handleSendingForm}
         className="flex flex-col md:w-[500px] h-full items-center justify-evenly bg-white p-[20px]"

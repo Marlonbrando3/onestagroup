@@ -9,7 +9,7 @@ type Data = {
 
 export default function Header({ handlePopUpOpen }: Data) {
   const router = useRouter();
-  const { offer } = router.query;
+  const { offer, menu } = router.query;
 
   const title = Properties.find((i) => i.listingId === offer);
 
@@ -24,9 +24,11 @@ export default function Header({ handlePopUpOpen }: Data) {
             <Image src="/logotype_full.png" fill objectFit="contain" alt="logo" />
           </div>
         </div>{" "}
-        <p className="md:text-[22px] md:ml-[60px] ml-[20px] font-bold">
-          {title?.headerAdvertisement}
-        </p>
+        {menu !== "false" && (
+          <p className="md:text-[22px] md:ml-[60px] ml-[20px] font-bold">
+            {title?.headerAdvertisement}
+          </p>
+        )}
       </div>
     </div>
   );

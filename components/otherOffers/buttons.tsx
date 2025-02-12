@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useReducer } from "react";
+import { useRouter } from "next/router";
 import { IoIosArrowUp } from "react-icons/io";
 import Topofferslist from "../choosedoffers/topOffersList/topofferslist";
 import FormPoUpIntrested from "../choosedoffers/formIntrested/formPopUpIntreseted";
@@ -10,7 +11,9 @@ type Data = {
 };
 
 export default function Buttons({ handlePopUpOpen, handlePopUpClosing, showPopUp }: Data) {
-  const [optionButton, setOptionButton]: any = useState();
+  const router = useRouter();
+  const [optionButton, setOptionButton]: any = useState(null);
+  const { recomended } = router.query;
 
   return (
     <div className="absolute top-[0vh] left-0 w-full cursor-pointer duration-200 z-20">
@@ -41,14 +44,25 @@ export default function Buttons({ handlePopUpOpen, handlePopUpClosing, showPopUp
           </p>
         </div>
       </div>
-      <div ref={showPopUp} className="absolute w-screen h-screen bg-white pt-[50px] duration-200">
-        <p
-          onClick={handlePopUpClosing}
-          className="absolute rounded-md px-[15px] py-[4px] top-2 right-5 bg-red-500 text-white"
-        >
-          Zamknij
-        </p>
-        {optionButton === 1 && <Topofferslist handlePopUpClosing={handlePopUpClosing} />}
+      <div
+        ref={showPopUp}
+        className={`${
+          recomended === "true"
+            ? "-top-[65vh] md:-top-[80vh] bg-white"
+            : "top-[20vh], md:top-[0vh] border-2 border-black"
+        } ' absolute w-screen h-screen pt-[50px] duration-200' `}
+      >
+        {optionButton !== null && (
+          <p
+            onClick={handlePopUpClosing}
+            className="absolute rounded-md px-[15px] py-[4px] top-[10px] right-5 bg-red-500 text-white z-0"
+          >
+            Zamknij
+          </p>
+        )}
+        {(optionButton === 1 || optionButton === null) && recomended === "true" && (
+          <Topofferslist handlePopUpClosing={handlePopUpClosing} />
+        )}
         {optionButton === 2 && <FormPoUpIntrested />}
       </div>
     </div>

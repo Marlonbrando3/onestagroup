@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function Menu() {
   const router = useRouter();
-  const { id } = router.query;
+  const { id, menu } = router.query;
 
   const MenuElements = MenuFormElements.map((i) => {
     const handleChangingQuery = () => {
@@ -15,17 +15,21 @@ export default function Menu() {
     };
 
     return (
-      <div
-        onClick={handleChangingQuery}
-        key={i.id}
-        className={`${
-          i.title === id
-            ? "font-bold h-[40px] border rounded-md bg-white text-black rounded-b-md"
-            : `bg-${i.color}-600 text-white rounded-l-[5px] rounded-b-[0px]`
-        }  border-l border-b md:w-[100px] w-1/4  place-content-center grid border-gray-700 md:-ml-[2px] cursor-pointer hover:bg-white hover:text-black duration-200 top-[50px]`}
-      >
-        {i.title}
-      </div>
+      <>
+        {menu !== "false" && (
+          <div
+            onClick={handleChangingQuery}
+            key={i.id}
+            className={`${
+              i.title === id
+                ? "font-bold h-[40px] border rounded-md bg-white text-black rounded-b-md"
+                : `bg-${i.color}-600 text-white rounded-l-[5px] rounded-b-[0px]`
+            }  border-l border-b md:w-[100px] w-1/4  place-content-center grid border-gray-700 md:-ml-[2px] cursor-pointer hover:bg-white hover:text-black duration-200 top-[50px]`}
+          >
+            {i.title}
+          </div>
+        )}
+      </>
     );
   });
 
