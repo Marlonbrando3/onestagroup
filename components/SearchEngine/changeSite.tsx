@@ -18,7 +18,7 @@ export default function ChangeSite({ propertiesSubSitesLengt, actualPage, setAct
     sites.push(i);
   }
 
-  console.log(sites);
+  // console.log(sites);
 
   const handleChanginSite = (index: any) => {
     router.query.page = index + 1;

@@ -18,7 +18,7 @@ export default function ContactFormMain() {
 
   const confirmation = useRef();
 
-  console.log(dataForm);
+  // console.log(dataForm);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

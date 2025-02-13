@@ -59345,7 +59345,7 @@
     "ownershipType": null,
     "parentListing": null,
     "parkingSpacesNo": null,
-    "price": { "amount": 322, "currency": "EUR" },
+    "price": { "amount": 322000, "currency": "EUR" },
     "priceM2": { "amount": null, "currency": "PLN" },
     "primaryEnergy": null,
     "privateDescription": null,

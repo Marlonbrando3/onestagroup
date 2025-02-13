@@ -1,6 +1,6 @@
 import PropertyCard from "./PropertyCard";
 import PropertyCardHorizontal from "./PropertyCardHorizontal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChangeSite from "./changeSite";
 import Properties from "../../public/properties.json";
 import { useRouter } from "next/router";
@@ -14,9 +14,6 @@ export default function SearchResults() {
   const [propertiesPerPage, setPropertiesPerPage] = useState(18);
   const startProperty = (parseInt(page as string) - 1) * propertiesPerPage;
   const endProperty = startProperty + propertiesPerPage;
-
-  console.log("data" + (parseInt(page as string) - 1 || actualPage));
-  console.log(actualPage);
 
   const {
     country,
@@ -32,9 +29,13 @@ export default function SearchResults() {
   } = router.query;
   // console.log(Properties[0].apartmentTypeList);
 
-  let PropertiesSorted = Properties.sort(
-    (a: any, b: any) =>
-      new Date(b.actualisationDate).getTime() - new Date(a.actualisationDate).getTime(),
+  console.log("load");
+
+  const [PropertiesSorted, setPropertiesSorted] = useState(
+    Properties.sort(
+      (a: any, b: any) =>
+        new Date(b.actualisationDate).getTime() - new Date(a.actualisationDate).getTime(),
+    ),
   );
 
   let PropertiesSelected = PropertiesSorted.filter((p) => {
@@ -69,11 +70,38 @@ export default function SearchResults() {
     (p, index) => index <= propertiesSubSitesLengt,
   );
 
-  console.log(PropertiesSelected);
-  console.log(propertiesSubSitesLengt);
+  const handleFiltering = (event: any) => {
+    const value = event.target.value;
+    if (value === "cheap") {
+      console.log(value);
+      let data = [...Properties].sort((a: any, b: any) => b.price.amount - a.price.amount);
+      console.log(data);
+      setPropertiesSorted(data);
+    }
+
+    if (value === "expensive") {
+      console.log("expensive");
+      let data = [...Properties].sort((a: any, b: any) => a.price.amount - b.price.amount);
+      console.log(data);
+      setPropertiesSorted(data);
+    }
+  };
 
   return (
     <div className="mx-auto">
+      <div className="border-1 md:w-[800px] lg:w-[1160px] h-[40px] mb-[20px] mt-[3px] lg:mx-auto flex justify-end">
+        <div className="w-[300px] h-full bg-white border flex items-center justify-evenly rounded-xl">
+          <div className="pr-[10px]">Filtruj:</div>
+          <div className="">
+            <select className="text-left font-semibold" onChange={handleFiltering}>
+              <option value="expensive">od najtańszych</option>
+              <option value="cheap">od najdroższych</option>
+              {/* <option value="recomnded">najpierw rekomendowane</option>
+              <option value="delivery">najszybsza data oddania</option> */}
+            </select>
+          </div>
+        </div>
+      </div>
       <div className="h-full md:w-[800px] lg:w-[1160px] flex items-center justify-center flex-wrap lg:mx-auto">
         {propertiesSliced.map((property) => (
           <PropertyCard key={property.id} property={property} />

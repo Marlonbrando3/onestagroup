@@ -35,9 +35,9 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
   const [queries, setQueries] = useState({
     page: 1,
   });
-  console.log(queries);
+  // console.log(queries);
 
-  console.log(router.query);
+  // console.log(router.query);
 
   const handleNewSearch = () => {
     if (searchEngine.current.style.top) searchEngine.current.style.top = "-400px";
