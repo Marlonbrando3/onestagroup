@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import MainSearchInSearchEngine from "../MainSearchInSearchEngine";
 import MobileFilters from "../MobileFilters";
+import { IoSearch } from "react-icons/io5";
+import Properties from "../../public/properties.json";
 
 type Function = {
   handleShowMobileFilters: any;
@@ -20,12 +22,18 @@ export default function SearchInput({
   const AdvancedMenu = useRef<HTMLParagraphElement>();
   const AdvancedButton = useRef<HTMLParagraphElement>();
 
-  // const ButtonsAdvanced =
-  //   AdvancedMenu.current === undefined || AdvancedMenu.current.style.height === "0px" ? (
-  //     <p>więcej filtrów</p>
-  //   ) : (
-  //     <p>zwiń</p>
-  //   );
+  const [ref, setRef] = useState<string>("");
+
+  const handleInputData = (e: any) => {
+    setRef(e.target.value);
+  };
+
+  const handleSearchingOffer = () => {
+    let data = [...Properties].filter((i) => i.listingId === ref.toUpperCase());
+    if (data.length === 0) {
+      console.log("nie ma ");
+    } else console.log("DDD");
+  };
 
   return (
     <>
@@ -107,6 +115,22 @@ export default function SearchInput({
               Szukaj
             </div> */}
         </form>
+        <div className="w-full lg:w-[1100px] flex justify-start mx-auto items-center">
+          <div className="bg-white z-10 flex mt-[10px] float-left rounded-md shadow-md p-[7px]">
+            <div className="w-[110px] text-[14px] leading-[16px] mr-[15px]">
+              Wyszukaj po nr. referencyjnym{" "}
+            </div>
+            <input
+              onChange={handleInputData}
+              className="border rounded-md outline-none pl-[4px] text-[14px]"
+              placeholder="np. 149/15982/ODS"
+            ></input>
+            <IoSearch
+              onClick={handleSearchingOffer}
+              className="cursor-pointer hover:bg-white hover:text-green-500 border border-green-500 m-auto bg-green-500 rounded-md h-[25px] w-[25px] p-[4px] ml-[4px] text-white duration-200"
+            />
+          </div>
+        </div>
         <MobileFilters
           handleShowMobileFilters={handleShowMobileFilters}
           searchEngine={searchEngine}

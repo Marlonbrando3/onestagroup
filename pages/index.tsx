@@ -1,3 +1,4 @@
+import React from "react";
 import Head from "next/head";
 import Script from "next/script";
 import Header from "../components/Header";
@@ -13,6 +14,7 @@ import AboutOnestaMainPage from "../components/aboutOnestaMainPage";
 
 import Hotjar from "@hotjar/browser";
 import Ourteammain from "@/components/ourteammain/ourteammain";
+import { useState, useEffect } from "react";
 
 type AppProps = {
   cookiesWindow: any;
@@ -24,7 +26,6 @@ export default function FirstView({ cookiesWindow }: AppProps) {
   const hotjarVersion = 6;
 
   Hotjar.init(siteId, hotjarVersion);
-
   return (
     <>
       <Script id="gtm">
@@ -74,7 +75,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
       </Script>
       <Head>
         <meta property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii" content="image" />
-        <title>Nieruchomości w Hiszpanii, nieruchomości w Chorwacji.</title>
+        <title>Nieruchomości w Hiszpanii, nieruchomości Hiszpania.</title>
         <link rel="shortcut icon" href="/logotype.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com"></link>
