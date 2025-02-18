@@ -40,7 +40,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
   // console.log(router.query);
 
   const handleNewSearch = () => {
-    if (searchEngine.current.style.top) searchEngine.current.style.top = "-400px";
+    if (searchEngine.current.style.top) searchEngine.current.style.top = "-370px";
     router.push({ pathname: `/${router.query.country}`, query: queries });
     mobileButtonSearchEngine.current.innerHTML = "Filtry";
   };
