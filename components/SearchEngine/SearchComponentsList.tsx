@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import MainSearchInSearchEngine from "../MainSearchInSearchEngine";
 import MobileFilters from "../MobileFilters";
@@ -21,13 +22,65 @@ export default function SearchInput({
   const ShowPopUpChangedApply: any = useRef();
   const AdvancedMenu = useRef<HTMLParagraphElement>();
   const AdvancedButton = useRef<HTMLParagraphElement>();
+  const RefOffers = useRef<any>();
 
   const [ref, setRef] = useState<string>("");
 
-  const handleInputData = (e: any) => {
-    setRef(e.target.value);
+  const [filteredProperties, setFilteredProperties]: any = useState();
+
+  const handleChoosingThisOffer = (e: any) => {
+    console.log(e.id);
+    const property = Properties.filter((i) => i.id === e.id);
+    console.log(property[0].id);
+    router.push({
+      pathname: `${router.pathname}/oferta`,
+      query: {
+        country: router.query.country || "hiszpania",
+        id: property[0].id,
+        t: property[0].headerAdvertisement,
+      },
+    });
   };
 
+  const handleInputData = (e: any) => {
+    const refNumber = e.target.value;
+    setRef(refNumber);
+    console.log(RefOffers);
+
+    if (refNumber.length > 2) {
+      RefOffers.current.style.display = "block";
+    } else {
+      RefOffers.current.style.display = "block";
+      RefOffers.current.style.display = "none";
+    }
+
+    let data = Properties.filter((i: any) => i.listingId.includes(refNumber)).map((e) => (
+      <div
+        key={e.id}
+        onClick={() => handleChoosingThisOffer(e)}
+        className="flex bg-white cursor-pointer hover:bg-yellow-100 duration-100 w-full"
+      >
+        <div className="w-[150px] h-[70px] relative">
+          <Image
+            src={`https://img.asariweb.pl/thumbnail/${e.images[0].id}`}
+            fill
+            objectFit="cover"
+            alt="img"
+          ></Image>
+        </div>
+        <div className="flex-col p-[5px] flex-1">
+          <div className="text-[12px]">
+            {e.foreignLocation}, {e.foreignStreet}
+          </div>
+          <div className="font-semibold text-[14px] leading-[14px]">{e.headerAdvertisement}</div>
+          <div className="text-[10px]">{e.listingId}</div>
+        </div>
+      </div>
+    ));
+    console.log(data);
+
+    setFilteredProperties(data);
+  };
   const handleSearchingOffer = () => {
     let data = [...Properties].filter((i) => i.listingId === ref.toUpperCase());
     if (data.length === 0) {
@@ -40,7 +93,7 @@ export default function SearchInput({
       <div
         ref={searchEngine}
         className={
-          "transition-all duration-500 fixed -top-[400px] lg:mt-0 flex-col items-center justify-center lg:h-[100px] h-auto w-screen lg:w-screen bg-white lg:flex lg:sticky z-30"
+          "transition-all duration-500 fixed -top-[450px] lg:mt-0 flex-col items-center justify-center lg:h-[100px] h-auto w-screen lg:w-screen bg-white lg:flex lg:sticky z-30"
         }
       >
         <form className="lg:-mt-[100px] p-[10px] rounded-[20px] flex md:flex-row flex-col justify-center items-center lg:w-[1100px] h-auto md:h-auto relative shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] bg-white">
@@ -116,7 +169,10 @@ export default function SearchInput({
             </div> */}
         </form>
         <div className="w-full lg:w-[1100px] flex justify-start mx-auto items-center">
-          <div className="bg-white z-10 flex mt-[10px] float-left rounded-md shadow-md p-[7px]">
+          <div className="bg-white z-10 flex mt-[10px] float-left rounded-md shadow-md p-[7px] relative">
+            <div ref={RefOffers} className="min-w-[400px] h-auto bg-white absolute top-[50px]">
+              {filteredProperties}
+            </div>
             <div className="w-[110px] text-[14px] leading-[16px] mr-[15px]">
               Wyszukaj po nr. referencyjnym{" "}
             </div>
@@ -125,10 +181,10 @@ export default function SearchInput({
               className="border rounded-md outline-none pl-[4px] text-[14px]"
               placeholder="np. 149/15982/ODS"
             ></input>
-            <IoSearch
+            {/* <IoSearch
               onClick={handleSearchingOffer}
               className="cursor-pointer hover:bg-white hover:text-green-500 border border-green-500 m-auto bg-green-500 rounded-md h-[25px] w-[25px] p-[4px] ml-[4px] text-white duration-200"
-            />
+            /> */}
           </div>
         </div>
         <MobileFilters
