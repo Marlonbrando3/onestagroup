@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const PAGE_ACCESS_TOKEN = process.env.token; // Wstaw swój token dostępu do strony
+const PAGE_ACCESS_TOKEN = process.env.sandbox_token; // Wstaw swój token dostępu do strony
 const ACCESS_TOKEN = process.env.access_token;
 const LEADS_FORM_ID = 955308019838546; // Wstaw ID formularza
 const PAGE_ID = process.env.PAGE_ID;
