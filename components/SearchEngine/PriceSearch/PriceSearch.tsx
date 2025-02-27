@@ -42,8 +42,8 @@ export default function PriceSearch({
         className="md:w-[170px] w-full h-[35px] rounded-md outline-none border-yellow-500 border-[0.8px] cursor-pointer pl-[3px] text-[15px]"
       >
         <option value="All">od najniższej</option>
-        <option value="200000">od 100 000 €</option>
-        <option value="200000">od 150 000 €</option>
+        <option value="100000">od 100 000 €</option>
+        <option value="150000">od 150 000 €</option>
         <option value="200000">od 200 000 €</option>
         <option value="250000">od 250 000 €</option>
         <option value="300000">od 300 000 €</option>
@@ -62,7 +62,7 @@ export default function PriceSearch({
       >
         <option value="All">do najwyższej</option>
         <option value="200000">do 200 000 €</option>
-        <option value="200000">do 250 000 €</option>
+        <option value="250000">do 250 000 €</option>
         <option value="300000">do 300 000 €</option>
         <option value="350000">do 350 000 €</option>
         <option value="400000">do 400 000 €</option>
