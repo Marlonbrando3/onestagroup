@@ -7,7 +7,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const cookiesWindow = useRef<any>();
 
   const checkCookiesOnLoad = async () => {
-    let res = await fetch("/api/setClientCookie");
+    let res = await fetch("https://onesta.com.pl/api/setClientCookie");
     const results = await res.json();
     const status = results.status;
 
