@@ -128,8 +128,8 @@ export default function BlogPost() {
         <br></br>
         <br></br>
         Najlepszą odpowiedzią jest rozwianie kilku mitów pamiętając przy tym, że zawsze i na każdym
-        rynku trafimy na ludzi (agentów), którzy chcą zwyczajnie "naciągnąć" na jakąś niekoniecznie
-        korzystną ofertę nieruchomości - tę część rynku w daleszej części - omijam.
+        rynku trafimy na ludzi (agentów), którzy chcą zwyczajnie &quot;naciągnąć&quot; na jakąś
+        niekoniecznie korzystną ofertę nieruchomości - tę część rynku w daleszej części - omijam.
         <br></br>
         <br></br>
         ---
@@ -138,7 +138,7 @@ export default function BlogPost() {
         <strong> „agencjom dziękuję, tylko prywatne oferty”</strong> lub otrzymujemy informacje
         <strong>
           {" "}
-          "szukam okazji, jeśli coś się pojawi to od razu mogę wsiadać w samolot".
+          &quot;szukam okazji, jeśli coś się pojawi to od razu mogę wsiadać w samolot&quot;.
         </strong>{" "}
         ---
         <br></br>
@@ -146,11 +146,12 @@ export default function BlogPost() {
         <strong>Dlaczego takie podejście może być szkodliwe dla kupującego?</strong>
         <br></br>
         Prywatnych ofert nieruchomości w Hiszpanii, takich, które trafiają na grupy dyskusyjne jako
-        "gorące" lub takich, które faktycznie wychodzą z Hiszpanii do Polski jest wyjątkowo mało lub
-        w niektórych okresach roku - nie ma ich wcale. <br></br> <br></br>Również oferty, które
-        mogą być traktowane jako "okazja" rozchodzą się w mgnieniu oka jeszcze w Hiszpanii albo
-        najdalej wśród Polskich znajomych osoby sprzedającej, ew. są rezerwowane dla slinie
-        zdeklarowanych klientów danej agencji praktycznie natychmiastowo.<br></br>
+        &quot;gorące&quot; lub takich, które faktycznie wychodzą z Hiszpanii do Polski jest
+        wyjątkowo mało lub w niektórych okresach roku - nie ma ich wcale. <br></br> <br></br>Również
+        oferty, które mogą być traktowane jako &quot;okazja&quot; rozchodzą się w mgnieniu oka
+        jeszcze w Hiszpanii albo najdalej wśród Polskich znajomych osoby sprzedającej, ew. są
+        rezerwowane dla slinie zdeklarowanych klientów danej agencji praktycznie natychmiastowo.
+        <br></br>
         <br></br> Najciekszawa historia obrazująca dynamikę sprzedaży nieruchomości w Hiszpanii jaka
         nam się zdarzyła brzmiała tak: <br></br>
         <br></br>
@@ -174,8 +175,8 @@ export default function BlogPost() {
         <br></br>
         ---
         <br></br>
-        <strong>Mit 2.</strong> "Proszę przesłać oferty, jeśli coś będzie interesujące to
-        przylecimy." <br></br>--- <br></br>
+        <strong>Mit 2.</strong> &quot;Proszę przesłać oferty, jeśli coś będzie interesujące to
+        przylecimy.&quot; <br></br>--- <br></br>
         <br></br> Szanowni Państwo, jeśli szukacie czegoś choć trochę dla siebie (nie pod
         inwestycję, która nie ma zostać nigdy odwiedzona przez właściciela) to trzeba pamiętać, że
         ok <strong>50-60% ofert wybranych na obrazkach nie jest finalnie kupowana</strong>, klienci
@@ -210,14 +211,15 @@ export default function BlogPost() {
         agencję bo „ponegocjuje” samemu.<br></br>--- <br></br> <br></br>
         Agencja wychodzi z wyższej pozycji bo sprzedaje dla danego dewelopera czy agencji od lat,
         klient kupujacy - nie. Nie ma relacji, a dynamika rynku pozwala swodobnie odrzucać próby
-        negiocjacji "bo za chwilę będzie nastepny klient" i to jest niestety prawda.<br></br>
-        <br></br> Tutaj pewnym "blokerem" jest też brak znajomości Hiszpanii. Taka osoba może nie
-        znać regionu, konkurencji, „kruczków”, które zna i o które może oprzeć się agent i na tej
-        samej podstawie wyłapać pewne niuenase. <br></br>Potencjalny nabywca nieruchomości w
-        Hiszpanii nie jest "u siebie", należy pamiętać, że nie kupuje domu / mieszkania we własnym
-        mieście, gdzie zapewne wiedziałby, że tutaj po godz 22:00 wywożą odpady kuchenne, a tam od
-        4:00 codzienne nad ranem przychodzą kucharze i trzaskają drzwiami, co przy założeniu wynajmu
-        danego lokalu, może zabić taką inwestycję.
+        negiocjacji &quot;bo za chwilę będzie nastepny klient&quot; i to jest niestety prawda.
+        <br></br>
+        <br></br> Tutaj pewnym &quot;blokerem&quot; jest też brak znajomości Hiszpanii. Taka osoba
+        może nie znać regionu, konkurencji, „kruczków”, które zna i o które może oprzeć się agent i
+        na tej samej podstawie wyłapać pewne niuenase. <br></br>Potencjalny nabywca nieruchomości w
+        Hiszpanii nie jest &quot;u siebie&quot;, należy pamiętać, że nie kupuje domu / mieszkania we
+        własnym mieście, gdzie zapewne wiedziałby, że tutaj po godz 22:00 wywożą odpady kuchenne, a
+        tam od 4:00 codzienne nad ranem przychodzą kucharze i trzaskają drzwiami, co przy założeniu
+        wynajmu danego lokalu, może zabić taką inwestycję.
         <br></br>
         <br></br>
         <strong>
@@ -229,11 +231,11 @@ export default function BlogPost() {
         <br></br>
         ---
         <p className="italic font-bold">
-          Jednym z większym zagrożeń na rynku nieruchomości jest mechanizm "rejestacji klientów".
-          Jeśli sami Państwo odwiedzacie deweloperów, jesteście u owych rejestrowani jako "ich
-          klienci". W przypadku wyboru nieruchmości po takiej prezentacji, którą sami Państwo sobie
-          przeprowadzili z deweloperem - na ogół nie ma możliwości aby zakup realizowała agencja.
-          Zostaje współpraca z deweloperem po Hiszpańsku lub angielsku.
+          Jednym z większym zagrożeń na rynku nieruchomości jest mechanizm &quot;rejestacji
+          klientów&quot;. Jeśli sami Państwo odwiedzacie deweloperów, jesteście u owych rejestrowani
+          jako &quot;ich klienci&quot;. W przypadku wyboru nieruchmości po takiej prezentacji, którą
+          sami Państwo sobie przeprowadzili z deweloperem - na ogół nie ma możliwości aby zakup
+          realizowała agencja. Zostaje współpraca z deweloperem po Hiszpańsku lub angielsku.
         </p>
         ---
         <br></br>
@@ -252,7 +254,7 @@ export default function BlogPost() {
         <li>
           Przygotowanie szerokiego portfolio ofert przez agencję na czas prezentacji podczas Państwa
         </li>
-        wizyty z założeniem, że "na żywo" mogą one robić inne wrażenie,
+        wizyty z założeniem, że &quot;na żywo&quot; mogą one robić inne wrażenie,
         <li>
           Elastyczność, wybieranie i selekcja ofert na bieżąco podczas Państwa wizyty aby wypełnić
           przeznaczony czas i zbliżyć Państwa do zakupu.
