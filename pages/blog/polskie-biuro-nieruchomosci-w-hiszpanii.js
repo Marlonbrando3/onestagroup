@@ -78,7 +78,7 @@ export default function BlogPost() {
         />
       </Head>{" "}
       <div className="main-index">
-        <div className="w-full h-16 fixed top-0  z-20 bg-white shadow-xl">
+        <div className="w-full h-16 fixed top-0 z-20 bg-white shadow-xl">
           <Header />
         </div>
       </div>
@@ -96,9 +96,9 @@ export default function BlogPost() {
           <br></br>
           <br></br> Jeśli na tym etapie Twoją intencją jest przeszukanie bazy ogłoszeń naszej
           <strong> agencji nieruchomości w Hiszpanii</strong> - zapraszamy do tego klikając -{" "}
-          <a href="/" className="underline text-blue-500">
+          <Link href="/" className="underline text-blue-500">
             Oferty nieruchomości w Hiszpanii
-          </a>{" "}
+          </Link>{" "}
           , używając odpowiednich filtrów możesz poszukać czegoś już teraz.<br></br>
           <br></br> Jeśli jednak chciałbyś poznać co oznacza współpraca z{" "}
           <strong>polskimi biurami nieruchomości w Hiszpanii</strong> na bazie naszego doświadczenia
@@ -116,7 +116,7 @@ export default function BlogPost() {
         rozmawiać po Polsku. <br></br>
         <br></br>Jeśli rozmawiacie Państwo po angielsku to wystarczy chęć na prezentacje w owym
         języku i wybór jest właściwie dowolny. Deweloperzy praktycznie zawsze dysponują materiałami
-        drukowanymi, tzw. showhause'ami (umeblowanymi już przykładowymi apartamentami, które
+        drukowanymi, tzw. showhause&apos;ami (umeblowanymi już przykładowymi apartamentami, które
         pokazują ich potencjał) oraz prezentacjami interaktywnymi, które - jak to każdy obraz -
         mówią więcej niż 1000 słów. Także do etapu prezentacji nie ma trudności z poradzeniem sobie
         samemu. Rodzi to jednak konsekwencje w postaci przypisania Państwa do bazy danych dewelopera
