@@ -105,7 +105,6 @@ export default function SearchButton() {
     if (showedadvancedSearch === true) {
       advancedSearch.current.style.height = "23px";
       advancedSearch.current.style.top = "-23px";
-    } else {
       advancedSearch.current.style.height = "300px";
       advancedSearch.current.style.top = "-230px";
     }
@@ -164,7 +163,7 @@ export default function SearchButton() {
       )
         return true;
     });
-    console.log(PropertiesFounded.length);
+    // console.log(PropertiesFounded.length);
     return PropertiesFounded.length;
   };
 

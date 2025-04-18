@@ -13,7 +13,7 @@ import SecondDescription from "@/components/newProjects/descriptions/secondDescr
 import ThirthDescription from "@/components/newProjects/descriptions/thirthDescription";
 
 export default function index() {
-  const investition = Properties.filter((i) => i.section === "Investment");
+  // const investition = Properties.filter((i) => i.section === "Investment");
   console.log(investition);
 
   // foreignStreet;
