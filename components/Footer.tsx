@@ -1,33 +1,29 @@
 import React from "react";
 import Image from "next/image";
 import LogoType from "./images/logotype.png";
+
 import { FaRegCopyright } from "react-icons/fa";
 import Link from "next/link";
 
 export default function Footer() {
   return (
-    <div className="w-full lg:py-2 lg:text-sm text-xs flex z-20 items-center bg-slate-700 border-t mt-10 justify-between text-white h-[40px]">
-      <div className="flex md:w-[1150px] w-[90%] mx-auto justify-between">
-        <div className="flex w-auto items-center">
-          <Image src={LogoType} width={60} height={40} alt="logo" />
-          <FaRegCopyright className="h-2 hidden md:visible" />
-          <p className="hidden md:visible text-[10px] text-grey-900 font-normal clear-both">
-            Onesta Group 2024
-          </p>
-          <Link href="/polityka-prywatnosci" className="ml-[30px]">
-            Polityka prywatności
-          </Link>
+    <div className="w-full lg:py-2 lg:text-sm text-xs flex z-20 items-center bg-[#fcf7f4] border-t mt-10 justify-between text-white h-[100px]">
+      {/* <div className="w-[1100px] mx-auto flex">
+        <div className="border border-black w-[400px] h-[300px]">
+          <Image
+            src={LogoType}
+            objectFit="contian"
+            className="border w-[200px] h-[100px]"
+            alt="logo_onesta"
+            layout="intrinsic"
+          />
         </div>
-        {/* <div className="flex">
-          <p>Onesta Group sp. z o.o.</p>
-          <p> 54-138 Wrocław</p>
-          <p> ul. Wolbromska 18/1b</p>
-          <p> NIP 8992922378</p>
-        </div> */}
-        <div className="flex pl-[40px]">
-          <p>Onesta Group sp. z o.o. 54-138 Wrocław ul. Wolbromska 18/1b</p>
+        <div className="w-[700px] flex">
+          <div className="border border-black w-1/3 h-[300px]"></div>
+          <div className="border border-black w-1/3 h-[300px]"></div>
+          <div className="border border-black w-1/3 h-[300px]"></div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

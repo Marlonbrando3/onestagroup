@@ -1,7 +1,8 @@
 [
   {
     "country": "hiszpania",
-    "region": ["Costa Blanca", "Costa Calida", "Costa del Sol", "Costa Dorata", "Costa Brava"],
+    "region": ["Costa Blanca/Calida", "Costa del Sol"],
+    "showed": ["Costa Blanca", "Costa del Sol"],
     "cities": [
       {
         "name": "Costa Blanca",
@@ -27,6 +28,7 @@
       },
       {
         "name": "Costa del Sol",
+        "showed": ["Costa del Sol"],
         "city": ["Manillva", "Marbella", "Mijas", "Malaga"]
       },
       {
@@ -47,6 +49,7 @@
   {
     "country": "dominikana",
     "region": ["Samaná"],
+    "showed": ["Samaná"],
     "cities": [
       {
         "name": "Costa Blanca",

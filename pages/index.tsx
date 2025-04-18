@@ -99,7 +99,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         />
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
       </Head>
-      <div className="main-index">
+      <div className="main-index bg-[#fcf7f4]">
         <Script id="gtm-code">
           {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KL7WKBWL"
         height="0" width="0" style="display:none;visibility:hidden"></iframe>`}
@@ -109,9 +109,9 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         <Header />
         <HomeView />
         <SearchBarMainPage />
+        <AboutOnestaMainPage />
         {/* <MainTheme /> */}
         <RecommendedOffers />
-        <AboutOnestaMainPage />
         <Ourteammain />
         <Aboutus />
         <Footer />

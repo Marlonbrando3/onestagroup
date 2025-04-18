@@ -4,6 +4,7 @@
     "status": "published",
     "link": "https://images.pexels.com/photos/210536/pexels-photo-210536.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     "title": "Jak kupić nieruchomość w Chorwacji?",
+    "mid-tit": "",
     "description": "W lekki i przyjemy sposób staramy się przybliżyć zawiłości, które towarzyszą w procesie zakupu swojego drugie do mu w Chorwacji",
     "tag": "jak-kupic-nieruchomosc-w-chorwacji"
   },
@@ -12,6 +13,7 @@
     "status": "published",
     "link": "https://images.pexels.com/photos/8748170/pexels-photo-8748170.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     "title": "Okupados, Okupas, Okupado... a inwestowanie w nieruchomości w Hiszpanii",
+    "mid-tit": "",
     "description": "Co to jest skąd się bierze i jak się przed nim bronić? Materiał oparty o Hiszpańskie artykuły i historie",
     "tag": "okupados"
   },
@@ -44,6 +46,7 @@
     "status": "published",
     "link": "https://images.unsplash.com/photo-1662487091369-a363c3f3bef3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80",
     "title": "Regiony Costa Blanca - Piękne San Pedro del Pinatar",
+    "mid-tit": "",
     "description": "San Pedro del Pinatar jest regionem wyjątkowym, do życia, wakacji oraz do inwestowania. W artukule przedstawiamy atuty tego regionu.",
     "tag": "region-san-pedro-del-pinatar"
   },
@@ -52,6 +55,7 @@
     "status": "published",
     "link": "https://images.pexels.com/photos/4633649/pexels-photo-4633649.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     "title": "Jak kupić nieruchomość w Portugalii? Pigułka",
+    "mid-tit": "",
     "description": "Zakup nieruchomości w Portgalii procesowo wydaje się być prosta, pod warunkiem spełnienia pewnych kryteriów. Jedyn z Nich. Zapraszamy do poznania 6 kroków do zakupu",
     "tag": "jak-kupic-nieruchomosc-w-portugalii"
   },
@@ -60,7 +64,8 @@
     "status": "published",
     "link": "https://images.unsplash.com/photo-1621848060929-bea5cb86c155?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1808&q=80",
     "title": "Nieruchomości Chorwacja - Trogir i jego atrakcje",
-    "description": "Poznaj Trogir, który jest pięknhym i ciekawym miejsce do zakupu nieruchmości oraz turytyki",
+    "mid-tit": "",
+    "description": "Poznaj Trogir, który jest pięknym i ciekawym miejsce do zakupu nieruchmości oraz turytyki",
     "tag": "nieruchomosci-chorwacja-trogir"
   },
   {
@@ -68,6 +73,7 @@
     "status": "published",
     "link": "https://images.unsplash.com/photo-1598558766255-884936fb4a7a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1967&q=80",
     "title": "Torrevieja apartamenty na sprzedaż. Region. Atrakcje.",
+    "mid-tit": "",
     "description": "Poznaj jeden z popularniejszych regionów wg. Polaków.",
     "tag": "torrevieja-apartamenty-na-sprzedaz"
   },
@@ -75,7 +81,8 @@
     "id": 10,
     "status": "published",
     "link": "https://images.unsplash.com/photo-1598558766255-884936fb4a7a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1967&q=80",
-    "title": "Polskie Biuro Nieruchomości w Hiszpanii, czy jest potrzebna i dlaczego?",
+    "title": "Polskie Biuro Nieruchomości w Hiszpanii, potrzebne czy nie?",
+    "mid-tit": "potrzebne czy nie",
     "description": "Czy do przeprowadzenia skutecznie i spokojnie transkacji zakupu nieruchomości w Hiszpanii potrzebujesz Polskiej agencji nieruchomości? Stwierdź to sam po zapoznaniu się z tekstem.",
     "tag": "polskie-biuro-nieruchomosci-w-hiszpanii"
   },
@@ -84,6 +91,7 @@
     "status": "published",
     "link": "https://images.pexels.com/photos/1703311/pexels-photo-1703311.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     "title": "Nieruchomości w Hiszpanii, co się zmieniło?",
+    "mid-tit": "",
     "description": "Mamy za sobą okres boomu za na zakup nieruchomości w Hiszpanii, czy i jak wpłynęło to na rynek? Czy warto dalej kupić nieruchomość w Hiszpanii?",
     "tag": "nieruchomosci-w-hiszpanii-co-sie-zmienilo"
   },
@@ -92,6 +100,7 @@
     "status": "published",
     "link": "https://images.pexels.com/photos/1703311/pexels-photo-1703311.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     "title": "Nieruchomości w Hiszpanii.",
+    "mid-tit": "",
     "description": "Zdabądź informacje na temat zakupu, sprzedaży apartamentów w Hiszpanii. Poznaj podstawowe założenia, zacznij spełniać swoje marzenie!",
     "tag": "nieruchomosci-w-hiszpanii"
   },
@@ -108,6 +117,7 @@
     "status": "wating",
     "link": "https://cdn.pixabay.com/photo/2023/01/09/09/42/sunflowers-7706977_1280.jpg",
     "title": "Najciekawsze miejsca na Costa Blanca",
+    "mid-tit": "",
     "description": "Zapraszamy wkrótce",
     "article": "Wkrótce"
   }

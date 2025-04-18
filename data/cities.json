@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "city": "San Pedro del Pinatar",
+    "link": "https://images.pexels.com/photos/210536/pexels-photo-210536.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "title": "Jak kupić nieruchomość w Chorwacji?",
+    "description": "testowy opis miasteczka San Pedro del Pinatar lalalalal."
+  },
+  {
+    "id": 2,
+    "city": "Mil Palmeras",
+    "link": "https://images.pexels.com/photos/210536/pexels-photo-210536.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "title": "Jak kupić nieruchomość w Chorwacji?",
+    "description": "testowy opis miasteczka Mil Palmeras lalalalal."
+  }
+]

@@ -11,7 +11,8 @@ import Footer from "../../components/Footer";
 import Blogbuttonoffers from "../../components/blogbuttonoffers";
 
 export default function BlogPost() {
-  const temat = "Polskie Biuro Nieruchomości w Hiszpanii, czy jest potrzebna i dlaczego?";
+  const temat = "Polskie Biuro Nieruchomości w Hiszpanii.";
+  const mid_tit = "Potrzebne czy nie?";
 
   return (
     <>
@@ -52,7 +53,7 @@ export default function BlogPost() {
                     `}
       </Script>
       <Head>
-        <title>Polskie Biuro Nieruchomości w Hiszpanii, czy jest potrzebna i dlaczego?</title>
+        <title>Polskie Biuro Nieruchomości w Hiszpanii, czy jest potrzebne i dlaczego?</title>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin></link>
         <link
@@ -77,135 +78,263 @@ export default function BlogPost() {
         />
       </Head>{" "}
       <div className="main-index">
-        <div className="w-full h-16 fixed top-0 md:bg-gray-800/[0.4] z-20 bg-white shadow-xl">
+        <div className="w-full h-16 fixed top-0  z-20 bg-white shadow-xl">
           <Header />
         </div>
       </div>
-      <HeaderBlogPost temat={temat} />
+      <HeaderBlogPost temat={temat} mid={mid_tit} />
       <Blogbuttonoffers />
       <div className="lg:w-[1100px] lg:mx-auto md:px-[50px] w-[90vw] mx-auto text-[20px] tracking-normal mt-[50px]">
-        <h2 className="text-[24px]">
-          Czy jest mi do czegoś potrzebne
-          <strong> Polskie Biuro Nieruchomości w Hiszpanii?</strong> <br></br>Porozmawiajmy.{" "}
-        </h2>
-        <p className="text-green-600 font-normal mt-[40px] italic">
-          Podpowiedź: <br></br>Jeśli w tej chwili szukasz wyłącznie kontaktu z{" "}
-          <strong>Polskim Biurem Nieruchomości na terenie Hiszpanii</strong> to zapraszamy Cię do
-          kontaktu z Nami. Na terenie Hiszpanii mamy kilka biur oraz agentów mobilnych. Możesz
-          skorzystać z:<br></br> - adres mailowego
-          <a href="mailtp:biuro@onesta.com.pl" className="underline">
-            biuro@onesta.com.pl (kliknij),
-            <br></br>
-          </a>
-          - skontatkować się telefonicznie pod numerem{" "}
-          <a href="tel:+48576652525" className="underline">
-            +48 576 65 25 25 (kliknij aby zadzownić).
-          </a>
+        <p>
+          Dzień dobry, <br></br>
+          <br></br>jeśli szukasz <strong>Polskiego biura nieruchomości w Hiszpanii</strong> to
+          dobrze trafiłeś/trafiłaś. Wśród wielu <strong>agencji nieruchomości w Hiszpanii</strong>{" "}
+          jesteśmy tą, które stawia na{" "}
+          <strong>zrozumienie, relacje oraz bezpieczeństwo procesu zakupu.</strong> <br></br>
+          <br></br>Dzięki temu - choć rozmowy z nami mogą wydawać się wnikliwe - w efekcie przynoszą
+          trafne propozycje ofert z nastawieniem na „szczelność” procesu zakupu/sprzedaży.
           <br></br>
-          <br></br>
-          Jeśli nie to zapraszamy do krótkiego omówienia tematu.
+          <br></br> Jeśli na tym etapie Twoją intencją jest przeszukanie bazy ogłoszeń naszej
+          <strong> agencji nieruchomości w Hiszpanii</strong> - zapraszamy do tego klikając -{" "}
+          <a href="/" className="underline text-blue-500">
+            Oferty nieruchomości w Hiszpanii
+          </a>{" "}
+          , używając odpowiednich filtrów możesz poszukać czegoś już teraz.<br></br>
+          <br></br> Jeśli jednak chciałbyś poznać co oznacza współpraca z{" "}
+          <strong>polskimi biurami nieruchomości w Hiszpanii</strong> na bazie naszego doświadczenia
+          i właśnie takim jak nasze - zapraszamy do dalszej części artykułu.
         </p>
-        <div className="border my-10 px-2 lg:w-2/3 w-full">
-          <p className="py-2 font-bold text-xl">Spis treści:</p>
-          <h2>1. Zagrożenia we współpracy z niepolskimi agencjami nieruchomości </h2>
-          <h2>
-            2. Korzyści ze współpracy z <strong>Polskimi biurami Nieruchomości Hiszpanii.</strong>
-          </h2>
-        </div>
-        Artykuł ten będzie należał raczej do tych krótszych i konkretnych ponieważ prócz rozwinięcia
-        podstawowych rzeczy, nie ma owych zagrożeń zbyt wielu niemniej są bardzo ważne.
         <br></br>
         <br></br>
         <b>
-          <h3>1. Zagrożenia we współpracy z niepolskimi agencjami nieruchomości. </h3>
+          <h3>1. Wprowadzenie. </h3>
         </b>
         <br></br>
-        Biura Nieruchomości w Hiszpanii prócz języka Hiszpańskiego praktycznie zawsze posługują się
-        językiem przynajmniej Angielski. Nie spotkaliśmy przypadku w którym było inaczej. jednak
-        prawdą jest, że niewiele lub bardzo niewiele z nich potrafi rozmawiać po Polsku. Jeśli
-        rozmawiacie Państwo po angielsku to pozostaje tylko chęć na prezentacje w owym języku i
-        wybór jest właściwie dowolny. Deweloperzy praktycznie zawsze dysponują materiałami
-        drukowanymi, tzw. show houseami oraz prezentacjami interaktywnymi, które jak to każdy obraz
-        mówią więcej niż 1000 słów. Czy napewno?
+        <strong>Biura Nieruchomości w Hiszpanii</strong> prócz języka Hiszpańskiego praktycznie
+        zawsze posługują się językiem przynajmniej Angielski. Nie spotkaliśmy przypadku w którym
+        byłoby inaczej. Jednak prawdą jest też, że niewiele lub bardzo niewiele z nich potrafi
+        rozmawiać po Polsku. <br></br>
+        <br></br>Jeśli rozmawiacie Państwo po angielsku to wystarczy chęć na prezentacje w owym
+        języku i wybór jest właściwie dowolny. Deweloperzy praktycznie zawsze dysponują materiałami
+        drukowanymi, tzw. showhause'ami (umeblowanymi już przykładowymi apartamentami, które
+        pokazują ich potencjał) oraz prezentacjami interaktywnymi, które - jak to każdy obraz -
+        mówią więcej niż 1000 słów. Także do etapu prezentacji nie ma trudności z poradzeniem sobie
+        samemu. Rodzi to jednak konsekwencje w postaci przypisania Państwa do bazy danych dewelopera
+        co blokuje agentów na kolejne etapy- realizacji procesu zakupu.<br></br>
+        <br></br>
+        <strong>Czego jeszcze może zabraknąć podczas takiego procesu wyboru, zakupu?</strong>
+        <br></br>
+        <strong>Czy to biuro jest faktycznie takie potrzebne, czy dam radę sam/a?</strong>
         <br></br>
         <br></br>
-        Zanim przejdziemy dalej rozwiejmy pewien mit. Pamiętajmy jednak, że zawsze na każdym rynku
-        są ekstrema i ludzie, którzy chcą oszukać, tę część rynku idąc dalej - omijam. Czasami
-        zdarzy mi się przeczytać na forach „agencjom dziękuję, tylko prywatne oferty”. Prywatnych
-        ofert nieruchomości w Hiszpanii, takich, które trafiają na grupy dyskusyjne lub do Polski
-        jest wybitnie niewiele. One rozchodzą się już albo w Hiszpanii albo wśród Polskich znajomych
-        osoby sprzedającej. Nie zatem mówię, że ich nie ma wcale.
+        Najlepszą odpowiedzią jest rozwianie kilku mitów pamiętając przy tym, że zawsze i na każdym
+        rynku trafimy na ludzi (agentów), którzy chcą zwyczajnie "naciągnąć" na jakąś niekoniecznie
+        korzystną ofertę nieruchomości - tę część rynku w daleszej części - omijam.
         <br></br>
         <br></br>
-        Jeśli zatem zdarzyło Ci się pomyśleć w podobny sposób - nie znam Twoich pobudek - wyjaśnię.
-        Nie ma znaczenia ilu agentów, pośredników pracuje nad ofertami dla CIebie - prowizja jest
-        zawsze taka sama - tak jest przynajmniej w naszej Oneście. Problemem biznesowym bardziej
-        jest już sprawiedliwy podział ew. prowizji co oczywiście nie dotyczy nabywcy, natomiast raz
-        jeszcze - nie podnosimy jej sztucznie.<br></br>
-        Nie obawiajmy się współpracy <strong>Polskimi biurami nieruchomości w Hiszpanii </strong>ze
-        względu na strach przed kwestiami finansowymi. Ponaddto -{" "}
-        <b>
-          w przypadku zakupu nieruchomości w Hiszpanii nowych, tj. od dewelopera, zarówno z 5-cioma
-          pośrednikami jak i samemu - cena jest taka sama. Atutem agentów, który może pomóc jest
-          fakt iż agencje współpracują z deweloperami sprzedając czasami większość inwestycji, to
-          daje uprzewilejowaną pozycję w negocjacjach.
-        </b>
+        ---
+        <br></br>
+        <strong>Mit 1.</strong> Czasami zdarzy się mi lub komuś z zespołu przeczytać na forach
+        <strong> „agencjom dziękuję, tylko prywatne oferty”</strong> lub otrzymujemy informacje
+        <strong>
+          {" "}
+          "szukam okazji, jeśli coś się pojawi to od razu mogę wsiadać w samolot".
+        </strong>{" "}
+        ---
         <br></br>
         <br></br>
-        Krok dalej. Dość często się spotykam z myśleniem, że potencjalny nabywca ominie agencję bo
-        „ponegocjuje” samemu. Praktycznie jest to możliwe ale logicznie jest to niezasadne,
-        ponieważ.<br></br>
-        1. Brakuje takiej osobie doświadczenia na rynku nieruchomości w Hiszpanii, nie zna regionu,
-        nie zna konkurencji, nie zna „kruczków”, które znaja i o które może oprzeć się agent.
-        Potencjalny nabywca nieruchomości w Hiszpanii nie jest u siebie nie kupuje domu / mieszkania
-        we własnym mieście, gdzie zapewne wiedziałby, że tutaj po godz 22:00 wywożą odpady kuchenne,
-        a tam od 4:00 codzienne nad ranem przychodzą kucharze i trzaskają drzwiami.<br></br>
+        <strong>Dlaczego takie podejście może być szkodliwe dla kupującego?</strong>
         <br></br>
-        Pośrednik przyprowadzając do danej nieruchomości załóżmy 5 osób na oglądanie w ciągu
-        tygodnia doskonale wie na co jest w stanie się zgodzić obecny właściciel. Wszystko to co
-        trafia do nas poprzez strony czy ogłoszenia, to efekt pracy agentów, którzy prócz podstawową
-        ustaloną wcześniej prowizją
+        Prywatnych ofert nieruchomości w Hiszpanii, takich, które trafiają na grupy dyskusyjne jako
+        "gorące" lub takich, które faktycznie wychodzą z Hiszpanii do Polski jest wyjątkowo mało lub
+        w niektórych okresach roku - nie ma ich wcale. <br></br> <br></br>Również oferty, które
+        mogą być traktowane jako "okazja" rozchodzą się w mgnieniu oka jeszcze w Hiszpanii albo
+        najdalej wśród Polskich znajomych osoby sprzedającej, ew. są rezerwowane dla slinie
+        zdeklarowanych klientów danej agencji praktycznie natychmiastowo.<br></br>
+        <br></br> Najciekszawa historia obrazująca dynamikę sprzedaży nieruchomości w Hiszpanii jaka
+        nam się zdarzyła brzmiała tak: <br></br>
+        <br></br>
+        <p className="italic">
+          Małżeństwo stojące w kolejce do prezentacji faktycznie ciekawej nieruchomości, doczekało
+          się możliwości obejrzenia, po czym wyszło na 15 min. aby się naradzić. Ten czas okazał się
+          zbyt długi, poniważ opcja została zakupiona przez bardziej zdecydowanych klientów.
+        </p>
+        <br></br>
+        Nie twierdzimy, że tak jest zawsze ale zakładam, że jest spora grupa osób, która nie miała
+        pojęcia, że takie sytuacje mogą się przydażyć w rzeczywistości.<br></br>
+        <br></br>
+        <strong>
+          Dlatego bądź kontakcie z agencją, zapisz sie do mailingu, odpowiadaj na pytania i pomagaj
+          agentom z którymi działasz w określaniu własnych preferencji aby Ci chcieli wysyłać Tobie
+          oferty i wiedzieli, że dany charakter nieruchomości pasuje do Ciebie. Na stronach na ogół
+          nie ma wszystkich ogłoszeń, ponieważ tempo sprzedaży jest zbyt wysokie aby za nim nadążyć.
+          Agenci również mają dostepy do Hiszpańskich stosunkowo drogich systemów wymiany ofert.
+        </strong>
         <br></br>
         <br></br>
-        Zatem mamy z głowy ten trudny wątek. Wracajmy.
+        ---
+        <br></br>
+        <strong>Mit 2.</strong> "Proszę przesłać oferty, jeśli coś będzie interesujące to
+        przylecimy." <br></br>--- <br></br>
+        <br></br> Szanowni Państwo, jeśli szukacie czegoś choć trochę dla siebie (nie pod
+        inwestycję, która nie ma zostać nigdy odwiedzona przez właściciela) to trzeba pamiętać, że
+        ok <strong>50-60% ofert wybranych na obrazkach nie jest finalnie kupowana</strong>, klienci
+        wybierają inne opcje. Ok. 10-20% osób nie dokonuje wyboru wcale. <br></br> <br></br>
+        Dlaczego?
+        <br></br>
+        <br></br>
+        Każdy chce przedstawić atuty swojej oferty na zdjęciach i to nie jest cecha wyłącznie rynku
+        nieruchomości. Właściwie wszystko co bazuje na komunikacji zdalnej (internet) bazuje również
+        na dobrych zdjęciach. Różnica jest taka, że kurtkę lub sukienkę można zwrócić. Rezerwacja (i
+        jednocześnie opłata) nieruchomości to już trudniejsza i bardziej kosztowna sprawa, ponieważ
+        opłata rezerwacyjna jest bezzwrotna.
+        <br></br>
+        <br></br>
+        Oferty po które specjalnie przylatują klienci, po kilku dniach są zwyczajnie niedostepne.
+        Najwyraźniejszą sytuacją, która nas spoktała była:
+        <br></br>
+        <br></br>
+        <p className="italic">
+          Klient wsiadł w samolot aby kupić wybraną opcje ew. zobaczyć pozostałe ale po wylądowaniu
+          oferta była już zarezerwowana
+        </p>
+        <br></br>W procesie wyboru nie liczy się wyłącznie sama nieruchomość ale otoczenie, właśnie
+        dlatego szukamy czegoś w Hiszpanii, a nie w Polsce - dla otoczenia i klimatu w jakimś
+        stopniu spełniających marzenia. Niestety tego na zdjęciach nie widać. To trzeba zobaczyć i
+        poczuć <strong>JEDYNIE już na własne oczy i własnymi zmysłami.</strong>
+        <br></br>
+        <br></br>
+        ---
+        <br></br>
+        <strong>Mit 3.</strong> Dość często spotykamy się z myśleniem, że potencjalny nabywca ominie
+        agencję bo „ponegocjuje” samemu.<br></br>--- <br></br> <br></br>
+        Agencja wychodzi z wyższej pozycji bo sprzedaje dla danego dewelopera czy agencji od lat,
+        klient kupujacy - nie. Nie ma relacji, a dynamika rynku pozwala swodobnie odrzucać próby
+        negiocjacji "bo za chwilę będzie nastepny klient" i to jest niestety prawda.<br></br>
+        <br></br> Tutaj pewnym "blokerem" jest też brak znajomości Hiszpanii. Taka osoba może nie
+        znać regionu, konkurencji, „kruczków”, które zna i o które może oprzeć się agent i na tej
+        samej podstawie wyłapać pewne niuenase. <br></br>Potencjalny nabywca nieruchomości w
+        Hiszpanii nie jest "u siebie", należy pamiętać, że nie kupuje domu / mieszkania we własnym
+        mieście, gdzie zapewne wiedziałby, że tutaj po godz 22:00 wywożą odpady kuchenne, a tam od
+        4:00 codzienne nad ranem przychodzą kucharze i trzaskają drzwiami, co przy założeniu wynajmu
+        danego lokalu, może zabić taką inwestycję.
+        <br></br>
+        <br></br>
+        <strong>
+          Agencja występuje w interesie KLIENTA, nie dewelopera czy innych podimiotów i (na ogół)
+          nie pobierają prowizji od strony kupującej. Dlatego wiedzę rynkową w pewnym sensie
+          dostajesz za darmo.{" "}
+        </strong>
+        <br></br>
+        <br></br>
+        ---
+        <p className="italic font-bold">
+          Jednym z większym zagrożeń na rynku nieruchomości jest mechanizm "rejestacji klientów".
+          Jeśli sami Państwo odwiedzacie deweloperów, jesteście u owych rejestrowani jako "ich
+          klienci". W przypadku wyboru nieruchmości po takiej prezentacji, którą sami Państwo sobie
+          przeprowadzili z deweloperem - na ogół nie ma możliwości aby zakup realizowała agencja.
+          Zostaje współpraca z deweloperem po Hiszpańsku lub angielsku.
+        </p>
+        ---
+        <br></br>
+        <br></br>
+        <br></br>
+        <strong>Idealna ścieżka zakupowa w prostych krokach:</strong>
+        <li>
+          Ustalenie preferencji zakupowych z agentem (może być zdalnie), który przesyła oferty,
+        </li>
+        <li>
+          Państwa selekcja, wykluczenie niechcianych cech nieruchmości oraz otoczenia i wybór
+          trafionych ofert,
+        </li>
+        <li>Kolejne oferty, już bardziej uściślone,</li>
+        <li>Na bazie powyższego - wypracowanie preferencji i wzajemnego zrozumienia,</li>
+        <li>
+          Przygotowanie szerokiego portfolio ofert przez agencję na czas prezentacji podczas Państwa
+        </li>
+        wizyty z założeniem, że "na żywo" mogą one robić inne wrażenie,
+        <li>
+          Elastyczność, wybieranie i selekcja ofert na bieżąco podczas Państwa wizyty aby wypełnić
+          przeznaczony czas i zbliżyć Państwa do zakupu.
+        </li>
+        <br></br>
+        <p className="font-bold italic">
+          Daje to Państwu gwarancje, że wylot będzie efektywny i często zakończony znalezieniem tego
+          czego Państwo szukacie. <br></br>
+        </p>
+        <br></br>
+        <br></br>
+        <strong>
+          Ale czy warto pracować tylko z jednym polskim biurem nieruchomości w Hiszpanii?
+        </strong>
+        <br></br> <br></br>W przypadku <strong>Onesta Group</strong>, zdecydowanie TAK. <br></br>{" "}
+        <br></br>
+        Mamy dostęp do ok 90 % ofert na rynku. <br></br>To dzięki współpracy z wieloma sprawdzonymi
+        agencjami, które z kolei pracują z wieloma innymi zyskujemy dostęp do tak dużej skali ofert.
+        <br></br>
+        <br></br>Ponadto jeśli zdarzy się sytuacja w której ogłoszenie, które podoba się Państwu
+        znajduje się na innej niż nasza stronie np. anglojęzycznej agencji lub na portalu, z dużym
+        prawdopodobieństwem będziemy w stanie je Państwu pokazać i przeprowadzić przez proces
+        zakupu. <br></br> <br></br>
+        Agent przyprowadzając do danej nieruchomości załóżmy 5 osób (kupujących) na prezentacje w
+        ciągu tygodnia doskonale wie co to jest za nieruchomości, zna atuty oraz wady samej
+        nieruchomości oraz okolicy w której się ona znajduje.
         <br></br>
         <br></br>
         <b>
           <h3>
-            2. Korzyści ze współpracy z <strong>Polskimi biurami nieruchomości Hiszpanii.</strong>
+            2. Dodatkowe korzyści ze współpracy z{" "}
+            <strong>Polskimi biurami nieruchomości Hiszpanii.</strong>
           </h3>
         </b>
         <br></br>
-        Zatem dlaczego potrzebna mi <strong>Polskie biuro nieruchomości w Hiszpanii?</strong> Po
-        pierwsze - mogące się wydawać nawet śmieszne - czasami błędnie można uznać swój poziom
-        językowy za dobry ponieważ np. codziennie pracuje się w tym języku. Tylko czy jeśli ja
-        pracując załóżmy w IT zrozumiem język branży nieruchomości ludzi z Hiszpanii? Przygotuję się
-        ok ale jeśli nie zrozumiem to czy istnieje prawdopodobieństwo, że chcąc zrozumieć zdanie w
-        kontrakcie rezerwacyjnym, poprosimy wyjaśnienie i zabrniemy w kolejne „branżowe słówka” albo
-        kilka? Część zapisów odpuścimy, zrozumiemy nieodpowiednio lub … tutaj wstaw wszystko o czym
-        teraz pomyślałeś/ pomyślałaś.
-        <br></br>
+        Zatem dlaczego potrzebne mi akurat <strong>
+          Polskie biuro nieruchomości w Hiszpanii?
+        </strong>{" "}
+        Po pierwsze - mogące się wydawać nawet śmieszne - czasami błędnie można uznać swój poziom
+        językowy (angielski, hiszpański itd.) za dobry ponieważ np. codziennie pracuje się w tym
+        języku. <br></br> <br></br>Tylko czy ja:
+        <li>rozumiem język branży nieruchomości ludzi z Hiszpanii?</li>{" "}
+        <li>czy znam specjalistyczne zworty prawnicze?</li>
+        <li>czy będę wiedział o co i jak zapytać aby zostać zrozumianym?</li>
+        <li>czy będę pewny co do otrzymanych odpowiedzi?</li>
+        <li>
+          <strong>
+            Czy warto to wszystko robić skoro polskie agencje nieruchomości w Hiszpanii nie
+            pobierają prowizji?{" "}
+          </strong>
+        </li>
         <br></br>
         <b>
-          Pamiętajmy, że:<br></br>
+          Podsumujmy zatem:<br></br>
         </b>
+        <li>Mamy dostęp do 90% ofert na rynku,</li>
+        <li>Współpracujemy z wieloma agencjami,</li>
+        <li>Nie pobieramy prowizji,</li>
+        <li>Prowdzimy cały proces formalny od A-Z,</li>
         <li>
-          językiem urzędowym w Hiszpanii i praktycznie zawsze honorowanym jest język oczywiście
-          Hiszpański, ew. tłumaczenia na angielski.
+          Z dużym prawdopodbieństwem możemy realizować sprzedaże ofert znalezionych również na
+          portalach,
         </li>
         <li>
-          Agent dobrze zna deweloperów współpracujące biura oraz ich praktyki, potrafi wyjaśnić z
-          czasem przetłumaczonego w translatorze Polskiego na „nasze” co oznacza dany zapis
+          Językiem urzędowym w Hiszpanii i praktycznie zawsze honorowanym jest język oczywiście
+          Hiszpański, ew. tłumaczenia na angielski gdzie ułatwiamy porozumienie,
         </li>
         <li>
-          wie i rozumie jakie ma konsekwencje w Hiszpanii dany zapis na tle kontekstu jakim jest
-          rozumienie np. praktyk sprzedaż/zakup jakie potencjalny nabywca pamięta z Polski i na
-          których bazuje próbując zrozumieć praktyki i definicje w Hiszpanii,<br></br>wie, które z
-          biur współpracujących (wszyscy pracują ze sobą w pewnym zakresie) ma zalety i jakie, a
-          czego im brakuje,
+          Znamy dobrze deweloperów, współpracujące biura oraz ich praktyki, potrafimy wyjaśnić z
+          czasem przetłumaczonego w translatorze Polskiego na „nasze” co oznacza dany zapis,
         </li>
         <li>
-          ma przepracowany proces z klientami z Polski tym samym ma praktyczne rozumienie intencji w
+          Wiemy i rozumiemy jakie ma konsekwencje w Hiszpanii dany zapis w kontekscie, jakim może
+          być np. rozumienie praktyk sprzedaż/zakup jakie potencjalny nabywca pamięta z Polski i na
+          których bazuje próbując zrozumieć praktyki i definicje w Hiszpanii,
+        </li>
+        <li>
+          Wiemy, które z biur współpracujących (wszyscy pracują ze sobą w pewnym zakresie) ma
+          zalety, a czego im brakuje,
+        </li>
+        <li>
+          Mamy przepracowany proces z klientami z Polski = praktyczne rozumienie intencji w
           zadawaniu lub formułowaniu pytań,
         </li>
         <li>
@@ -214,20 +343,18 @@ export default function BlogPost() {
           potrzeby również mogą na Polski przetłumaczyć,
         </li>
         <li>
-          roces posprzedażowy, akty notarialne, płatności i transze, sprawdzenie własności obiektu,
-          przepisywanie mediów, remonty - tutaj już chyba, nie trzeba tłumaczyć, że będąc 3000 km od
-          własnego kraju nie tylko język może być atutem lub problemem ale już pewne praktyki
-          pomiędzy kupującym i sprzedającym, sprawność w działaniu.
+          Proces posprzedażowy, akty notarialne, płatności i transze, sprawdzenie własności obiektu,
+          przepisywanie mediów, remonty. Będąc 3000 km od dalej możliwe będzie wsparcie w tych
+          kwestiach, które oferujemy.
         </li>
         <br></br>
-        Podsumowanie jest dość oczywiste,{" "}
         <strong>
-          <strong>Polskie biuro nieruchomości w Hiszpanii</strong>
-        </strong>{" "}
-        to gwarancja bezpieczeństwa całej transakcji i tego co może dziać się dalej.<br></br>
-        Więcej komentarza nie ma potrzeba.<br></br>
+          Wierzymy, że nasze rozumowanie przekonało również Pańśtwa, że to współpraca polskimi
+          biurami nieruchomosci w hiszpanii jest najlepszą możliwą drogą.<br></br> Z checią
+          poświęcimy nasz czas dla Państwa.
+        </strong>
         <br></br>
-        Wszystkiego dobrego dla Państwa.<br></br>
+        <br></br>
         <br></br>
         <Link
           href="/hiszpania?page=1"

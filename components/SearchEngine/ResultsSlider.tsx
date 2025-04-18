@@ -155,20 +155,24 @@ export default function ResultsSlider({
       {imgCounter !== 0 && (
         <div
           onClick={handleChangeSiteRight}
-          className="flex items-center z-10 justify-center absolute w-10 h-full left-0 cursor-pointer bg-gray-900/[0.13] hover:bg-sky-900/[0.4] transition duration-450 hover:ease-in-out"
+          className="flex items-center z-10 justify-center absolute w-10 h-full left-0 cursor-pointer transition duration-450 hover:ease-in-out"
         >
-          <FaChevronLeft className="w-[30px] h-[30px] text-white" />
+          <div className="w-10 h-10 bg-white rounded-[50%] grid place-items-center -mr-1 ml-1">
+            <FaChevronLeft className="w-[20px] h-[20px] text-black" />
+          </div>
         </div>
       )}
       <div
         onClick={handleChangeSiteLeft}
         className={
           margin.length !== 0
-            ? "flex items-center z-10 justify-center absolute w-10 h-full right-0 cursor-pointer group bg-gray-900/[0.13] hover:bg-sky-900/[0.4] transition duration-450 hover:ease-in-out"
+            ? "flex items-center z-10 justify-center absolute w-10 h-full right-0 cursor-pointer group transition duration-450 hover:ease-in-out"
             : "hidden"
         }
       >
-        <FaChevronRight className="w-[30px] h-[30px] text-white" />
+        <div className="w-10 h-10 bg-white rounded-[50%] grid place-items-center mr-1 -ml-1">
+          <FaChevronRight className="w-[20px] h-[20px] text-black" />
+        </div>
       </div>
       <div
         ref={imagesContainer}

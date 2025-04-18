@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
+import { Red_Hat_DisplayFont } from "../fonts/fonts";
 import Image from "next/image";
 import Link from "next/link";
 import Logotype from "./images/logotype.png";
@@ -18,6 +19,8 @@ import { IoIosClose } from "react-icons/io";
 export default function Header() {
   const router = useRouter();
 
+  const logo: any = useRef();
+  const header: any = useRef();
   const MouseOnZarzadzanie: any = useRef();
   const MouseOnZarzadzanieSpain: any = useRef();
   const MouseOnProperties: any = useRef();
@@ -138,13 +141,20 @@ export default function Header() {
     const { scrollX, scrollY, innerWidth } = window;
     // console.log("yOffset", innerWidth, "scrollY", scrollY);
     if (scrollY > 70 && innerWidth >= 1024 && !router.asPath?.includes("blog")) {
+      headerDesktop.current.style.transition = "0.3s";
+      logo.current.style.transition = "margin-top 0.4s ease-in-out";
+      header.current.style.height = "55px";
+      logo.current.style.marginTop = "10px";
       headerDesktop.current.style.background = "white";
       headerDesktop.current.style.boxShadow = "1px 1px 5px -3px black";
-      headerDesktop.current.style.color = "black";
+      // headerDesktop.current.style.color = "black";
     } else if (scrollY < 70 && innerWidth >= 1024 && !router.asPath?.includes("blog")) {
-      headerDesktop.current.style.background = "linear-gradient( black 0%, transparent 100%)";
+      headerDesktop.current.style.background = "transparent";
+      header.current.style.height = "75px";
+      logo.current.style.transition = "margin-top 0.5s ease-in-out";
+      logo.current.style.marginTop = "0px";
       headerDesktop.current.style.boxShadow = "0px 0px 0px 0px black";
-      headerDesktop.current.style.color = "white";
+      // headerDesktop.current.style.color = "white";
     }
   }, []);
 
@@ -159,17 +169,22 @@ export default function Header() {
 
   return (
     <>
-      <div className="transition-all duration-700 w-full h-[70px] lg:h-[85px] top-0 left-0 text-gray-900 z-40 fixed">
+      <div
+        ref={header}
+        className={`${Red_Hat_DisplayFont.className} transition-all duration-700 w-full h-[70px] lg:h-[85px] top-0 left-0 text-gray-900 z-40 fixed border-gray-900 tracking-[1.4px]`}
+      >
         <div
           ref={headerDesktop}
-          className={`flex lg:flex-col justify-between flex-1 h-full w-full ${
-            !router.asPath?.includes("blog")
-              ? "lg:bg-gradient-to-b lg:from-gray-900/[0.7]  lg:via-gray-900/[0.7] lg:via-50% lg:to-white/[0] lg:to-100% lg:text-white bg-gradient-to-b from-white to-white text-black"
-              : "bg-gradient-to-b from-white  via-white lg:via-50% lg:to-white lg:to-100% to-white text-black"
-          }`}
+          className={`flex lg:flex-col justify-between flex-1 h-full w-full
+            ${
+              !router.asPath?.includes("blog")
+              // ? "lg:bg-gradient-to-b lg:from-white-900/[0.7]  lg:via-white-900/[0.7] lg:via-50% lg:to-white/[0] lg:to-100% lg:text-white bg-gradient-to-b from-white to-white text-black"
+              // : "bg-gradient-to-b from-white  via-white lg:via-50% lg:to-white lg:to-100% to-white text-black"
+            }
+          `}
         >
           {/* header only on large */}
-          <div className="w-full bg-white hidden lg:block">
+          {/* <div className="w-full bg-white hidden lg:block">
             <div
               id="header"
               className="hidden w-[1080px] lg:h-[30px] md:flex justify-end items-center mx-auto"
@@ -201,18 +216,17 @@ export default function Header() {
                 <FaYoutube className="iconscosialheader text-red-500" />
                 <FaSpotify className="iconscosialheader text-green-500" />
               </div>
-              {/* <Link href="/account/login" className="px-2  border rounded-md border-green-700 mr-2 cursor-pointer duration-300 hover:bg-green-700 hover:text-white " >Zaloguj</Link>
-              <Link href="/account/signup" className="border bg-green-700 border-green-700 px-2 rounded-md text-white cursor-pointer duration-300 hover:bg-white hover:text-black">Utwórz konto</Link> */}
             </div>
-          </div>
-          <div className="flex mx-auto h-full lg:w-[1080px] w-full justify-between items-center px-[10px] lg:px-0">
+          </div> */}
+          <div className="flex mx-auto h-full lg:w-[1180px] w-full lg:justify-center justify-between items-center bg-white lg:bg-transparent px-[10px] lg:px-0 duration-200">
             <Link
               onClick={handleBackToMainPage}
-              className="cursor-pointer flex items-center h-full"
+              className="cursor-pointer flex items-end h-full bg-white rounded-b-[8px]"
               href="/"
             >
-              <div className="md:h-full lg:h-full md:w-[170px] h-[50px] w-[150px] relative bg-white rounded-b-[5px]">
+              <div className="md:h-full lg:h-[70px] md:w-[210px] h-[50px] w-[150px] relative">
                 <Image
+                  ref={logo}
                   className="object-contain px-[10px] pb-[4px]"
                   src={Logotype}
                   fill
@@ -223,28 +237,21 @@ export default function Header() {
             {/* menu items */}
             <div
               ref={menu}
-              className="absolute w-full lg:static lg:h-[32px] h-[300px] lg:w-auto lg:justify-end flex items-center z-50 top-[69px] -right-[100vw] bg-white lg:bg-transparent duration-200 justify-center md:shadow-none shadow-xl"
+              className="absolute w-full lg:static lg:h-[32px] h-[300px] lg:w-auto lg:justify-start flex items-center z-50 top-[69px] -right-[100vw] bg-white lg:bg-transparent duration-200 justify-center md:shadow-none shadow-xl font-[11px] flex-1 ml-[40px]"
             >
               <ul className="flex flex-col lg:flex-row justify-center h-full lg:h-[24px] lg:items-center">
-                <li className="list group">
+                {/* <li className="list group">
                   <Link onClick={handleBackToMainPage} href="/">
                     Strona główna
                     <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
-                </li>
-
-                <li className="list group">
-                  <Link href="/aboutus">
-                    O Nas
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
-                  </Link>
-                </li>
+                </li> */}
                 <li
-                  className="list"
+                  className="list -mt-[3px]"
                   onMouseEnter={handleShowListMenuNieruchomosci}
                   onMouseLeave={handleHideListMenuNieruchomosci}
                 >
-                  Oferty
+                  OFERTY
                   <div
                     className="hidden absolute -ml-2 bg-white flex-col items-center rounded-md border -mt-[6px]"
                     ref={MouseOnProperties}
@@ -258,7 +265,7 @@ export default function Header() {
                       // onMouseEnter={() => handleHover(MouseOnSpain)}
                       // onMouseLeave={() => handleHoverLeave(MouseOnSpain)}
                     >
-                      Nieruchomości w Hiszpanii
+                      Nieruchomości w HISZPANII
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                     </Link>
                     {/* <Link
@@ -289,11 +296,19 @@ export default function Header() {
                       // onMouseEnter={() => handleHover(MouseOnDominican)}
                       // onMouseLeave={() => handleHoverLeave(MouseOnDominican)}
                     >
-                      Nieruchomości na Dominikanie
+                      Nieruchomości na DOMINIKANIE
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                     </Link>
                   </div>
                 </li>
+
+                <li className="list group">
+                  <Link href="/aboutus">
+                    O NAS
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                  </Link>
+                </li>
+
                 {/* <li
                   className="list"
                   onMouseEnter={handleShowListMenuZarzadzanie}
@@ -317,40 +332,35 @@ export default function Header() {
                 </li> */}
                 <li className="list group">
                   <Link onClick={handleBackToMainPage} href="/blog">
-                    Blog
+                    BLOG
                     <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
                 <li className="list group">
                   <Link href="/abc">
-                    Wiedza{" "}
+                    WIEDZA{" "}
                     <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
-                <li
-                  // onClick={handleShowingConsultationPopUp}
-                  className="list border-2 border-orange-400 rounded-md hover:bg-orange-400"
-                >
-                  <Link href="/pobytinwestorski" className="px-[5px]">
-                    {" "}
-                    pobyt inwestorski
+                <li className="list group">
+                  <Link href="/pobytinwestorski">
+                    POBYT INWESTORSKI{" "}
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
-                <li
-                  onClick={handleShowingConsultationPopUp}
-                  className="list border-2 border-orange-400 rounded-md px-[5px] hover:bg-orange-400"
-                >
-                  <p>bezpłatna konsultacja</p>
+                <li onClick={handleShowingConsultationPopUp} className="list group">
+                  <p>BEZPŁATNA KONSULTACJA</p>
+                  <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                 </li>
                 <li className="list group">
                   <Link href="#contact" scroll={false}>
-                    Kontakt
+                    KONTAKT
                     <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
               </ul>
             </div>
-            <div className="h-[40px] w-[40px] flex justify-center items-center lg:hidden">
+            <div className="h-[40px] w-[40px] flex md:justify-center items-center lg:hidden">
               <div ref={mobileClosedMenu}>
                 <HiOutlineMenu
                   className="transition-all duration-700 cursor-pointer z-50 h-[40px] w-[40px] lg:hidden block"

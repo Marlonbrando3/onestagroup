@@ -7,7 +7,7 @@ import SearchComponent from "./searchComponent";
 import MiniMainViewBlog from "./MiniMainViewBlog";
 import Blog from "../data/Blog.json";
 
-export default function HeaderBlog({ temat }) {
+export default function HeaderBlog({ temat, mid }) {
   const router = useRouter();
 
   let img;
@@ -38,6 +38,7 @@ export default function HeaderBlog({ temat }) {
           <h1 className="lg:w-2/3 w-full lg:text-4xl lg:text-gray-900 lg: text-normal text-3xl font-bold grow flex items-center leading-14">
             {temat}
           </h1>
+          <p className="text-2xl font-bold ">{mid}</p>
           <p className="mt-[5px]">Data artykułu: 13-01-2024</p>
         </div>
         {/* Bottom  */}

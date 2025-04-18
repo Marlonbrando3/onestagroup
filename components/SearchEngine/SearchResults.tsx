@@ -39,7 +39,8 @@ export default function SearchResults() {
   );
 
   let PropertiesSelected = PropertiesSorted.filter((p) => {
-    // console.log(p);
+    console.log(p.price);
+    console.log(p.listingId);
 
     if (
       p.country.name.toLowerCase() == (country as string) &&

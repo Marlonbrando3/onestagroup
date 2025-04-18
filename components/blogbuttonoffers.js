@@ -6,7 +6,7 @@ export default function Blogbuttonoffers() {
 
   useEffect(() => {
     setTimeout(() => {
-      showPropertiesOffers.current.style.top = "80px";
+      showPropertiesOffers.current.style.top = "60px";
     }, 5000);
   }, []);
 
