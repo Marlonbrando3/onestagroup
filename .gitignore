@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-/pages/nieruchomosci-w-hiszpanii-nowe/
+./pages/nieruchomosci-w-hiszpanii-nowe/
 
 # testing
 /coverage
