@@ -12,7 +12,7 @@ import Footer from "../../components/Footer";
 import Newsletter from "../../components/newsletter";
 
 export default function BlogPost() {
-  const temat = "Zarządznie najmem w Hiszpanii. Nowe zasady i wpływ na rynek.";
+  const temat = "Zarządzanie najmem w Hiszpanii. Nowe zasady i wpływ na rynek.";
 
   return (
     <>
@@ -299,7 +299,7 @@ export default function BlogPost() {
           prociesie zakupu.
         </p>
       </div>
-      <ContactFormBlogPost temat="Zarządznie najmem w Hiszpanii. Nowe zasady i wpływ na rynek." />
+      <ContactFormBlogPost temat="Zarządzanie najmem w Hiszpanii. Nowe zasady i wpływ na rynek." />
       <Footer />
     </>
   );
