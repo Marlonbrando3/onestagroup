@@ -257,8 +257,8 @@ export default function BlogPost() {
           częścią&quot;. <br></br>Mamy tutaj ceny oscylujące w zakresie 150 000 - 200 000 euro i
           sporo mieszkańców dla których te miejsca są domem i kilka opcji na wynajem. Takie obiekty
           bardzo szybko zmieniają właścicieli, jeden odkupi na wynajem ale 3-ech odkupi dla siebie.{" "}
-          <br></br>Im częściej mieszkania "rotują", tym większe ryzyko, że któryś z Nich zagłosuje
-          &quot;przeciw&quot; uchwale o wynajem turystyczny, co zablokuje opcję wynajmu
+          <br></br>Im częściej mieszkania &quot;rotują&quot;, tym większe ryzyko, że któryś z Nich
+          zagłosuje &quot;przeciw&quot; uchwale o wynajem turystyczny, co zablokuje opcję wynajmu
           turystycznego na dłuższy czas. <br></br>
           <br></br>
           <b>Świeży rynek wtórny, który powstał do 3 lat wstecz.</b> <br></br>Budżety oscylujące w
