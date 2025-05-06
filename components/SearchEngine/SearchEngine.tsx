@@ -15,7 +15,7 @@ export default function SearchEngine({
 }: Function) {
   return (
     <>
-      <div className="flex flex-col items-start justify-center w-full pt-4 bg-gray-400/[0.1]">
+      <div className="flex flex-col items-start justify-center w-full pt-4 bg-[#fcf7f4]">
         <SearchComponentsList
           handleShowMobileFilters={handleShowMobileFilters}
           mobileButtonSearchEngine={mobileButtonSearchEngine}

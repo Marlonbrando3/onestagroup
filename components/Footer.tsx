@@ -5,7 +5,6 @@ import MenuFooter from "./menuFooterElement/menuFooter";
 import MenuData from "../data/menu.json";
 import Link from "next/link";
 import { Red_Hat_DisplayFont } from "../fonts/fonts";
-
 import { FaRegCopyright } from "react-icons/fa";
 import { FaFacebookSquare } from "react-icons/fa";
 import { FaSquareInstagram } from "react-icons/fa6";

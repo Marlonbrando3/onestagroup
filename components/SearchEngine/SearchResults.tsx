@@ -1,6 +1,7 @@
 import PropertyCard from "./PropertyCard";
 import PropertyCardHorizontal from "./PropertyCardHorizontal";
 import { useEffect, useState } from "react";
+import { Red_Hat_DisplayFont } from "@/fonts/fonts";
 import ChangeSite from "./changeSite";
 import Properties from "../../public/properties.json";
 import { useRouter } from "next/router";
@@ -89,13 +90,13 @@ export default function SearchResults() {
   };
 
   return (
-    <div className="mx-auto">
+    <div className={`${Red_Hat_DisplayFont.className} mx-auto`}>
       <div className="border-1 md:w-[800px] lg:w-[1160px] h-[40px] mb-[20px] mt-[3px] lg:mx-auto flex justify-end">
         <div className="w-[300px] h-full bg-white border flex items-center justify-evenly rounded-xl">
           <div className="pr-[10px]">Filtruj:</div>
           <div className="">
             <select className="text-left font-semibold" onChange={handleFiltering}>
-              <option value="recomended">od polecanych</option>
+              <option value="recomended">od popularnych</option>
               <option value="expensive">od najtańszych</option>
               <option value="cheap">od najdroższych</option>
               {/* <option value="recomnded">najpierw rekomendowane</option>

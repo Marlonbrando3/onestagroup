@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import MainSearchInSearchEngine from "../MainSearchInSearchEngine";
 import MobileFilters from "../MobileFilters";
+import { Red_Hat_DisplayFont } from "@/fonts/fonts";
 import { IoSearch } from "react-icons/io5";
 import Properties from "../../public/properties.json";
 
@@ -92,9 +93,7 @@ export default function SearchInput({
     <>
       <div
         ref={searchEngine}
-        className={
-          "transition-all duration-500 fixed -top-[450px] lg:mt-0 flex-col items-center justify-center lg:h-[100px] h-auto w-screen lg:w-screen bg-white lg:flex lg:sticky z-30"
-        }
+        className={`${Red_Hat_DisplayFont.className} transition-all duration-500 fixed -top-[450px] lg:mt-0 flex-col items-center justify-center lg:h-[100px] h-auto w-screen lg:w-screen bg-[#fcf7f4] lg:flex lg:sticky z-30`}
       >
         <form className="lg:-mt-[100px] p-[10px] rounded-[7px] flex md:flex-row flex-col justify-center items-center lg:w-[1100px] h-auto md:h-auto relative shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] bg-white">
           <div className="h-auto flex items-center w-full mx-auto">
