@@ -55,8 +55,8 @@ export default function Regions({ setQueries, queries, dataRegion, setDataRegion
             {data.map((c) => {
               if (c.country === country) {
                 // console.log(c.region);
-                return c.region.map((r) => (
-                  <option key={r} value={r}>
+                return c.region.map((r, i) => (
+                  <option key={r} value={c.showed[i]}>
                     {r}
                   </option>
                 ));
