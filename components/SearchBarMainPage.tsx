@@ -376,7 +376,7 @@ export default function SearchButton() {
                 </select>
               </div>
             </div>
-            <button className="absolute right-1 bottom-1 lg:w-[220px] w-[190px] text-white lg:h-[60px] h-[62px] bg-gradient-to-r from-orange-500  to-indigo-400  mt-7 mx-auto lg:mx-0 text-[24px] font-[400] border-2 border-white text-center hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-500 hover:border-orange-500 duration-200 flex-col items-center justify-center rounded-t-[40px] rounded-b-[4px] rounded-r-[4px]">
+            <button className="absolute right-1 bottom-1 lg:w-[220px] w-[190px] text-white lg:h-[60px] h-[62px] bg-gradient-to-r from-orange-500  to-indigo-400  mt-7 mx-auto lg:mx-0 text-[24px] font-[400] border-2 border-white text-center hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-500 hover:border-orange-500 duration-200 flex-col items-center justify-center rounded-l-[40px] rounded-b-[3px] rounded-r-[4px]">
               <div className="flex items-center justify-center">
                 <IoSearchOutline className="w-[24px] h-[24px]" />
                 <p className="pl-[5px] text-[24px]">Szukaj</p>
