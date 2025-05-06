@@ -15,7 +15,7 @@ export default function CountrySearch() {
 
   return (
     <div className="flex items-center md:w-[170px] w-[90vw] mt-[17px]">
-      <p className="text-[16px] h-[35px] bg-yellow-500 border-yellow-500 rounded-l-md text-white px-[3px] place-items-center grid border">
+      <p className="text-[16px] h-[35px] bg-orange-500 border-orange-500 rounded-l-[3px] text-white px-[5px] place-items-center grid border">
         Kraj
       </p>
       <div className="w-[140px] flex justify-center text-[20px]">
@@ -23,7 +23,7 @@ export default function CountrySearch() {
           <select
             onChange={(e) => pushCountry(e)}
             autoComplete="off"
-            className="rounded-r-md rounded-l-[0px] h-[35px] border-yellow-500/[0.9] border-[0.8px] w-full mx-auto cursor-pointer text-[16px] border-gray-600 outline-none"
+            className="rounded-r-md rounded-l-[0px] h-[35px] border-orange-500/[0.9] border-[0.8px] w-full mx-auto cursor-pointer text-[16px] border-gray-600 outline-none"
             name="country"
             defaultValue={country}
           >

@@ -95,6 +95,7 @@ export default function SearchResults() {
           <div className="pr-[10px]">Filtruj:</div>
           <div className="">
             <select className="text-left font-semibold" onChange={handleFiltering}>
+              <option value="recomended">od polecanych</option>
               <option value="expensive">od najtańszych</option>
               <option value="cheap">od najdroższych</option>
               {/* <option value="recomnded">najpierw rekomendowane</option>

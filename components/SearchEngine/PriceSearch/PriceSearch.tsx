@@ -39,7 +39,7 @@ export default function PriceSearch({
       <select
         value={pricemin || dataPricemin}
         onChange={setNewPriceFrom}
-        className="md:w-[170px] w-full h-[35px] rounded-md outline-none border-yellow-500 border-[0.8px] cursor-pointer pl-[3px] text-[15px]"
+        className="md:w-[170px] w-full h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[5px] text-[15px]"
       >
         <option value="All">od najniższej</option>
         <option value="100000">od 100 000 €</option>
@@ -58,7 +58,7 @@ export default function PriceSearch({
       <select
         value={pricemax || dataPricemax}
         onChange={setNewPriceTo}
-        className="md:w-[170px] w-full h-[35px] rounded-md outline-none border-yellow-500 border-[0.8px] cursor-pointer pl-[3px] text-[15px]"
+        className="md:w-[170px] w-full h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[5px] text-[15px]"
       >
         <option value="All">do najwyższej</option>
         <option value="200000">do 200 000 €</option>
@@ -66,10 +66,7 @@ export default function PriceSearch({
         <option value="300000">do 300 000 €</option>
         <option value="350000">do 350 000 €</option>
         <option value="400000">do 400 000 €</option>
-        <option value="300000">do 300 000 €</option>
-        <option value="350000">do 350 000 €</option>
-        <option value="400000">do 400 000 €</option>
-        <option value="500000">do 500 000 €</option>
+        <option value="450000">do 450 000 €</option>
         <option value="500000 i więcej">do 500 000 € i więcej</option>
       </select>
     </div>

@@ -49,7 +49,7 @@ export default function Regions({ setQueries, queries, dataRegion, setDataRegion
           <select
             value={dataRegion || region}
             onChange={(e) => setNewRegion(e)}
-            className="md:w-[180px] w-[90vw] bg-transparent outline-none shadow-none rounded-md h-[35px] border-yellow-500 border-[0.8px] cursor-pointer pl-[3px] text-[15px]"
+            className="md:w-[180px] w-[90vw] bg-transparent outline-none shadow-none rounded-[3px] h-[35px] border-orange-500 border-[0.8px] cursor-pointer pl-[5px] text-[15px]"
           >
             <option value="All">Wszystkie</option>
             {data.map((c) => {

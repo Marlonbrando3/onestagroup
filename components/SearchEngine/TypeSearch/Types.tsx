@@ -25,7 +25,7 @@ export default function Types({ setQueries, queries, dataType, setDataType }: Qu
       <select
         value={dataType || type}
         onChange={(e) => setNewType(e)}
-        className="md:w-[240px] w-[90vw] h-[35px] rounded-md outline-none border-yellow-500 border-[0.8px] cursor-pointer pl-[3px] text-[15px]"
+        className="md:w-[240px] w-[90vw] h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[5px] text-[15px]"
       >
         <option value="All">Wszystkie</option>
         <option value="ApartmentSale">Apartament w Bungalowie</option>
