@@ -15,7 +15,7 @@ export default function Loan({ propertyRef, propertyId }: Props) {
   const [loanOwnPayment, setLoanOwnPayment] = useState(90000);
   const [loanInterest, setLoanInterest] = useState(3.5);
   const [loanDuration, setLoanDuration] = useState(10);
-  const [monthlyPayment, setMonthlyPayment] = useState<number>();
+  const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
 
   const options = Array.from({ length: loanDurationSelect }, (_, i) => (
     <option key={i} value={i + 1}>
@@ -108,7 +108,7 @@ export default function Loan({ propertyRef, propertyId }: Props) {
           <div>
             <p className="text-[18px] mb-[2px]">Prognozowane m-czne raty:</p>
             <div className="text-[24px] italic font-bold w-full lg:w-[400px] h-[50px] border border-gray-800 rounded-[3px] pl-[10px] place-content-center">
-              {(monthlyPayment !== 0 && Math.round(monthlyPayment * 100) / 100) ||
+              {(monthlyPayment !== 0 ? Math.round(monthlyPayment * 100) / 100 : "") ||
                 monthlyPayment === null}
             </div>
           </div>
