@@ -5,7 +5,7 @@ import Script from "next/script";
 import HeaderOffer from "../../components/HeaderOffer";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
+import MiniHomeViewOffer from "../../components/SearchEngine/MiniHomeViewOffer";
 import ImagesInPropetyCard from "@/components/ImagesInPropetyCard";
 import { useState, useEffect } from "react";
 import React from "react";
@@ -218,8 +218,31 @@ export default function Property() {
 
   const handleTitleOnScroll = useCallback(() => {
     const { scrollX, scrollY, innerWidth } = window;
-    // console.log("yOffset", innerWidth, "scrollY", scrollY);
-    if (scrollY > 30 && !router.asPath?.includes("blog")) {
+    console.log("yOffset", innerWidth, "scrollY", scrollY);
+    if (scrollY > 30 && innerWidth > 1024 && !router.asPath?.includes("blog")) {
+      headerTitle.current.style.transition = "0.3s ease-in-out";
+      priceTitle.current.style.display = "block";
+      // headerTitle.current.style.width = "95%";
+      headerTitle.current.style.height = "80px";
+      headerTitle.current.style.borderRadius = "0.5rem";
+      headerTitle.current.style.justifyContent = "space-between";
+      headerTitle.current.style.boxShadow = "0 3px 12px 0 rgba(0, 0, 0, 0.45)";
+
+      headerTitle.current.style.top = "-7px";
+      moreInfoLink.current.style.display = "block";
+
+      // headerDesktop.current.style.color = "black";
+    } else if (scrollY < 30 && innerWidth > 1024 && !router.asPath?.includes("blog")) {
+      headerTitle.current.style.transition = "0.3s ease-in-out";
+      headerTitle.current.style.width = "100%";
+      priceTitle.current.style.display = "none";
+      headerTitle.current.style.boxShadow = "none";
+      moreInfoLink.current.style.display = "none";
+      headerTitle.current.style.top = "60px";
+      headerTitle.current.style.justifyContent = "center";
+    }
+    // mobile changing title
+    else if (scrollY > 30 && innerWidth < 1024 && !router.asPath?.includes("blog")) {
       headerTitle.current.style.transition = "0.3s ease-in-out";
       priceTitle.current.style.display = "block";
       // headerTitle.current.style.width = "95%";
@@ -230,9 +253,7 @@ export default function Property() {
 
       headerTitle.current.style.top = "-7px";
       moreInfoLink.current.style.display = "block";
-
-      // headerDesktop.current.style.color = "black";
-    } else if (scrollY < 30 && !router.asPath?.includes("blog")) {
+    } else if (scrollY < 30 && innerWidth < 1024 && !router.asPath?.includes("blog")) {
       headerTitle.current.style.transition = "0.3s ease-in-out";
       headerTitle.current.style.width = "100%";
       priceTitle.current.style.display = "none";
@@ -240,12 +261,6 @@ export default function Property() {
       moreInfoLink.current.style.display = "none";
       headerTitle.current.style.top = "60px";
       headerTitle.current.style.justifyContent = "center";
-
-      // header.current.style.height = "75px";
-      // logo.current.style.transition = "margin-top 0.5s ease-in-out";
-      // logo.current.style.marginTop = "0px";
-      // headerDesktop.current.style.boxShadow = "0px 0px 0px 0px black";
-      // headerDesktop.current.style.color = "white";
     }
   }, []);
   useEffect(() => {
@@ -329,7 +344,7 @@ export default function Property() {
         <div className="w-full  bg-white z-[999]">
           <HeaderOffer />
         </div>
-        <MiniHomeView />
+        <MiniHomeViewOffer />
         <div
           ref={headerTitle}
           className="fixed left-0 right-0 flex items-center h-[80px] w-full px-auto my-[10px] mx-auto bg-white top-[60px] z-40 px-[30px] justify-center"
