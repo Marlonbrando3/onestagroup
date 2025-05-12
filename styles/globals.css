@@ -25,12 +25,13 @@ body {
   scroll-behavior: smooth;
 } */
 html {
-  overflow-x: hidden;
+  overflow-x: hidden !important;
+  height: 100%;
 }
 
 body {
   height: 100%;
-  overflow-x: hidden;
+  /* overflow-x: hidden !important; */
 }
 @media (max-width: 768px) {
   .slider_move {

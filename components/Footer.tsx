@@ -80,7 +80,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="bg-slate-500 w-full h-[40px] text-white text-[10px]">
-        <div className="w-[1150px] h-full mx-auto flex items-center jus">
+        <div className="lg:w-[1150px] h-full mx-auto flex items-center jus">
           <FaRegCopyright />
           <p className="pl-[5px]">ONESTA GROUP SP. Z O. O. WSZYSTKIE PRAWA ZASTRZEŻONE</p>
         </div>

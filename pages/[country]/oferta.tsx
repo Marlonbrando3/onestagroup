@@ -326,7 +326,7 @@ export default function Property() {
             <Form intrestedPopUp={intrestedPopUp} OfferNumber={propertyData[0]?.listingId} />
           </div>
         </div>
-        <div className="w-full bg-white z-[999]">
+        <div className="w-full  bg-white z-[999] overflow-hidden">
           <HeaderOffer />
         </div>
         <MiniHomeView />
