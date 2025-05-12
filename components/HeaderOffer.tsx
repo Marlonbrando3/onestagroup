@@ -171,7 +171,7 @@ export default function HeaderOffer() {
     <>
       <div
         ref={header}
-        className={`${Red_Hat_DisplayFont.className} transition-all duration-700 w-full h-[70px] lg:h-[85px] top-0 left-0 text-gray-900 z-40 border-gray-900 tracking-[1.4px] overflow-x-hidden`}
+        className={`${Red_Hat_DisplayFont.className} transition-all duration-700 w-screen h-[70px] lg:h-[85px] top-0 left-0 text-gray-900 z-40 border-gray-900 tracking-[1.4px]`}
       >
         <div
           ref={headerDesktop}

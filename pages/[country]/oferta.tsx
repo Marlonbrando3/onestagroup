@@ -310,7 +310,7 @@ export default function Property() {
         ></link>
       </Head>
       <div
-        className={`${TenorsSans.className} "max-w-[100vw] flex flex-col bg-[#fcf7f4] mx-[5px] sm:mx-auto relative" `}
+        className={`${TenorsSans.className} max-w-[100vw] flex flex-col bg-[#fcf7f4] mx-[5px] sm:mx-auto relative overflow-x-hidden `}
       >
         <WhatsAppButton />
         <div
@@ -326,18 +326,15 @@ export default function Property() {
             <Form intrestedPopUp={intrestedPopUp} OfferNumber={propertyData[0]?.listingId} />
           </div>
         </div>
-        <div className="w-full  bg-white z-[999] overflow-hidden">
+        <div className="w-full  bg-white z-[999]">
           <HeaderOffer />
         </div>
         <MiniHomeView />
-        {/* <div className="mx-[150px] h-[15px] mt-[5px] text-[14px] text-gray-700">
-          Onesta &gt; Nieruchmości Hiszpania &gt; Wyjątkowa willa{" "}
-        </div> */}
         <div
           ref={headerTitle}
           className="fixed left-0 right-0 flex items-center h-[80px] w-full px-auto my-[10px] mx-auto bg-white top-[60px] z-40 px-[30px] justify-center"
         >
-          <div className="w-12/12 md:text-[22px] text-[17px] lg:text-2xl font-bold text-start items-start ">
+          <div className="w-full md:text-[22px] text-[17px] lg:text-2xl font-bold text-start items-start ">
             <p className="inline">{propertyData[0]?.headerAdvertisement},</p>{" "}
             <p className="inline font-thin">{propertyData[0]?.foreignStreet}</p>
             <br></br>
@@ -354,7 +351,7 @@ export default function Property() {
             Więcej informacji
           </Link>
         </div>
-        <div className="lg:w-[1150px] md:w-[780px] max-w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
+        <div className="lg:w-[1150px] md:w-[780px] w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
           <div className="flex flex-col lg:flex-row mx-auto">
             <div className="md:w-[740px] md:h-[570px] w-full sm:h-[470px] h-[400px] overflow-hidden mr-[20px] ">
               <div className="flex md:h-full sm:h-full h-[400px] w-full flex-col justify-between">
