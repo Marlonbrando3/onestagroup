@@ -105,7 +105,7 @@ export default function SearchResults() {
           </div>
         </div>
       </div>
-      <div className="h-full md:w-[800px] lg:w-[1160px] flex items-center justify-center flex-wrap lg:mx-auto">
+      <div className="h-full md:w-[800px] lg:w-[1160px] w-full flex items-center justify-center flex-wrap lg:mx-auto">
         {propertiesSliced.map((property) => (
           <PropertyCard key={property.id} property={property} />
         ))}

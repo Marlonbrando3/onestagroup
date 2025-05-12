@@ -26,10 +26,10 @@ export default function Footer() {
   return (
     <>
       <div
-        className={`${Red_Hat_DisplayFont.className} w-full lg:py-2 lg:text-sm text-xs flex z-20 items-center bg-[#fcf7f4] mt-10 justify-between text-white md:h-[400px] h-auto py-[20px] bg-[url('/bg-footer.jpg')] bg-cover bg-center relative`}
+        className={`${Red_Hat_DisplayFont.className} w-screen lg:py-2 lg:text-sm text-xs flex z-20 items-center bg-[#fcf7f4] mt-10 justify-between text-white md:h-[400px] h-auto py-[20px] bg-[url('/bg-footer.jpg')] bg-cover bg-center relative`}
       >
         <div className="absolute w-full h-full bg-[#EEEAE7]/[0.8] bg-gradient-to-r from-white from-0% to-#EEEAE7"></div>
-        <div className="lg:w-[1150px] w-[85vw] mx-auto flex z-10 lg:flex-row flex-col">
+        <div className="lg:w-[1150px] w-full mx-auto flex z-10 lg:flex-row flex-col">
           <div className="border-black w-[300px] h-[200px]">
             <Image
               src={LogoType}
@@ -48,16 +48,16 @@ export default function Footer() {
               {/* <FaSquareInstagram className="text-[#FF1057] w-[30px] h-[30px]" /> */}
             </div>
           </div>
-          <div className="w-[700px] md:flex md:flex-row text-black flex-col">
-            <div className="border-black w-1/3 h-[200px] md:w-[500px] p-[10px]">
+          <div className="w-full md:w-[700px] md:flex md:flex-row text-black flex-col">
+            <div className="border-black h-[200px] md:w-[500px] w-full p-[10px]">
               <p className="text-[24px] uppercase font-semibold">Menu</p>
               <div className="uppercase h-[100px] lg:w-[400px] flex flex-wrap mt-[40px]">
                 {MenuFotterData}
               </div>
             </div>
-            <div className=" border-black w-1/3 h-[200px] p-[10px] md:w-[500px]">
+            <div className=" border-black w-full h-[200px] p-[10px] md:w-[500px]">
               <p className="text-[24px] uppercase font-semibold">Kontakt</p>
-              <div className="lowercase h-[100px] w-[400px] flex flex-col flex-wrap mt-[40px] justify-between">
+              <div className="lowercase h-[100px] md:w-[400px] w-full flex flex-col flex-wrap mt-[40px] justify-between">
                 <div className="flex items-center">
                   <CiPhone className="text-black w-[25px] h-[25px]" />
                   <Link href="tel:+48576652525" className="pl-[4px]">
@@ -80,7 +80,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="bg-slate-500 w-full h-[40px] text-white text-[10px]">
-        <div className="lg:w-[1150px] h-full mx-auto flex items-center jus">
+        <div className="lg:w-[1150px] w-full h-full mx-auto flex items-center">
           <FaRegCopyright />
           <p className="pl-[5px]">ONESTA GROUP SP. Z O. O. WSZYSTKIE PRAWA ZASTRZEŻONE</p>
         </div>

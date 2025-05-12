@@ -96,7 +96,7 @@ export default function Home() {
         <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
       </Head>
       <WhatsAppButton />
-      <div ref={menu} className=" duration-700 w-full z-50 bg-white">
+      <div ref={menu} className="duration-700 w-full z-50 bg-white">
         <Header />
       </div>
       {/* <Newsletter /> */}

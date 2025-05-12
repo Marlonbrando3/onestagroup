@@ -27,7 +27,7 @@ export default function ChangeSite({ propertiesSubSitesLengt, actualPage, setAct
   };
 
   return (
-    <div className="w-full h-[50px] flex items-center ">
+    <div className="w-full h-[50px] flex items-center overflow-x-hidden">
       <div className="w-[300px] mx-auto flex justify-center">
         <p
           className={`mr-[8px] font-boldz ${propertiesSubSitesLengt === 0 ? "hidden" : "visible"}`}
