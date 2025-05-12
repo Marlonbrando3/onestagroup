@@ -13,7 +13,7 @@ export default function WhatsAppButton() {
       <div className="relative">
         <Link
           href="https://wa.me/+48576652525"
-          className="cursor-pointer fixed w-auto min-h-[50px] bottom-10 right-10 bg-white shadow-[0px_5px_20px_-5px_rgba(0,0,0,0.3)] z-30 flex rounded-[8px] px-[20px] py-[5px] items-center border border-orange-500 hover:bg-orange-400 duration-200 hover:text-white"
+          className="cursor-pointer fixed w-auto min-h-[50px] bottom-2 right-2 bg-white shadow-[0px_5px_20px_-5px_rgba(0,0,0,0.3)] z-30 flex rounded-[8px] px-[20px] py-[5px] items-center border border-orange-500 hover:bg-orange-400 duration-200 hover:text-white"
         >
           {" "}
           {/* <div
