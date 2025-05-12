@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useCallback, useRef } from "react";
 import Head from "next/head";
 import Script from "next/script";
-import Header from "../../components/Header";
+import HeaderOffer from "../../components/HeaderOffer";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
@@ -25,6 +25,8 @@ import { CiParking1 } from "react-icons/ci";
 import Form from "@/components/SearchEngine/IntresetedPopUp/form";
 import { IoClose } from "react-icons/io5";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
+import Loan from "@/components/loanCalc/loan";
+import Link from "next/link";
 
 export default function Property() {
   const router = useRouter();
@@ -33,6 +35,9 @@ export default function Property() {
   const [propertyData, setPropertyData] = useState<any[]>([]);
   const [PropertyImages, setPropertyImages] = useState<any[]>([]);
 
+  const moreInfoLink = useRef<any>();
+  const headerTitle = useRef<any>();
+  const priceTitle = useRef<any>();
   const buttonLeft = useRef<any>();
   const buttonRight = useRef<any>();
   const photosContainer = useRef<any>();
@@ -211,6 +216,47 @@ export default function Property() {
     intrestedPopUp.current.style.display = "none";
   };
 
+  const handleTitleOnScroll = useCallback(() => {
+    const { scrollX, scrollY, innerWidth } = window;
+    // console.log("yOffset", innerWidth, "scrollY", scrollY);
+    if (scrollY > 30 && !router.asPath?.includes("blog")) {
+      headerTitle.current.style.transition = "0.3s ease-in-out";
+      priceTitle.current.style.display = "block";
+      // headerTitle.current.style.width = "95%";
+      headerTitle.current.style.height = "120px";
+      headerTitle.current.style.borderRadius = "0.5rem";
+      headerTitle.current.style.justifyContent = "space-between";
+      headerTitle.current.style.boxShadow = "0 3px 12px 0 rgba(0, 0, 0, 0.45)";
+
+      headerTitle.current.style.top = "-7px";
+      moreInfoLink.current.style.display = "block";
+
+      // headerDesktop.current.style.color = "black";
+    } else if (scrollY < 30 && !router.asPath?.includes("blog")) {
+      headerTitle.current.style.transition = "0.3s ease-in-out";
+      headerTitle.current.style.width = "100%";
+      priceTitle.current.style.display = "none";
+      headerTitle.current.style.boxShadow = "none";
+      moreInfoLink.current.style.display = "none";
+      headerTitle.current.style.top = "60px";
+      headerTitle.current.style.justifyContent = "center";
+
+      // header.current.style.height = "75px";
+      // logo.current.style.transition = "margin-top 0.5s ease-in-out";
+      // logo.current.style.marginTop = "0px";
+      // headerDesktop.current.style.boxShadow = "0px 0px 0px 0px black";
+      // headerDesktop.current.style.color = "white";
+    }
+  }, []);
+  useEffect(() => {
+    // headerDesktop;
+
+    window.addEventListener("scroll", handleTitleOnScroll);
+    return () => {
+      window.removeEventListener("scroll", handleTitleOnScroll);
+    };
+  });
+
   return (
     <>
       {/* <!-- Google tag (gtag.js) --> */}
@@ -264,7 +310,7 @@ export default function Property() {
         ></link>
       </Head>
       <div
-        className={`${TenorsSans.className} "max-w-[100vw] flex flex-col bg-gray-100 mx-[5px] sm:mx-auto relative" `}
+        className={`${TenorsSans.className} "max-w-[100vw] flex flex-col bg-[#fcf7f4] mx-[5px] sm:mx-auto relative" `}
       >
         <WhatsAppButton />
         <div
@@ -280,17 +326,33 @@ export default function Property() {
             <Form intrestedPopUp={intrestedPopUp} OfferNumber={propertyData[0]?.listingId} />
           </div>
         </div>
-        <div className="fixed w-full bg-white z-[999]">
-          <Header />
+        <div className="w-full bg-white z-[999]">
+          <HeaderOffer />
         </div>
         <MiniHomeView />
         {/* <div className="mx-[150px] h-[15px] mt-[5px] text-[14px] text-gray-700">
           Onesta &gt; Nieruchmości Hiszpania &gt; Wyjątkowa willa{" "}
         </div> */}
-        <div className="flex items-center justify-center h-[80px] w-full px-auto my-[10px] mx-auto bg-white">
-          <p className="block w-12/12 text-[22px] lg:text-2xl font-bold lg:mx-auto mx-4 text-center">
-            {propertyData[0]?.headerAdvertisement}
-          </p>
+        <div
+          ref={headerTitle}
+          className="fixed left-0 right-0 flex items-center h-[80px] w-full px-auto my-[10px] mx-auto bg-white top-[60px] z-40 px-[30px] justify-center"
+        >
+          <div className="w-12/12 md:text-[22px] text-[17px] lg:text-2xl font-bold text-start items-start ">
+            <p className="inline">{propertyData[0]?.headerAdvertisement},</p>{" "}
+            <p className="inline font-thin">{propertyData[0]?.foreignStreet}</p>
+            <br></br>
+            <p ref={priceTitle} className="text-orange-500 hidden text-left">
+              od {propertyData[0]?.price.amount.toLocaleString()} €
+            </p>
+          </div>
+
+          <Link
+            ref={moreInfoLink}
+            href="#contact"
+            className="bg-orange-500 h-[50px] text-white place-content-center px-[10px] rounded-md hidden text-center"
+          >
+            Więcej informacji
+          </Link>
         </div>
         <div className="lg:w-[1150px] md:w-[780px] max-w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
           <div className="flex flex-col lg:flex-row mx-auto">
@@ -364,7 +426,9 @@ export default function Property() {
                   <div className="flex flex-col h-full justify-center">
                     <div className="">{propertyData[0]?.country.name}</div>
                     <div className="text-[24px] font-[800]">
-                      {propertyData[0]?.foreignLocation}, {propertyData[0]?.foreignStreet}{" "}
+                      {propertyData[0]?.foreignLocation}
+                      <br></br>
+                      <p className="text-[16px]"> {propertyData[0]?.foreignStreet} </p>
                     </div>
                   </div>
                 </div>

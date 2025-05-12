@@ -62,10 +62,12 @@ export default function ContactForm({ propertyId, propertyRef }) {
   return (
     <div
       id="contact"
-      className="lg:flex w-full bg-[url('/palmyBGform.jpg')] bg-center bg-cover mx-1 px- lg:px-10 rounded-md mt-1 lg:w-full lg:mx-auto"
+      className="lg:flex w-full bg-[url('/palmyBGform.jpg')] bg-center bg-cover lg:px-10 rounded-md md:mt-1 lg:w-full lg:ml-[60px] mt-[40px]"
     >
-      <form className="flex flex-col lg:w-full lg:p-7 p-7" onSubmit={handleSubmit}>
-        <div className="py-4 font-bold text-2xl text-white">Zadaj nam pytanie:</div>
+      <form className="flex flex-col lg:w-full lg:p-2 p-2" onSubmit={handleSubmit}>
+        <div className="py-4 font-bold text-2xl text-white">
+          Proszę o więcej informacji o tej ofercie:
+        </div>
         <p className="py-2 font-bold text-white">
           Ogłoszenie o nr ref.{" "}
           <input className="bg-gray-900/[0.0]" type="text" value={propertyRef} name="id"></input>
