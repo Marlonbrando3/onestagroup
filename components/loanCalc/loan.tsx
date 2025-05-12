@@ -14,7 +14,7 @@ export default function Loan({ propertyRef, propertyId }: Props) {
   const [loanValue, setLoanValue] = useState<number>(250000);
   const [loanOwnPayment, setLoanOwnPayment] = useState(90000);
   const [loanInterest, setLoanInterest] = useState(3.5);
-  const [loanDuration, setLoanDuration] = useState(10);
+  const [loanDuration, setLoanDuration] = useState(20);
   const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
 
   const options = Array.from({ length: loanDurationSelect }, (_, i) => (
@@ -93,6 +93,7 @@ export default function Loan({ propertyRef, propertyId }: Props) {
             <p className="text-[18px] mb-[2px]">Okres kredytowania:</p>
             <select
               name="duration"
+              defaultValue={20}
               onChange={(e) => handleLeanParams(e)}
               className="text-[20px] w-full lg:w-[400px] h-[50px] border border-gray-800 rounded-[3px] pl-[10px] font-bold cursor-pointer"
             >
