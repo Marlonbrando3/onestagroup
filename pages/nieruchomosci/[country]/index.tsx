@@ -17,6 +17,7 @@ export default function Home() {
   const mobileButtonSearchEngine = useRef<any>();
 
   const router = useRouter();
+  if (!router.isReady) return null;
 
   const handleShowMobileFilters = () => {
     console.log(searchEngine.current.style.top);
@@ -28,6 +29,8 @@ export default function Home() {
       mobileButtonSearchEngine.current.innerHTML = "Filtry";
     }
   };
+
+  console.log(router.query.country);
 
   const title = `Nieruchomości ${router.query.country?.toUpperCase()}`;
 
