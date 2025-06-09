@@ -91,7 +91,7 @@ export default function SearchResults() {
   };
 
   useEffect(() => {
-    setActualPage(parseInt(page || 1));
+    setActualPage(parseInt(page as string) || 1);
   }, [router.isReady]);
 
   return (
