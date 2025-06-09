@@ -49,7 +49,7 @@ export default function ChangeSite({
   };
 
   const handlingBackSite = () => {
-    router.query.page = actualPage - 1;
+    router.query.page = (actualPage - 1).toString();
     router.push(router);
     setActualPage(actualPage - 1);
   };
