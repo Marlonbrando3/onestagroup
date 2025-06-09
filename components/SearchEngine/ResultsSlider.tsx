@@ -33,7 +33,7 @@ export default function ResultsSlider({
       return (
         <Link
           href={{
-            pathname: "/[country]/oferta",
+            pathname: "/nieruchomosci/[country]/oferta",
             query: {
               country: router.query.country,
               id: propertyId,
@@ -60,7 +60,7 @@ export default function ResultsSlider({
         <Link
           key={i}
           href={{
-            pathname: "/[country]/oferta",
+            pathname: "/nieruchomosci/[country]/oferta",
             query: {
               country: router.query.country,
               id: propertyId,
@@ -144,11 +144,11 @@ export default function ResultsSlider({
 
   return (
     <div className="h-full w-full relative bg-white">
-      <div className="absolute text-[16px] z-20 bg-white text-orange-400 top-2 px-[12px] font-semibold rounded-xl ml-[10px] h-[26px] leading-[26px] shadow-sm">
+      <div className="absolute text-[16px] z-20 bg-white text-orange-400 top-2 px-[12px] font-semibold rounded-r-md ml-[0px] h-[26px] leading-[26px] shadow-sm">
         {market}
       </div>
       {market !== "Rynek Wtórny" && deliveryDate !== null && (
-        <div className="bg-white absolute z-20 text-[16px] border-yellow-500 text-blue-600 bottom-0 px-[12px] font-normal rounded-xl h-[24px] leading-[24px] mb-[6px] ml-[10px] ">
+        <div className="bg-white absolute z-20 text-[16px] border-yellow-500 text-blue-600 bottom-0 px-[12px] font-normal rounded-r-md h-[24px] leading-[24px] mb-[6px] ml-[0px] ">
           Dostępne od {deliveryDate?.toString().slice(0, 7)}
         </div>
       )}

@@ -5,15 +5,18 @@ import { Red_Hat_DisplayFont } from "@/fonts/fonts";
 import ChangeSite from "./changeSite";
 import Properties from "../../public/properties.json";
 import { useRouter } from "next/router";
+import AboutSpain from "../aboutSpain";
+import HowToSearch from "../howToSearch";
 
 export default function SearchResults() {
   const router = useRouter();
 
   const { page } = router.query;
 
-  const [actualPage, setActualPage] = useState(parseInt(page as string) || 1);
+  const [actualPage, setActualPage] = useState(1);
+  const [temptSubSite, setTempSubSite] = useState();
   const [propertiesPerPage, setPropertiesPerPage] = useState(18);
-  const startProperty = (parseInt(page as string) - 1) * propertiesPerPage;
+  const startProperty = (actualPage - 1) * propertiesPerPage;
   const endProperty = startProperty + propertiesPerPage;
 
   const {
@@ -30,8 +33,6 @@ export default function SearchResults() {
   } = router.query;
   // console.log(Properties[0].apartmentTypeList);
 
-  console.log("load");
-
   const [PropertiesSorted, setPropertiesSorted] = useState(
     Properties.sort(
       (a: any, b: any) =>
@@ -40,8 +41,8 @@ export default function SearchResults() {
   );
 
   let PropertiesSelected = PropertiesSorted.filter((p) => {
-    console.log(p.price);
-    console.log(p.listingId);
+    // console.log(p.price);
+    // console.log(p.listingId);
 
     if (
       p.country.name.toLowerCase() == (country as string) &&
@@ -75,19 +76,23 @@ export default function SearchResults() {
   const handleFiltering = (event: any) => {
     const value = event.target.value;
     if (value === "cheap") {
-      console.log(value);
+      // console.log(value);
       let data = [...Properties].sort((a: any, b: any) => b.price.amount - a.price.amount);
-      console.log(data);
+      // console.log(data);
       setPropertiesSorted(data);
     }
 
     if (value === "expensive") {
-      console.log("expensive");
+      // console.log("expensive");
       let data = [...Properties].sort((a: any, b: any) => a.price.amount - b.price.amount);
-      console.log(data);
+      // console.log(data);
       setPropertiesSorted(data);
     }
   };
+
+  useEffect(() => {
+    setActualPage(parseInt(page || 1));
+  }, [router.isReady]);
 
   return (
     <div className={`${Red_Hat_DisplayFont.className} mx-auto`}>
@@ -106,7 +111,7 @@ export default function SearchResults() {
         </div>
       </div>
       <div className="h-full md:w-[800px] lg:w-[1160px] w-full flex items-center justify-center flex-wrap lg:mx-auto">
-        {propertiesSliced.map((property) => (
+        {propertiesSliced.map((property: any) => (
           <PropertyCard key={property.id} property={property} />
         ))}
       </div>
@@ -114,7 +119,11 @@ export default function SearchResults() {
         propertiesSubSitesLengt={propertiesSubSitesLengt}
         actualPage={actualPage}
         setActualPage={setActualPage}
+        temptSubSite={temptSubSite}
+        setTempSubSite={setTempSubSite}
       />
+      <AboutSpain />
+      <HowToSearch />
     </div>
   );
 }

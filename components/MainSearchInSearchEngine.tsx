@@ -41,7 +41,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
 
   const handleNewSearch = () => {
     if (searchEngine.current.style.top) searchEngine.current.style.top = "-370px";
-    router.push({ pathname: `/${router.query.country}`, query: queries });
+    router.push({ pathname: `/nieruchomosci/${router.query.country}`, query: queries });
     mobileButtonSearchEngine.current.innerHTML = "Filtry";
   };
 

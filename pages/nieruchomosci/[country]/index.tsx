@@ -2,19 +2,21 @@ import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import Script from "next/script";
 import { useRouter } from "next/router";
-import MiniHomeView from "../../components/SearchEngine/MiniHomeView";
-import Header from "../../components/Header";
-import SearchEngine from "../../components/SearchEngine/SearchEngine";
-import Footer from "../../components/Footer";
-import ContactFormMain from "../../components/ContactFormMain";
+import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
+import Header from "../../../components/Header";
+import SearchEngine from "../../../components/SearchEngine/SearchEngine";
+import Footer from "../../../components/Footer";
+import ContactFormMain from "../../../components/ContactFormMain";
 import MobileFilters from "@/components/MobileFilters";
-import Properties from "../../public/properties.json";
+import Properties from "../../../public/properties.json";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 
 export default function Home() {
   const menu = useRef<any>();
   const searchEngine = useRef<any>();
   const mobileButtonSearchEngine = useRef<any>();
+
+  const router = useRouter();
 
   const handleShowMobileFilters = () => {
     console.log(searchEngine.current.style.top);
@@ -26,6 +28,8 @@ export default function Home() {
       mobileButtonSearchEngine.current.innerHTML = "Filtry";
     }
   };
+
+  const title = `Nieruchomości ${router.query.country?.toUpperCase()}`;
 
   return (
     <>
@@ -72,10 +76,7 @@ export default function Home() {
                     `}
       </Script>
       <Head>
-        <title>
-          Nieruchomości Hiszpania || Nieruchomości Portgualia || Nieruchomości Dominikana - Onesta
-          Group
-        </title>
+        <title>{title}</title>
         <link rel="shortcut icon" href="/logotype.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com"></link>

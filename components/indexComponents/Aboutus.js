@@ -37,7 +37,7 @@ export default function Aboutus() {
       </Script>
       <div className="bg-gray-900/[0.0]">
         <HowWeWork />
-        <AboutSpain />
+        {/* <AboutSpain /> */}
         <ContactFormAboutUs />
         <div className="flex w-full mx-auto my-20 flex-wrap bg-slate-800 justify-center py-[70px]">
           {data}

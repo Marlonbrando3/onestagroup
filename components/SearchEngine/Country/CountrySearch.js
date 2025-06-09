@@ -8,7 +8,7 @@ export default function CountrySearch() {
   const pushCountry = (e) => {
     // console.log(country);
     router.push({
-      pathname: `/${e.target.value}`,
+      pathname: `/nieruchomosci/${e.target.value}`,
       query: { page: 1 },
     });
   };

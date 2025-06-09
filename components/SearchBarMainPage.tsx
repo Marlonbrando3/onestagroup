@@ -189,7 +189,7 @@ export default function SearchButton() {
   const handleSearch = (e: any) => {
     e.preventDefault();
     router.push({
-      pathname: `/${countryChoosed}`,
+      pathname: `nieruchomosci/${countryChoosed}`,
       query: queries,
     });
   };

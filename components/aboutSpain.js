@@ -5,12 +5,12 @@ import Link from "next/link";
 export default function AboutSpain() {
   return (
     <div className="w-screen h-auto py-[40px]">
-      <h1 className="w-[90%] text-center text-[34px] py-[30px] leading-[35px]">
-        Jeśli szukasz nieruchomości w Hiszpanii
-      </h1>
-      <div className="lg:w-[1200px] w-[90vw] mx-auto h-full flex justify-center">
+      <h2 className="lg:w-[1100px] w-[90%] mx-auto text-left text-[34px] py-[30px] leading-[35px]">
+        Jak wygląda rynek nieruchomości w Hiszpanii?
+      </h2>
+      <div className="lg:w-[1100px] w-[90%] mx-auto h-full flex justify-center">
         <div className="hidden lg:block min-w-[300px] h-[500px] relative rounded-l-[20px] overflow-hidden object-cover">
-          <Image src="/nieruchomosci-w-hiszpanii.jpeg" alt="nieruchomosci-w-hiszpanii" fill></Image>
+          <Image src="/Spains_properties_market.png" alt="nieruchomosci-w-hiszpanii" fill></Image>
         </div>
         <div className="ml-[20px]">
           Inwestowanie w <strong>Nieruchomości w Hiszpanii</strong> dla Polaków stało się bardzo

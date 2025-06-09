@@ -60,7 +60,7 @@ export default function PropertyCard({ property }: Property) {
         </span>
         <Link
           href={{
-            pathname: "/[country]/oferta",
+            pathname: "/nieruchomości/[country]/oferta",
             query: {
               country: router.query.country || "hiszpania",
               id: property.id,
@@ -129,7 +129,7 @@ export default function PropertyCard({ property }: Property) {
             </div>
             <div className="bg-white md:h-16 h-12 flex items-center text-darkblue text-2xl px-3 font-semibold border-t-yellow-500 border-t">
               <span className="ml-1 sm:text-xl text-2xl md:text-3xl text-right w-full text-yellow-500">
-                od {property.price.amount.toLocaleString()} €
+                {market !== "Rynek Wtórny" && "od"} {property.price.amount.toLocaleString()} €
               </span>
             </div>
           </div>
