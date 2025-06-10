@@ -60,7 +60,7 @@ export default function PropertyCard({ property }: Property) {
         </span>
         <Link
           href={{
-            pathname: "/nieruchomości/[country]/oferta",
+            pathname: "/nieruchomosci/[country]/oferta",
             query: {
               country: router.query.country || "hiszpania",
               id: property.id,

@@ -25,7 +25,7 @@ export default function RecommendedOffers() {
         </div>
         <div className="w-full flex">
           <Link
-            href="/hiszpania?page=1"
+            href="/nieruchomosci/hiszpania"
             className="md:w-[200px] w-[170px] border-b-2 rounded-sm border-orange-400 text-[25px] text-center mx-auto mt-[40px] cursor-pointer hover:text-white hover:bg-orange-500 duration-150"
           >
             Więcej ofert
