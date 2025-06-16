@@ -23,7 +23,7 @@ export default function SearchResults(...restProps: any) {
   const propertiesSliced = restProps[0].properties.slice(startProperty, endProperty);
   const propertiesSubSitesLengt = restProps[0].properties.length / propertiesPerPage;
   const PropertiesDataSubSites = propertiesSliced.filter(
-    (p, index) => index <= propertiesSubSitesLengt,
+    (p: any, index: any) => index <= propertiesSubSitesLengt,
   );
 
   const handleFiltering = (event: any) => {
@@ -32,14 +32,14 @@ export default function SearchResults(...restProps: any) {
       // console.log(value);
       let data = [...Properties].sort((a: any, b: any) => b.price.amount - a.price.amount);
       // console.log(data);
-      setPropertiesSorted(data);
+      // setPropertiesSorted(data);
     }
 
     if (value === "expensive") {
       // console.log("expensive");
       let data = [...Properties].sort((a: any, b: any) => a.price.amount - b.price.amount);
       // console.log(data);
-      setPropertiesSorted(data);
+      // setPropertiesSorted(data);
     }
   };
 
