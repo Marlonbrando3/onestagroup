@@ -68,7 +68,7 @@ export default function Property() {
       const QueryIdTemp: any = searchParams.get("id");
       const QueryId = parseInt(QueryIdTemp);
       const propertyDataTemp = Properties.filter((i) => i.id === QueryId);
-      console.log(propertyDataTemp);
+
       const PropertyImages = propertyDataTemp[0]?.images.filter(
         (i) =>
           (i.id && i.isScheme === false && i.description === null) || i.description === "strona",
@@ -78,8 +78,6 @@ export default function Property() {
 
       setPropertyData(propertyDataTemp);
       setPropertyImages(PropertyImages);
-
-      console.log(PropertyImages);
 
       const imagesTemp = PropertyImages?.map((image, index) => {
         if (index === 0) {
@@ -164,8 +162,6 @@ export default function Property() {
       let oneImageLength = photosR / images.length;
       let cutedImage = photosCM / oneImageLength;
 
-      console.log(photosR - photosC);
-
       let multipler = 0;
 
       if (window.outerWidth > 780) {
@@ -187,8 +183,6 @@ export default function Property() {
         marginWork = 0;
       }
 
-      console.log(marginWork);
-
       photosContainer.current.style.marginLeft = `-${marginWork.toString()}px`;
       console.log(`-${margin.toString()}`);
 
@@ -200,12 +194,12 @@ export default function Property() {
 
   const Touchstart = (e: any) => {
     setStart(e.changedTouches[0].clientX);
-    console.log(e.changedTouches[0].clientX);
+    // console.log(e.changedTouches[0].clientX);
   };
 
   const Touchend = (e: any) => {
     setEnd(e.changedTouches[0].clientX);
-    console.log(e.changedTouches[0].clientX);
+    // console.log(e.changedTouches[0].clientX);
   };
 
   const handleIntrestedPopUp = () => {
@@ -218,7 +212,7 @@ export default function Property() {
 
   const handleTitleOnScroll = useCallback(() => {
     const { scrollX, scrollY, innerWidth } = window;
-    console.log("yOffset", innerWidth, "scrollY", scrollY);
+    // console.log("yOffset", innerWidth, "scrollY", scrollY);
     if (scrollY > 30 && innerWidth > 1024 && !router.asPath?.includes("blog")) {
       headerTitle.current.style.transition = "0.3s ease-in-out";
       priceTitle.current.style.display = "block";

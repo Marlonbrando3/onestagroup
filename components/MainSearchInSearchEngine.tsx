@@ -40,7 +40,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
   // console.log(router.query);
 
   const handleNewSearch = () => {
-    if (searchEngine.current.style.top) searchEngine.current.style.top = "-370px";
+    if (searchEngine.current.style.top) searchEngine.current.style.top = "-460px";
     router.push({ pathname: `/nieruchomosci/${router.query.country}`, query: queries });
     mobileButtonSearchEngine.current.innerHTML = "Filtry";
   };

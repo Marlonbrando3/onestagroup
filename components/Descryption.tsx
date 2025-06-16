@@ -24,7 +24,6 @@ export default function Descryption({
   propertyId,
   propertyRef,
 }: Props) {
-  console.log(propertyRef);
   return (
     <div className="lg:flex lg:flex-wrap w-full rounded-md lg:w-[1150px] md:w-[780px] max-w-full lg:leading-7 mx-auto mt-[10px] relative filter">
       {/* container for 2 colums left:desc and contact form, right: contact with agent (only desktop) */}

@@ -282,7 +282,7 @@ export default function BlogPost() {
         </p>
       </div>
       <Link
-        href="/hiszpania?page=1"
+        href="/nieruchomosci/hiszpania?page=1"
         className="text-white text-[26px] font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 w-[500px] shadow-xl"
       >
         Przeglądaj oferty nieruchomości

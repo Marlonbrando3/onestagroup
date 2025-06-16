@@ -7,16 +7,12 @@ export default function ContactForm({ propertyId, propertyRef }) {
 
   const submitButton = useRef();
 
-  console.log(propertyRef);
-
   const [dataForm, setDataForm] = useState({
     Name: "",
     Phone: "",
     Email: "",
     Message: "",
   });
-
-  console.log(dataForm);
 
   // setURLafterFormSending('http://localhost:3000'+router.asPath.toString())
 

@@ -124,9 +124,7 @@ export default function HeaderOffer() {
         submitButton.current.style.backgroundColor = "yellow";
       }, 500);
     }
-  };
-
-  console.log(router.asPath);
+}
 
   const handleConsultationForm = (e: any) => {
     if (e.target.name === "name") {

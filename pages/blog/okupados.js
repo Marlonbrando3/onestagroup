@@ -201,7 +201,7 @@ export default function Okupados() {
         1. Najlepszym rozwiązaniem jest po prostu dobre zabezpieczenie nieruchomości w Hiszpanii i
         szybkie reakcje. <br></br>Mimo, że problem okupados w nieruchomościach inwestycyjnych
         (przykładowe{" "}
-        <Link href="/hiszpania?page=1" className="font-bold text-blue-700 underline">
+        <Link href="/nieruchomosci/hiszpania?page=1" className="font-bold text-blue-700 underline">
           Nieruchomości inwestycyjne w Hiszpanii
         </Link>
         ) stanowi raczej wyjątkową rzadkość (my oraz nasi partnerzy nie odnotowaliśmy włamania od ok
@@ -272,7 +272,7 @@ export default function Okupados() {
         <br></br>
         <br></br>
         <Link
-          href="/hiszpania?page=1"
+          href="/nieruchomosci/hiszpania?page=1"
           className="text-white md:text-[26px] text-auto font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 md:w-[500px] shadow-xl mb-[50px] mx-auto"
         >
           Przeglądaj oferty nieruchomości

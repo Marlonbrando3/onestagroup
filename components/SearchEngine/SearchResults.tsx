@@ -17,7 +17,7 @@ export default function SearchResults(...restProps: any) {
   const [actualPage, setActualPage] = useState(1);
   const [temptSubSite, setTempSubSite] = useState();
   const [propertiesPerPage, setPropertiesPerPage] = useState(18);
-  const startProperty = (actualPage - 1) * propertiesPerPage;
+  const startProperty = (parseInt(page as string) - 1) * propertiesPerPage;
   const endProperty = startProperty + propertiesPerPage;
 
   const propertiesSliced = restProps[0].properties.slice(startProperty, endProperty);
@@ -29,23 +29,13 @@ export default function SearchResults(...restProps: any) {
   const handleFiltering = (event: any) => {
     const value = event.target.value;
     if (value === "cheap") {
-      // console.log(value);
       let data = [...Properties].sort((a: any, b: any) => b.price.amount - a.price.amount);
-      // console.log(data);
-      // setPropertiesSorted(data);
     }
 
     if (value === "expensive") {
-      // console.log("expensive");
       let data = [...Properties].sort((a: any, b: any) => a.price.amount - b.price.amount);
-      // console.log(data);
-      // setPropertiesSorted(data);
     }
   };
-
-  useEffect(() => {
-    setActualPage(parseInt(page as string) || 1);
-  }, [router.isReady]);
 
   return (
     <div className={`${Red_Hat_DisplayFont.className} mx-auto`}>

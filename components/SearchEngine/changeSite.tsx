@@ -28,8 +28,6 @@ export default function ChangeSite({
     sites.push(i);
   }
 
-  // console.log(sites);
-
   const handleInputChanging = (e: any) => {
     setTempSubSite(e.target.value);
   };
@@ -38,20 +36,50 @@ export default function ChangeSite({
     e.preventDefault();
     console.log(e.target.value);
     router.query.page = temptSubSite;
-    router.push(router);
-    setActualPage(temptSubSite);
+    router
+      .push(
+        {
+          pathname: router.pathname,
+          query: router.query,
+        },
+        undefined,
+        { scroll: false, shallow: false },
+      )
+      .then(() => {
+        window.scrollTo({ top: 350, behavior: "smooth" });
+      });
   };
 
   const handlingNextSite = () => {
-    router.query.page = actualPage + 1;
-    router.push(router);
-    setActualPage(actualPage + 1);
+    const page = parseInt(router.query.page as string) + 1;
+    router.query.page = page.toString();
+    router
+      .push(
+        {
+          pathname: router.pathname,
+          query: router.query,
+        },
+        undefined,
+        { scroll: false, shallow: false },
+      )
+      .then(() => {
+        window.scrollTo({ top: 350, behavior: "smooth" });
+      });
+    // setActualPage(actualPage + 1);
   };
 
   const handlingBackSite = () => {
-    router.query.page = (actualPage - 1).toString();
-    router.push(router);
-    setActualPage(actualPage - 1);
+    const page = parseInt(router.query.page as string) - 1;
+    router.query.page = page.toString();
+    router.push(
+      {
+        pathname: router.pathname,
+        query: router.query,
+      },
+      undefined,
+      { scroll: false, shallow: false },
+    );
+    // setActualPage(actualPage - 1);
   };
 
   // const sitesChanerFullLenght = (
@@ -75,7 +103,6 @@ export default function ChangeSite({
   //   </div>
   // );
 
-  console.log(actualPage);
   const sitesChanger: any = (
     <form onSubmit={handleChanginSite} className="flex items-center justify-center">
       <IoIosArrowBack
@@ -84,15 +111,13 @@ export default function ChangeSite({
       />
       <input
         className="border border-gray-800 rounded-[3px] bg-transparent w-[40px] h-[40px] text-center font-bold text-[20px] placeholder-gray-900 focus:placeholder-gray-400"
-        placeholder={`${actualPage}`}
+        placeholder={(router.query.page as string) || "1"}
         onChange={handleInputChanging}
       ></input>
       <div className="pl-[9px] text-[20px] font-bold">z {Math.ceil(propertiesSubSitesLengt)}</div>
       <IoIosArrowForward className="w-[50px] h-[25px] cursor-pointer" onClick={handlingNextSite} />
     </form>
   );
-
-  useEffect(() => {}, [router.isReady, router.query.page]);
 
   return (
     <div className="w-full h-[50px] flex items-center overflow-x-hidden place-content-center">
