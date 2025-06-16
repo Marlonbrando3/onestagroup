@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
+import { GetServerSideProps } from "next";
 import Script from "next/script";
 import { useRouter } from "next/router";
 import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
@@ -11,20 +12,78 @@ import MobileFilters from "@/components/MobileFilters";
 import Properties from "../../../public/properties.json";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 
-export default function Home() {
+interface Property {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  country: { name: string };
+  section: string;
+  foreignLocation: string;
+  mortgageMarket: string;
+  noOfBathrooms: number;
+  noOfRooms: number;
+  price: { amount: number };
+  actualisationDate: string;
+}
+
+export default function Home(props: any) {
+  const router = useRouter();
+
   const menu = useRef<any>();
   const searchEngine = useRef<any>();
   const mobileButtonSearchEngine = useRef<any>();
 
-  const router = useRouter();
+  const { country } = router.query;
+
+  const countryNames: Record<string, string> = {
+    hiszpania: "Hiszpania",
+    portugalia: "Portugalia",
+    cypr: "Cypr",
+    wlochy: "Włochy",
+  };
+
+  // Jeśli jeszcze nie gotowe
+  if (!country || typeof country !== "string") return null;
+
+  const countryName = countryNames[country.toLowerCase()] || country;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Strona główna",
+        item: "https://onesta.com.pl",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Nieruchomości",
+        item: "https://onesta.com.pl/nieruchomosci",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: countryName,
+        item: `https://onesta.com.pl/nieruchomosci/${country}`,
+      },
+    ],
+  };
 
   const handleShowMobileFilters = () => {
     console.log(searchEngine.current.style.top);
-    if (searchEngine.current.style.top === "-400px" || searchEngine.current.style.top === "") {
+    if (
+      searchEngine.current.style.top === "-400px" ||
+      searchEngine.current.style.top === "-460px" ||
+      searchEngine.current.style.top === ""
+    ) {
       searchEngine.current.style.top = "70px";
       mobileButtonSearchEngine.current.innerHTML = "Zamknij";
     } else {
-      searchEngine.current.style.top = "-400px";
+      searchEngine.current.style.top = "-460px";
       mobileButtonSearchEngine.current.innerHTML = "Filtry";
     }
   };
@@ -55,6 +114,11 @@ export default function Home() {
         gtag('config', 'G-7E286CBN97');
       `}
       </Script>
+      <link rel="canonical" href="https://onesta.com.pl/nieruchomosci/hiszpania" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Script id="facebook-pixel">
         {`!function(f,b,e,v,n,t,s)
                   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -113,9 +177,66 @@ export default function Home() {
         handleShowMobileFilters={handleShowMobileFilters}
         searchEngine={searchEngine}
         mobileButtonSearchEngine={mobileButtonSearchEngine}
+        {...props}
       />
       <ContactFormMain />
       <Footer />
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const fs = require("fs");
+  const path = require("path");
+
+  const { country } = context.params as { country: string };
+  const {
+    type,
+    region,
+    market,
+    bathsmin,
+    bathsmax,
+    bedsmin,
+    bedsmax,
+    pricemin,
+    pricemax,
+    page,
+    sort,
+  } = context.query;
+
+  const filePath = path.join(process.cwd(), "public/properties.json");
+  const raw = fs.readFileSync(filePath, "utf-8");
+  const allProperties: Property[] = JSON.parse(raw);
+
+  let filtered = allProperties.filter(
+    (p) =>
+      p.country?.name?.toLowerCase() === country.toLowerCase() &&
+      (!type || type === "All" || p.section === type) &&
+      (!region || region === "All" || p.foreignLocation === region) &&
+      (!market || market === "All" || p.mortgageMarket === market) &&
+      (!bathsmin || p.noOfBathrooms >= parseInt(bathsmin as string)) &&
+      (!bathsmax || p.noOfBathrooms <= parseInt(bathsmax as string)) &&
+      (!bedsmin || p.noOfRooms >= parseInt(bedsmin as string)) &&
+      (!bedsmax || p.noOfRooms <= parseInt(bedsmax as string)) &&
+      (!pricemin || p.price?.amount >= parseInt(pricemin as string)) &&
+      (!pricemax || p.price?.amount <= parseInt(pricemax as string)),
+  );
+
+  if (sort === "cheap") {
+    filtered = filtered.sort((a, b) => b.price.amount - a.price.amount);
+  } else if (sort === "expensive") {
+    filtered = filtered.sort((a, b) => a.price.amount - b.price.amount);
+  } else {
+    filtered = filtered.sort(
+      (a, b) => new Date(b.actualisationDate).getTime() - new Date(a.actualisationDate).getTime(),
+    );
+  }
+
+  return {
+    props: {
+      properties: filtered,
+      country,
+      query: context.query,
+    },
+  };
+};

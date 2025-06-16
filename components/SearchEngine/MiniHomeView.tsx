@@ -22,19 +22,25 @@ export default function MiniHomeView() {
   }, [router.isReady, router.query.country]);
 
   return (
-    <div className={`${MoonDance.className} lg:w-full w-full lg:h-[300px] h-[140px] mx-auto`}>
+    <div className={`${MoonDance.className} lg:w-full w-full md:h-[350px] h-[310px] mx-auto`}>
       <div className=" bg-white w-full h-[60px]"></div>
       <div className=" bg-white w-full h-full bg-[url('/bg_2.png')] bg-cover md:bg-[center_420px] bg-[center_320px] relative">
-        <div className="absolute w-full h-full bg-gray-900/[0.4] z-0"></div>
-        <div className="pt-[10px] w-[1100px] mx-auto z-30 relative">
-          <span className="w-[100px] bg-white border">
-            <h1 className="text-[49px] text-white ">Nieruchomości {country}</h1>
-            <p
-              className={`${Red_Hat_DisplayFont.className} bg-white w-[370px] text-center rounded-[3px]`}
+        <div className="absolute w-full h-full bg-gray-900/[0.5] z-0"></div>
+        <div className="lg:pt-[20px] pt-[50px] lg:w-[1100px] w-[90%] mx-auto z-30 relative">
+          <span className="w-[100px] bg-white ">
+            <h1 className="md:text-[49px] text-[34px] text-white leading-[30px] lg:leading-[49px]">
+              Nieruchomości {country} – domy i apartamenty na sprzedaż
+            </h1>
+            <span
+              className={`${Red_Hat_DisplayFont.className} bg-white text-left rounded-[3px] mt-[20px] md:text-[18px] text-[12px] `}
             >
               {" "}
-              Wybieraj spośród setek wyjątkowych ogłoszeń
-            </p>
+              Planujesz zakup nieruchomości w Hiszpanii? Znajdziesz tu atrakcyjne oferty domów,
+              mieszkań i apartamentów w popularnych lokalizacjach takich jak Costa Blanca, Costa del
+              Sol, Alicante czy Torrevieja itd. Hiszpański rynek nieruchomości oferuje świetne
+              możliwości zarówno dla inwestorów, jak i osób szukających drugiego domu na słoneczne
+              wakacje. Przeglądaj dostępne ogłoszenia i wybierz swoją wymarzoną nieruchomość.
+            </span>
           </span>
         </div>
       </div>

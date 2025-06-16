@@ -376,7 +376,7 @@ export default function Property() {
                     src={showedImage}
                     fill
                     objectFit="cover"
-                    alt="photo"
+                    alt="nieruchomosci-w-hiszpanii"
                   ></Image>
                 </div>
                 <div className="relative">

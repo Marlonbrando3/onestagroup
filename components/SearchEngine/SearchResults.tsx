@@ -8,10 +8,11 @@ import { useRouter } from "next/router";
 import AboutSpain from "../aboutSpain";
 import HowToSearch from "../howToSearch";
 
-export default function SearchResults() {
+export default function SearchResults(...restProps: any) {
   const router = useRouter();
 
   const { page } = router.query;
+  console.log(restProps);
 
   const [actualPage, setActualPage] = useState(1);
   const [temptSubSite, setTempSubSite] = useState();
@@ -19,56 +20,8 @@ export default function SearchResults() {
   const startProperty = (actualPage - 1) * propertiesPerPage;
   const endProperty = startProperty + propertiesPerPage;
 
-  const {
-    country,
-    type,
-    region,
-    market,
-    bathsmin,
-    bathsmax,
-    bedsmin,
-    bedsmax,
-    pricemin,
-    pricemax,
-  } = router.query;
-  // console.log(Properties[0].apartmentTypeList);
-
-  const [PropertiesSorted, setPropertiesSorted] = useState(
-    Properties.sort(
-      (a: any, b: any) =>
-        new Date(b.actualisationDate).getTime() - new Date(a.actualisationDate).getTime(),
-    ),
-  );
-
-  let PropertiesSelected = PropertiesSorted.filter((p) => {
-    // console.log(p.price);
-    // console.log(p.listingId);
-
-    if (
-      p.country.name.toLowerCase() == (country as string) &&
-      (p.section === type || type === "All" || type === undefined) &&
-      (p.foreignLocation === region || region === undefined || region === "All") &&
-      (p.mortgageMarket === market || market === undefined || market === "All") &&
-      (p.noOfBathrooms >= parseInt(bathsmin as string) ||
-        bathsmin === undefined ||
-        bathsmin === "All") &&
-      (p.noOfBathrooms <= parseInt(bathsmax as string) ||
-        bathsmax === undefined ||
-        bathsmax === "All") &&
-      (p.noOfRooms >= parseInt(bathsmin as string) || bedsmin === undefined || bedsmin === "All") &&
-      (p.noOfRooms <= parseInt(bedsmax as string) || bedsmax === undefined || bedsmax === "All") &&
-      (p.price.amount >= parseInt(pricemin as string) ||
-        pricemin === undefined ||
-        pricemin === "All") &&
-      (p.price.amount <= parseInt(pricemax as string) ||
-        pricemax === undefined ||
-        pricemax === "All")
-    )
-      return true;
-  });
-
-  const propertiesSliced = PropertiesSelected.slice(startProperty, endProperty);
-  const propertiesSubSitesLengt = PropertiesSelected.length / propertiesPerPage;
+  const propertiesSliced = restProps[0].properties.slice(startProperty, endProperty);
+  const propertiesSubSitesLengt = restProps[0].properties.length / propertiesPerPage;
   const PropertiesDataSubSites = propertiesSliced.filter(
     (p, index) => index <= propertiesSubSitesLengt,
   );

@@ -55,7 +55,7 @@ export default function GalleryContainer() {
     >
       <Image
         src={`https://img.asariweb.pl/thumbnail/${i.id}`}
-        alt="lala"
+        alt="nieruchomosci-w-hiszpanii"
         fill
         objectFit="cover"
         placeholder="blur"
@@ -255,7 +255,7 @@ export default function GalleryContainer() {
               src={`https://img.asariweb.pl/normal/${choosedImage}`}
               fill
               objectFit="cover"
-              alt="Hiszpania"
+              alt="nieruchomosci-w-hiszpanii"
               className="rounded-md slider_move"
               placeholder="blur"
               blurDataURL={`https://img.asariweb.pl/normal/${choosedImage}`}

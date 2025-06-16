@@ -1,18 +1,27 @@
 import React from "react";
 import SearchComponentsList from "./SearchComponentsList";
-import SearchResults from "./SearchResults";
+import SearchResults from "../../components/SearchEngine/SearchResults";
 
-type Function = {
+type ServerSideProps = {
+  properties: any;
+  query: any;
+  country: any;
+};
+
+type FunctionProps = {
   handleShowMobileFilters: any;
   mobileButtonSearchEngine: any;
   searchEngine: any;
 };
 
+type SearchEngineProps = FunctionProps & ServerSideProps;
+
 export default function SearchEngine({
   handleShowMobileFilters,
   searchEngine,
   mobileButtonSearchEngine,
-}: Function) {
+  ...restProps
+}: SearchEngineProps) {
   return (
     <>
       <div className="flex flex-col items-start justify-center w-full pt-4 bg-[#fcf7f4]">
@@ -21,7 +30,7 @@ export default function SearchEngine({
           mobileButtonSearchEngine={mobileButtonSearchEngine}
           searchEngine={searchEngine}
         />
-        <SearchResults />
+        <SearchResults {...restProps} />
       </div>
     </>
   );
