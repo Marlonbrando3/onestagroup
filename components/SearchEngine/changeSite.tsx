@@ -51,7 +51,7 @@ export default function ChangeSite({
   };
 
   const handlingNextSite = () => {
-    const page = parseInt(router.query.page as string) + 1;
+    const page = parseInt(router.query.page as string) + 1 || 2;
     router.query.page = page.toString();
     router
       .push(

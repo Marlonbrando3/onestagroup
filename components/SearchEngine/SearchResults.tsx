@@ -7,6 +7,7 @@ import Properties from "../../public/properties.json";
 import { useRouter } from "next/router";
 import AboutSpain from "../aboutSpain";
 import HowToSearch from "../howToSearch";
+import FaqSpainMain from "../faqSpainMain/faqSpainMain";
 
 export default function SearchResults(...restProps: any) {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function SearchResults(...restProps: any) {
   const [actualPage, setActualPage] = useState(1);
   const [temptSubSite, setTempSubSite] = useState();
   const [propertiesPerPage, setPropertiesPerPage] = useState(18);
-  const startProperty = (parseInt(page as string) - 1) * propertiesPerPage;
+  const startProperty = (parseInt(page as string) - 1) * propertiesPerPage || 1;
   const endProperty = startProperty + propertiesPerPage;
 
   const propertiesSliced = restProps[0].properties.slice(startProperty, endProperty);
@@ -65,6 +66,7 @@ export default function SearchResults(...restProps: any) {
         temptSubSite={temptSubSite}
         setTempSubSite={setTempSubSite}
       />
+      <FaqSpainMain />
       <AboutSpain />
       <HowToSearch />
     </div>
