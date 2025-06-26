@@ -28,7 +28,17 @@ export default function Person({ data }: Person) {
           <Phones phone={data.phone} />
         </div>
         <div className="absolute w-full h-[30px] z-10 bottom-0 flex">{LanguagesData}</div>
-        <Image src={`/${data.photo}`} fill objectFit="cover" objectPosition="top" alt={data.name}></Image>
+        <Image
+          src={`/${data.photo}`}
+          fill
+          objectFit="cover"
+          objectPosition="top"
+          alt={data.name}
+          className={`${
+            (data.photo === "Marek.png" && "scale-[140%]") ||
+            (data.photo === "Przemek.png" && "scale-[100%]")
+          } transform origin-top`}
+        ></Image>
       </div>
       <div className="ml-[20px] lg:ml-0 lg:w-[100%] md:w-[90%] w-[90%] flex flex-col justify-center mt-[20px] flex-1">
         <div className="flex flex-col leading-[20px] mb-[10px]">
