@@ -22,22 +22,22 @@ export default function Person({ data }: Person) {
   });
 
   return (
-    <div className="md:h-[400px] md:w-[50%] w-[90%] flex p-[20px] flex-col md:flex-row">
-      <div className="md:h-full md:w-[300px] relative rounded-[10px] overflow-hidden h-[150px] w-[150px] mb-[10px] md:mb-0">
+    <div className="lg:h-[600px] lg:w-[50%] md:min-h-[350px] w-[90vw] flex p-[20px] lg:flex-col flex-row">
+      <div className="md:h-[300px] md:w-[300px] relative rounded-[10px] overflow-hidden h-[250px] w-[150px] mb-[10px] md:mb-0">
         <div className="absolute w-[85%] h-[30px] z-10 bottom-10 flex bg-amber-500 rounded-r-[20px]">
           <Phones phone={data.phone} />
         </div>
         <div className="absolute w-full h-[30px] z-10 bottom-0 flex">{LanguagesData}</div>
-        <Image src={`/${data.photo}`} fill objectFit="cover" alt={data.name}></Image>
+        <Image src={`/${data.photo}`} fill objectFit="cover" objectPosition="top" alt={data.name}></Image>
       </div>
-      <div className="md:pl-[30px] md:w-[350px] flex flex-col justify-center">
+      <div className="ml-[20px] lg:ml-0 lg:w-[100%] md:w-[90%] w-[90%] flex flex-col justify-center mt-[20px] flex-1">
         <div className="flex flex-col leading-[20px] mb-[10px]">
           <p className="text-[20px] font-bold">{data.name}</p>
           <p className="italic underline">{data.title}</p>
         </div>
-        <div className="w-[300px]">{data.desc}</div>
+        <div className="lg:w-full lg:pr-[15px]">{data.desc}</div>
       </div>
-      <div className="h-[1px] w-[90%] bg-gray-800 mt-[30px] md:hidden"></div>
+      {/* <div className="h-[1px] w-[90%] bg-gray-800 mt-[30px] md:hidden"></div> */}
     </div>
   );
 }
