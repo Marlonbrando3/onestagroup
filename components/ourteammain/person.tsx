@@ -24,7 +24,7 @@ export default function Person({ data }: Person) {
   return (
     <div className="lg:h-[600px] lg:w-[50%] md:min-h-[350px] w-[90vw] flex p-[20px] lg:flex-col flex-row">
       <div className="md:h-[300px] md:w-[300px] relative rounded-[10px] overflow-hidden h-[250px] w-[150px] mb-[10px] md:mb-0">
-        <div className="absolute w-[85%] h-[30px] z-10 bottom-10 flex bg-amber-500 rounded-r-[20px]">
+        <div className="absolute w-[40%] h-[30px] z-10 bottom-10 flex bg-amber-500 rounded-r-[20px]">
           <Phones phone={data.phone} />
         </div>
         <div className="absolute w-full h-[30px] z-10 bottom-0 flex">{LanguagesData}</div>
@@ -36,7 +36,8 @@ export default function Person({ data }: Person) {
           alt={data.name}
           className={`${
             (data.photo === "Marek.png" && "scale-[140%]") ||
-            (data.photo === "Przemek.png" && "scale-[100%]")
+            (data.photo === "Przemek.png" && "scale-[100%]") ||
+            (data.photo === "Michał.png" && "scale-[100%]")
           } transform origin-top`}
         ></Image>
       </div>

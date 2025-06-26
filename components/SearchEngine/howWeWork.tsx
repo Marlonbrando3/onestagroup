@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import Image from "next/image";
 import OurJobs from "./ourJobs";
 import OurJobTXT from "@/data/OurJob.json";
+import { Red_Hat_DisplayFont } from "../../fonts/fonts";
 
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
@@ -31,19 +32,27 @@ export default function HowWeWork() {
   };
 
   return (
-    <div className='lg:w-full w-[90vw] rounded-b-[50px] lg:h-[450px] h-[670px] bg-cover bg-center bg-[url("/palmyBGform.png")] mx-auto'>
-      <div className=" h-[80%] w-[1000px] mx-auto flex">
+    <div
+      className={`${Red_Hat_DisplayFont.className} lg:w-full w-[90vw] rounded-b-[20px] lg:h-[450px] h-[670px] bg-cover bg-center bg-[url("/palmyBGform.png")] mx-auto relative`}
+    >
+      <div className="absolute w-full h-full bg-slate-600/[.5]"></div>
+      <div className=" h-[80%] w-[1000px] mx-auto flex z-20">
         {/* left side */}
         <div className="flex w-[300px] relative">
-          <div className="absolute lg:static bg-white md:w-full lg:h-[80%] w-[80%] h-[120px] my-auto mr-[20px] flex justify-center flex-col lg:rounded-l-2xl top-1 left-1">
-            <p className="text-[25px] px-[20px] leading-6">Jak działamy z naszymi klientami?</p>
-            <Image
+          {/* <div className="absolute bottom-[35px] w-full h-[100px] bg-gradient-to-t from-gray-900 to-transparent rounded-b-[5px] z-20"></div> */}
+          <div className=" absolute lg:static md:w-full lg:h-[80%] w-[80%] h-[120px] my-auto mr-[20px] flex justify-end flex-col lg:rounded-l-[10px] top-1 left-1 bg-[url('/howWeWork.png')] bg-cover bg-bottom">
+            <p className="text-[25px] px-[20px] text-white leading-[35px] mb-[10px]">
+              <span className="bg-orange-500">
+                &nbsp;Jak działamy z&nbsp; &nbsp;naszymi klientami?&nbsp;
+              </span>
+            </p>
+            {/* <Image
               src="/arrowlong.png"
               alt="arrow"
               width={200}
               height={50}
-              className="px-[20px] mt-[20px]"
-            ></Image>
+              className="px-[20px] mt-[20px] invert brightness-200"
+            ></Image> */}
           </div>
         </div>
         <div className="flex lg:w-[700px] w-full h-[100%] items-center relative overflow-hidden -ml-[300px] mt-[50px] lg:ml-auto lg:mt-auto">

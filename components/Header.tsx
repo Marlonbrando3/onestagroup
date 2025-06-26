@@ -269,7 +269,7 @@ export default function Header() {
                       // onMouseLeave={() => handleHoverLeave(MouseOnSpain)}
                     >
                       Nieruchomości w HISZPANII
-                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                     </Link>
                     {/* <Link
                       href={{ pathname: "/[country]", query: { country: "chorwacja", page: 1 } }}
@@ -303,7 +303,7 @@ export default function Header() {
                       // onMouseLeave={() => handleHoverLeave(MouseOnDominican)}
                     >
                       Nieruchomości na DOMINIKANIE
-                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                     </Link>
                   </div>
                 </li>
@@ -311,7 +311,7 @@ export default function Header() {
                 <li className="list group">
                   <Link href="/aboutus">
                     O NAS
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                   </Link>
                 </li>
 
@@ -339,29 +339,29 @@ export default function Header() {
                 <li className="list group">
                   <Link onClick={handleBackToMainPage} href="/blog">
                     BLOG
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                   </Link>
                 </li>
                 <li className="list group">
                   <Link href="/abc">
                     WIEDZA{" "}
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                   </Link>
                 </li>
                 <li className="list group">
                   <Link href="/pobytinwestorski">
                     POBYT INWESTORSKI{" "}
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                   </Link>
                 </li>
                 <li onClick={handleShowingConsultationPopUp} className="list group">
                   <p>BEZPŁATNA KONSULTACJA</p>
-                  <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                  <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                 </li>
                 <li className="list group">
                   <Link href="#contact" scroll={false}>
                     KONTAKT
-                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                    <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                   </Link>
                 </li>
               </ul>

@@ -15,6 +15,7 @@ import AboutOnestaMainPage from "../components/aboutOnestaMainPage";
 import Hotjar from "@hotjar/browser";
 import Ourteammain from "@/components/ourteammain/ourteammain";
 import { useState, useEffect } from "react";
+import EduMainPage from "./eduMainPage/eduMainPage";
 
 type AppProps = {
   cookiesWindow: any;
@@ -112,6 +113,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         <AboutOnestaMainPage />
         {/* <MainTheme /> */}
         <RecommendedOffers />
+        <EduMainPage />
         <Ourteammain />
         <Aboutus />
         <Footer />

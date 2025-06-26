@@ -8,7 +8,7 @@ export default function Ourteammain() {
 
   return (
     <div
-      className={`${Red_Hat_DisplayFont.className} lg:w-[1050px] w-[95vw] flex flex-wrap my-[60px] md:flex-col lg:flex-row items-center justify-start mx-auto`}
+      className={`${Red_Hat_DisplayFont.className} lg:w-[1050px] w-[95vw] flex flex-wrap my-[190px] md:flex-col lg:flex-row items-center justify-start mx-auto`}
     >
       <div className="text-[30px] w-[95%] md:w-[90vw] mx-auto md:mx-[22px] font-semibold">
         <p className="text-[25px] mb-[40px] w-screen md:w-auto text-left font-semibold uppercase">
