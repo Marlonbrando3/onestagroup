@@ -54,7 +54,8 @@ export default function Property() {
 
   let showedImage: any | undefined;
   const { title } = router.query;
-  const id = title?.split("-").pop();
+  const RawTitle = Array.isArray(title) ? title[0] : title;
+  const id = RawTitle?.split("-").pop();
 
   console.log(id);
 
