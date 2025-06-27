@@ -20,10 +20,9 @@ export default function PropertyCard({ property }: Property) {
 
   const CopiedLink = () => {
     navigator.clipboard.writeText(
-      `https://onesta.com.pl/${property.country}/${property.id}?t=${property.title.replaceAll(
-        " ",
-        "-",
-      )}`,
+      `https://onesta.com.pl/nieruchomosci/${property.country.name}/${
+        property.id
+      }?t=${property.title.replaceAll(" ", "-")}`,
     );
     setCopiedShowed(true);
 
@@ -33,39 +32,61 @@ export default function PropertyCard({ property }: Property) {
   };
 
   const market = property.mortgageMarket === "Primary" ? "Rynek Pierwotny" : "Rynek Wtórny";
+  console.log(property.country.name);
+
+  function slugify(title: string, id: string): string {
+    return (
+      title
+        .toLowerCase()
+        .normalize("NFD") // rozkłada znaki akcentowane
+        .replace(/[\u0300-\u036f]/g, "") // usuwa znaki diakrytyczne
+        .replace(/ł/g, "l") // osobno: ł → l
+        .replace(/[^a-z0-9\s-]/g, "") // usuwa wszystko poza literami, cyframi i myślnikami
+        .trim()
+        .replace(/\s+/g, "-") +
+      "-" +
+      id
+    );
+  }
+
+  const slug = slugify(property.headerAdvertisement, property.id);
+
+  const share = () => {
+    navigator.share({
+      title: "Zobacz tę nieruchomość!",
+      url: `/nieruchomosci/${property.country.name.toLowerCase()}/${slug}`,
+    });
+  };
 
   return (
     <div className="flex flex-col bg-gray-500 md:w-[370px] w-[92vw] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
       <div className="w-full md:h-[270px] h-[220px] sm:h-[300px] overflow-hidden mx-auto rounded-t-md flex items-center justify-center text-4xl relative">
         <ResultsSlider
+          country={property.country.name}
           images={property.images}
           propertyId={property.id}
           propertyTitle={property.headerAdvertisement}
           market={market}
           deliveryDate={property.vacantFromDate}
+          slug={slug}
         />
       </div>
       <div className="flex relative flex-col md:w-full w-full bg-white cursor-pointer text-slate-800">
         <span className="flex justify-center absolute m-1 p-1 rounded-3xl right-0 top-0 cursor-pointer">
-          <MdIosShare onClick={CopiedLink} />
-          <div
+          <MdIosShare onClick={share} className="w-[20px] h-[20px]" />
+          {/* <div
             className={
               copiedShowed
-                ? "flex justify-center items-center p-1 right-1 w-32 absolute h-7 bg-red-700"
+                ? "flex justify-center items-center p-1 right-1 w-32 absolute h-10 bg-red-700"
                 : "hidden"
             }
           >
             <p className="text-xs text-white text-center">Skopionwano link!</p>
-          </div>
+          </div> */}
         </span>
         <Link
           href={{
-            pathname: "/nieruchomosci/[country]/oferta",
-            query: {
-              country: router.query.country || "hiszpania",
-              id: property.id,
-              t: property.headerAdvertisement,
-            },
+            pathname: `/nieruchomosci/${property.country.name.toLowerCase()}/${slug}`,
           }}
         >
           <div>

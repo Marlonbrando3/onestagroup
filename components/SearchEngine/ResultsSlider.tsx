@@ -8,9 +8,11 @@ import Link from "next/link";
 type Images = {
   images: any;
   market: any;
+  country: any;
   deliveryDate: any;
   propertyId: any;
   propertyTitle: any;
+  slug: any;
 };
 
 export default function ResultsSlider({
@@ -18,7 +20,9 @@ export default function ResultsSlider({
   propertyTitle,
   images,
   market,
+  country,
   deliveryDate,
+  slug,
 }: Images) {
   const [start, setStart] = useState<any>();
   const [end, setEnd] = useState<any>();
@@ -33,12 +37,7 @@ export default function ResultsSlider({
       return (
         <Link
           href={{
-            pathname: "/nieruchomosci/[country]/oferta",
-            query: {
-              country: router.query.country,
-              id: propertyId,
-              t: propertyTitle,
-            },
+            pathname: `/nieruchomosci/${country.toLowerCase()}/${slug}`,
           }}
           ref={image}
           key={key}
