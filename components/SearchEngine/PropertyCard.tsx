@@ -18,19 +18,6 @@ export default function PropertyCard({ property }: Property) {
 
   const [copiedShowed, setCopiedShowed] = useState(false);
 
-  const CopiedLink = () => {
-    navigator.clipboard.writeText(
-      `https://onesta.com.pl/nieruchomosci/${property.country.name}/${
-        property.id
-      }?t=${property.title.replaceAll(" ", "-")}`,
-    );
-    setCopiedShowed(true);
-
-    setTimeout(() => {
-      setCopiedShowed(false);
-    }, 2000);
-  };
-
   const market = property.mortgageMarket === "Primary" ? "Rynek Pierwotny" : "Rynek Wtórny";
   console.log(property.country.name);
 

@@ -18,26 +18,38 @@ export default function PropertyCard({ property }: Property) {
 
   const [copiedShowed, setCopiedShowed] = useState(false);
 
-  const CopiedLink = () => {
-    navigator.clipboard.writeText(
-      `https://onesta.com.pl/${property.country}/${property.id}?t=${property.title.replaceAll(
-        " ",
-        "-",
-      )}`,
-    );
-    setCopiedShowed(true);
-
-    setTimeout(() => {
-      setCopiedShowed(false);
-    }, 2000);
-  };
-
   const market = property.mortgageMarket === "Primary" ? "Rynek Pierwotny" : "Rynek Wtórny";
+
+  function slugify(title: string, id: string): string {
+    return (
+      title
+        .toLowerCase()
+        .normalize("NFD") // rozkłada znaki akcentowane
+        .replace(/[\u0300-\u036f]/g, "") // usuwa znaki diakrytyczne
+        .replace(/ł/g, "l") // osobno: ł → l
+        .replace(/[^a-z0-9\s-]/g, "") // usuwa wszystko poza literami, cyframi i myślnikami
+        .trim()
+        .replace(/\s+/g, "-") +
+      "-" +
+      id
+    );
+  }
+
+  const slug = slugify(property.headerAdvertisement, property.id);
+
+  const share = () => {
+    navigator.share({
+      title: "Zobacz tę nieruchomość!",
+      url: `/nieruchomosci/${property.country.name.toLowerCase()}/${slug}`,
+    });
+  };
 
   return (
     <div className="flex  bg-gray-500 w-[1100px] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
       <div className="w-full h-[220px] overflow-hidden mx-auto rounded-t-md flex items-center justify-center text-4xl relative">
         <ResultsSlider
+          country={property.country.name}
+          slug={slug}
           images={property.images}
           propertyId={property.id}
           propertyTitle={property.headerAdvertisement}
@@ -47,7 +59,7 @@ export default function PropertyCard({ property }: Property) {
       </div>
       <div className="flex relative flex-col md:w-full w-full bg-white cursor-pointer ">
         <span className="flex justify-center absolute m-1 p-1 rounded-3xl right-0 top-0 cursor-pointer">
-          <MdIosShare onClick={CopiedLink} />
+          <MdIosShare onClick={share} />
           <div
             className={
               copiedShowed
