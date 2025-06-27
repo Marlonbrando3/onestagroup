@@ -70,7 +70,7 @@ export default function Property() {
   useEffect(() => {
     // console.log(router);
     if (router.isReady === true) {
-      const QueryId = parseInt(id);
+      const QueryId = parseInt(id as string);
       const propertyDataTemp = Properties.filter((i: any) => i.id === QueryId);
 
       const PropertyImages = propertyDataTemp[0]?.images.filter(
