@@ -5,8 +5,18 @@ import path from "path";
 
 const SITE_URL = "https://onesta.com.pl";
 
-const formatTitleForQuery = (title: string) =>
-  encodeURIComponent(title.replace(/\s+/g, " ").trim());
+// Funkcja slugify
+const slugify = (title: string, id: string) =>
+  title
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ł/g, "l")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-") +
+  "-" +
+  id;
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const filePath = path.join(process.cwd(), "public/properties.json");
@@ -14,20 +24,20 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const properties = JSON.parse(raw);
 
   const urls = properties.map((p: any) => {
-    const country = p.country?.name?.toLowerCase();
-    const titleParam = formatTitleForQuery(p.headerAdvertisement || "ogloszenie");
-
-    const url = `${SITE_URL}/nieruchomosci/${country}/oferta?id=${p.id}&t=${titleParam}`;
+    const country = p.country?.name?.toLowerCase() || "hiszpania";
+    const title = p.headerAdvertisement || "ogloszenie";
+    const id = p.id?.toString() || "0";
+    const slug = slugify(title, id);
+    const url = `${SITE_URL}/nieruchomosci/${country}/${slug}`;
+    const lastmod = new Date(p.actualisationDate || new Date()).toISOString();
 
     return `
       <url>
-        <loc>${url.replace(/&/g, "&amp;")}</loc>
-        <lastmod>${new Date(p.actualisationDate).toISOString()}</lastmod>
+        <loc>${url}</loc>
+        <lastmod>${lastmod}</lastmod>
       </url>
     `;
   });
-
-  console.log(urls);
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
