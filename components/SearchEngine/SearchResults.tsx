@@ -6,6 +6,7 @@ import ChangeSite from "./changeSite";
 import Properties from "../../public/properties.json";
 import { useRouter } from "next/router";
 import AboutSpain from "../aboutSpain";
+import AboutCyprus from "../aboutCyprus";
 import HowToSearch from "../howToSearch";
 import FaqSpainMain from "../faqSpainMain/faqSpainMain";
 
@@ -13,6 +14,7 @@ export default function SearchResults(...restProps: any) {
   const router = useRouter();
 
   const { page } = router.query;
+  const { country } = router.query;
   console.log(restProps);
 
   const [actualPage, setActualPage] = useState(1);
@@ -66,9 +68,10 @@ export default function SearchResults(...restProps: any) {
         temptSubSite={temptSubSite}
         setTempSubSite={setTempSubSite}
       />
-      <FaqSpainMain />
-      <AboutSpain />
-      <HowToSearch />
+      {country === "hiszpania" && <FaqSpainMain />}
+      {country === "cypr" && <AboutCyprus />}
+      {country === "hiszpania" && <AboutSpain />}
+      {country === "hiszpania" && <HowToSearch />}
     </div>
   );
 }

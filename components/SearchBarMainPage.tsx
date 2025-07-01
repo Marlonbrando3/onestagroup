@@ -44,6 +44,7 @@ export default function SearchButton() {
 
     if (
       paramsValues === "hiszpania" ||
+      paramsValues === "cypr" ||
       paramsValues === "portugalia" ||
       paramsValues === "chorwacja" ||
       paramsValues === "dominikana" ||
@@ -51,49 +52,6 @@ export default function SearchButton() {
     ) {
       setCountryChoosed(paramsValues);
     }
-
-    //   console.log(p.price);
-    //   console.log(p.listingId);
-
-    //   if (
-    //     p.country.name.toLowerCase() == (countryChoosed as string) &&
-    //     (p.section === dataType || dataType === "All" || dataType === undefined) &&
-    //     (p.foreignLocation === dataRegion || dataRegion === undefined || dataRegion === "All") &&
-    //     (p.mortgageMarket === dataMarket || dataMarket === undefined || dataMarket === "All") &&
-    //     (p.noOfRooms >= parseInt(dataBedsmin as string) ||
-    //       dataBedsmin === undefined ||
-    //       dataBedsmin === "All") &&
-    //     (p.noOfRooms <= parseInt(dataBedsmax as string) ||
-    //       dataBedsmax === undefined ||
-    //       dataBedsmax === "All") &&
-    //     (p.price.amount >= parseInt(dataPricemin as string) ||
-    //       dataPricemin === undefined ||
-    //       dataPricemin === "All") &&
-    //     (p.price.amount <= parseInt(dataPricemax as string) ||
-    //       dataPricemax === undefined ||
-    //       dataPricemax === "All")
-    //   )
-    //     return true;
-    // });
-
-    // setconditions(
-    //   conditions.map((i) => {
-    //     console.log();
-    //     if (i.name === paramsName && (i.value === false || i.value === true)) {
-    //       console.log(i.name);
-    //       return {
-    //         name: i.name,
-    //         value: !i.value,
-    //       };
-    //     }
-    //     if (i.name === paramsName && i.value !== false && i.value !== true) {
-    //       return {
-    //         name: i.name,
-    //         value: paramsValues,
-    //       };
-    //     } else return i;
-    //   }),
-    // );
   };
 
   const [queries, setQueries] = useState<any>({
@@ -109,36 +67,6 @@ export default function SearchButton() {
       advancedSearch.current.style.top = "-230px";
     }
   };
-
-  // const data = conditions.filter((e) => {
-  //   if (e.value === false) return false;
-  //   if (e.value === null) return false;
-  //   else return true;
-  // });
-
-  // const querybeta = data.map((i) => {
-  //   console.log();
-  //   if (i.value === false || i.value === true) {
-  //     console.log(i.name);
-  //     return {
-  //       [i.name]: i.value,
-  //     };
-  //   }
-  //   if (i.value !== false && i.value !== true) {
-  //     return {
-  //       [i.name]: i.value,
-  //     };
-  //   } else return i;
-  // });
-
-  // const query = querybeta.reduce(function (result: any, currentObject: any) {
-  //   for (var key in currentObject) {
-  //     if (currentObject.hasOwnProperty(key)) {
-  //       result[key] = currentObject[key];
-  //     }
-  //   }
-  //   return result;
-  // }, {});
 
   const CountingProperties = () => {
     let PropertiesFounded: any = Properties.filter((p) => {
@@ -285,6 +213,7 @@ export default function SearchButton() {
               <option value="chorwacja">Chorwacja</option> */}
                 <option value="dominikana">Dominikana</option>
                 {/* <option value="włochy">Włochy</option> */}
+                <option value="cypr">Cypr</option>
               </select>
             </div>
             <div className="flex flex-col w-full md:w-[237px] lg:w-auto">
