@@ -18,7 +18,7 @@ type Props = {
 export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) {
   const router = useRouter();
   const AdvancedButton = useRef();
-  const searchBtn = useRef<HTMLDivElement>();
+  const searchBtn = useRef<HTMLDivElement>(null);
 
   const { region, type, market, bathsmin, bathsmax, bedsmin, bedsmax, pricemin, pricemax } =
     router.query;
