@@ -33,9 +33,9 @@ export default function CountrySearch() {
             {/* <option name="portugalia" value="portugalia">
               Portugalia
             </option> */}
-            {/* <option name="chorwacja" value="chorwacja">
-              Chorwacja
-            </option> */}
+            <option name="chorwacja" value="cypr">
+              Cypr
+            </option>
             <option name="dominikana" value="dominikana">
               Dominikana
             </option>
