@@ -18,6 +18,7 @@ type Props = {
 export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) {
   const router = useRouter();
   const AdvancedButton = useRef();
+  const searchBtn = useRef();
 
   const { region, type, market, bathsmin, bathsmax, bedsmin, bedsmax, pricemin, pricemax } =
     router.query;
@@ -67,7 +68,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
             id="search-params-wrapper"
             className="flex w-full mt-0 flex-col lg:flex-row mx-auto lg:flex-wrap items-center justify-between"
           >
-            <CountrySearch />
+            <CountrySearch searchBtn={searchBtn}/>
             <Region
               setQueries={setQueries}
               queries={queries}
@@ -129,6 +130,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
                 </div>
               )}
               <div
+                ref={searchBtn}
                 className="ml-[10px] h-[40px] w-[170px] md:w-[210px] text-white rounded-3xl bg-gradient-to-r from-orange-500  to-indigo-400 cursor-pointer flex items-center justify-center mt-[14px]"
                 onClick={handleNewSearch}
               >

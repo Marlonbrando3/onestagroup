@@ -31,16 +31,34 @@ export default function MiniHomeView() {
             <h1 className="md:text-[49px] text-[34px] text-white leading-[30px] lg:leading-[49px]">
               Nieruchomości {country} – domy i apartamenty na sprzedaż
             </h1>
-            <span
-              className={`${Red_Hat_DisplayFont.className} bg-white text-left rounded-[3px] mt-[20px] md:text-[18px] text-[12px] `}
-            >
-              {" "}
-              Planujesz zakup nieruchomości w Hiszpanii? Znajdziesz tu atrakcyjne oferty domów,
-              mieszkań i apartamentów w popularnych lokalizacjach takich jak Costa Blanca, Costa del
-              Sol, Alicante czy Torrevieja itd. Hiszpański rynek nieruchomości oferuje świetne
-              możliwości zarówno dla inwestorów, jak i osób szukających drugiego domu na słoneczne
-              wakacje. Przeglądaj dostępne ogłoszenia i wybierz swoją wymarzoną nieruchomość.
-            </span>
+            {router.query.country === "hiszpania" && (
+              <span
+                className={`${Red_Hat_DisplayFont.className} bg-white text-left rounded-[3px] mt-[20px] md:text-[18px] text-[12px] `}
+              >
+                {" "}
+                Planujesz zakup <strong>nieruchomości w Hiszpanii</strong>? Znajdziesz tu atrakcyjne
+                oferty domów, mieszkań i apartamentów w popularnych lokalizacjach takich jak Costa
+                Blanca, Costa del Sol, Alicante czy Torrevieja itd. Hiszpański rynek nieruchomości
+                oferuje świetne możliwości zarówno dla inwestorów, jak i osób szukających drugiego
+                domu na słoneczne wakacje. Przeglądaj dostępne ogłoszenia i wybierz swoją wymarzoną
+                nieruchomość.
+              </span>
+            )}
+            {router.query.country === "cypr" && (
+              <span
+                className={`${Red_Hat_DisplayFont.className} bg-white text-left rounded-[3px] mt-[20px] md:text-[18px] text-[12px] `}
+              >
+                {" "}
+                Odkryj wyjątkowe <strong>nieruchomości na Cyprze</strong> – domy, wille i
+                apartamenty na sprzedaż w najbardziej pożądanych lokalizacjach wyspy. W ofercie
+                znajdziesz zarówno nowoczesne apartamenty z widokiem na morze, jak i komfortowe domy
+                na sprzedaż na Cyprze – idealne na wakacje, inwestycję lub przeprowadzkę na stałe.
+                Cypr to słoneczny klimat przez cały rok, bezpieczeństwo, korzystne warunki podatkowe
+                i stabilny rynek.Zobacz dostępne cypr nieruchomości na sprzedaż i znajdź miejsce,
+                które spełni Twoje oczekiwania. Przeglądaj aktualne oferty na Cyprze, wybierz swoją
+                idealną przestrzeń do życia lub inwestycji.
+              </span>
+            )}
           </span>
         </div>
       </div>

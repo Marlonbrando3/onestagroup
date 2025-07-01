@@ -1,15 +1,15 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-export default function CountrySearch() {
+export default function CountrySearch({ searchBtn }) {
   const router = useRouter();
   const country = router.query.country;
 
   const pushCountry = (e) => {
-    // console.log(country);
+    console.log("pushing");
+    searchBtn.current.style.pointerEvents = "none";
     router.push({
       pathname: `/nieruchomosci/${e.target.value}`,
-      query: { page: 1 },
     });
   };
 

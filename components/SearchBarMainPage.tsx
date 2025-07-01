@@ -36,7 +36,7 @@ export default function SearchButton() {
   });
 
   const handleChoosingCountry = (e: any) => {
-    setQueries({ ...queries, country: e.target.value });
+    setQueries({ ...queries });
     let paramsName = e.target.name;
     // console.log(paramsBolean)
     let paramsValues = e.target.value;
@@ -54,9 +54,7 @@ export default function SearchButton() {
     }
   };
 
-  const [queries, setQueries] = useState<any>({
-    page: 1,
-  });
+  const [queries, setQueries] = useState<any>("");
 
   const showingAdvancedFilters = () => {
     setshowedadvancedSearch(!showedadvancedSearch);
