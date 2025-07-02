@@ -69,7 +69,7 @@ export default function SearchButton() {
   const CountingProperties = () => {
     let PropertiesFounded: any = Properties.filter((p) => {
       if (
-        p.country.name.toLowerCase() == (countryChoosed as string) &&
+        p.country.name.toLowerCase() === (countryChoosed as string) &&
         (p.section === queries.type || queries.type === "All" || queries.type === undefined) &&
         (p.foreignLocation === queries.region ||
           queries.region === undefined ||
