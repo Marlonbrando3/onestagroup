@@ -34,7 +34,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
   const [dataPricemin, setDataPricemin] = useState(pricemin || "All");
   const [dataPricemax, setDataPricemax] = useState(pricemax || "All");
 
-  const [queries, setQueries] = useState(null);
+  const [queries, setQueries] = useState({});
 
   function slugify(title: string): string {
     return title
