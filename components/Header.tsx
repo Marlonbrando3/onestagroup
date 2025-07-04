@@ -259,7 +259,7 @@ export default function Header() {
                     <Link
                       onClick={handleClearData}
                       href={{
-                        pathname: "/nieruchomosci/hiszpania",
+                        pathname: "/nieruchomosci/hiszpania/all",
                       }}
                       className="p-1 text-black rounded-md w-full text-center group"
                       ref={MouseOnSpain}
@@ -292,7 +292,7 @@ export default function Header() {
                     </Link> */}
                     <Link
                       href={{
-                        pathname: "/nieruchomosci/dominikana",
+                        pathname: "/nieruchomosci/dominikana/all",
                         // query: { country: "dominikana", page: 1 },
                       }}
                       className="p-1 text-black rounded-md w-full text-center group"

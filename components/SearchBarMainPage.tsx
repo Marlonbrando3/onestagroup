@@ -9,13 +9,13 @@ export default function SearchButton() {
   const router = useRouter();
   const advancedSearch = useRef<any>();
 
-  const country = useRef<any>();
+  const countryData = useRef<any>();
 
   const [showedadvancedSearch, setshowedadvancedSearch] = useState(false);
 
   const [countryChoosed, setCountryChoosed] = useState("hiszpania");
 
-  const [dataRegion, setDataRegion] = useState();
+  const [dataRegion, setDataRegion] = useState("all");
   const [dataType, setDataType] = useState();
   const [dataMarket, setDataMarket] = useState();
   const [dataBathsmin, setDataBathsmin] = useState();
@@ -36,11 +36,11 @@ export default function SearchButton() {
   });
 
   const handleChoosingCountry = (e: any) => {
-    setQueries({ ...queries });
+    // setQueries({ ...queries });
     let paramsName = e.target.name;
     // console.log(paramsBolean)
     let paramsValues = e.target.value;
-    console.log(paramsValues);
+    // console.log(paramsValues);
 
     if (
       paramsValues === "hiszpania" ||
@@ -110,12 +110,24 @@ export default function SearchButton() {
     // CountingProperties();
   };
 
-  console.log(queries);
+  function slugify(title: string): string {
+    return title
+      .toLowerCase()
+      .normalize("NFD") // rozkłada znaki akcentowane
+      .replace(/[\u0300-\u036f]/g, "") // usuwa znaki diakrytyczne
+      .replace(/ł/g, "l") // osobno: ł → l
+      .replace(/[^a-z0-9\s-]/g, "") // usuwa wszystko poza literami, cyframi i myślnikami
+      .trim()
+      .replace(/\s+/g, "-");
+  }
 
   const handleSearch = (e: any) => {
+    const country = slugify(countryChoosed as string);
+    const region = slugify(dataRegion as string);
+
     e.preventDefault();
     router.push({
-      pathname: `nieruchomosci/${countryChoosed}`,
+      pathname: `/nieruchomosci/${country}/${region}`,
       query: queries,
     });
   };
@@ -203,7 +215,7 @@ export default function SearchButton() {
               <select
                 name="country"
                 onChange={(e) => handleChoosingCountry(e)}
-                ref={country}
+                ref={countryData}
                 className="lg:w-[180px] w-full md:w-[95%] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 bg-orange-400 cursor-pointer text-white tracking-[1px] hover:bg-white hover:text-gray-900 duration-200 border-orange-400 border"
               >
                 <option value="hiszpania">Hiszpania</option>

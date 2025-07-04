@@ -1,15 +1,25 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-export default function CountrySearch({ searchBtn }) {
-  const router = useRouter();
-  const country = router.query.country;
+type Params = {
+  searchBtn: any;
+  slugify: any;
+  dataRegion: any;
+};
 
-  const pushCountry = (e) => {
+export default function CountrySearch({ searchBtn, slugify, dataRegion }: Params) {
+  const router = useRouter();
+  const country = Array.isArray(router.query.country)
+    ? router.query.country[0]
+    : router.query.country;
+
+  const pushCountry = (e: any) => {
+    // searchBtn.current.style.pointerEvents = "none";
+    const country = slugify(e.target.value);
+
     console.log("pushing");
-    searchBtn.current.style.pointerEvents = "none";
     router.push({
-      pathname: `/nieruchomosci/${e.target.value}`,
+      pathname: `/nieruchomosci/${country}/all`,
     });
   };
 
@@ -27,16 +37,16 @@ export default function CountrySearch({ searchBtn }) {
             name="country"
             defaultValue={country}
           >
-            <option name="hiszpania" value="hiszpania">
+            <option data-name="hiszpania" value="hiszpania">
               Hiszpania
             </option>
             {/* <option name="portugalia" value="portugalia">
               Portugalia
             </option> */}
-            <option name="chorwacja" value="cypr">
+            <option data-name="chorwacja" value="cypr">
               Cypr
             </option>
-            <option name="dominikana" value="dominikana">
+            <option data-name="dominikana" value="dominikana">
               Dominikana
             </option>
           </select>

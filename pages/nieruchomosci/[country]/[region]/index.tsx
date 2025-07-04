@@ -3,13 +3,15 @@ import Head from "next/head";
 import { GetServerSideProps } from "next";
 import Script from "next/script";
 import { useRouter } from "next/router";
-import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
-import Header from "../../../components/Header";
-import SearchEngine from "../../../components/SearchEngine/SearchEngine";
-import Footer from "../../../components/Footer";
-import ContactFormMain from "../../../components/ContactFormMain";
+import DataCountry from "../../../../data/DataCountry.json";
+import MiniHomeView from "../../../../components/SearchEngine/MiniHomeView";
+import Header from "../../../../components/Header";
+import SearchEngine from "../../../../components/SearchEngine/SearchEngine";
+import Footer from "../../../../components/Footer";
+import ContactFormMain from "../../../../components/ContactFormMain";
 import MobileFilters from "@/components/MobileFilters";
-import Properties from "../../../public/properties.json";
+import Properties from "../../../../public/properties.json";
+import regionDictionary from "../../../../data/regionsDictionary.json";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 
 interface Property {
@@ -29,6 +31,8 @@ interface Property {
 
 export default function Home(props: any) {
   const router = useRouter();
+
+  console.log(props);
 
   const menu = useRef<any>();
   const searchEngine = useRef<any>();
@@ -208,11 +212,29 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const raw = fs.readFileSync(filePath, "utf-8");
   const allProperties: Property[] = JSON.parse(raw);
 
+  const formatRegion = regionDictionary.regions.filter((i: any) => {
+    region === i.query;
+    return i.name;
+  });
+
+  const regionQuery = () => {
+    if (region !== "all") {
+      const data = DataCountry.find((i) => i.country === country);
+      const reg = data!.query!.find((i: any) => i.query == region);
+      // console.log("to co zwrócił" + JSON.stringify(reg));
+      return (reg as any).querySearch;
+
+      // const doopa = data.return(reg as any).query;
+    } else return "all";
+  };
+
+  console.log(regionQuery());
+
   let filtered = allProperties.filter(
     (p) =>
       p.country?.name?.toLowerCase() === country.toLowerCase() &&
       (!type || type === "All" || p.section === type) &&
-      (!region || region === "All" || p.foreignLocation === region) &&
+      (!region || region === "all" || p.foreignLocation === regionQuery()) &&
       (!market || market === "All" || p.mortgageMarket === market) &&
       (!bathsmin || p.noOfBathrooms >= parseInt(bathsmin as string)) &&
       (!bathsmax || p.noOfBathrooms <= parseInt(bathsmax as string)) &&

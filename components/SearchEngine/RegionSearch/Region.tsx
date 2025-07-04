@@ -16,7 +16,7 @@ export default function Regions({ setQueries, queries, dataRegion, setDataRegion
 
   const setNewRegion = (e: any) => {
     setDataRegion(e.target.value);
-    setQueries({ ...queries, region: e.target.value });
+    // setQueries({ ...queries, region: e.target.value });
   };
 
   // const RegionSearchInput = (

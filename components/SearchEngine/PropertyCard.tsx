@@ -16,10 +16,11 @@ type Property = {
 export default function PropertyCard({ property }: Property) {
   const router = useRouter();
 
+  // console.log(property)
+
   const [copiedShowed, setCopiedShowed] = useState(false);
 
   const market = property.mortgageMarket === "Primary" ? "Rynek Pierwotny" : "Rynek Wtórny";
-  console.log(property.country.name);
 
   function slugify(title: string, id: string): string {
     return (
@@ -41,7 +42,7 @@ export default function PropertyCard({ property }: Property) {
   const share = () => {
     navigator.share({
       title: "Zobacz tę nieruchomość!",
-      url: `/nieruchomosci/${property.country.name.toLowerCase()}/${slug}`,
+      url: `/nieruchomosci/${property.country.name.toLowerCase()}/${router.query.region}/${slug}`,
     });
   };
 
@@ -73,7 +74,9 @@ export default function PropertyCard({ property }: Property) {
         </span>
         <Link
           href={{
-            pathname: `/nieruchomosci/${property.country.name.toLowerCase()}/${slug}`,
+            pathname: `/nieruchomosci/${property.country.name.toLowerCase()}/${
+              router.query.region
+            }/${slug}`,
           }}
         >
           <div>

@@ -20,7 +20,7 @@ export default function SearchResults(...restProps: any) {
   const [actualPage, setActualPage] = useState(1);
   const [temptSubSite, setTempSubSite] = useState();
   const [propertiesPerPage, setPropertiesPerPage] = useState(18);
-  const startProperty = (parseInt(page as string) - 1) * propertiesPerPage || 1;
+  const startProperty = (parseInt(page as string) - 1) * propertiesPerPage || 0;
   const endProperty = startProperty + propertiesPerPage;
 
   const propertiesSliced = restProps[0].properties.slice(startProperty, endProperty);
@@ -28,6 +28,8 @@ export default function SearchResults(...restProps: any) {
   const PropertiesDataSubSites = propertiesSliced.filter(
     (p: any, index: any) => index <= propertiesSubSitesLengt,
   );
+
+  console.log(propertiesSliced);
 
   const handleFiltering = (event: any) => {
     const value = event.target.value;

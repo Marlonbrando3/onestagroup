@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
+import DataCountry from "../data/DataCountry.json";
 import CountrySearch from "./SearchEngine/Country/CountrySearch";
 import Region from "./SearchEngine/RegionSearch/Region";
 import Types from "./SearchEngine/TypeSearch/Types";
@@ -23,7 +24,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
   const { region, type, market, bathsmin, bathsmax, bedsmin, bedsmax, pricemin, pricemax } =
     router.query;
 
-  const [dataRegion, setDataRegion] = useState(region || "All");
+  const [dataRegion, setDataRegion] = useState("all");
   const [dataType, setDataType] = useState(type || "All");
   const [dataMarket, setDataMarket] = useState(market || "All");
   const [dataBathsmin, setDataBathsmin] = useState(bathsmin || "All");
@@ -33,21 +34,34 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
   const [dataPricemin, setDataPricemin] = useState(pricemin || "All");
   const [dataPricemax, setDataPricemax] = useState(pricemax || "All");
 
-  const [queries, setQueries] = useState({
-    page: 1,
-  });
-  // console.log(queries);
+  const [queries, setQueries] = useState(null);
 
-  // console.log(router.query);
+  function slugify(title: string): string {
+    return title
+      .toLowerCase()
+      .normalize("NFD") // rozkłada znaki akcentowane
+      .replace(/[\u0300-\u036f]/g, "") // usuwa znaki diakrytyczne
+      .replace(/ł/g, "l") // osobno: ł → l
+      .replace(/[^a-z0-9\s-]/g, "") // usuwa wszystko poza literami, cyframi i myślnikami
+      .trim()
+      .replace(/\s+/g, "-");
+  }
 
   const handleNewSearch = () => {
+    const country = slugify(router.query.country as string);
+    const region = slugify(dataRegion as string);
+
+    console.log(region);
+
     if (searchEngine.current.style.top) searchEngine.current.style.top = "-460px";
-    router.push({ pathname: `/nieruchomosci/${router.query.country}`, query: queries });
+    router.push({
+      pathname: `/nieruchomosci/${country}/${region}`,
+      query: queries,
+    });
     mobileButtonSearchEngine.current.innerHTML = "Filtry";
   };
 
   const handleResetingSearch = () => {
-    setDataRegion("All");
     setDataType("All");
     setDataMarket("All");
     setDataBathsmin("All");
@@ -68,7 +82,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
             id="search-params-wrapper"
             className="flex w-full mt-0 flex-col lg:flex-row mx-auto lg:flex-wrap items-center justify-between"
           >
-            <CountrySearch searchBtn={searchBtn} />
+            <CountrySearch searchBtn={searchBtn} slugify={slugify} dataRegion={dataRegion} />
             <Region
               setQueries={setQueries}
               queries={queries}
