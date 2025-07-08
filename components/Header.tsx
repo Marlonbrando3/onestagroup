@@ -183,41 +183,6 @@ export default function Header() {
             }
           `}
         >
-          {/* header only on large */}
-          {/* <div className="w-full bg-white hidden lg:block">
-            <div
-              id="header"
-              className="hidden w-[1080px] lg:h-[30px] md:flex justify-end items-center mx-auto"
-            >
-              <a
-                href="tel:+48576652525"
-                className="text-black hover:text-white hover:bg-yellow-500 rounded-[5px] my-[3px]"
-              >
-                <div className="lg:mt-0 x-1 font-bold text-xs border-red-600 lg:px-2 rounded-md md:flex items-center cursor-pointer md:w-40 w-[30px] h-[30px] lg:static absolute top-2 right-10 ">
-                  <CiPhone className="lg:w-6 lg:h-4 lg:p-[1px] p-2 w-[30px] h-[30px] p-auto" />
-                  <p className="hidden md:block ml-1 font-[700]">+48 576 65 25 25</p>
-                </div>
-              </a>
-              <a
-                href="maito:biuro@onesta.com.pl"
-                className="hover:bg-yellow-500 duration-200 rounded-[5px]  text-black hover:text-white"
-              >
-                <div className="mt-[12px] lg:mt-0 font-bold text-xs border-red-600 lg:px-2 rounded-md md:flex items-center cursor-pointer md:w-auto w-[30px] h-[30px] lg:static absolute top-2 right-10 hover:text-white ">
-                  <IoMailOutline className="lg:w-6 lg:h-4 lg:p-[1px] p-2 w-[30px] h-[30px] p-auto" />
-                  <p className="hidden md:block ml-1 font-[700]">biuro@onesta.com.pl</p>
-                </div>
-              </a>
-              <div className="lg:static absolute top-14 hidden lg:flex">
-                <a href="https://www.facebook.com/profile.php?id=100071864003899">
-                  <FaFacebookSquare className="iconscosialheader text-blue-500" />
-                </a>
-                <FaInstagram className="iconscosialheader text-red-400" />
-                <FaLinkedin className="iconscosialheader text-slate-800" />
-                <FaYoutube className="iconscosialheader text-red-500" />
-                <FaSpotify className="iconscosialheader text-green-500" />
-              </div>
-            </div>
-          </div> */}
           <div className="flex mx-auto h-full lg:w-[1180px] w-full lg:justify-center justify-between items-center bg-white lg:bg-transparent px-[10px] lg:px-0 duration-200">
             <Link
               onClick={handleBackToMainPage}
