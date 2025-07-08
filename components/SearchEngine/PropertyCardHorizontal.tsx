@@ -8,6 +8,7 @@ import { FaSwimmingPool } from "react-icons/fa";
 import { BiArea } from "react-icons/bi";
 import ResultsSlider from "./ResultsSlider";
 import { MdIosShare } from "react-icons/md";
+import DataCountry from "../../data/DataCountry.json";
 
 type Property = {
   property: any;
@@ -36,11 +37,11 @@ export default function PropertyCard({ property }: Property) {
   }
 
   const slug = slugify(property.headerAdvertisement, property.id);
-  const slug = slugify(property.headerAdvertisement, property.id);
+
   const region = () => {
     const country = property.country.name.toLowerCase();
-    const data = DataCountry!.find((i) => property.country.name.toLowerCase());
-    const reg = data!.query.find((i) => i.querySearch === property.foreignLocation);
+    const data = DataCountry!.find((i: any) => property.country.name.toLowerCase());
+    const reg = data!.query.find((i: any) => i.querySearch === property.foreignLocation);
     return reg?.query;
   };
 
