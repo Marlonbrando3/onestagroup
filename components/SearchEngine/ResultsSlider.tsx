@@ -45,6 +45,10 @@ export default function ResultsSlider({
           key={key}
           className="md:h-[270px] h-[220px] sm:h-[300px] md:w-[370px] w-[92vw] relative object-cover text-sm"
         >
+          <div className="relative w-full h-full">
+            <div className="loaderImage absolute top-[30%] left-o right-0 mx-auto"></div>{" "}
+          </div>
+
           <Image
             key={i}
             className="object-cover"

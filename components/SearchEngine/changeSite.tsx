@@ -94,7 +94,8 @@ export default function ChangeSite({
       <div className="w-[50px] h-[25px]">
         <IoIosArrowBack
           className={`${
-            (router.query.page as string) === "1" && "hidden"
+            ((router.query.page as string) === "1" || (router.query.page as string)) ===
+              undefined && "hidden"
           } w-[50px] h-[25px] cursor-pointer`}
           onClick={handlingBackSite}
         />
