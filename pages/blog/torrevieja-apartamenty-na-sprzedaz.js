@@ -3,6 +3,7 @@ import Head from "next/head";
 import Script from "next/script";
 import ContactFormBlogPost from "../../components/ContactFormBlogPost";
 import HeaderBlog from "../../components/HeaderBlog";
+import Header from "../../components/Header";
 import HeaderBlogPost from "../../components/HeaderBlogPost";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
 import Image from "next/image";
