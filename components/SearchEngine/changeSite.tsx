@@ -30,12 +30,12 @@ export default function ChangeSite({
 
   const handleInputChanging = (e: any) => {
     setTempSubSite(e.target.value);
-    setActualPage(e.target.value);
+    // setActualPage(e.target.value);
   };
 
   const handleChanginSite = (e: any) => {
     e.preventDefault();
-    setActualPage(e.target.value);
+    // setActualPage(e.target.value);
     console.log(e.target.value);
     router.query.page = temptSubSite;
     router
@@ -55,17 +55,18 @@ export default function ChangeSite({
   const handlingNextSite = () => {
     const page = parseInt(router.query.page as string) + 1 || 2;
     router.query.page = page.toString();
-    router.push(
-      {
-        pathname: router.pathname,
-        query: router.query,
-      },
-      undefined,
-      { scroll: false, shallow: false },
-    );
-    // .then(() => {
-    //   window.scrollTo({ top: 350, behavior: "smooth" });
-    // });
+    router
+      .push(
+        {
+          pathname: router.pathname,
+          query: router.query,
+        },
+        undefined,
+        { scroll: false, shallow: false },
+      )
+      .then(() => {
+        window.scrollTo({ top: 350, behavior: "smooth" });
+      });
   };
 
   const handlingBackSite = () => {
