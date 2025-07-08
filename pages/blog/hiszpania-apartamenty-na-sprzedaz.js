@@ -12,7 +12,8 @@ import Blogbuttonoffers from "../../components/blogbuttonoffers";
 import Newsletter from "../../components/newsletter";
 
 export default function BlogPost() {
-  const temat = "Hiszpania Apartamenty na Sprzedaż: Inwestycja w Marzenia";
+  const temat = "Hiszpania Apartamenty na Sprzedaż.";
+  const subtemat = "W poszukiwaniu marzeń";
 
   return (
     <>
@@ -79,11 +80,11 @@ export default function BlogPost() {
         />
       </Head>
       <div className="main-index">
-        <div className="w-full h-16 fixed top-0 md:bg-gray-800/[0.4] z-20 bg-white shadow-xl">
+        <div className="w-full h-16 fixed top-0 z-20 bg-white shadow-xl">
           <Header />
         </div>
       </div>
-      <HeaderBlogPost temat={temat} />
+      <HeaderBlogPost temat={temat} subtemat={subtemat} />
       <Blogbuttonoffers />
       <div className="lg:w-[1100px] lg:mx-auto md:px-[50px] w-[90vw] mx-auto text-[20px] mb-[60px]">
         Dlaczego wybór Costa del Sol i Costa Blanca pod kątem poszukiwania{" "}
@@ -101,82 +102,141 @@ export default function BlogPost() {
           </span>
           . Prześledzimy proces zakupu, dowiemy się o średnich cenach zarówno na rynku wtórnym, jak
           i pierwotnym, oraz zastanowimy się, dlaczego inwestowanie w{" "}
-          <strong>apartamenty na sprzedaż w Hiszpanii</strong> jest korzystne dla przyszłych
-          pokoleń.
+          <strong>apartamenty na sprzedaż w Hiszpanii</strong> jest korzystne pod kątem
+          inwestycyjnym tj. zwrot z inweestycji, wzrost wartości nieruchomości, jak również dla
+          przyszłych pokoleń.
         </p>{" "}
         <br></br> <br></br>
-        <strong className="text-[26px] font-bold">2. Costa del Sol: Elegancja i Luksus</strong>{" "}
+        <h2 className="text-[26px] font-bold">
+          2. Dlaczego Inwestowanie w apartamenty na sprzedaż w Hiszpanii jest Korzystne?
+        </h2>
+        <p>
+          Inwestowanie w nieruchmości w Hiszpanii ma liczne korzyści i spełnia 2 ważne cele w życiu.
+          Pierwszy inwestycyjny, drugi to spełnienie marzeń.
+          <span className="text-green-600 font-bold">
+            Hiszpania cieszy się stabilnym rynkiem nieruchomości, a Costa del Sol i Costa Blanca są
+            najbardziej atrakcyjnymi regionami pod względem inwestycyjnym jak i wakacyjnym.
+          </span>
+          <br></br>
+          <br></br>
+          Co to daje w liczbach? Stosunkowo dynamiczny wzrost wartości nieruchomości - również ich
+          cen zakupu, bardzo szybka sprzedaż na etapie tzw. "dziury w ziemi" co nie miało miejsca
+          jeszcze 5 lat temu. Przykładowa nieruchomość w 2020 roku z rynku pierwotnego kosztowała ok
+          180 000 euro, dziś inwestycja, która powsaje obok o praktycznie identycznym charakterze to
+          cena min. 260 000 euro za apartament. Da się zaobserowować, że przez ostatnie lata ceny
+          rosną bardzo szybko, niemniej jak wyciągniemy średnią z otatnich kilkunastu lat to
+          naturany wzrost wartości <strong>nieruchomości w Hiszpanii</strong> oscyluje w okolicach
+          7%. <br></br>
+          <br></br>Oczekuje się, że wartość nieruchomości będzie rosła, co sprawia, że inwestycja
+          staje się opłacalna również dla przyszłych pokoleń lub w razie decyzji o jej sprzedaży,
+          można to zrobić również z zyskiem. Ponadto, zakup{" "}
+          <strong>apartamentu na sprzedaż w Hiszpanii</strong> otwiera drzwi do życia w luksusie, z
+          dostępem do najnowszych trendów w hiszpańskim stylu życia.
+          <br></br>
+          <br></br>
+          Drugą "nogą" <strong>zakupu nieruchmości w Hiszpanii</strong> jako inwestycji jest - najem
+          turystyczny. Jest wiele zmiennych, które są niezbędne do efektywnego wynajmu, niemniej
+          kilka z nich jest intuicyjnych tj. basen na obiekcie, parking, bliskość do morza, obszar
+          zielony, osiedle zamknięte, dedykowany taras na dachu lub w ramach własnego apartamentu w
+          Hiszpanii. Te aspekty są bardziej realizowane wraz z tym im nowszy jest obiekt. Generalnie
+          na rynku starszym wtórnym, można znaleźć wszytkie te elementy niemniej ich jakość, jakość
+          wykonania oraz obiektu, może nawet zniechęcać. Im bliżej teraźniejszości tym deweloprzy
+          bardziej stawiają na styl i komfort wykonania, nie tylko aby odhaczyć 0/1 - niema/jest.
+          <br></br>
+          <br></br>
+          Łatwo zatem można wywnioskować, że im bliżej jesteśmy trwającego roku tym te elementy są
+          zdecydowanie lepsze, możemy rządać wyższych cen za wynajem i ściągniemy osoby raczej
+          zamożne - bo takie cenią sobie komfort, ale mniej patrząc na cenę. Można to ubrać w
+          szacowany % zwrotu z wynajmu. Jest on liczony w skali roku na tle ceny zakupu
+          nieruchomości netto. <br></br> <br></br>
+          <strong>Mamy zatem:</strong>
+          <ul className="list-disc">
+            <li>rynek wtórny w kwotach ok 150 000 euro, zwrot w okolicach 4-5%</li>
+            <li>rynek wtórny w kwotach ok 220 000 / 250 000 euro, zwrot w okolicach 5-6%</li>
+            <li>rynek pierwotny w kwotach ok 270 000 / 330 000 euro, zwrot w okolicach 6-8%</li>
+            <li>doliczmy wzrost wartości nieruchomości ok 7% rocznie.</li>
+          </ul>
+          <br></br>
+          <strong>Przykładowa kalkulacja:</strong>
+          <br></br>
+          <ul className="list-disc">
+            <li>170 000 euro (cena zakupu) * 5% = 11 900 euro</li>
+            <li>300 000 euro (cena zakupu) * 7% = 21 000 euro</li>
+          </ul>
+          <br></br>
+          <p className="font-bold">#REKOMENDACJA</p>
+          <ul className="list-disc">
+            <li>Załóżmy, że macie Państwo 170 000 euro.</li>{" "}
+            <li>
+              Bierzecie kredyt aby dołożyć do 300 000 euro tj. 130 000 euro na 25 lat (max można na
+              35) to rata wyniesie tylko ok. 651 euro (oprocentowanie w Hiszpanii to ok. 3,5%).
+            </li>{" "}
+            <li>
+              Przez rok kredyt zostanie spłacony w kwocie 7812 euro, a zysk wyniesie 21 000 euro -
+              19% (podatek) = 17 010 euro.
+            </li>{" "}
+            <li>Odejmując koszt kredytu zostaje nam 13188 euro.</li>
+            <br></br>{" "}
+            <strong>Spójrzmy teraz na przychód z tego tańszego apartaemntu w Hiszpanii:</strong>
+            <li>
+              11 900 euro - 19% (podatek) = 9639 euro.<ul className="list-disc"></ul>
+            </li>{" "}
+            <br></br>
+            <strong>Wniosek:</strong> Nawet kupująć droższy apartament na sprzedaż w Hiszpanii mamy
+            przychód wyższy o ok 3000 euro rocznie, ale najważniejsze jest to, że{" "}
+            <strong>kupujemy apartament, który już ZAWSZE będzie zarabiał ok. 2 razy więcej</strong>
+          </ul>
+        </p>{" "}
+        <br></br> <br></br>{" "}
+        <h2 className="text-[26px] font-bold">
+          3. Regiony w których warto szukać apartamntów w Hiszpanii na sprzedaż
+        </h2>
+        <br></br>
+        <h2 className="text-[23px] font-bold">3.1 Nieruchomości na sprzedaż na Costa del Sol.</h2>
+        <br></br>
+        <strong className="text-[22px] font-bold">Costa del Sol to Elegancja i Luksus</strong>{" "}
+        <br></br>
         <br></br>
         <p>
           Costa del Sol, czyli &quot;Wybrzeże Słońca,&quot; to region znany ze swojej elegancji i
           luksusu. Malaga, Marbella, Benalmádena - to tylko niektóre z miejsc, które przyciągają
-          inwestorów swoją wyjątkową atmosferą.{" "}
-          <strong>Apartamenty na sprzedaż w Hiszpanii, na Costa del Sol</strong> oferują nie tylko
+          inwestorów swoją wyjątkową atmosferą. Zdecydowanie więcej zielini niż na Costa Blanca,
+          styl zabudowy jest bardzo podobny niemniej widoki są w istocie rajskie.{" "}
+          <strong>Apartamenty na sprzedaż w Hiszpanii</strong>, na Costa del Sol oferują nie tylko
           dostęp do niekończących się plaż, ale również do ekskluzywnych restauracji, klubów
-          golfowych i modnych butików.
+          golfowych i modnych butików. Zapraszamy do przejrzenia ofert poprze kliknięcie w link{" "}
+          <Link
+            href="/nieruchomosci/hiszpania/costa-del-sol "
+            className="text-blue-900 underline font-bold"
+          >
+            oferty nieruchomości na sprzedaż na Costa del Sol.
+          </Link>
         </p>
         <br></br> <br></br>
-        <strong className="text-[26px] font-bold">
-          3. Ceny na Rynku Wtórnym i Pierwotnym.
+        <strong className="text-[22px] font-bold">
+          Ceny zakupu nieruchomości na Costa del Sol
         </strong>{" "}
         <br></br>
-        <p>
-          Na rynku wtórnym, ceny apartamentów zaczynają się od około 150 000 EUR. Oznacza to, że
-          inwestorzy mogą znaleźć atrakcyjne oferty, zarówno pod względem ceny, jak i lokalizacji.
-          Natomiast na rynku pierwotnym, gdzie nowoczesność i wysoki standard są priorytetem, ceny
-          zaczynają się od 180 000 EUR (choć bardzo trudno takie znaleźć), a zdecydowna większość
-          atrakcyjnych inwestycyjnie nieruchomość to koszt od 240 000 euro. Indywidualne preferencje
-          oraz lokalizacja mogą wpływać na finalną kwotę, ale zarówno na rynku wtórnym, jak i
-          pierwotnym, Costa del Sol oferuje różnorodność nieruchomości dostosowanych do różnych
-          budżetów.
-        </p>{" "}
-        <br></br> <br></br>
-        <strong className="text-[26px] font-bold">
-          4. Proces Zakupu: Marzenie Zamienia Się w Rzeczywistość.
-        </strong>{" "}
         <br></br>
         <p>
-          <strong>Proces zakupu apartamentu na sprzedaż w Hiszpanii</strong> zaczyna się od
-          znalezienia wymarzonej nieruchomości. Proces ten opisujemy{" "}
-          <Link
-            href="/blog/jak-kupic-nieruchomosc-w-hiszpanii"
-            className="underline font-normal text-blue-800"
-          >
-            w tym artykule.
-          </Link>{" "}
-          Następnie konieczne jest skontaktowanie się z miejscowym biurem nieruchomości lub
-          prawnikiem specjalizującym się w transakcjach nieruchomościowych.&nbsp;
-          <span className="text-green-600 font-bold">
-            Podpisywana jest przedwstępna umowa, a nabywca uzyskuje numer NIE - Numer Identyfikacji
-            Obcokrajowca. Po drodze konieczne jest utworznie konta w banku. We wszystkim pomaga
-            wybrana agencja pośrednicząca.
-          </span>{" "}
-          Ostatecznym etapem jest podpisanie aktu notarialnego, co formalnie przekazuje nieruchomość
-          na nowego właściciela.{" "}
-          <span className="text-green-600 font-bold">
-            Cały proces trwa średnio do 2 m-cy zakładając, że zakup realizowany jest na rynku
-            wtórnym. Na rynku pierwotnym jest to zależne od oddania nieruchomości do użytkowania,
-            aktuanie musimy czekać na wybudowanie się budynków ok 1,5 roku.
-          </span>{" "}
-          Wymagana jest zatem min. 1 dodatkowa wizyta w Hiszpanii.
+          Na rynku wtórnym, ceny SENSOWNYCH apartamentów zaczynają się od około 200 000 EUR. Oznacza
+          to, że inwestorzy mogą znaleźć atrakcyjne oferty, zarówno pod względem ceny, jak i
+          lokalizacji. Natomiast na rynku pierwotnym, gdzie nowoczesność i wysoki standard są
+          priorytetem, ceny SENSOWNYCH nieruchomości zaczynają się od 270 000 EUR, a zdecydowna
+          większość atrakcyjnych inwestycyjnie nieruchomość to koszt od 310 000 euro. Indywidualne
+          preferencje oraz lokalizacja będą wpływać na finalną kwotę, ale zarówno na rynku wtórnym,
+          jak i pierwotnym, Costa del Sol oferuje różnorodność nieruchomości dostosowanych do
+          różnych budżetów. Co znaczy oferty atrakcyjne inwestycyje? To takie, które nie tylko są
+          blisko morza ale również spełniają potrzeby stylu, wyposażenia obiektu tj. części wspólne
+          w postaci basenu, parkingu, przestrzeni do pracy, siłowni itd. Są zaprojektowane do
+          komfortowego życia i wyjątkowych wakacji.
         </p>{" "}
-        <br></br> <br></br>
-        <strong className="text-[26px] font-bold">5. Dlaczego Inwestowanie Jest Korzystne?</strong>
-        <p>
-          Inwestowanie w apartamenty na sprzedaż na Costa del Sol ma liczne korzyści.{" "}
-          <span className="text-green-600 font-bold">
-            Po pierwsze, Hiszpania cieszy się stabilnym rynkiem nieruchomości, a Costa del Sol jest
-            jednym z najbardziej atrakcyjnych regionów pod względem inwestycyjnym
-          </span>
-          . Oczekuje się, że wartość nieruchomości będzie rosła, co sprawia, że inwestycja staje się
-          opłacalna również dla przyszłych pokoleń. Ponadto, zakup nieruchomości na Costa del Sol
-          otwiera drzwi do życia w luksusie, z dostępem do najnowszych trendów w hiszpańskim stylu
-          życia.
-        </p>{" "}
-        <br></br> <br></br>
-        <strong className="text-[26px] font-bold">
-          7. Costa Blanca: Białe Wybrzeże i Tradycyjne Uroki{" "}
-        </strong>{" "}
+        <h2 className="text-[22px] font-bold">
+          <br></br>
+          <h2 className="text-[23px] font-bold">3.2 Nieruchomości na sprzedaż na Costa Blanca.</h2>
+          <br></br>
+          Costa Blanca: Białe Wybrzeże i Tradycyjne Uroki{" "}
+        </h2>{" "}
         <br></br>
         <p>
           Costa Blanca, znane jako &quot;Białe Wybrzeże,&quot; to kolejny region, który przyciąga
@@ -185,8 +245,16 @@ export default function BlogPost() {
           także doświadczyć autentycznego hiszpańskiego stylu życia. Na Costa Blanca, ceny
           apartamentów w sektorze wtórnym zaczynają się od około 150 000 EUR, oferując przystępne
           opcje dla inwestorów. Na rynku pierwotnym, gdzie nowoczesność miesza się z tradycją.{" "}
+          Zapraszamy do przejrzenia ofert poprze kliknięcie w link{" "}
+          <Link
+            href="/nieruchomosci/hiszpania/costa-blanca "
+            className="text-blue-900 underline font-bold"
+          >
+            oferty nieruchomości na sprzedaż na Costa Blanca.
+          </Link>
           <br></br>
           <br></br>
+          <h2 className="text-[22px] font-bold">Costa Blanca: Ceny i atrakcyjność </h2> <br></br>
           <span className="text-green-600 font-bold">
             Ceny zaczynają się podobnie jak jak na Costa del Sol bo od 180 000 EUR, opcje dobre
             inwestycjne również są droższe natomiast ok 10-15% niższe od tych na Costa del Sol zatem
@@ -216,57 +284,79 @@ export default function BlogPost() {
           </h2>
         </p>{" "}
         <br></br> <br></br> <br></br>
-        <h2 className="text-[26px] font-bold">
-          8. Proces Zakupu nieruchomości w Hiszpanii: Krok Po Kroku
-        </h2>{" "}
+        <strong className="text-[26px] font-bold">
+          4. Proces Zakupu: Marzenie Zamienia Się w Rzeczywistość.
+        </strong>{" "}
+        <br></br>
         <p>
-          Proces zakupu apartamentu na Costa Blanca jest podobny do tego na Costa del Sol.
-          Wybierając wymarzoną nieruchomość, konieczne jest skontaktowanie się z biurem
-          nieruchomości lub prawnikiem. Następnie podpisywana jest przedwstępna umowa, a cały proces
-          kończy się podpisaniem aktu notarialnego. Proces ten jest stosunkowo prosty, a lokalne
-          agencje nieruchomości oraz prawnicy specjalizujący się w transakcjach nieruchomości służą
-          pomocą na każdym etapie.{" "}
-          <span className="text-green-600 font-bold">
-            {" "}
-            Możesz dowiedzieć się więcej ze szczegółowego artykuły, który stworzyliśmy specjalnie
-            dla osób, które chcą zrozumieć proces.
-          </span>{" "}
-          Artykuł{" "}
+          <strong>Proces zakupu apartamentu na sprzedaż w Hiszpanii</strong> zaczyna się od
+          znalezienia wymarzonej nieruchomości. Proces ten opisujemy w artykule{" "}
           <Link
             href="/blog/jak-kupic-nieruchomosc-w-hiszpanii"
             className="underline font-normal text-blue-800"
           >
-            jest dostepny tutaj
-          </Link>
+            {" "}
+            Poszukiwanie nieruchomości w Hiszpanii - określ swoje cele.
+          </Link>{" "}
+          Następnie konieczne jest skontaktowanie się z miejscowym biurem nieruchomości lub
+          prawnikiem specjalizującym się w transakcjach nieruchomościowych.&nbsp;
+          <span className="text-green-600 font-bold">
+            Podpisywana jest przedwstępna umowa, a nabywca uzyskuje numer NIE - Numer Identyfikacji
+            Obcokrajowca. Po drodze konieczne jest utworznie konta w banku. We wszystkim pomaga
+            wybrana agencja pośrednicząca.
+          </span>{" "}
+          Ostatecznym etapem jest podpisanie aktu notarialnego, co formalnie przekazuje nieruchomość
+          na nowego właściciela.{" "}
+          <span className="text-green-600 font-bold">
+            Cały proces trwa średnio do 2 m-cy zakładając, że zakup realizowany jest na rynku
+            wtórnym. Na rynku pierwotnym jest to zależne od oddania nieruchomości do użytkowania,
+            aktuanie musimy czekać na wybudowanie się budynków ok 1,5 roku.
+          </span>{" "}
+          Wymagana jest zatem min. 1 dodatkowa wizyta w Hiszpanii.
         </p>{" "}
+        <br></br>
+        <span className="text-green-600 font-bold">
+          {" "}
+          Możesz dowiedzieć się więcej o samym procesie ze szczegółowego artykuły, który
+          stworzyliśmy specjalnie dla osób, które chcą zrozumieć proces
+        </span>{" "}
+        klikając{" "}
+        <Link
+          href="/blog/jak-kupic-nieruchomosc-w-hiszpanii"
+          className="underline font-normal text-blue-800"
+        >
+          Proces zakupu nieruchomości w Hiszpanii w pigułce.
+        </Link>
         <br></br> <br></br>
         <h2 className="text-[26px] font-bold">
-          9. Dlaczego warto szukać apartamentów na sprzedaż w Hiszpanii i właśnie tam inwestować?
+          9. Podsumowanie: Dlaczego warto szukać apartamentów na sprzedaż w Hiszpanii i właśnie tam
+          inwestować?
         </h2>{" "}
         <br></br>
         <p>
-          Costa Blanca to nie tylko piękne plaże i urokliwe miasteczka, ale również obietnica
-          inwestycyjna. Stabilny rynek nieruchomości i rozwijająca się infrastruktura sprawiają, że
-          inwestowanie w apartamenty na sprzedaż na Costa Blanca to krok w stronę bezpiecznej
-          inwestycji. Dodatkowo, region ten oferuje różnorodność krajobrazów, od górskich pejzaży po
-          piaszczyste wybrzeża, co przyciąga zarówno turystów, jak i stałych mieszkańców.
+          Costa Blanca i Costa del Sol to nie tylko piękne plaże i urokliwe miasteczka, ale również
+          obietnica inwestycyjna. Stabilny rynek nieruchomości i rozwijająca się infrastruktura
+          sprawiają, że inwestowanie w <strong>apartamenty na sprzedaż w Hiszpanii</strong>to krok w
+          stronę bezpiecznej inwestycji. Dodatkowo, region ten oferuje różnorodność krajobrazów, od
+          górskich pejzaży po piaszczyste wybrzeża, co przyciąga zarówno turystów, jak i stałych
+          mieszkańców.
         </p>{" "}
-        <br></br> <br></br>
-        <h2 className="text-[26px] font-bold">
-          10. Korzyści Ogólne Inwestycji w Hiszpańskie Apartamenty
-        </h2>{" "}
+        <br></br>
         <br></br>
         <p>
-          Inwestowanie w hiszpańskie apartamenty na sprzedaż to nie tylko zakup nieruchomości, to
-          inwestycja w styl życia, bezpieczeństwo finansowe i przyszłość. Hiszpania, apartamenty na
-          sprzedaż na Costa del Sol i Costa Blanca, oferują niepowtarzalne doznania, zarówno dla
-          tych, którzy poszukują letniego raju, jak i tych, którzy planują inwestycję na przyszłość.
+          Inwestowanie w hiszpańskie <strong>apartamenty na sprzedaż w Hiszpanii</strong> to nie
+          tylko zakup nieruchomości, to inwestycja w styl życia, bezpieczeństwo finansowe i
+          przyszłość. Jak wykazaliliśmy wyżej poprzez wzrost wartości nieruchomości niski kredyt
+          oraz duży potencjał pod wynajem, zakup <strong>nieruchomości w Hiszpanii</strong>, staje
+          się opcją w zasięgu i przy niewielkich oszczędnościach może być realizowany bez wysiłku i
+          z dużymi profitami.
+          <br></br>
+          Próćz inwestycji to również drugi dom i nowy etap w życiu, bez wyrzeczeń.
         </p>
-        <br></br>
         <br></br> W tym pomagamy. I do tego zapraszamy.<br></br>
         <br></br>
         <Link
-          href="/nieruchomosci/hiszpania?page=1"
+          href="/nieruchomosci/hiszpania"
           className="text-white text-[26px] font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 w-[500px] shadow-xl"
         >
           Przeglądaj oferty nieruchomości
