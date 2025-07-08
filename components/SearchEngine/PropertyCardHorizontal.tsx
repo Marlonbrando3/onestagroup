@@ -36,6 +36,13 @@ export default function PropertyCard({ property }: Property) {
   }
 
   const slug = slugify(property.headerAdvertisement, property.id);
+  const slug = slugify(property.headerAdvertisement, property.id);
+  const region = () => {
+    const country = property.country.name.toLowerCase();
+    const data = DataCountry!.find((i) => property.country.name.toLowerCase());
+    const reg = data!.query.find((i) => i.querySearch === property.foreignLocation);
+    return reg?.query;
+  };
 
   const share = () => {
     navigator.share({
@@ -48,6 +55,7 @@ export default function PropertyCard({ property }: Property) {
     <div className="flex  bg-gray-500 w-[1100px] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
       <div className="w-full h-[220px] overflow-hidden mx-auto rounded-t-md flex items-center justify-center text-4xl relative">
         <ResultsSlider
+          region={region()}
           country={property.country.name}
           slug={slug}
           images={property.images}
