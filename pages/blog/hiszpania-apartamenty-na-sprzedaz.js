@@ -120,13 +120,13 @@ export default function BlogPost() {
           <br></br>
           <br></br>
           Co to daje w liczbach? Stosunkowo dynamiczny wzrost wartości nieruchomości - również ich
-          cen zakupu, bardzo szybka sprzedaż na etapie tzw. "dziury w ziemi" co nie miało miejsca
-          jeszcze 5 lat temu. Przykładowa nieruchomość w 2020 roku z rynku pierwotnego kosztowała ok
-          180 000 euro, dziś inwestycja, która powsaje obok o praktycznie identycznym charakterze to
-          cena min. 260 000 euro za apartament. Da się zaobserowować, że przez ostatnie lata ceny
-          rosną bardzo szybko, niemniej jak wyciągniemy średnią z otatnich kilkunastu lat to
-          naturany wzrost wartości <strong>nieruchomości w Hiszpanii</strong> oscyluje w okolicach
-          7%. <br></br>
+          cen zakupu, bardzo szybka sprzedaż na etapie tzw. &quot;dziury w ziemi&quot; co nie miało
+          miejsca jeszcze 5 lat temu. Przykładowa nieruchomość w 2020 roku z rynku pierwotnego
+          kosztowała ok 180 000 euro, dziś inwestycja, która powsaje obok o praktycznie identycznym
+          charakterze to cena min. 260 000 euro za apartament. Da się zaobserowować, że przez
+          ostatnie lata ceny rosną bardzo szybko, niemniej jak wyciągniemy średnią z otatnich
+          kilkunastu lat to naturany wzrost wartości <strong>nieruchomości w Hiszpanii</strong>{" "}
+          oscyluje w okolicach 7%. <br></br>
           <br></br>Oczekuje się, że wartość nieruchomości będzie rosła, co sprawia, że inwestycja
           staje się opłacalna również dla przyszłych pokoleń lub w razie decyzji o jej sprzedaży,
           można to zrobić również z zyskiem. Ponadto, zakup{" "}
@@ -134,14 +134,15 @@ export default function BlogPost() {
           dostępem do najnowszych trendów w hiszpańskim stylu życia.
           <br></br>
           <br></br>
-          Drugą "nogą" <strong>zakupu nieruchmości w Hiszpanii</strong> jako inwestycji jest - najem
-          turystyczny. Jest wiele zmiennych, które są niezbędne do efektywnego wynajmu, niemniej
-          kilka z nich jest intuicyjnych tj. basen na obiekcie, parking, bliskość do morza, obszar
-          zielony, osiedle zamknięte, dedykowany taras na dachu lub w ramach własnego apartamentu w
-          Hiszpanii. Te aspekty są bardziej realizowane wraz z tym im nowszy jest obiekt. Generalnie
-          na rynku starszym wtórnym, można znaleźć wszytkie te elementy niemniej ich jakość, jakość
-          wykonania oraz obiektu, może nawet zniechęcać. Im bliżej teraźniejszości tym deweloprzy
-          bardziej stawiają na styl i komfort wykonania, nie tylko aby odhaczyć 0/1 - niema/jest.
+          Drugą &quot;nogą&quot; <strong>zakupu nieruchmości w Hiszpanii</strong> jako inwestycji
+          jest - najem turystyczny. Jest wiele zmiennych, które są niezbędne do efektywnego wynajmu,
+          niemniej kilka z nich jest intuicyjnych tj. basen na obiekcie, parking, bliskość do morza,
+          obszar zielony, osiedle zamknięte, dedykowany taras na dachu lub w ramach własnego
+          apartamentu w Hiszpanii. Te aspekty są bardziej realizowane wraz z tym im nowszy jest
+          obiekt. Generalnie na rynku starszym wtórnym, można znaleźć wszytkie te elementy niemniej
+          ich jakość, jakość wykonania oraz obiektu, może nawet zniechęcać. Im bliżej
+          teraźniejszości tym deweloprzy bardziej stawiają na styl i komfort wykonania, nie tylko
+          aby odhaczyć 0/1 - niema/jest.
           <br></br>
           <br></br>
           Łatwo zatem można wywnioskować, że im bliżej jesteśmy trwającego roku tym te elementy są
