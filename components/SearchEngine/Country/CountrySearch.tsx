@@ -9,7 +9,7 @@ type Params = {
 
 export default function CountrySearch({ searchBtn, slugify, dataRegion }: Params) {
   const router = useRouter();
-  const country = Array.isArray(router.query.country)
+  const countryQuery = Array.isArray(router.query.country)
     ? router.query.country[0]
     : router.query.country;
 
@@ -35,7 +35,8 @@ export default function CountrySearch({ searchBtn, slugify, dataRegion }: Params
             autoComplete="off"
             className="rounded-r-md rounded-l-[0px] h-[35px] border-orange-500/[0.9] border-[0.8px] w-full mx-auto cursor-pointer text-[16px] border-gray-600 outline-none"
             name="country"
-            defaultValue={country}
+            defaultValue={countryQuery}
+            value={countryQuery}
           >
             <option data-name="hiszpania" value="hiszpania">
               Hiszpania

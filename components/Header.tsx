@@ -183,7 +183,7 @@ export default function Header() {
             }
           `}
         >
-          <div className="flex mx-auto h-full lg:w-[1180px] w-full lg:justify-center justify-between items-center bg-white lg:bg-transparent px-[10px] lg:px-0 duration-200">
+          <div className="flex mx-auto h-[80%] lg:w-[1180px] w-full lg:justify-center justify-between items-center bg-white lg:bg-transparent px-[10px] lg:px-0 duration-200">
             <Link
               onClick={handleBackToMainPage}
               className="cursor-pointer flex items-end h-full bg-white rounded-b-[8px]"
@@ -224,7 +224,7 @@ export default function Header() {
                     <Link
                       onClick={handleClearData}
                       href={{
-                        pathname: "/nieruchomosci/hiszpania/all",
+                        pathname: "/nieruchomosci/hiszpania/wszystkie-regiony",
                       }}
                       className="p-1 text-black rounded-md w-full text-center group"
                       ref={MouseOnSpain}
@@ -232,7 +232,7 @@ export default function Header() {
                       // onMouseEnter={() => handleHover(MouseOnSpain)}
                       // onMouseLeave={() => handleHoverLeave(MouseOnSpain)}
                     >
-                      Nieruchomości w HISZPANII
+                      Nieruchomości w Hiszpanii
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                     </Link>
                     {/* <Link
@@ -245,19 +245,23 @@ export default function Header() {
                     >
                       Nieruchomości w Chorwacji
                     </Link> */}
-                    {/* <Link
-                      href={{ pathname: "/[country]", query: { country: "portugalia", page: 1 } }}
-                      className="p-1 text-black rounded-2xl w-full text-center"
-                      ref={MouseOnPortugal}
-                      data-name="MouseOnPortugal"
-                      onMouseEnter={() => handleHover(MouseOnPortugal)}
-                      onMouseLeave={() => handleHoverLeave(MouseOnPortugal)}
+                    <Link
+                      onClick={handleClearData}
+                      href={{
+                        pathname: "/nieruchomosci/cypr/wszystkie-regiony",
+                      }}
+                      className="p-1 text-black rounded-md w-full text-center group"
+                      ref={MouseOnSpain}
+                      data-name="MouseOnSpain"
+                      // onMouseEnter={() => handleHover(MouseOnSpain)}
+                      // onMouseLeave={() => handleHoverLeave(MouseOnSpain)}
                     >
-                      Nieruchomości w Portugalii
-                    </Link> */}
+                      Nieruchomości na Cyprze
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
+                    </Link>
                     <Link
                       href={{
-                        pathname: "/nieruchomosci/dominikana/all",
+                        pathname: "/nieruchomosci/dominikana/wszystkie-regiony",
                         // query: { country: "dominikana", page: 1 },
                       }}
                       className="p-1 text-black rounded-md w-full text-center group"
@@ -266,7 +270,7 @@ export default function Header() {
                       // onMouseEnter={() => handleHover(MouseOnDominican)}
                       // onMouseLeave={() => handleHoverLeave(MouseOnDominican)}
                     >
-                      Nieruchomości na DOMINIKANIE
+                      Nieruchomości na Dominikanie
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                     </Link>
                   </div>

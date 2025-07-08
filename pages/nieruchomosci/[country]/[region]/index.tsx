@@ -218,14 +218,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   });
 
   const regionQuery = () => {
-    if (region !== "all") {
+    if (region !== "wszystkie-regiony") {
       const data = DataCountry.find((i) => i.country === country);
       const reg = data!.query!.find((i: any) => i.query == region);
-      // console.log("to co zwrócił" + JSON.stringify(reg));
       return (reg as any).querySearch;
 
       // const doopa = data.return(reg as any).query;
-    } else return "all";
+    } else return "wszystkie-regiony";
   };
 
   console.log(regionQuery());
@@ -234,7 +233,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     (p) =>
       p.country?.name?.toLowerCase() === country.toLowerCase() &&
       (!type || type === "All" || p.section === type) &&
-      (!region || region === "all" || p.foreignLocation === regionQuery()) &&
+      (!region || region === "wszystkie-regiony" || p.foreignLocation === regionQuery()) &&
       (!market || market === "All" || p.mortgageMarket === market) &&
       (!bathsmin || p.noOfBathrooms >= parseInt(bathsmin as string)) &&
       (!bathsmax || p.noOfBathrooms <= parseInt(bathsmax as string)) &&

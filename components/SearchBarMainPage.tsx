@@ -15,7 +15,7 @@ export default function SearchButton() {
 
   const [countryChoosed, setCountryChoosed] = useState("hiszpania");
 
-  const [dataRegion, setDataRegion] = useState("all");
+  const [dataRegion, setDataRegion] = useState("wszystkie-regiony");
   const [dataType, setDataType] = useState();
   const [dataMarket, setDataMarket] = useState();
   const [dataBathsmin, setDataBathsmin] = useState();

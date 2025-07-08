@@ -24,7 +24,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
   const { region, type, market, bathsmin, bathsmax, bedsmin, bedsmax, pricemin, pricemax } =
     router.query;
 
-  const [dataRegion, setDataRegion] = useState("all");
+  const [dataRegion, setDataRegion] = useState("wszystkie-regiony");
   const [dataType, setDataType] = useState(type || "All");
   const [dataMarket, setDataMarket] = useState(market || "All");
   const [dataBathsmin, setDataBathsmin] = useState(bathsmin || "All");
