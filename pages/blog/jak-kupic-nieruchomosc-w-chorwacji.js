@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Script from "next/script";
 import HeaderBlog from "../../components/HeaderBlog";
+import Header from "../../components/Header";
 import HeaderBlogPost from "../../components/HeaderBlogPost";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
 
@@ -59,6 +60,11 @@ export default function BlogPost() {
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
         />
       </Head>
+      <div className="main-index">
+        <div className="w-full h-16 fixed top-0 z-20 bg-white shadow-xl">
+          <Header />
+        </div>
+      </div>
       <HeaderBlogPost temat={temat} />
       <div className="lg:px-40 px-4 pt-24">
         Chcemy przedstawić Państwu proces zakupu nieruchomości w Chorwacji w formie ogólnej,

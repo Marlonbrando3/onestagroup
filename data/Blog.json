@@ -14,7 +14,7 @@
     "link": "https://images.pexels.com/photos/8748170/pexels-photo-8748170.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     "title": "Okupados, Okupas, Okupado... a inwestowanie w nieruchomości w Hiszpanii",
     "mid-tit": "",
-    "description": "Co to jest skąd się bierze i jak się przed nim bronić? Materiał oparty o Hiszpańskie artykuły i historie",
+    "description": "Co to jest skąd, się bierze i jak się przed nim bronić? Materiał oparty o Hiszpańskie artykuły i historie, które w praktyce pokazują skalę i miarę tego zjawiska w rzeczywistości.",
     "tag": "okupados"
   },
   {
@@ -22,7 +22,7 @@
     "status": "published",
     "link": "https://images.pexels.com/photos/8748170/pexels-photo-8748170.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     "title": "Jak kupić nieruchomość w Hiszpanii",
-    "description": "Pierwsze kroki dla osób planujących zakup nieruchomości w Hiszpanii",
+    "description": "Pierwsze kroki dla osób planujących zakup nieruchomości w Hiszpanii. Poznaj i zrozum proces zakupu.",
     "tag": "nieruchomosci-w-hiszpanii-jak-wyglada-proces"
   },
   {
@@ -36,7 +36,7 @@
   {
     "id": 5,
     "status": "published",
-    "link": "https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "link": "/costa-blanca-podstawowe-informacje.png",
     "title": "Nieruchomości Costa Blanca - podstawowe informacje.",
     "description": "Jeśli interesuje Cię ten region pod kątem zakupu nieruchomości, ten artykuł będzie dobrym początkiem.",
     "tag": "nieruchomosci-costa-blanca"
@@ -44,7 +44,7 @@
   {
     "id": 6,
     "status": "published",
-    "link": "https://images.unsplash.com/photo-1662487091369-a363c3f3bef3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80",
+    "link": "/san-pedro-del-pinatar-blog.png",
     "title": "Regiony Costa Blanca - Piękne San Pedro del Pinatar",
     "mid-tit": "",
     "description": "San Pedro del Pinatar jest regionem wyjątkowym, do życia, wakacji oraz do inwestowania. W artukule przedstawiamy atuty tego regionu.",
@@ -65,16 +65,16 @@
     "link": "https://images.unsplash.com/photo-1621848060929-bea5cb86c155?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1808&q=80",
     "title": "Nieruchomości Chorwacja - Trogir i jego atrakcje",
     "mid-tit": "",
-    "description": "Poznaj Trogir, który jest pięknym i ciekawym miejsce do zakupu nieruchmości oraz turytyki",
+    "description": "Poznaj Trogir, który jest pięknym i ciekawym miejscem do zakupu nieruchmości oraz turytyki. Ciekawe, miejsca, wyjątkowe widoki.",
     "tag": "nieruchomosci-chorwacja-trogir"
   },
   {
     "id": 9,
     "status": "published",
-    "link": "https://images.unsplash.com/photo-1598558766255-884936fb4a7a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1967&q=80",
+    "link": "/torrevieja-blog.png",
     "title": "Torrevieja apartamenty na sprzedaż. Region. Atrakcje.",
     "mid-tit": "",
-    "description": "Poznaj jeden z popularniejszych regionów wg. Polaków.",
+    "description": "Poznaj jeden z popularniejszych regionów wg. Polaków. Czy warte zainteresowania, wakacji lub zakupu nieruchomści?",
     "tag": "torrevieja-apartamenty-na-sprzedaz"
   },
   {

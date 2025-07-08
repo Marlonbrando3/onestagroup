@@ -90,7 +90,7 @@ export default function Okupados() {
         />
       </Head>
       <div className="main-index">
-        <div className="w-full h-16 fixed top-0 md:bg-gray-800/[0.4] z-20 bg-white shadow-xl">
+        <div className="w-full h-16 fixed top-0 z-20 bg-white shadow-xl">
           <Header />
         </div>
       </div>
@@ -272,7 +272,7 @@ export default function Okupados() {
         <br></br>
         <br></br>
         <Link
-          href="/nieruchomosci/hiszpania?page=1"
+          href="/nieruchomosci/hiszpania/all"
           className="text-white md:text-[26px] text-auto font-normal flex items-center py-[10px] rounded-2xl justify-center bg-green-500 md:w-[500px] shadow-xl mb-[50px] mx-auto"
         >
           Przeglądaj oferty nieruchomości

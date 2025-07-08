@@ -66,7 +66,7 @@ export default function Zarzadzanie() {
         ></link>
       </Head>
       <div className="main-index">
-        <div className="w-full h-16 fixed top-0 md:bg-gray-800/[0.4] z-20 bg-white shadow-xl">
+        <div className="w-full h-16 fixed top-0  z-20 bg-white shadow-xl">
           <Header />
         </div>
       </div>
@@ -229,7 +229,7 @@ export default function Zarzadzanie() {
         <br></br>
         <b>Nieruchomości w tym regionie znajdziesz</b>{" "}
         <a
-          href="https://onesta.com.pl/hiszpania?page=1&region=Costa+Blanca"
+          href="/nieruchomosci/hiszpania/costa-blanca"
           className="text-blue-900 underline font-bold"
         >
           po kliknięciu tutaj{" "}

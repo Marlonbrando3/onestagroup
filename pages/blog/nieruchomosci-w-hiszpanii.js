@@ -76,7 +76,7 @@ export default function BlogPost() {
         ></meta>
       </Head>
       <div className="main-index">
-        <div className="w-full h-16 fixed top-0 md:bg-gray-800/[0.4] z-20 bg-white shadow-xl">
+        <div className="w-full h-16 fixed top-0 z-20 bg-white shadow-xl">
           <Header />
         </div>
       </div>

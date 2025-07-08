@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Script from "next/script";
 import ContactFormBlogPost from "../../components/ContactFormBlogPost";
+import Header from "../../components/Header";
 import HeaderBlog from "../../components/HeaderBlog";
 import HeaderBlogPost from "../../components/HeaderBlogPost";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
@@ -60,6 +61,11 @@ export default function BlogPost() {
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
         />
       </Head>
+      <div className="main-index">
+        <div className="w-full h-16 fixed top-0 z-20 bg-white shadow-xl">
+          <Header />
+        </div>
+      </div>
       <HeaderBlogPost temat={temat} />
       <div className="lg:px-40 px-4 pt-24 leading-7 tracking-normal">
         Proces zakupu nieruchomości w Portugalii dla obywatela innego kraju UE zazwyczaj składa się

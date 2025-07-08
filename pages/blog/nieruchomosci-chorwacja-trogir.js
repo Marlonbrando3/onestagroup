@@ -62,7 +62,11 @@ export default function Zarzadzanie() {
           rel="stylesheet"
         ></link>
       </Head>
-      <Header searchShow={searchShow} />
+      <div className="main-index">
+        <div className="w-full h-16 fixed top-0 z-20 bg-white shadow-xl">
+          <Header />
+        </div>
+      </div>
       {/* <MiniHomeView /> */}
       <div className="w-10/12 mx-auto my-20">
         <h1 className="text-2xl font-bold">Nieruchomości Chorwacja - Trogir i jego atrakacje</h1>

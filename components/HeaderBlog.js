@@ -8,13 +8,12 @@ import MiniMainViewBlog from "./MiniMainViewBlog";
 export default function HeaderBlog() {
   return (
     <>
-      <div className="bg-red-900 w-full h-24 flex justify-between lg:px-36 px-1 items-center z-20">
+      <div className=" w-full h-24 flex justify-between lg:px-36 px-1 items-center z-20">
         <Link className="cursor-pointer flex items-center" href="/">
           <Image className="py-3" src={Logotype} width={150} alt="logo" />
         </Link>
-        <SearchComponent />
+        {/* <SearchComponent /> */}
       </div>
-      <MiniMainViewBlog />
     </>
   );
 }

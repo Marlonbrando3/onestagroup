@@ -4,6 +4,7 @@ import Head from "next/head";
 import Header from "../../components/Header";
 import Script from "next/script";
 import BlogItems from "../../components/BlogItems";
+import MiniMainViewBlog from "../../components/MiniMainViewBlog";
 
 export default function Blog() {
   return (
@@ -63,6 +64,7 @@ export default function Blog() {
         </div>
       </div>
       <HeaderBlog />
+      <MiniMainViewBlog />
       <BlogItems />
     </div>
   );
