@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function ContactFormBlogPost({ temat }) {
@@ -90,9 +91,9 @@ export default function ContactFormBlogPost({ temat }) {
           <input className="w-6 h-6" type="checkbox" name="mail" required></input>
           <p className="block ml-2 text-white">
             Akceptuję regulamin i{" "}
-            <a className="underline-offset-1" href="#">
+            <Link className="underline-offset-1" href="#">
               politykę prywatności (wymagane)
-            </a>
+            </Link>
           </p>
         </div>
         <button

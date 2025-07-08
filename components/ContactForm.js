@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 
@@ -114,9 +115,9 @@ export default function ContactForm({ propertyId, propertyRef }) {
           <input className="w-6 h-6 cursor-pointer" type="checkbox" name="mail" required></input>
           <p className="block ml-2 text-white">
             Akceptuję regulamin i{" "}
-            <a className="underline-offset-1" href="#">
+            <Link className="underline-offset-1" href="#">
               politykę prywatności (wymagane)
-            </a>
+            </Link>
           </p>
         </div>
         <button

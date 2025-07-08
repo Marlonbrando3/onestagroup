@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useRef } from "react";
+import Link from "next/link";
 
 export default function ContactFormAboutUs({ temat }) {
   const fastContact = useRef();
@@ -87,9 +88,9 @@ export default function ContactFormAboutUs({ temat }) {
                 ></input>
                 <p className="block ml-2 text-white">
                   Akceptuję regulamin i{" "}
-                  <a className="underline-offset-1" href="#">
+                  <Link className="underline-offset-1" href="#">
                     politykę prywatności (wymagane)
-                  </a>
+                  </Link>
                 </p>
               </div>
             </div>

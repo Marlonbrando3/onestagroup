@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { useState, useRef } from "react";
 import { useRouter } from "next/router";
 
@@ -133,9 +134,9 @@ export default function ContactFormMain() {
               ></input>
               <p className="text-md text-white block ml-2">
                 Akceptuję regulamin i{" "}
-                <a className="underline-offset-1" href="#">
+                <Link className="underline-offset-1" href="#">
                   politykę prywatności (wymagane)
-                </a>
+                </Link>
               </p>
             </div>
             <button
