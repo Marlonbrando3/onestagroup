@@ -228,12 +228,12 @@ export default function Zarzadzanie() {
         <br></br>
         <br></br>
         <b>Nieruchomości w tym regionie znajdziesz</b>{" "}
-        <a
+        <Link
           href="/nieruchomosci/hiszpania/costa-blanca"
           className="text-blue-900 underline font-bold"
         >
           po kliknięciu tutaj{" "}
-        </a>
+        </Link>
         i używając filtrów.<br></br>
         Warto wiedzieć, że na pięć plaż, trzy są nagrodzone Błękitną Flagą, co oznacza, że spełniają
         one wysokie standardy jakości wody i środowiska. Najpopularniejszą plażą w San Pedro del

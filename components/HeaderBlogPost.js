@@ -2,9 +2,6 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import Logotype from "./images/logotype.png";
-import SearchComponent from "./searchComponent";
-import MiniMainViewBlog from "./MiniMainViewBlog";
 import Blog from "../data/Blog.json";
 
 export default function HeaderBlog({ temat, mid, subtemat }) {
