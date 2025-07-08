@@ -10,6 +10,7 @@ type Images = {
   market: any;
   country: any;
   deliveryDate: any;
+  region: any;
   propertyId: any;
   propertyTitle: any;
   slug: any;
@@ -20,6 +21,7 @@ export default function ResultsSlider({
   propertyTitle,
   images,
   market,
+  region,
   country,
   deliveryDate,
   slug,
@@ -37,7 +39,7 @@ export default function ResultsSlider({
       return (
         <Link
           href={{
-            pathname: `/nieruchomosci/${country.toLowerCase()}/${slug}`,
+            pathname: `/nieruchomosci/${country.toLowerCase()}/${region}/${slug}`,
           }}
           ref={image}
           key={key}

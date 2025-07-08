@@ -8,6 +8,7 @@ import { FaSwimmingPool } from "react-icons/fa";
 import { BiArea } from "react-icons/bi";
 import ResultsSlider from "./ResultsSlider";
 import { MdIosShare } from "react-icons/md";
+import DataCountry from "../../data/DataCountry.json";
 
 type Property = {
   property: any;
@@ -38,11 +39,17 @@ export default function PropertyCard({ property }: Property) {
   }
 
   const slug = slugify(property.headerAdvertisement, property.id);
+  const region = () => {
+    const country = property.country.name.toLowerCase();
+    const data = DataCountry!.find((i) => property.country.name.toLowerCase());
+    const reg = data!.query.find((i) => i.querySearch === property.foreignLocation);
+    return reg?.query;
+  };
 
   const share = () => {
     navigator.share({
       title: "Zobacz tę nieruchomość!",
-      url: `/nieruchomosci/${property.country.name.toLowerCase()}/${router.query.region}/${slug}`,
+      url: `/nieruchomosci/${property.country.name.toLowerCase()}/${region()}/${slug}`,
     });
   };
 
@@ -50,6 +57,7 @@ export default function PropertyCard({ property }: Property) {
     <div className="flex flex-col bg-gray-500 md:w-[370px] w-[92vw] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
       <div className="w-full md:h-[270px] h-[220px] sm:h-[300px] overflow-hidden mx-auto rounded-t-md flex items-center justify-center text-4xl relative">
         <ResultsSlider
+          region={region()}
           country={property.country.name}
           images={property.images}
           propertyId={property.id}
@@ -74,9 +82,7 @@ export default function PropertyCard({ property }: Property) {
         </span>
         <Link
           href={{
-            pathname: `/nieruchomosci/${property.country.name.toLowerCase()}/${
-              router.query.region
-            }/${slug}`,
+            pathname: `/nieruchomosci/${property.country.name.toLowerCase()}/${region()}/${slug}`,
           }}
         >
           <div>
