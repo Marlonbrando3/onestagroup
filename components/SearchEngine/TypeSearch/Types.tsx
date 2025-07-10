@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import data from "../../../data/DataTypes.json";
-import TranslatedData from "../../../data/TranslatedData.json";
 import { useRouter } from "next/router";
 
 type Query = {
@@ -13,24 +11,79 @@ type Query = {
 export default function Types({ setQueries, queries, dataType, setDataType }: Query) {
   const router = useRouter();
 
-  const { type } = router.query;
+  const { zabudowa } = router.query;
+
+  const TypeTypes = [
+    { query: "apartmentSale", name: "Apartament" },
+    { query: "houseSale", name: "Dom/Willa" },
+  ];
+
+  const [typeTemp, setTypeTemp] = useState<any>(undefined);
+
+  const TypeFormated = () => {
+    const reg = TypeTypes.find((i) => {
+      if (typeTemp !== undefined && i.query === typeTemp) {
+        return true;
+      }
+
+      if (typeTemp === undefined && zabudowa === i.query.toLowerCase()) {
+        console.log(i.query);
+        setTypeTemp(i.query);
+        return true; // i tak zatrzymuje find
+      }
+    });
+  };
 
   const setNewType = (e: any) => {
-    setDataType(e.target.value);
-    setQueries({ ...queries, type: e.target.value });
+    const dataName = e.target.selectedOptions[0].getAttribute("data-name");
+    console.log(dataName);
+    setTypeTemp(dataName);
+    if (e.target.value === "All") {
+      const { zabudowa, ...rest } = queries;
+      setQueries(rest);
+      setDataType("All");
+    } else {
+      setDataType(e.target.value);
+      setQueries({
+        ...queries,
+        zabudowa: e.target.value
+          .replace(/\s+/g, "-")
+          .toLowerCase()
+          .replace(/ą/g, "a")
+          .replace(/ć/g, "c")
+          .replace(/ę/g, "e")
+          .replace(/ł/g, "l")
+          .replace(/ń/g, "n")
+          .replace(/ó/g, "o")
+          .replace(/ś/g, "s")
+          .replace(/ź/g, "z")
+          .replace(/ż/g, "z")
+          .replace(/á/g, "a"),
+      });
+    }
   };
+
+  useEffect(() => {
+    TypeFormated();
+    console.log("fired!");
+  }, [typeTemp]);
 
   const TypesSearchInput = (
     <div>
       <select
-        value={dataType || type}
+        value={typeTemp}
         onChange={(e) => setNewType(e)}
         className="md:w-[240px] w-[90vw] h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[5px] text-[15px]"
       >
-        <option value="All">Wszystkie</option>
-        <option value="ApartmentSale">Apartament w Bungalowie</option>
-        <option value="ApartmentSale">Apartament w bloku</option>
-        <option value="HouseSale">Dom/Willa</option>
+        <option value="All" data-name="wszystkie">
+          Wszystkie
+        </option>
+        <option value="apartmentSale" data-name="apartmentSale">
+          Apartament
+        </option>
+        <option value="houseSale" data-name="houseSale">
+          Dom/Willa
+        </option>
       </select>
     </div>
   );

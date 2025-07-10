@@ -29,8 +29,6 @@ export default function SearchResults(...restProps: any) {
     (p: any, index: any) => index <= propertiesSubSitesLengt,
   );
 
-  console.log(propertiesSliced);
-
   const handleFiltering = (event: any) => {
     const value = event.target.value;
     if (value === "cheap") {

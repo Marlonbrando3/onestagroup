@@ -467,7 +467,7 @@ select {
   }
 
   .list {
-    @apply ml-5 font-[300] px-1 list-none cursor-pointer leading-[27px] lg:text-[13px] xl:font-[600] text-2xl;
+    @apply ml-5 font-[300] px-1 list-none cursor-pointer leading-[18px] lg:text-[13px] xl:font-[600] text-2xl;
   }
 
   .listToChoose {

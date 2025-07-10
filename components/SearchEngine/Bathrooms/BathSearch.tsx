@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 
 type Query = {
@@ -20,31 +20,89 @@ export default function Bathrooms({
 }: Query) {
   const router = useRouter();
 
-  const { bathsmin, bathsmax } = router.query;
+  const [bathMinTemp, setBathMinTemp] = useState<any>(undefined);
+  const [bathMaxTemp, setBathMaxTemp] = useState<any>(undefined);
+
+  const prevMinRef = useRef<number | undefined>(bathMinTemp);
+  const prevMaxRef = useRef<number | undefined>(bathMaxTemp);
+
+  const { lazienek_od, lazienek_do } = router.query;
+
+  const BathMaxFormated = () => {
+    if (bathMaxTemp !== undefined && lazienek_do === bathMaxTemp) {
+      return true;
+    }
+
+    if (bathMaxTemp === undefined && lazienek_do !== undefined) {
+      setBathMaxTemp(lazienek_do);
+      return true; // i tak zatrzymuje find
+    }
+  };
+
+  const BathMinFormated = () => {
+    if (bathMinTemp !== undefined && lazienek_od === bathMinTemp) {
+      return true;
+    }
+
+    if (bathMinTemp === undefined && lazienek_od !== undefined) {
+      setBathMinTemp(lazienek_od);
+      return true; // i tak zatrzymuje find
+    }
+  };
 
   const setNewBathFrom = (e: any) => {
-    setDataBathsmin(e.target.value);
-    setQueries({ ...queries, bathsmin: e.target.value });
+    const dataName = e.target.selectedOptions[0].getAttribute("data-name");
+    console.log(dataName);
+    setBathMinTemp(dataName);
+    if (e.target.value === "All") {
+      const { lazienek_od, ...rest } = queries;
+      setQueries(rest);
+      setDataBathsmin("All");
+    } else {
+      setDataBathsmin(e.target.value);
+      setQueries({
+        ...queries,
+        lazienek_od: e.target.value,
+      });
+    }
   };
 
   const setNewBathTo = (e: any) => {
-    // if (queries.bathmin <= e.target.value) {
-    setDataBathsmax(e.target.value);
-    setQueries({ ...queries, bathsmax: e.target.value });
-    // }
+    const dataName = e.target.selectedOptions[0].getAttribute("data-name");
+    console.log(dataName);
+    setBathMaxTemp(dataName);
+    if (e.target.value === "All") {
+      const { lazienek_do, ...rest } = queries;
+      setQueries(rest);
+      setDataBathsmax("All");
+    } else {
+      setDataBathsmax(e.target.value);
+      setQueries({
+        ...queries,
+        lazienek_do: e.target.value,
+      });
+    }
   };
 
   const bathsFrom = (
     <div className="w-[47%]">
       <select
-        value={bathsmin || dataBathsmin}
-        onChange={setNewBathFrom}
+        value={bathMinTemp}
+        onChange={(e) => setNewBathFrom(e)}
         className="md:w-[60px] h-[35px] w-full rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[8px] text-[15px]"
       >
-        <option value="all">od</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
+        <option value="All" data-name="od">
+          od
+        </option>
+        <option value="1" data-name="1">
+          1
+        </option>
+        <option value="2" data-name="2">
+          2
+        </option>
+        <option value="3" data-name="3">
+          3
+        </option>
       </select>
     </div>
   );
@@ -52,19 +110,50 @@ export default function Bathrooms({
   const bathsTo = (
     <div className="w-[47%]">
       <select
-        value={bathsmax || dataBathsmax}
-        onChange={setNewBathTo}
+        value={bathMaxTemp}
+        onChange={(e) => setNewBathTo(e)}
         className="md:w-[60px] h-[35px] w-full rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[8px] text-[15px]"
       >
-        <option value="all">do</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
+        <option value="All" data-name="do">
+          do
+        </option>
+        <option value="1" data-name="1">
+          1
+        </option>
+        <option value="2" data-name="2">
+          2
+        </option>
+        <option value="3" data-name="3">
+          3
+        </option>
+        <option value="4" data-name="4">
+          4
+        </option>
+        <option value="5" data-name="5">
+          5
+        </option>
       </select>
     </div>
   );
+
+  useEffect(() => {
+    if (bathMinTemp !== prevMinRef.current) {
+      // roomsMin się zmienił
+      console.log("Zmiana min");
+      BathMinFormated();
+      prevMinRef.current = bathMinTemp;
+    } else if (bathMaxTemp !== prevMaxRef.current) {
+      // roomsMin się zmienił
+      console.log("Zmiana max");
+      BathMaxFormated();
+      prevMaxRef.current = bathMaxTemp;
+    } else {
+      BathMinFormated();
+      BathMaxFormated();
+    }
+
+    console.log("fired!");
+  }, [bathMinTemp, bathMaxTemp]);
 
   return (
     <>

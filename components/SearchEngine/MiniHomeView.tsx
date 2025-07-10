@@ -22,8 +22,8 @@ export default function MiniHomeView() {
   }, [router.isReady, router.query.country]);
 
   return (
-    <div className={`${MoonDance.className} lg:w-full w-full md:h-[350px] h-[310px] mx-auto`}>
-      <div className=" bg-white w-full h-[60px]"></div>
+    <div className={`${MoonDance.className} lg:w-full w-full md:h-[350px] h-[310px] mx-auto `}>
+      <div className=" bg-white w-full h-[75px]"></div>
       <div className=" bg-white w-full h-full bg-[url('/bg_2.png')] bg-cover md:bg-[center_420px] bg-[center_320px] relative">
         <div className="absolute w-full h-full bg-gray-900/[0.5] z-0"></div>
         <div className="lg:pt-[20px] pt-[50px] lg:w-[1100px] w-[90%] mx-auto z-30 relative">
@@ -52,11 +52,9 @@ export default function MiniHomeView() {
                 Odkryj wyjątkowe <strong>nieruchomości na Cyprze</strong> – domy, wille i
                 apartamenty na sprzedaż w najbardziej pożądanych lokalizacjach wyspy. W ofercie
                 znajdziesz zarówno nowoczesne apartamenty z widokiem na morze, jak i komfortowe domy
-                na sprzedaż na Cyprze – idealne na wakacje, inwestycję lub przeprowadzkę na stałe.
-                Cypr to słoneczny klimat przez cały rok, bezpieczeństwo, korzystne warunki podatkowe
-                i stabilny rynek.Zobacz dostępne cypr nieruchomości na sprzedaż i znajdź miejsce,
-                które spełni Twoje oczekiwania. Przeglądaj aktualne oferty na Cyprze, wybierz swoją
-                idealną przestrzeń do życia lub inwestycji.
+                na sprzedaż na Cyprze. Jako inwestycję lub swój drugi dom. Słoneczny klimat przez
+                cały rok, bezpieczeństwo, korzystne warunki podatkowe i stabilny rynek. Znajdź coś
+                dla siebie, coś co spełni Twoje oczekiwania. Przeglądaj aktualne oferty na Cyprze.
               </span>
             )}
           </span>

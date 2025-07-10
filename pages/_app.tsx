@@ -17,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
       }, 4000);
     }
   };
-  checkCookiesOnLoad();
+  // checkCookiesOnLoad();
 
   return (
     <MyContextProvider>

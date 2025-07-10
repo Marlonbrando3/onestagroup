@@ -15,15 +15,15 @@ export default function SearchButton() {
 
   const [countryChoosed, setCountryChoosed] = useState("hiszpania");
 
-  const [dataRegion, setDataRegion] = useState("wszystkie-regiony");
-  const [dataType, setDataType] = useState();
-  const [dataMarket, setDataMarket] = useState();
-  const [dataBathsmin, setDataBathsmin] = useState();
-  const [dataBathsmax, setDataBathsmax] = useState();
-  const [dataBedsmin, setDataBedsmin] = useState();
-  const [dataBedsmax, setDataBedsmax] = useState();
-  const [dataPricemin, setDataPricemin] = useState();
-  const [dataPricemax, setDataPricemax] = useState();
+  const [dataRegion, setDataRegion] = useState<any>();
+  const [dataType, setDataType] = useState<any>();
+  const [dataMarket, setDataMarket] = useState<any>();
+  const [dataBathsmin, setDataBathsmin] = useState<any>();
+  const [dataBathsmax, setDataBathsmax] = useState<any>();
+  const [dataBedsmin, setDataBedsmin] = useState<any>();
+  const [dataBedsmax, setDataBedsmax] = useState<any>();
+  const [dataPricemin, setDataPricemin] = useState<any>();
+  const [dataPricemax, setDataPricemax] = useState<any>();
 
   const regions = DataCountry.map((r) => {
     if (r.country === countryChoosed) {
@@ -70,22 +70,22 @@ export default function SearchButton() {
     let PropertiesFounded: any = Properties.filter((p) => {
       if (
         p.country.name.toLowerCase() == (countryChoosed as string) &&
-        (p.section === queries.type || queries.type === "All" || queries.type === undefined) &&
+        (p.section === queries.typ || queries.typ === "All" || queries.typ === undefined) &&
         (p.foreignLocation === queries.region ||
           queries.region === undefined ||
           queries.region === "All") &&
-        (p.noOfRooms >= parseInt(queries.bedsmin as string) ||
-          dataBedsmin === undefined ||
-          dataBedsmin === "All") &&
-        (p.noOfRooms <= parseInt(queries.bedsmax as string) ||
-          queries.bedsmax === undefined ||
-          queries.bedsmax === "All") &&
-        (p.price.amount >= parseInt(queries.pricemin as string) ||
-          queries.pricemin === undefined ||
-          queries.pricemin === "All") &&
-        (p.price.amount <= parseInt(queries.pricemax as string) ||
-          queries.pricemax === undefined ||
-          queries.pricemax === "All")
+        (p.noOfRooms >= parseInt(queries.sypilani_od as string) ||
+          queries.sypilani_od === undefined ||
+          queries.sypilani_od === "All") &&
+        (p.noOfRooms <= parseInt(queries.sypilani_do as string) ||
+          queries.sypilani_do === undefined ||
+          queries.sypilani_do === "All") &&
+        (p.price.amount >= parseInt(queries.cena_od as string) ||
+          queries.cena_od === undefined ||
+          queries.cena_od === "All") &&
+        (p.price.amount <= parseInt(queries.cena_do as string) ||
+          queries.cena_do === undefined ||
+          queries.cena_do === "All")
       )
         return true;
     });
@@ -93,21 +93,106 @@ export default function SearchButton() {
     return PropertiesFounded.length;
   };
 
+  const handleFormating = (data: any) => {
+    const dataTemp = data
+      .replace(/\s+/g, "-")
+      .toLowerCase()
+      .replace(/ą/g, "a")
+      .replace(/ć/g, "c")
+      .replace(/ę/g, "e")
+      .replace(/ł/g, "l")
+      .replace(/ń/g, "n")
+      .replace(/ó/g, "o")
+      .replace(/ś/g, "s")
+      .replace(/ź/g, "z")
+      .replace(/ż/g, "z")
+      .replace(/á/g, "a");
+    console.log(dataTemp);
+    return dataTemp;
+  };
+
   const handleChoosingRegion = (e: any) => {
-    setQueries({ ...queries, region: e.target.value });
-    // CountingProperties();
+    if (e.target.value === "All") {
+      const { region, ...rest } = queries;
+      setQueries(rest);
+      setDataRegion("All");
+    } else {
+      setDataRegion(e.target.value);
+      setQueries({
+        ...queries,
+        region: handleFormating(e.target.value),
+      });
+    }
   };
+
   const handleChangingType = (e: any) => {
-    setQueries({ ...queries, type: e.target.value });
-    // CountingProperties();
+    if (e.target.value === "All") {
+      const { zabudowa, ...rest } = queries;
+      setQueries(rest);
+      setDataType("All");
+    } else {
+      setDataType(e.target.value);
+      setQueries({
+        ...queries,
+        zabudowa: handleFormating(e.target.value),
+      });
+    }
   };
+
   const handleChangingPriceFrom = (e: any) => {
-    setQueries({ ...queries, pricemin: e.target.value });
-    // CountingProperties();
+    if (e.target.value === "All") {
+      const { cena_od, ...rest } = queries;
+      setQueries(rest);
+      setDataPricemin("All");
+    } else {
+      setDataPricemin(e.target.value);
+      setQueries({
+        ...queries,
+        cena_od: handleFormating(e.target.value),
+      });
+    }
   };
+
   const handleChangingPriceTo = (e: any) => {
-    setQueries({ ...queries, pricemax: e.target.value });
-    // CountingProperties();
+    if (e.target.value === "All") {
+      const { cena_do, ...rest } = queries;
+      setQueries(rest);
+      setDataPricemax("All");
+    } else {
+      setDataType(e.target.value);
+      setQueries({
+        ...queries,
+        cena_do: handleFormating(e.target.value),
+      });
+    }
+  };
+
+  const handleChangingBedsFrom = (e: any) => {
+    if (e.target.value === "All") {
+      const { sypialni_od, ...rest } = queries;
+      setQueries(rest);
+      setDataPricemax("All");
+    } else {
+      setDataType(e.target.value);
+      setQueries({
+        ...queries,
+        sypialni_od: handleFormating(e.target.value),
+      });
+    }
+  };
+
+  const handleChangingBedsTo = (e: any) => {
+    if (e.target.value === "All") {
+      const { sypialni_do, ...rest } = queries;
+      setQueries(rest);
+      setDataPricemax("All");
+    } else {
+      setDataType(e.target.value);
+      setQueries({
+        ...queries,
+        sypialni_do: handleFormating(e.target.value),
+      });
+    }
   };
 
   function slugify(title: string): string {
@@ -123,11 +208,10 @@ export default function SearchButton() {
 
   const handleSearch = (e: any) => {
     const country = slugify(countryChoosed as string);
-    const region = slugify(dataRegion as string);
 
     e.preventDefault();
     router.push({
-      pathname: `/nieruchomosci/${country}/${region}`,
+      pathname: `/nieruchomosci/${country}`,
       query: queries,
     });
   };
@@ -153,9 +237,10 @@ export default function SearchButton() {
                 name="firstmarket"
                 id="first"
                 type="checkbox"
+                data-name="pierwotny"
                 className="mr-2 w-[20px] h-[20px]"
               ></input>
-              <label data-for="first">Pierwotny</label>
+              <label data-for="pierwotny">Pierwotny</label>
             </div>
             <div className="flex items-center">
               <input
@@ -163,9 +248,10 @@ export default function SearchButton() {
                 name="secondmarket"
                 id="second"
                 type="checkbox"
+                data-name="pierwotny"
                 className="mr-2 w-[20px] h-[20px]"
               ></input>
-              <label data-for="second">Wtórny</label>
+              <label data-for="wtorny">Wtórny</label>
             </div>
           </div>
         </div>
@@ -177,9 +263,9 @@ export default function SearchButton() {
                 // onChange={handleQueryData}
                 name="bathf"
                 id="apartment"
-                type="number"
                 className=" pl-2 mr-2 lg:w-[70px] w-[60px] h-[30px] border border-gray-700 rounded-sm"
                 placeholder="od"
+                data-name="od"
               ></input>
             </div>
             <div className="flex items-center">
@@ -249,9 +335,15 @@ export default function SearchButton() {
                 onChange={handleChangingType}
                 className="lg:w-[220px] w-[100%] md:w-[96.5%] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 cursor-pointer border-[1px] border-yellow-500 tracking-[0.4px] hover:bg-orange-400 hover:text-white duration-200"
               >
-                <option value="All">Wszystkie typy</option>
-                <option value="ApartmentSale">Apartament</option>
-                <option value="HouseSale">Dom</option>
+                <option value="All" data-name="Wszystkie typy">
+                  Wszystkie typy
+                </option>
+                <option value="ApartmentSale" data-name="ApartmentSale">
+                  Apartament
+                </option>
+                <option value="HouseSale" data-name="HouseSale">
+                  Dom
+                </option>
               </select>
             </div>
             <div className="flex flex-col w-full md:w-[190px] lg:w-[170px] md:mt-2 lg:mt-0">
@@ -260,24 +352,46 @@ export default function SearchButton() {
               </label>
               <div className="w-full flex justify-between">
                 <select
-                  onChange={handleChangingType}
-                  className="lg:w-[80px] w-[48%] md:w-[90px] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 cursor-pointer border-[1px] border-yellow-500 tracking-[0.4px] hover:bg-orange-400 hover:text-white duration-200"
-                >
-                  <option value="All">od</option>
-                  <option value="ApartmentSale">1</option>
-                  <option value="HouseSale">2</option>
-                  <option value="HouseSale">3</option>
-                  <option value="HouseSale">4</option>
-                </select>
-                <select
-                  onChange={handleChangingType}
+                  onChange={(e) => handleChangingBedsFrom(e)}
                   className="lg:w-[80px] w-[48%] md:w-[90px] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 cursor-pointer border-[1px] border-yellow-500 tracking-[0.4px] hover:bg-orange-400 hover:text-white duration-200"
                 >
                   <option value="All">do</option>
-                  <option value="HouseSale">2</option>
-                  <option value="HouseSale">3</option>
-                  <option value="HouseSale">4</option>
-                  <option value="HouseSale">5</option>
+                  <option value="1" data-name="1">
+                    1
+                  </option>
+                  <option value="2" data-name="2">
+                    2
+                  </option>
+                  <option value="3" data-name="3">
+                    3
+                  </option>
+                  <option value="4" data-name="4">
+                    4
+                  </option>
+                  <option value="5" data-name="5">
+                    5
+                  </option>
+                </select>
+                <select
+                  onChange={handleChangingBedsTo}
+                  className="lg:w-[80px] w-[48%] md:w-[90px] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 cursor-pointer border-[1px] border-yellow-500 tracking-[0.4px] hover:bg-orange-400 hover:text-white duration-200"
+                >
+                  <option value="All">do</option>
+                  <option value="1" data-name="1">
+                    1
+                  </option>
+                  <option value="2" data-name="2">
+                    2
+                  </option>
+                  <option value="3" data-name="3">
+                    3
+                  </option>
+                  <option value="4" data-name="4">
+                    4
+                  </option>
+                  <option value="5" data-name="5">
+                    5
+                  </option>
                 </select>
               </div>
             </div>
@@ -290,14 +404,30 @@ export default function SearchButton() {
                   onChange={handleChangingPriceFrom}
                   className="lg:w-[220px] md:w-[48%] w-[50%] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 cursor-pointer border-[1px] border-yellow-500 tracking-[0.4px] hover:bg-orange-400 hover:text-white duration-200"
                 >
-                  <option value="All">od najniższej</option>
-                  <option value="100000">od 100 000 €</option>
-                  <option value="150000">od 150 000 €</option>
-                  <option value="200000">od 200 000 €</option>
-                  <option value="250000">od 250 000 €</option>
-                  <option value="300000">od 300 000 €</option>
-                  <option value="400000">od 400 000 €</option>
-                  <option value="500000">od 500 000 €</option>
+                  <option value="All" data-name="od najniższej">
+                    od najniższej
+                  </option>
+                  <option value="100000" data-name="100000">
+                    od 100 000 €
+                  </option>
+                  <option value="150000" data-name="150000">
+                    od 150 000 €
+                  </option>
+                  <option value="200000" data-name="200000">
+                    od 200 000 €
+                  </option>
+                  <option value="250000" data-name="250000">
+                    od 250 000 €
+                  </option>
+                  <option value="300000" data-name="300000">
+                    od 300 000 €
+                  </option>
+                  <option value="400000" data-name="400000">
+                    od 400 000 €
+                  </option>
+                  <option value="500000" data-name="500000">
+                    od 500 000 €
+                  </option>
                 </select>
                 <div className="bg-yellow-500 h-[2px] md:w-[10px] w-[15px]"></div>
                 <select
@@ -305,13 +435,27 @@ export default function SearchButton() {
                   className="lg:w-[220px] md:w-[48%] w-[50%] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 cursor-pointer border-[1px] border-yellow-500 tracking-[0.4px] hover:bg-orange-400 hover:text-white duration-200"
                 >
                   <option value="All">do najwyższej</option>
-                  <option value="200000">od 200 000 €</option>
-                  <option value="250000">od 250 000 €</option>
-                  <option value="300000">do 300 000 €</option>
-                  <option value="350000">od 350 000 €</option>
-                  <option value="400000">od 400 000 €</option>
-                  <option value="450000">od 500 000 €</option>
-                  <option value="500000 i więcej">do 500 000 € i więcej</option>
+                  <option value="200000" data-name="200000">
+                    do 200 000 €{" "}
+                  </option>
+                  <option value="250000" data-name="200000">
+                    do 250 000 €
+                  </option>
+                  <option value="300000" data-name="300000">
+                    do 300 000 €
+                  </option>
+                  <option value="350000" data-name="350000">
+                    do 350 000 €
+                  </option>
+                  <option value="400000" data-name="400000">
+                    do 400 000 €
+                  </option>
+                  <option value="450000" data-name="450000">
+                    do 450 000 €
+                  </option>
+                  <option value="500000 i więcej" data-name="500000">
+                    do 500 000 € i więcej
+                  </option>
                 </select>
               </div>
             </div>

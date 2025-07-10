@@ -3,15 +3,14 @@ import Head from "next/head";
 import { GetServerSideProps } from "next";
 import Script from "next/script";
 import { useRouter } from "next/router";
-import DataCountry from "../../../../data/DataCountry.json";
-import MiniHomeView from "../../../../components/SearchEngine/MiniHomeView";
-import Header from "../../../../components/Header";
-import SearchEngine from "../../../../components/SearchEngine/SearchEngine";
-import Footer from "../../../../components/Footer";
-import ContactFormMain from "../../../../components/ContactFormMain";
+import DataCountry from "../../../data/DataCountry.json";
+import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
+import Header from "../../../components/Header";
+import SearchEngine from "../../../components/SearchEngine/SearchEngine";
+import Footer from "../../../components/Footer";
+import ContactFormMain from "../../../components/ContactFormMain";
 import MobileFilters from "@/components/MobileFilters";
-import Properties from "../../../../public/properties.json";
-import regionDictionary from "../../../../data/regionsDictionary.json";
+import Properties from "../../../public/properties.json";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 
 interface Property {
@@ -65,12 +64,6 @@ export default function Home(props: any) {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Nieruchomości",
-        item: "https://onesta.com.pl/nieruchomosci",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
         name: countryName,
         item: `https://onesta.com.pl/nieruchomosci/${country}`,
       },
@@ -92,13 +85,15 @@ export default function Home(props: any) {
     }
   };
 
-  console.log(router.query.country);
+  // console.log(router.query.country);
 
   const title = `Nieruchomości ${
     Array.isArray(router.query.country)
       ? router.query.country[0].toUpperCase()
       : router.query.country?.toUpperCase()
   }`;
+
+  const canonicalHref = `https://onesta.com.pl/nieruchomosci/${country}`;
 
   return (
     <>
@@ -118,7 +113,7 @@ export default function Home(props: any) {
         gtag('config', 'G-7E286CBN97');
       `}
       </Script>
-      <link rel="canonical" href="https://onesta.com.pl/nieruchomosci/hiszpania" />
+      <link rel="canonical" href={canonicalHref} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
@@ -164,7 +159,7 @@ export default function Home(props: any) {
         />
         <meta
           name="Description"
-          content="Biura pośrednictwa sprzedaży nieruchomości w Hiszpanii, Portugalii, Chorwacji, Dominikanie. Przeprowdzimy Cię przez cały proces zakupowy. Nieruchomości Hiszpania, Nieruchomości Portugalia, Nieruchomości Dominikana, Nieruchomości Chorwacja."
+          content="Biura pośrednictwa sprzedaży nieruchomości, które prezetuje najciekawsze ogłoszenia w ciepłych krajach. Przeprowdzimy Cię przez cały proces zakupowy Twojego drugiego domu"
         />
         <meta property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii" content="image" />
         <meta property="og:title" content="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"></meta>
@@ -195,15 +190,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const { country } = context.params as { country: string };
   const {
-    type,
+    zabudowa,
     region,
-    market,
-    bathsmin,
-    bathsmax,
-    bedsmin,
-    bedsmax,
-    pricemin,
-    pricemax,
+    rynek,
+    lazienek_od,
+    lazienek_do,
+    sypialni_od,
+    sypialni_do,
+    cena_od,
+    cena_do,
     page,
     sort,
   } = context.query;
@@ -212,35 +207,26 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const raw = fs.readFileSync(filePath, "utf-8");
   const allProperties: Property[] = JSON.parse(raw);
 
-  const formatRegion = regionDictionary.regions.filter((i: any) => {
-    region === i.query;
-    return i.name;
-  });
-
-  const regionQuery = () => {
-    if (region !== "wszystkie-regiony") {
-      const data = DataCountry.find((i) => i.country === country);
-      const reg = data!.query!.find((i: any) => i.query == region);
-      return (reg as any).querySearch;
-
-      // const doopa = data.return(reg as any).query;
-    } else return "wszystkie-regiony";
+  const formatRegion = () => {
+    const data = DataCountry.find((i) => i.country === country);
+    const reg = data!.query.find((i) => i.query === region);
+    return reg!.querySearch;
   };
-
-  console.log(regionQuery());
 
   let filtered = allProperties.filter(
     (p) =>
       p.country?.name?.toLowerCase() === country.toLowerCase() &&
-      (!type || type === "All" || p.section === type) &&
-      (!region || region === "wszystkie-regiony" || p.foreignLocation === regionQuery()) &&
-      (!market || market === "All" || p.mortgageMarket === market) &&
-      (!bathsmin || p.noOfBathrooms >= parseInt(bathsmin as string)) &&
-      (!bathsmax || p.noOfBathrooms <= parseInt(bathsmax as string)) &&
-      (!bedsmin || p.noOfRooms >= parseInt(bedsmin as string)) &&
-      (!bedsmax || p.noOfRooms <= parseInt(bedsmax as string)) &&
-      (!pricemin || p.price?.amount >= parseInt(pricemin as string)) &&
-      (!pricemax || p.price?.amount <= parseInt(pricemax as string)),
+      (!zabudowa || zabudowa === "All" || p.section.toLowerCase() == (zabudowa as string)) &&
+      (!region || region === "All" || p.foreignLocation === formatRegion()) &&
+      (!rynek ||
+        rynek === "All" ||
+        p.mortgageMarket === (rynek === "pierwotny" ? "Primary" : "Secondary")) &&
+      (!lazienek_od || p.noOfBathrooms >= parseInt(lazienek_od as string)) &&
+      (!lazienek_do || p.noOfBathrooms <= parseInt(lazienek_do as string)) &&
+      (!sypialni_od || p.noOfRooms >= parseInt(sypialni_od as string)) &&
+      (!sypialni_do || p.noOfRooms <= parseInt(sypialni_do as string)) &&
+      (!cena_od || p.price?.amount >= parseInt(cena_od as string)) &&
+      (!cena_do || p.price?.amount <= parseInt(cena_do as string)),
   );
 
   if (sort === "cheap") {

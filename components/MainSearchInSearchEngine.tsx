@@ -21,20 +21,37 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
   const AdvancedButton = useRef();
   const searchBtn = useRef<HTMLDivElement>(null);
 
-  const { region, type, market, bathsmin, bathsmax, bedsmin, bedsmax, pricemin, pricemax } =
-    router.query;
+  const {
+    region,
+    zabudowa,
+    rynek,
+    lazienek_od,
+    lazienek_do,
+    sypialni_od,
+    sypialni_do,
+    cena_od,
+    cena_do,
+  } = router.query;
 
-  const [dataRegion, setDataRegion] = useState("wszystkie-regiony");
-  const [dataType, setDataType] = useState(type || "All");
-  const [dataMarket, setDataMarket] = useState(market || "All");
-  const [dataBathsmin, setDataBathsmin] = useState(bathsmin || "All");
-  const [dataBathsmax, setDataBathsmax] = useState(bathsmax || "All");
-  const [dataBedsmin, setDataBedsmin] = useState(bedsmin || "All");
-  const [dataBedsmax, setDataBedsmax] = useState(bedsmax || "All");
-  const [dataPricemin, setDataPricemin] = useState(pricemin || "All");
-  const [dataPricemax, setDataPricemax] = useState(pricemax || "All");
+  const [dataRegion, setDataRegion] = useState(region || "All");
+  const [dataType, setDataType] = useState(zabudowa || "All");
+  const [dataMarket, setDataMarket] = useState(rynek || "All");
+  const [dataBathsmin, setDataBathsmin] = useState(lazienek_od || "All");
+  const [dataBathsmax, setDataBathsmax] = useState(lazienek_do || "All");
+  const [dataBedsmin, setDataBedsmin] = useState(sypialni_od || "All");
+  const [dataBedsmax, setDataBedsmax] = useState(sypialni_do || "All");
+  const [dataPricemin, setDataPricemin] = useState(cena_od || "All");
+  const [dataPricemax, setDataPricemax] = useState(cena_do || "All");
 
-  const [queries, setQueries] = useState({});
+  const [queries, setQueries] = useState(() => ({
+    ...(region && { region }),
+    ...(zabudowa && { zabudowa }),
+    ...(lazienek_od && { lazienek_od }),
+    ...(sypialni_od && { sypialni_od }),
+    ...(sypialni_do && { sypialni_do }),
+    ...(cena_od && { cena_od }),
+    ...(cena_do && { cena_do }),
+  }));
 
   function slugify(title: string): string {
     return title
@@ -49,19 +66,18 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
 
   const handleNewSearch = () => {
     const country = slugify(router.query.country as string);
-    const region = slugify(dataRegion as string);
-
-    console.log(region);
+    // const region = slugify(dataRegion as string);
 
     if (searchEngine.current.style.top) searchEngine.current.style.top = "-460px";
     router.push({
-      pathname: `/nieruchomosci/${country}/${region}`,
+      pathname: `/nieruchomosci/${country}/`,
       query: queries,
     });
     mobileButtonSearchEngine.current.innerHTML = "Filtry";
   };
 
   const handleResetingSearch = () => {
+    setDataRegion("All");
     setDataType("All");
     setDataMarket("All");
     setDataBathsmin("All");
@@ -71,7 +87,9 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
     setDataPricemin("All");
     setDataPricemax("All");
     setQueries({ page: 1 });
-    router.push({ pathname: `/${router.query.country}`, query: { page: 1 } });
+    router.push({ pathname: `/nieruchomosci/${router.query.country}` }).then(() => {
+      window.location.reload();
+    });
   };
 
   return (

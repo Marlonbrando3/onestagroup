@@ -126,8 +126,6 @@ export default function Header() {
     }
   };
 
-  console.log(router.asPath);
-
   const handleConsultationForm = (e: any) => {
     if (e.target.name === "name") {
       setConsultationName(e.target.value);
@@ -144,7 +142,7 @@ export default function Header() {
       headerDesktop.current.style.transition = "0.3s";
       logo.current.style.transition = "margin-top 0.4s ease-in-out";
       header.current.style.height = "55px";
-      logo.current.style.marginTop = "10px";
+      // logo.current.style.marginTop = "10px";
       headerDesktop.current.style.background = "white";
       headerDesktop.current.style.boxShadow = "1px 1px 5px -3px black";
       // headerDesktop.current.style.color = "black";
@@ -171,7 +169,7 @@ export default function Header() {
     <>
       <div
         ref={header}
-        className={`${Red_Hat_DisplayFont.className} transition-all duration-700 w-full h-[70px] lg:h-[85px] top-0 left-0 text-gray-900 z-40 fixed border-gray-900 tracking-[1.4px]`}
+        className={`${Red_Hat_DisplayFont.className} transition-all duration-700 w-full h-[70px] lg:h-[75px] top-0 left-0 text-gray-900 z-40 fixed border-gray-900 tracking-[1.4px]`}
       >
         <div
           ref={headerDesktop}
@@ -183,16 +181,16 @@ export default function Header() {
             }
           `}
         >
-          <div className="flex mx-auto h-[80%] lg:w-[1180px] w-full lg:justify-center justify-between items-center bg-white lg:bg-transparent px-[10px] lg:px-0 duration-200">
+          <div className="flex mx-auto h-[100%] lg:w-[1180px] w-full lg:justify-center justify-between items-center bg-white lg:bg-transparent px-[10px] lg:px-0 duration-200">
             <Link
               onClick={handleBackToMainPage}
               className="cursor-pointer flex items-end h-full bg-white rounded-b-[8px]"
               href="/"
             >
-              <div className="md:h-full lg:h-[70px] md:w-[210px] h-[50px] w-[150px] relative">
+              <div className="md:h-full lg:h-[100%] md:w-[210px] h-[50px] w-[150px] relative flex justify-center ">
                 <Image
                   ref={logo}
-                  className="object-contain px-[10px] pb-[4px]"
+                  className="object-contain px-[10px]"
                   src={Logotype}
                   fill
                   alt="logo"
@@ -202,7 +200,7 @@ export default function Header() {
             {/* menu items */}
             <div
               ref={menu}
-              className="absolute w-full lg:static lg:h-[32px] h-[300px] lg:w-auto lg:justify-start flex items-center z-50 top-[69px] -right-[100vw] bg-white lg:bg-transparent duration-200 justify-center md:shadow-none shadow-xl font-[11px] flex-1 ml-[40px]"
+              className="absolute w-full lg:static lg:h-[26px] h-[300px] lg:w-auto lg:justify-start flex items-center z-50 top-[69px] -right-[100vw] bg-white lg:bg-transparent duration-200 justify-center md:shadow-none shadow-xl font-[11px] flex-1 ml-[40px]"
             >
               <ul className="flex flex-col lg:flex-row justify-center h-full lg:h-[24px] lg:items-center">
                 {/* <li className="list group">
@@ -224,7 +222,7 @@ export default function Header() {
                     <Link
                       onClick={handleClearData}
                       href={{
-                        pathname: "/nieruchomosci/hiszpania/wszystkie-regiony",
+                        pathname: "/nieruchomosci/hiszpania",
                       }}
                       className="p-1 text-black rounded-md w-full text-center group"
                       ref={MouseOnSpain}
@@ -248,7 +246,7 @@ export default function Header() {
                     <Link
                       onClick={handleClearData}
                       href={{
-                        pathname: "/nieruchomosci/cypr/wszystkie-regiony",
+                        pathname: "/nieruchomosci/cypr",
                       }}
                       className="p-1 text-black rounded-md w-full text-center group"
                       ref={MouseOnSpain}
@@ -261,7 +259,7 @@ export default function Header() {
                     </Link>
                     <Link
                       href={{
-                        pathname: "/nieruchomosci/dominikana/wszystkie-regiony",
+                        pathname: "/nieruchomosci/dominikana",
                         // query: { country: "dominikana", page: 1 },
                       }}
                       className="p-1 text-black rounded-md w-full text-center group"
