@@ -87,7 +87,7 @@ export default function Home({ mobileButtonSearchEngine, searchEngine }: Props) 
     setDataBedsmax("All");
     setDataPricemin("All");
     setDataPricemax("All");
-    setQueries({ page: "1" });
+    // setQueries({ page: "1" });
     router.push({ pathname: `/nieruchomosci/${router.query.country}` }).then(() => {
       window.location.reload();
     });
