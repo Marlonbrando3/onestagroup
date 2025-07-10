@@ -39,7 +39,7 @@ export default function ResultsSlider({
       return (
         <Link
           href={{
-            pathname: `/nieruchomosci/${country.toLowerCase()}/${region}/${slug}`,
+            pathname: `/nieruchomosci/${country.toLowerCase()}/${slug}`,
           }}
           ref={image}
           key={key}

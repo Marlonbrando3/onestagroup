@@ -49,7 +49,7 @@ export default function PropertyCard({ property }: Property) {
   const share = () => {
     navigator.share({
       title: "Zobacz tę nieruchomość!",
-      url: `/nieruchomosci/${property.country.name.toLowerCase()}/${region()}/${slug}`,
+      url: `/nieruchomosci/${property.country.name.toLowerCase()}/${slug}`,
     });
   };
 
@@ -82,7 +82,7 @@ export default function PropertyCard({ property }: Property) {
         </span>
         <Link
           href={{
-            pathname: `/nieruchomosci/${property.country.name.toLowerCase()}/${region()}/${slug}`,
+            pathname: `/nieruchomosci/${property.country.name.toLowerCase()}/${slug}`,
           }}
         >
           <div>
