@@ -1,0 +1,80 @@
+[
+  {
+    "type": "TypeOfProperty",
+    "options": [
+      { "id": 1, "name": "Apartamenty", "photo": "Survey/Types/bungalow.webp" },
+      { "id": 3, "name": "Wille lub domy", "photo": "Survey/Types/house.webp" },
+      {
+        "id": 4,
+        "name": "Jeszcze nie zdecydowałem",
+        "photo": "Survey/Types/idk.png"
+      }
+    ]
+  },
+  {
+    "type": "Regions",
+    "options": [
+      { "id": 1, "name": "Costa Blanca", "photo": "Survey/Regions/costa_blanca_bg.png" },
+      { "id": 2, "name": "Costa del Sol", "photo": "Survey/Regions/costa_del_sol_bg.png" },
+      {
+        "id": 4,
+        "name": "Szukam w obu regionach",
+        "photo": "Survey/regions/both_regions_bg.png"
+      }
+    ]
+  },
+  {
+    "type": "Budget",
+    "options": [
+      { "id": 1, "name": "poniżej 250 000 € netto", "photo": "Survey/Budget/low_bg.png" },
+      { "id": 2, "name": "do 300 000 € netto", "photo": "Survey/Budget/medium_bg.png" },
+      { "id": 3, "name": "do 350 000 € netto", "photo": "Survey/Budget/good_bg.png" },
+      { "id": 4, "name": "350 000 € netto i więcej", "photo": "Survey/Budget/high_bg.png" }
+    ]
+  },
+  {
+    "type": "Goal",
+    "options": [
+      { "id": 1, "name": "Wyłącznie pod wynajem", "photo": "abc" },
+      { "id": 2, "name": "Pod wynajem ale z krótkiego pobytu kiedy chcę", "photo": "bcd" },
+      { "id": 3, "name": "Wyłacznie dla siebie bez opcji wynajmu", "photo": "xdg" },
+      {
+        "id": 4,
+        "name": "Jeszcze nie zdecydowałem",
+        "photo": "Survey/Types/idk.png",
+        "clear": true
+      }
+    ]
+  },
+  {
+    "type": "Market",
+    "options": [
+      { "id": 1, "name": "Rynek pierwotny", "photo": "abc" },
+      { "id": 3, "name": "Rynek wtórny", "photo": "xdg" },
+      { "id": 4, "name": "Oba rodzaje nieruchomości biorę pod uwagę", "photo": "xdg" },
+      { "id": 4, "name": "Jeszcze nie mam zdania", "photo": "xdg" }
+    ]
+  },
+  {
+    "type": "Time",
+    "options": [
+      {
+        "id": 1,
+        "name": "Jeśli ofeta mi się spodoba jestem zdecydowany/a na zakup niezwłocznie.",
+        "photo": "abc"
+      },
+      { "id": 3, "name": "Rozważam zakup ale wciąż potrzebuje więcej informacji.", "photo": "xdg" },
+      {
+        "id": 4,
+        "name": "Jestem zdecydowany/a na zakup ale w nieokreślonym terminie.",
+        "photo": "xdg"
+      },
+      {
+        "id": 4,
+        "name": "Jestem zdecydowany/a na zakup w niedalekiej przyszłości (3-6 m-cy).",
+        "photo": "xdg"
+      },
+      { "id": 4, "name": "Przeglądam oferty, jestem daleko od decyzji.", "photo": "xdg" }
+    ]
+  }
+]

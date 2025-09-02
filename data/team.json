@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Co-founder & COO",
+    "name": "Marek Marszałek",
+    "desc": "W pracy z klientami stawiam na relacyjność i otwartość. Dużą uwagę przykładam do dokładnego zrozumienia potrzeb rozmówców, systematycznego poszerzania wiedzy o rynku oraz atrakcjach w Hiszpanii. Dzięki temu mogę przedstawiać trafne oferty i udzielać rzeczowych, konkretnych odpowiedzi. Moje podejście wynika z 15-letniego doświadczenia w sprzedaży. Zwracam szczególną uwagę na detale, poprawność i bezpieczeństwo procesów oraz na ścisłą i klarowną komunikację.",
+    "photo": "Marek.png",
+    "languages": ["PL", "EN"],
+    "phone": "+48 576 65 25 25"
+  },
+  {
+    "id": 2,
+    "title": "Co-founder & CEO",
+    "name": "Karolina Bakowicz",
+    "desc": "Jestem osobą kreatywną, zakochaną w Hiszpanii. Prócz doskonałej znajomości rynku nieruchomości równie doskonale znam miejscowe atrakcje, co pozwala mi sugerować idealne miejsca do zakupu nieruchomości w Hiszpanii. Chętnie dzielę się swoją wiedzą dzięki czemu w krótkim czasie mogę przybliżyć Ci Hiszpanię aby szybciej stała się dla Ciebie drugim domem.",
+    "photo": "KarolinaTall.png",
+    "languages": ["PL", "EN", "ES"],
+    "phone": "+48 505 055 846"
+  },
+  {
+    "id": 3,
+    "title": "Konsultant ds. klientów inwestycyjnych",
+    "name": "Przemysław Krzywański",
+    "desc": "Potrafię rzeczowo i konkretnie przedstawić Ci atuty inwestowania w nieruchomości w Hiszpanii. Jako osoba skrupulatna, cierpliwa i potrafiąca uważnie słuchać i zapamiętywać potrafię zadawać właściwe pytania aby wypracować najlepsze rozwiązania i przedstawić oferty trafiające w Twoje gusta i potrzeby.",
+    "photo": "Przemek.png",
+    "languages": ["PL", "EN"],
+    "phone": "+48 733 489 700"
+  },
+  {
+    "id": 4,
+    "title": "Konsultant ds. klientów inwestycyjnych",
+    "name": "Michał Górecki",
+    "desc": "Jako osobowość ścisła, wnikliwa, komunikatywna, o przyjaznym usposobieniu potrafię zrozumieć Twoje potrzeby i przeprowadzić Cię przez proces decyzyjny w jasny i klarowny dla Ciebie sposób. Nieodłącznym element moich działań jest ciągłe poszerzanie wiedzy o rynku, możliwościach inwestycyjnych, szansach oraz bezpieczeństwie procesu zakupu. ",
+    "photo": "Michał.png",
+    "languages": ["PL", "EN"],
+    "phone": "+48 500 469 029"
+  }
+]

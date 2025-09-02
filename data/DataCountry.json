@@ -1,0 +1,148 @@
+[
+  {
+    "country": "hiszpania",
+    "region": ["Costa Blanca/Calida", "Costa del Sol"],
+    "showed": ["Costa Blanca", "Costa del Sol"],
+    "query": [
+      { "query": "costa-blanca", "querySearch": "Costa Blanca" },
+      { "query": "costa-del-sol", "querySearch": "Costa del Sol" }
+    ],
+    "cities": [
+      {
+        "name": "Costa Blanca",
+        "city": [
+          "Gandia",
+          "Denia",
+          "Javea",
+          "Benissa",
+          "Moraira",
+          "Calpe",
+          "Altea",
+          "Villajoyosa",
+          "Benidorm",
+          "Elche",
+          "Santa Pola",
+          "Orihuela",
+          "Murcia",
+          "Torrevieja",
+          "Guardamar",
+          "Cabo Roig",
+          "Punta Prima"
+        ]
+      },
+      {
+        "name": "Costa del Sol",
+        "showed": ["Costa del Sol"],
+        "city": ["Manillva", "Marbella", "Mijas", "Malaga"]
+      },
+      {
+        "name": "Costa Calida",
+        "city": [
+          "Cartagena",
+          "La Unión",
+          "Los Alcázares",
+          "San Pedro del Pinatar",
+          "San Javier",
+          "Torre Pacheco",
+          "Fuente Álamo",
+          "Mazarrón"
+        ]
+      }
+    ]
+  },
+  {
+    "country": "cypr",
+    "region": ["Cypr Południowy"],
+    "showed": ["Cypr Południowy"],
+    "query": [{ "query": "cypr-poludniowy", "querySearch": "Cypr Południowy" }],
+    "cities": [
+      {
+        "name": "Costa Blanca",
+        "city": [
+          "Gandia",
+          "Denia",
+          "Javea",
+          "Benissa",
+          "Moraira",
+          "Calpe",
+          "Altea",
+          "Villajoyosa",
+          "Benidorm",
+          "Elche",
+          "Santa Pola",
+          "Orihuela",
+          "Murcia",
+          "Torrevieja",
+          "Guardamar",
+          "Cabo Roig",
+          "Punta Prima"
+        ]
+      },
+      {
+        "name": "Costa del Sol",
+        "showed": ["Costa del Sol"],
+        "city": ["Manillva", "Marbella", "Mijas", "Malaga"]
+      },
+      {
+        "name": "Costa Calida",
+        "city": [
+          "Cartagena",
+          "La Unión",
+          "Los Alcázares",
+          "San Pedro del Pinatar",
+          "San Javier",
+          "Torre Pacheco",
+          "Fuente Álamo",
+          "Mazarrón"
+        ]
+      }
+    ]
+  },
+  {
+    "country": "dominikana",
+    "region": ["Samaná"],
+    "showed": ["Samaná"],
+    "query": [{ "query": "samana", "querySearch": "Samaná" }],
+    "cities": [
+      {
+        "name": "Costa Blanca",
+        "city": [
+          "Gandia",
+          "Denia",
+          "Javea",
+          "Benissa",
+          "Moraira",
+          "Calpe",
+          "Altea",
+          "Villajoyosa",
+          "Benidorm",
+          "Elche",
+          "Santa Pola",
+          "Orihuela",
+          "Murcia",
+          "Torrevieja",
+          "Guardamar",
+          "Cabo Roig",
+          "Punta Prima"
+        ]
+      },
+      {
+        "name": "Costa del Sol",
+        "city": ["Manillva", "Marbella", "Mijas", "Malaga"]
+      },
+      {
+        "name": "Costa Calida",
+        "city": [
+          "Cartagena",
+          "La Unión",
+          "Los Alcázares",
+          "San Pedro del Pinatar",
+          "San Javier",
+          "Torre Pacheco",
+          "Fuente Álamo",
+          "Mazarrón"
+        ]
+      }
+    ]
+  }
+]
