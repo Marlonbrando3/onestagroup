@@ -50,7 +50,7 @@ export default function SearchInput({
     const property = Properties.filter((i) => i.id === e.id)
     console.log(property[0].id)
     router.push({
-      pathname: `/nieruchomosci/${router.query.country.toLowerCase()}/${slug}`,
+      pathname: `/nieruchomosci/${router.query.country?.toLowerCase()}/${slug}`,
     })
   }
 
