@@ -65,6 +65,8 @@ export default function SearchInput({
     setRef(refNumber)
     console.log(RefOffers)
 
+    console.log(refNumber.length)
+
     if (refNumber.length > 2) {
       RefOffers.current.style.display = "block"
     } else {

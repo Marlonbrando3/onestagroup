@@ -30,11 +30,11 @@ function HomeView() {
   console.log(isMobile, isVideoLoaded)
 
   return (
-    <div className="relative lg:h-screen md:w-[1500px] h-screen disable overflow-hidden mx-auto">
+    <div className="relative lg:h-screen md:w-screen h-screen disable overflow-hidden mx-auto">
       <div
         className={`${GreatVibes.className} absolute w-[100vw] h-screen text-center top-[22vh] text-[80px] font-[600] text-slate-800`}
       >
-        <div className="w-full mx-auto leading-[70px] hidden lg:block">
+        <div className="w-full mx-auto px-auto leading-[70px] hidden lg:block text-center">
           Znajdź swój{" "}
           <span className="font-bold text-orange-600">nowy dom</span> lub{" "}
           <span className="font-bold text-orange-600">

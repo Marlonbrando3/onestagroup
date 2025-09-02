@@ -1,45 +1,45 @@
-import React, { useState, useRef } from "react";
-import { useRouter } from "next/router";
-import DataCountry from "../data/DataCountry.json";
-import { BonheurRoyaleFont, Red_Hat_DisplayFont } from "../fonts/fonts";
-import { IoSearchOutline } from "react-icons/io5";
-import Properties from "../public/properties.json";
+import React, { useState, useRef } from "react"
+import { useRouter } from "next/router"
+import DataCountry from "../data/DataCountry.json"
+import { BonheurRoyaleFont, Red_Hat_DisplayFont } from "../fonts/fonts"
+import { IoSearchOutline } from "react-icons/io5"
+import Properties from "../public/properties.json"
 
 export default function SearchButton() {
-  const router = useRouter();
-  const advancedSearch = useRef<any>();
+  const router = useRouter()
+  const advancedSearch = useRef<any>()
 
-  const countryData = useRef<any>();
+  const countryData = useRef<any>()
 
-  const [showedadvancedSearch, setshowedadvancedSearch] = useState(false);
+  const [showedadvancedSearch, setshowedadvancedSearch] = useState(false)
 
-  const [countryChoosed, setCountryChoosed] = useState("hiszpania");
+  const [countryChoosed, setCountryChoosed] = useState("hiszpania")
 
-  const [dataRegion, setDataRegion] = useState<any>();
-  const [dataType, setDataType] = useState<any>();
-  const [dataMarket, setDataMarket] = useState<any>();
-  const [dataBathsmin, setDataBathsmin] = useState<any>();
-  const [dataBathsmax, setDataBathsmax] = useState<any>();
-  const [dataBedsmin, setDataBedsmin] = useState<any>();
-  const [dataBedsmax, setDataBedsmax] = useState<any>();
-  const [dataPricemin, setDataPricemin] = useState<any>();
-  const [dataPricemax, setDataPricemax] = useState<any>();
+  const [dataRegion, setDataRegion] = useState<any>()
+  const [dataType, setDataType] = useState<any>()
+  const [dataMarket, setDataMarket] = useState<any>()
+  const [dataBathsmin, setDataBathsmin] = useState<any>()
+  const [dataBathsmax, setDataBathsmax] = useState<any>()
+  const [dataBedsmin, setDataBedsmin] = useState<any>()
+  const [dataBedsmax, setDataBedsmax] = useState<any>()
+  const [dataPricemin, setDataPricemin] = useState<any>()
+  const [dataPricemax, setDataPricemax] = useState<any>()
 
   const regions = DataCountry.map((r) => {
     if (r.country === countryChoosed) {
       return r.region.map((i, index) => (
-        <option key={i} className="bg-white" value={r.showed[index]}>
+        <option key={i} className="hover:bg-orange-400" value={r.showed[index]}>
           {i}
         </option>
-      ));
+      ))
     }
-  });
+  })
 
   const handleChoosingCountry = (e: any) => {
     // setQueries({ ...queries });
-    let paramsName = e.target.name;
+    let paramsName = e.target.name
     // console.log(paramsBolean)
-    let paramsValues = e.target.value;
+    let paramsValues = e.target.value
     // console.log(paramsValues);
 
     if (
@@ -50,27 +50,29 @@ export default function SearchButton() {
       paramsValues === "dominikana" ||
       paramsValues === "włochy"
     ) {
-      setCountryChoosed(paramsValues);
+      setCountryChoosed(paramsValues)
     }
-  };
+  }
 
-  const [queries, setQueries] = useState<any>("");
+  const [queries, setQueries] = useState<any>("")
 
   const showingAdvancedFilters = () => {
-    setshowedadvancedSearch(!showedadvancedSearch);
+    setshowedadvancedSearch(!showedadvancedSearch)
     if (showedadvancedSearch === true) {
-      advancedSearch.current.style.height = "23px";
-      advancedSearch.current.style.top = "-23px";
-      advancedSearch.current.style.height = "300px";
-      advancedSearch.current.style.top = "-230px";
+      advancedSearch.current.style.height = "23px"
+      advancedSearch.current.style.top = "-23px"
+      advancedSearch.current.style.height = "300px"
+      advancedSearch.current.style.top = "-230px"
     }
-  };
+  }
 
   const CountingProperties = () => {
     let PropertiesFounded: any = Properties.filter((p) => {
       if (
         p.country.name.toLowerCase() == (countryChoosed as string) &&
-        (p.section === queries.typ || queries.typ === "All" || queries.typ === undefined) &&
+        (p.section === queries.typ ||
+          queries.typ === "All" ||
+          queries.typ === undefined) &&
         (p.foreignLocation === queries.region ||
           queries.region === undefined ||
           queries.region === "All") &&
@@ -87,11 +89,11 @@ export default function SearchButton() {
           queries.cena_do === undefined ||
           queries.cena_do === "All")
       )
-        return true;
-    });
+        return true
+    })
     // console.log(PropertiesFounded.length);
-    return PropertiesFounded.length;
-  };
+    return PropertiesFounded.length
+  }
 
   const handleFormating = (data: any) => {
     const dataTemp = data
@@ -106,94 +108,94 @@ export default function SearchButton() {
       .replace(/ś/g, "s")
       .replace(/ź/g, "z")
       .replace(/ż/g, "z")
-      .replace(/á/g, "a");
-    console.log(dataTemp);
-    return dataTemp;
-  };
+      .replace(/á/g, "a")
+    console.log(dataTemp)
+    return dataTemp
+  }
 
   const handleChoosingRegion = (e: any) => {
     if (e.target.value === "All") {
-      const { region, ...rest } = queries;
-      setQueries(rest);
-      setDataRegion("All");
+      const { region, ...rest } = queries
+      setQueries(rest)
+      setDataRegion("All")
     } else {
-      setDataRegion(e.target.value);
+      setDataRegion(e.target.value)
       setQueries({
         ...queries,
         region: handleFormating(e.target.value),
-      });
+      })
     }
-  };
+  }
 
   const handleChangingType = (e: any) => {
     if (e.target.value === "All") {
-      const { zabudowa, ...rest } = queries;
-      setQueries(rest);
-      setDataType("All");
+      const { zabudowa, ...rest } = queries
+      setQueries(rest)
+      setDataType("All")
     } else {
-      setDataType(e.target.value);
+      setDataType(e.target.value)
       setQueries({
         ...queries,
         zabudowa: handleFormating(e.target.value),
-      });
+      })
     }
-  };
+  }
 
   const handleChangingPriceFrom = (e: any) => {
     if (e.target.value === "All") {
-      const { cena_od, ...rest } = queries;
-      setQueries(rest);
-      setDataPricemin("All");
+      const { cena_od, ...rest } = queries
+      setQueries(rest)
+      setDataPricemin("All")
     } else {
-      setDataPricemin(e.target.value);
+      setDataPricemin(e.target.value)
       setQueries({
         ...queries,
         cena_od: handleFormating(e.target.value),
-      });
+      })
     }
-  };
+  }
 
   const handleChangingPriceTo = (e: any) => {
     if (e.target.value === "All") {
-      const { cena_do, ...rest } = queries;
-      setQueries(rest);
-      setDataPricemax("All");
+      const { cena_do, ...rest } = queries
+      setQueries(rest)
+      setDataPricemax("All")
     } else {
-      setDataType(e.target.value);
+      setDataType(e.target.value)
       setQueries({
         ...queries,
         cena_do: handleFormating(e.target.value),
-      });
+      })
     }
-  };
+  }
 
   const handleChangingBedsFrom = (e: any) => {
     if (e.target.value === "All") {
-      const { sypialni_od, ...rest } = queries;
-      setQueries(rest);
-      setDataPricemax("All");
+      const { sypialni_od, ...rest } = queries
+      setQueries(rest)
+      setDataPricemax("All")
     } else {
-      setDataType(e.target.value);
+      setDataType(e.target.value)
       setQueries({
         ...queries,
         sypialni_od: handleFormating(e.target.value),
-      });
+      })
     }
-  };
+  }
 
   const handleChangingBedsTo = (e: any) => {
     if (e.target.value === "All") {
-      const { sypialni_do, ...rest } = queries;
-      setQueries(rest);
-      setDataPricemax("All");
+      const { sypialni_do, ...rest } = queries
+      setQueries(rest)
+      setDataPricemax("All")
     } else {
-      setDataType(e.target.value);
+      setDataType(e.target.value)
       setQueries({
         ...queries,
         sypialni_do: handleFormating(e.target.value),
-      });
+      })
     }
-  };
+  }
 
   function slugify(title: string): string {
     return title
@@ -203,18 +205,18 @@ export default function SearchButton() {
       .replace(/ł/g, "l") // osobno: ł → l
       .replace(/[^a-z0-9\s-]/g, "") // usuwa wszystko poza literami, cyframi i myślnikami
       .trim()
-      .replace(/\s+/g, "-");
+      .replace(/\s+/g, "-")
   }
 
   const handleSearch = (e: any) => {
-    const country = slugify(countryChoosed as string);
+    const country = slugify(countryChoosed as string)
 
-    e.preventDefault();
+    e.preventDefault()
     router.push({
       pathname: `/nieruchomosci/${country}`,
       query: queries,
-    });
-  };
+    })
+  }
 
   const advancedSearchDiv = (
     <div
@@ -225,7 +227,11 @@ export default function SearchButton() {
         // onClick={showingAdvancedFilters}
         className=" text-white duration-200 mr-10 bg-orange-500 right-10 text-md px-4 rounded-t-md font-[400] cursor-pointer hover:bg-white hover:text-slate-900 text-center border-t"
       >
-        {showedadvancedSearch ? <p>Zwiń</p> : <p>Zaawansowane wyszukiwanie (wkrótce)</p>}{" "}
+        {showedadvancedSearch ? (
+          <p>Zwiń</p>
+        ) : (
+          <p>Zaawansowane wyszukiwanie (wkrótce)</p>
+        )}{" "}
       </div>
       <div className="text-black bg-white right-10 w-full lg:h-[230px] h-[380px] text-md px-4 rounded-t-md font-[400] flex-wrap lg:flex-row cursor-pointer flex lg:items-center items-start justify-center pt-4">
         <div className="lg:w-1/4 w-1/2 lg:h-full h-1/3">
@@ -282,7 +288,7 @@ export default function SearchButton() {
         </div>
       </div>
     </div>
-  );
+  )
 
   return (
     <>
@@ -321,7 +327,7 @@ export default function SearchButton() {
                 name="regions"
                 className="lg:w-[260px] w-full md:w-[100%] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 cursor-pointer border-[1px] border-yellow-500 tracking-[0.4px] hover:bg-orange-400 hover:text-white duration-200"
               >
-                <option className="bg-white" value="All">
+                <option className="" value="All">
                   Wszystkie regiony
                 </option>
                 {regions}
@@ -333,7 +339,7 @@ export default function SearchButton() {
               </label>
               <select
                 onChange={handleChangingType}
-                className="lg:w-[220px] w-[100%] md:w-[96.5%] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 cursor-pointer border-[1px] border-yellow-500 tracking-[0.4px] hover:bg-orange-400 hover:text-white duration-200"
+                className="lg:w-[220px] w-[100%] md:w-[96.5%] lg:h-[40px] h-[45px] rounded-[4px] text-[17px] font-[400] pl-2 cursor-pointer border-yellow-500 tracking-[0.4px] hover:bg-orange-400 hover:text-white duration-200 border-[1px]"
               >
                 <option value="All" data-name="Wszystkie typy">
                   Wszystkie typy
@@ -459,19 +465,19 @@ export default function SearchButton() {
                 </select>
               </div>
             </div>
-            <button className="absolute right-1 bottom-1 lg:w-[220px] w-[190px] text-white lg:h-[60px] h-[62px] bg-gradient-to-r from-orange-500  to-indigo-400  mt-7 mx-auto lg:mx-0 text-[24px] font-[400] border-2 border-white text-center hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-500 hover:border-orange-500 duration-200 flex-col items-center justify-center rounded-l-[40px] rounded-b-[3px] rounded-r-[4px]">
+            <button className="absolute right-1 bottom-1 lg:w-[220px] w-[190px] text-white lg:h-[60px] h-[62px] bg-gradient-to-r from-orange-500  to-indigo-400  mt-7 mx-auto lg:mx-0 text-[24px] font-[400] border-2 border-white text-center hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-500 hover:border-orange-500 duration-200 flex-col items-center justify-center rounded-t-[30px] rounded-r-[1px] rounded-b-[3px]">
               <div className="flex items-center justify-center">
                 <IoSearchOutline className="w-[24px] h-[24px]" />
                 <p className="pl-[5px] text-[24px]">Szukaj</p>
               </div>
-              <p className="text-[15px] font-bold">
+              {/* <p className="text-[15px] font-bold">
                 pośród <span>{CountingProperties()}</span> ogłoszeń
-              </p>
+              </p> */}
             </button>
           </form>
           {advancedSearchDiv}
         </div>
       </div>
     </>
-  );
+  )
 }
