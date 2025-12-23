@@ -71,7 +71,6 @@ function HomeView() {
           src="/Timeline2.mp4"
           // src="https://www.youtube.com/embed/QSKrrqmxpaw?si=g_hflB_vSSZLszs5&autoplay=1&mute=1&showinfo=0&controls=0&vq=hd1080&loop=1&playlist=QSKrrqmxpaw"
           title="YouTube video player"
-          frameborder="0"
           autoPlay
           muted
           loop

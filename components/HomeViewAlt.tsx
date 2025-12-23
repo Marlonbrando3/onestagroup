@@ -116,13 +116,12 @@ export default function HomeViewAlt() {
             height="110%"
             src="/Timeline2.mp4"
             title="YouTube video player"
-            frameborder="0"
             autoPlay
             muted
             loop
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
+            // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            // referrerpolicy="strict-origin-when-cross-origin"
+            // allowfullscreen
             className="w-[90%] lg:h-[560px] h-[800px] clear-both object-cover rounded-[10px] border"
           ></video>{" "}
         </div>
