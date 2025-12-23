@@ -59,6 +59,7 @@ export default function HomeViewAlt() {
                   fill
                   objectFit="cover"
                   objectPosition="top"
+                  alt="onesta_Marek"
                 ></Image>
               </div>
 
@@ -68,6 +69,7 @@ export default function HomeViewAlt() {
                   fill
                   objectFit="cover"
                   objectPosition="top"
+                  alt="onesta_Karolina"
                 ></Image>
               </div>
               <div className="shadow-md h-[100px] w-[100px] ">
@@ -78,6 +80,7 @@ export default function HomeViewAlt() {
                     fill
                     objectFit="cover"
                     objectPosition="top"
+                    alt="onesta_Przemek"
                   ></Image>
                 </div>
               </div>
