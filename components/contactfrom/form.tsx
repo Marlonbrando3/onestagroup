@@ -1,7 +1,6 @@
 "use client";
 import { QuicksandSans } from "../../fonts/fonts";
 
-import { cookies } from "next/headers";
 import React from "react";
 import { useState } from "react";
 
@@ -52,7 +51,9 @@ export default function Form() {
       <div className="flex justify-center flex-col lg:flex-row">
         <div className="flex lg:w-[420px] w-full flex-wrap h-[430px]">
           <div className="lg:w-[410px] w-full">
-            <div className="text-white">Proszę o przesłanie przykładowych ofert</div>
+            <div className="text-white">
+              Proszę o przesłanie przykładowych ofert
+            </div>
             <select
               defaultValue="wybierz termin"
               className="lg:w-[410px] w-full rounded-[5px] h-[35px]"
@@ -96,7 +97,9 @@ export default function Form() {
             ></input>
           </div>
           <div className="lg:w-[410px] w-full">
-            <div className="text-white">Kiedy (orientacyjnie) planujesz przylot?</div>
+            <div className="text-white">
+              Kiedy (orientacyjnie) planujesz przylot?
+            </div>
             <select
               className="lg:w-[410px] w-full rounded-[5px] h-[35px]"
               value={phone}
@@ -131,8 +134,8 @@ export default function Form() {
           required
         ></input>
         <p className="text-white ml-[4px]">
-          Wyrażam zgodę na przetwarzanie moich danych osobowych celem kontaktu ze mną oraz w celach
-          marketingowych. Zgodnie z polityką prywatności.
+          Wyrażam zgodę na przetwarzanie moich danych osobowych celem kontaktu
+          ze mną oraz w celach marketingowych. Zgodnie z polityką prywatności.
         </p>
       </div>
       <button className="text-white p-[7px] rounded-[5px] bg-orange-500 w-[150px] mt-[15px] hover:bg-blue-500 duration-200">

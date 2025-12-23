@@ -1,6 +1,5 @@
 "use client";
 
-import { cookies } from "next/headers";
 import React from "react";
 import { useState } from "react";
 
@@ -37,7 +36,10 @@ export default function FormOsiedleLesne() {
   };
 
   return (
-    <form onSubmit={sendForm} className="p-[30px] bg-[#e4c27e] rounded-[7px] mx-auto lg:w-[900px]">
+    <form
+      onSubmit={sendForm}
+      className="p-[30px] bg-[#e4c27e] rounded-[7px] mx-auto lg:w-[900px]"
+    >
       {/* <div className="text-white text-[25px] mb-[30px] w-[300px] font-bold">
         Jak możemy Ci pomóc?
       </div> */}
@@ -94,8 +96,8 @@ export default function FormOsiedleLesne() {
           required
         ></input>
         <p className="text-white ml-[4px]">
-          Wyrażam zgodę na przetwarzanie moich danych osobowych celem kontaktu ze mną oraz w celach
-          marketingowych. Zgodnie z polityką prywatności.
+          Wyrażam zgodę na przetwarzanie moich danych osobowych celem kontaktu
+          ze mną oraz w celach marketingowych. Zgodnie z polityką prywatności.
         </p>
       </div>
       <button className="hover:text-white border-2 border-white p-[7px] rounded-[5px] hover:bg-[#d5a74c] w-[150px] mt-[15px] bg-white text-[#e4c27e] duration-200">
