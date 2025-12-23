@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "strategy",
+    "description": "Celem jest przedstawianie Ci zestawów ofert jak najbardziej zbliżonych do Twoich potrzeb. Strategia to metoda dzięki, której wspólnie z klientem wypracowujemy, rozumiem preferencje Jego preferencje i finalnie dostarczamy zestawy ofert każdorazowo omawiając z klientem plusy i minusy danej opcji oraz atuty oraz wady ze strony klienta, co pozwala wybieram coraz trafniejsze oferty przy każdym kolejnym podejściu. "
+  },
+  {
+    "id": 2,
+    "name": "preselection",
+    "description": "Aby dokładnie spełnić potrzebę kleinta tj. przedstawić trafne i satysfakcjinujące oferty, etap preselekcji ofert jest poprzedzony dokłądnym wywiadem celem poznania i zrozumieć etapu, potrzeb i celów zakupowych przyświecający klientowi."
+  },
+  {
+    "id": 3,
+    "name": "negotiations",
+    "description": "Negocjujemy i występujemy w procesie transkacyjnym po stornie klienta zawsze. To oznacza, że współpracują z deweloperami, mając z Nimki relację biznesową mamy nieco większe przełożenie na skuteczność negocjacji niż sam kupujący. Negocjacje kończą się różnie, zależą głownie od skali projektu, poziomu aktualnego zainteresowania."
+  },
+  {
+    "id": 4,
+    "name": "prezentation",
+    "description": "Po zakończonym procesie proselekcji oraz późniejszym ustaleniu kryteriów, wybraniu ofert kolejnym krokiem jest spotkanie na miejscu i prezentacje nieruchmości, oklicy lub miasta wraz omówieniem istotnych urbanistycznie miejsc, niuansów, potencjału inwestycyjnego. Prezentacje na ogół w praktyce trwają 1 lub 2 dni, niemniej ten czas nie jest ograniczony."
+  },
+  {
+    "id": 5,
+    "name": "loan",
+    "description": "Kredytowanie jest coraz częściej element zakupu. Nieruchomości w Hiszpanii nie należą do najtańszych, a cena za spełnienie marzeń często nie gra roli. Współpracujemy z bankami w Hiszpanii, prowaidzimy w imieniu klienta symulacje oraz formalny proces ubiegania się o kredyt."
+  },
+  {
+    "id": 6,
+    "name": "notary",
+    "description": "Każda sprzedaż zakończona jest aktem notarialnym w obecności tłumacza przysięgłego (oraz prawnika na życzenie). Akt własności, który jest wynikiem tego spotkania jest bezpiecznym i prawomocnym dowodem własności."
+  },
+  {
+    "id": 7,
+    "name": "renting",
+    "description": "Zarządzanie zakupioną nieruchomością w okresach w których właścicieli nie ma jest najczęściej wybieraną opcją. Przygotowujemy mieszkanie do wynajmu zaczynając od projektów aranżacji dla klientów i kończąc na fizycznej ustawieniu mebli, dekoracji oraz publikacji ogłoszeń na portalach. W nastepnych etapach zarządzamy tzw. wymianą gości i efektywnością obłożenia na tle cen za wynajem. Korzytamy z portalów płątnych jak i z własnej bazy klientów, własnych rozwiązań."
+  },
+  {
+    "id": 8,
+    "name": "law",
+    "description": "Dla bezpieczeństwa procesu zakupu prawnik weryfikuje spójność dokumentów pod kątem ich szerogoko pojętej poprawności. Najważjsze będą: formalni właściciele nieruchomości, weryfikacja zadłużenia, weryfikacja gwarancji bankowych oraz porpawność umów rezerwacyjnych, sprzedażowych."
+  }
+]

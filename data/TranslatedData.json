@@ -1,0 +1,7 @@
+[
+    {"SitePL":"Pierwotny","Database":"first"},
+    {"SitePL":"Wtórny", "Database":"second"},
+    {"SitePL":"Apartament", "Database":"apartment"},
+    {"SitePL":"Dom", "Database":"house"},
+    {"SitePL":"Działka", "Database":"plot"}
+]

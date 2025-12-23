@@ -1,0 +1,8 @@
+{
+  "regions": [
+    { "name": "Costa Blanca", "query": "costa-blanca" },
+    { "name": "Costa del Sol", "query": "costa-del-sol" },
+    { "name": "Cypr Południowy", "query": "cypr-poludnowy" },
+    { "name": "Samana", "query": "samana" }
+  ]
+}

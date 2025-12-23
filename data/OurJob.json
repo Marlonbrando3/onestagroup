@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "title": "Rozmowa i poznanie Twoich potrzeb",
+    "description": "Wypracowujemy zrozumienie na jakim etapie swojej drogi  Państwo jesteście aby móc zaoferować to czego w owym etapie możecie potrzebować. Budujemy wspólnie solidne podstawy do kolejnych działań."
+  },
+  {
+    "id": 2,
+    "title": "Przekazanie i omówienie wybranych ofert",
+    "description": "Przesłamy oferty które wpisują się w ustalone wstępnie oczekiwania. Od tego kroku zaczynamy efektywne działanie, ponieważ opierając się na przykładach możemy wykluczyć pewne cechy nieruchomości, a inne uznać za pożądane."
+  },
+  {
+    "id": 3,
+    "title": "Wizyta i prezentacja nieruchomości na miejscu",
+    "description": "Spotykamy się z Państwem w Hiszpanii lub innym ciepłym kraju. W ciągu 1-2 dni oprowadzamy Państwa po całej okolicy, pokazujemy nieruchomości oraz omawiamy atuty i wady danych rozwiązań."
+  },
+  {
+    "id": 4,
+    "title": "Rezerwacja lub dalsze poszukiwania",
+    "description": "Podpisujemy umowę rezerwacyjną wraz z wpłatą zaliczki. Gwarantuje to, usunięcie oferty z rynku i rozpoczęcie procedury formalnego zakupu. Po wpłacie zaliczki i w razie potrzeby również możemy organizować kredyt."
+  },
+  {
+    "id": 5,
+    "title": "Kroki zakupu i płatności",
+    "description": "Płatności na rynku pierwotnym nastepują w transzach (na ogół 30% i dopiero 70% przy akcie notarialnym). Przy rynku wtórnym całość jest wpłacana po ustaleniu poprawności wszystkich dokumentów oraz jednocześnie przed aktem notarialnym."
+  },
+  {
+    "id": 6,
+    "title": "Dopełnienie formalności",
+    "description": "Przekazanie własności następuję poprzez podpisanie aktu notarialnego. Odbywa się ono w towarzystiwe naszym oraz tłumacza przysięgłego, czasem prawnika (na życzenie). Gratulacje! Mieszkanie jest Twoje."
+  },
+  {
+    "id": 7,
+    "title": "Umeblowanie i zarządzanie najmem",
+    "description": "Jesli Państwa zamiarem jest wynajem nieruchomości pomagamy w każdym kroku na tej ścieżce. Umeblujmey mieszkanie, uzyskamy licencję turystyczną oraz będziemy nim skutecznie zarządzać ze średnim zyskiem ok 7%."
+  }
+]
