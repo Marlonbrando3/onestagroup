@@ -82,7 +82,7 @@ export default function HomeViewAlt() {
                 </div>
               </div>
             </div>
-            <div className="hidden md:block cursor-pointer border-[#275278] text-[18px] font-[400] mt-[60px] text-left w-[280px] py-[1px] hover:bg-[#E9B75F] duration-200 hover:text-white hover:border-[#E9B75F] text-black pl-[40px]  leading-[20px] relative">
+            <div className="hidden md:block cursor-pointer border-[#275278] text-[18px] font-[400] mt-[60px] text-left w-[280px] py-[1px] hover:bg-[#E9B75F] duration-200 leading-[20px] relative">
               Przewijaj stronę dalej <br></br> aby dowiedzieć się więcej
               <div className="scroll-downs text-black">
                 <div className="mousey">
