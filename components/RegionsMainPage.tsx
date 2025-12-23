@@ -59,7 +59,7 @@ export default function RegionsMainPage() {
             icon={
               <BsPersonHearts className="w-[100px] h-[90px] text-[#E9B75F]" />
             }
-            t="Południowy"
+            region="Południowy"
             country="Cypr"
             query="cypr-poludniowy"
             d="Relacyjność i zrozumienie przez empatyczny zespół to coś co skutkuje dobrą komunikacją i efektywną pracą z oczekiwanymi efekami."
