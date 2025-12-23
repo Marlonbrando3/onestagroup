@@ -13,7 +13,7 @@ export default function RegionsMainPage() {
         className={`${MontserratSans.className} w-[90vw] h-auto mx-auto flex flex-wrap mt-[80px] `}
       >
         <div className="w-full h-[100px]">
-          <p className="md:text-[32px] text-[22px] text-[#275278] w-auto font-[400] h-full items-center lg:inline-flex">
+          <p className="md:text-[32px] text-[25px]  text-[#275278] w-auto font-[400] h-full items-center lg:inline-flex">
             W którym regionie świata szukasz{" "}
             <span className="font-[800]"> &nbsp;miejsca dla siebie?</span>
           </p>

@@ -12,10 +12,13 @@ export default function WhatWeDoMainPage() {
       <div
         className={`${MontserratSans.className} w-[90vw] md:h-[1000px]  mx-auto flex flex-wrap `}
       >
-        <div className="w-full h-[100px]">
-          <p className="md:text-[32px] text-[22px] text-[#275278] w-auto font-[400] h-full items-center lg:inline-flex">
+        <div className="w-full h-[100px] mb-[80px] md:mb-[0px]">
+          <p className="md:text-[32px] text-[25px] text-[#275278] w-auto font-[400] h-full items-center lg:inline-flex ">
             6 powodów dla których{" "}
-            <span className="font-[800]"> &nbsp;zechcesz z nami pracować.</span>
+            <span className="font-[800] md:ml-[5px] text-[25px] ">
+              {" "}
+              zechcesz z nami pracować.
+            </span>
           </p>
         </div>
         <div className="hidden md:visible w-[320px] h-[800px] bg-[#275278] relative rounded-[10px]">
