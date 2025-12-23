@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@hotjar/browser": "^1.0.9",
     "@react-icons/all-files": "^4.1.0",
