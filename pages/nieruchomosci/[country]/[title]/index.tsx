@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { useCallback, useRef } from "react";
 import Head from "next/head";
-import Script from "next/script";
 import HeaderOffer from "../../../../components/HeaderOffer";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
@@ -9,7 +8,6 @@ import MiniHomeViewOffer from "../../../../components/SearchEngine/MiniHomeViewO
 import ImagesInPropetyCard from "@/components/ImagesInPropetyCard";
 import { useState, useEffect } from "react";
 import React from "react";
-import Features from "../../../../components/Features";
 import { FaChevronRight } from "react-icons/fa6";
 import { FaChevronLeft } from "react-icons/fa6";
 import { IoMdPin } from "react-icons/io";
@@ -20,13 +18,14 @@ import { BiArea } from "react-icons/bi";
 import Descryption from "../../../../components/Descryption";
 import Properties from "../../../../public/properties.json";
 import Footer from "@/components/Footer";
-import { TenorsSans, QuicksandSans } from "../../../../fonts/fonts";
+import { TenorsSans } from "../../../../fonts/fonts";
 import { CiParking1 } from "react-icons/ci";
 import Form from "@/components/SearchEngine/IntresetedPopUp/form";
 import { IoClose } from "react-icons/io5";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Loan from "@/components/loanCalc/loan";
 import Link from "next/link";
+import AnalitycsTools from "@/analitycs/analitycsTools";
 
 export default function Property() {
   const router = useRouter();
@@ -75,7 +74,8 @@ export default function Property() {
 
       const PropertyImages = propertyDataTemp[0]?.images.filter(
         (i: any) =>
-          (i.id && i.isScheme === false && i.description === null) || i.description === "strona",
+          (i.id && i.isScheme === false && i.description === null) ||
+          i.description === "strona"
       );
 
       //delete secheme from images
@@ -141,7 +141,9 @@ export default function Property() {
 
       if (photosC - photosR === 0) {
         marginWork =
-          margin - (oneImageLength - oneImageLength * (cutedImage - Math.floor(cutedImage)));
+          margin -
+          (oneImageLength -
+            oneImageLength * (cutedImage - Math.floor(cutedImage)));
       }
 
       console.log(photosR - photosC);
@@ -230,7 +232,11 @@ export default function Property() {
       moreInfoLink.current.style.display = "block";
 
       // headerDesktop.current.style.color = "black";
-    } else if (scrollY < 30 && innerWidth > 1024 && !router.asPath?.includes("blog")) {
+    } else if (
+      scrollY < 30 &&
+      innerWidth > 1024 &&
+      !router.asPath?.includes("blog")
+    ) {
       headerTitle.current.style.transition = "0.3s ease-in-out";
       headerTitle.current.style.width = "100%";
       priceTitle.current.style.display = "none";
@@ -240,7 +246,11 @@ export default function Property() {
       headerTitle.current.style.justifyContent = "center";
     }
     // mobile changing title
-    else if (scrollY > 30 && innerWidth < 1024 && !router.asPath?.includes("blog")) {
+    else if (
+      scrollY > 30 &&
+      innerWidth < 1024 &&
+      !router.asPath?.includes("blog")
+    ) {
       headerTitle.current.style.transition = "0.3s ease-in-out";
       priceTitle.current.style.display = "block";
       // headerTitle.current.style.width = "95%";
@@ -251,7 +261,11 @@ export default function Property() {
 
       headerTitle.current.style.top = "-7px";
       moreInfoLink.current.style.display = "block";
-    } else if (scrollY < 30 && innerWidth < 1024 && !router.asPath?.includes("blog")) {
+    } else if (
+      scrollY < 30 &&
+      innerWidth < 1024 &&
+      !router.asPath?.includes("blog")
+    ) {
       headerTitle.current.style.transition = "0.3s ease-in-out";
       headerTitle.current.style.width = "100%";
       priceTitle.current.style.display = "none";
@@ -272,42 +286,7 @@ export default function Property() {
 
   return (
     <>
-      {/* <!-- Google tag (gtag.js) --> */}
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-P4VZ7P7VZ5"></Script>
-      <Script id="google-analitycs">
-        {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-P4VZ7P7VZ5');
-              `}
-      </Script>
-      <Script id="facebook-pixel">
-        {`!function(f,b,e,v,n,t,s)
-                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                  n.queue=[];t=b.createElement(e);t.async=!0;
-                  t.src=v;s=b.getElementsByTagName(e)[0];
-                  s.parentNode.insertBefore(t,s)}(window, document,'script',
-                  'https://connect.facebook.net/en_US/fbevents.js');
-                  fbq('init', '178665974358939');
-                  fbq('track', 'PageView');
-                `}
-      </Script>
-      {/* <!-- Hotjar Tracking Code for https://onesta.com.pl --> */}
-      <Script id="hotjar">
-        {`
-                    (function(h,o,t,j,a,r){
-                        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                        h._hjSettings={hjid:3555670,hjsv:6};
-                        a=o.getElementsByTagName('head')[0];
-                        r=o.createElement('script');r.async=1;
-                        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                        a.appendChild(r);
-                    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-                    `}
-      </Script>
+      <AnalitycsTools />
       <Head>
         <title>Nieruchomości w Hiszpanii - Onesta Group</title>
         <link rel="shortcut icon" href="/logotype.png" />
@@ -336,7 +315,10 @@ export default function Property() {
               onClick={handleClosingIntresetedPopUp}
               className="absolute right-[10px] top-[10px] z-[70] cursor-pointer"
             />
-            <Form intrestedPopUp={intrestedPopUp} OfferNumber={propertyData[0]?.listingId} />
+            <Form
+              intrestedPopUp={intrestedPopUp}
+              OfferNumber={propertyData[0]?.listingId}
+            />
           </div>
         </div>
         <div className="w-full  bg-white z-[999]">
@@ -348,7 +330,9 @@ export default function Property() {
           className="fixed left-0 right-0 flex items-center h-[80px] w-full px-auto my-[10px] mx-auto bg-white top-[60px] z-40 px-[30px] justify-center"
         >
           <div className=" md:text-[22px] text-[17px] font-bold text-start min-w-[100px]">
-            <p className="lg:text-2xl text-sm">{propertyData[0]?.headerAdvertisement}</p>
+            <p className="lg:text-2xl text-sm">
+              {propertyData[0]?.headerAdvertisement}
+            </p>
             <p className="font-thin lg:text-[16px] text-[14px] italic">
               {propertyData[0]?.foreignStreet}
             </p>
@@ -439,14 +423,19 @@ export default function Property() {
                     <div className="text-[24px] font-[800]">
                       {propertyData[0]?.foreignLocation}
                       <br></br>
-                      <p className="text-[16px]"> {propertyData[0]?.foreignStreet} </p>
+                      <p className="text-[16px]">
+                        {" "}
+                        {propertyData[0]?.foreignStreet}{" "}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="flex flex-wrap justify-between content-center">
                 <div className="w-1/5 border-2 border-white h-[70px] bg-gray-50 pt-2">
-                  <div className="w-full flex justify-center text-[16px]">Sypalni</div>
+                  <div className="w-full flex justify-center text-[16px]">
+                    Sypalni
+                  </div>
                   <div className="flex justify-center items-center">
                     <div className="mr-2">
                       <IoBedOutline className="w-[25px] h-[25px]" />
@@ -455,7 +444,9 @@ export default function Property() {
                   </div>
                 </div>
                 <div className="w-1/5 border-2 border-white h-16 bg-gray-50 pt-2">
-                  <div className="w-full flex justify-center text-[16px]">Łazienki</div>
+                  <div className="w-full flex justify-center text-[16px]">
+                    Łazienki
+                  </div>
                   <div className="flex justify-center items-center">
                     <div className="mr-2">
                       <PiBathtubLight className="w-[25px] h-[25px]" />
@@ -464,7 +455,9 @@ export default function Property() {
                   </div>
                 </div>
                 <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
-                  <div className="w-full flex justify-center text-[16px]">Parking</div>
+                  <div className="w-full flex justify-center text-[16px]">
+                    Parking
+                  </div>
                   <div className="flex justify-center items-center">
                     <div className="mr-2">
                       <CiParking1 className="w-[25px] h-[25px]" />
@@ -473,7 +466,9 @@ export default function Property() {
                   </div>
                 </div>
                 <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
-                  <div className="w-full flex justify-center text-[16px]">Metraż</div>
+                  <div className="w-full flex justify-center text-[16px]">
+                    Metraż
+                  </div>
                   <div className="flex justify-center items-center">
                     <div className="mr-2">
                       <BiArea className="w-[25px] h-[25px]" />
@@ -482,7 +477,9 @@ export default function Property() {
                   </div>
                 </div>
                 <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
-                  <div className="w-full flex justify-center text-[16px]">Basen</div>
+                  <div className="w-full flex justify-center text-[16px]">
+                    Basen
+                  </div>
                   <div className="flex justify-center ">
                     <div className="mr-2">
                       <FaSwimmingPool className="w-[25px] h-[25px]" />
@@ -501,7 +498,9 @@ export default function Property() {
                 </div>
                 <div className="bg-white w-full h-[90px] flex flex-col justify-center items-end pl-4">
                   <div className="text-[55px] font-[800] text-yellow-500 flex items-end leading-[20px]">
-                    <p className="inline text-[30px] leading-[25px] pr-[5px]">od</p>{" "}
+                    <p className="inline text-[30px] leading-[25px] pr-[5px]">
+                      od
+                    </p>{" "}
                     <p className="leading-[40px]">
                       {propertyData[0]?.price.amount.toLocaleString()} €
                     </p>

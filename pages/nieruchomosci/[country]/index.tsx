@@ -12,6 +12,7 @@ import ContactFormMain from "../../../components/ContactFormMain";
 import MobileFilters from "@/components/MobileFilters";
 import Properties from "../../../public/properties.json";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
+import AnalitycsTools from "@/analitycs/analitycsTools";
 
 interface Property {
   id: string;
@@ -97,53 +98,7 @@ export default function Home(props: any) {
 
   return (
     <>
-      {/* <!-- Google tag (gtag.js) --> */}
-      <Script id="gtm">
-        {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-KL7WKBWL');`}
-      </Script>
-      <Script id="google-analitycs">
-        {`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-7E286CBN97');
-      `}
-      </Script>
-      <link rel="canonical" href={canonicalHref} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      <Script id="facebook-pixel">
-        {`!function(f,b,e,v,n,t,s)
-                  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                  n.queue=[];t=b.createElement(e);t.async=!0;
-                  t.src=v;s=b.getElementsByTagName(e)[0];
-                  s.parentNode.insertBefore(t,s)}(window, document,'script',
-                  'https://connect.facebook.net/en_US/fbevents.js');
-                  fbq('init', '178665974358939');
-                  fbq('track', 'PageView');
-                `}
-      </Script>
-
-      {/* <!-- Hotjar Tracking Code for https://onesta.com.pl --> */}
-      <Script id="hotjar">
-        {`(function(h,o,t,j,a,r){
-        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-        h._hjSettings={hjid:3555670,hjsv:6};
-        a=o.getElementsByTagName('head')[0];
-        r=o.createElement('script');r.async=1;
-        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-        a.appendChild(r);
-    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=')
-                    `}
-      </Script>
+      <AnalitycsTools />
       <Head>
         <title>{title}</title>
         <link rel="shortcut icon" href="/logotype.png" />
@@ -161,9 +116,18 @@ export default function Home(props: any) {
           name="Description"
           content="Biura pośrednictwa sprzedaży nieruchomości, które prezetuje najciekawsze ogłoszenia w ciepłych krajach. Przeprowdzimy Cię przez cały proces zakupowy Twojego drugiego domu"
         />
-        <meta property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii" content="image" />
-        <meta property="og:title" content="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"></meta>
-        <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
+        <meta
+          property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"
+          content="image"
+        />
+        <meta
+          property="og:title"
+          content="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"
+        ></meta>
+        <meta
+          property="og:image"
+          content="https://onesta.com.pl/onesta_og_img.png"
+        />
       </Head>
       <WhatsAppButton />
       <div ref={menu} className="duration-700 w-full z-50 bg-white">
@@ -216,17 +180,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let filtered = allProperties.filter(
     (p) =>
       p.country?.name?.toLowerCase() === country.toLowerCase() &&
-      (!zabudowa || zabudowa === "All" || p.section.toLowerCase() == (zabudowa as string)) &&
+      (!zabudowa ||
+        zabudowa === "All" ||
+        p.section.toLowerCase() == (zabudowa as string)) &&
       (!region || region === "All" || p.foreignLocation === formatRegion()) &&
       (!rynek ||
         rynek === "All" ||
-        p.mortgageMarket === (rynek === "pierwotny" ? "Primary" : "Secondary")) &&
+        p.mortgageMarket ===
+          (rynek === "pierwotny" ? "Primary" : "Secondary")) &&
       (!lazienek_od || p.noOfBathrooms >= parseInt(lazienek_od as string)) &&
       (!lazienek_do || p.noOfBathrooms <= parseInt(lazienek_do as string)) &&
       (!sypialni_od || p.noOfRooms >= parseInt(sypialni_od as string)) &&
       (!sypialni_do || p.noOfRooms <= parseInt(sypialni_do as string)) &&
       (!cena_od || p.price?.amount >= parseInt(cena_od as string)) &&
-      (!cena_do || p.price?.amount <= parseInt(cena_do as string)),
+      (!cena_do || p.price?.amount <= parseInt(cena_do as string))
   );
 
   if (sort === "cheap") {
@@ -235,7 +202,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     filtered = filtered.sort((a, b) => a.price.amount - b.price.amount);
   } else {
     filtered = filtered.sort(
-      (a, b) => new Date(b.actualisationDate).getTime() - new Date(a.actualisationDate).getTime(),
+      (a, b) =>
+        new Date(b.actualisationDate).getTime() -
+        new Date(a.actualisationDate).getTime()
     );
   }
 
