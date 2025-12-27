@@ -11,6 +11,7 @@ import Header from "@/components/Header";
 import { WorkSans } from "../../fonts/fonts";
 import Footer from "@/components/Footer";
 import Hotjar from "@hotjar/browser";
+import AnalitycsTools from "@/analitycs/analitycsTools";
 
 export default function Home() {
   const siteId = 3555670;
@@ -20,6 +21,7 @@ export default function Home() {
 
   return (
     <main className={`${WorkSans.className} w-full`}>
+      <AnalitycsTools />
       <Header />
       <Mainview />
       <div className="md:w-[1000px] mx-auto">
