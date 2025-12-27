@@ -71,11 +71,6 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         />
       </Head>
       <div className="main-index bg-white">
-        <Script id="gtm-code">
-          {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KL7WKBWL"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe>`}
-        </Script>
-        {/* <Cookies cookiesWindow={cookiesWindow} /> */}
         <WhatsAppButton />
         <Consultation
           handleConsultationPopUp={handleConsultationPopUp}

@@ -4,6 +4,7 @@ import Head from "next/head";
 import Header from "../components/Header";
 import MiniHomeView from "../components/SearchEngine/MiniHomeView";
 import Abc from "../data/Abc.json";
+import AnalitycsTools from "@/analitycs/analitycsTools";
 
 export default function ABC() {
   const chosed = useRef([]);
@@ -13,7 +14,9 @@ export default function ABC() {
 
   const ShowThisQuestion = (index) => {
     console.log(index + 1);
-    let text = Math.ceil(chosed.current[index].innerHTML.toString().length / 45);
+    let text = Math.ceil(
+      chosed.current[index].innerHTML.toString().length / 45
+    );
     console.log(text);
     Abc.map((evt) => {
       if (evt.id === index + 1) {
@@ -35,21 +38,16 @@ export default function ABC() {
 
   return (
     <div>
-      {/* <!-- Google tag (gtag.js) --> */}
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-P4VZ7P7VZ5"></Script>
-      <Script id="google-analitycs">
-        {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-P4VZ7P7VZ5');
-              `}
-      </Script>
+      <AnalitycsTools />
       <Head>
         <title>ABC Inwestowania - Onesta Group</title>
         <link rel="shortcut icon" href="/logotype.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin></link>
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin
+        ></link>
         <meta
           name="viewport"
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
@@ -70,7 +68,10 @@ export default function ABC() {
             ></div>
             <div className="w-11/12 h-full">
               <div className="font-semibold">{obj.question}</div>
-              <div className="h-0 overflow-hidden" ref={(el) => (chosed.current[index] = el)}>
+              <div
+                className="h-0 overflow-hidden"
+                ref={(el) => (chosed.current[index] = el)}
+              >
                 {obj.answer}
               </div>
             </div>
