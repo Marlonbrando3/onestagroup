@@ -30,13 +30,14 @@ export default function ContactFormMain() {
     submitButton.current.innerHTML = "Wysyłam...";
     submitButton.current.style.backgroundColor = "green";
 
-    await fetch("/api/contact", {
+    const res = await fetch("/api/contact", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ Ref: "Strona główna", dataForm }),
     }).then((res) => {
+      console.log("lala");
       console.log("Response received");
       if (res.status === 200) {
         console.log("Response succeeded!");

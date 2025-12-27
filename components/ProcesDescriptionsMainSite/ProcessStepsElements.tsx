@@ -12,7 +12,6 @@ export default function ProcessStepsElements({
 }: data) {
   const content = processDesc.filter((i) => name === i.name);
 
-  console.log(content);
   return (
     <>
       <div

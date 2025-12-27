@@ -41,7 +41,7 @@ export default function (req: any, res: any) {
       if (err) console.log(err);
       else console.log(info);
     });
-    res.status(200);
+    return res.status(200).json({ ok: true });
   }
 
   send();
