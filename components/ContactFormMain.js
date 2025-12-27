@@ -28,7 +28,7 @@ export default function ContactFormMain() {
 
     console.log("Sending");
     submitButton.current.innerHTML = "Wysyłam...";
-    submitButton.current.style.backgroundColor = "green";
+    submitButton.current.style.backgroundColor = "yellow";
 
     const res = await fetch("/api/contact", {
       method: "POST",
@@ -45,6 +45,8 @@ export default function ContactFormMain() {
         window.dataLayer.push({
           event: "form_main_site",
         });
+        submitButton.current.style.backgroundColor = "green";
+        submitButton.current.innerHTML = "Wiadomość wysłana!";
       } else {
         console.log("Response failed!");
       }
