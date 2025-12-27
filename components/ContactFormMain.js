@@ -36,20 +36,23 @@ export default function ContactFormMain() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ Ref: "Strona główna", dataForm }),
-    })
-      .then((res) => {
-        console.log("Response received");
-        if (res.status === 200) {
-          console.log("Response succeeded!");
-        } else {
-          console.log("Response failed!");
-        }
-      })
-      .then(
-        router.push({
-          pathname: "https://onesta.com.pl/thankyoupage",
-        })
-      );
+    }).then((res) => {
+      console.log("Response received");
+      if (res.status === 200) {
+        console.log("Response succeeded!");
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "form_main_site",
+        });
+      } else {
+        console.log("Response failed!");
+      }
+    });
+    // .then(
+    //   router.push({
+    //     pathname: "https://onesta.com.pl/thankyoupage",
+    //   })
+    // );
   };
 
   return (
