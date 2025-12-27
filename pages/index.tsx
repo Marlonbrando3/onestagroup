@@ -37,8 +37,8 @@ export default function FirstView({ cookiesWindow }: AppProps) {
   Hotjar.init(siteId, hotjarVersion);
   return (
     <>
-      <AnalitycsTools />
       <Head>
+        <AnalitycsTools />
         <meta
           property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"
           content="image"
