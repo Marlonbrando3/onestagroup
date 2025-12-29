@@ -2,9 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Header from "@/components/choosedoffers/header";
 import Menu from "@/components/choosedoffers/menu";
-import GalleryContainer from "@/components/choosedoffers/galleryView/galleryContainer";
 import ViewsContainer from "@/components/choosedoffers/viewsContainer";
-import Hotjar from "@hotjar/browser";
 
 export default function Index() {
   const showPopUp: any = useRef(null);

@@ -33,21 +33,6 @@ export default function Index() {
 
   return (
     <>
-      {" "}
-      <Script id="facebook-pixel">
-        {`!function(f,b,e,v,n,t,s)
-                  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                  n.queue=[];t=b.createElement(e);t.async=!0;
-                  t.src=v;s=b.getElementsByTagName(e)[0];
-                  s.parentNode.insertBefore(t,s)}(window, document,'script',
-                  'https://connect.facebook.net/en_US/fbevents.js');
-                  fbq('init', '178665974358939');
-                  fbq('track', 'PageView');
-                  fbq('trackCustom', 'Form www (thx page)')
-                `}
-      </Script>
       <Head>
         {/* <html lang="en_US" /> */}
         <meta property="Properties in Spain" content="image" />
@@ -64,7 +49,10 @@ export default function Index() {
           name="viewport"
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
         />
-        <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
+        <meta
+          property="og:image"
+          content="https://onesta.com.pl/onesta_og_img.png"
+        />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
       <div
@@ -97,7 +85,10 @@ export default function Index() {
           />
         )}
         {PageNumber === 2 && (
-          <Thankyoupageform PageNumber={PageNumber} setPageNumber={setPageNumber} />
+          <Thankyoupageform
+            PageNumber={PageNumber}
+            setPageNumber={setPageNumber}
+          />
         )}
         {PageNumber === 3 && (
           <SurveyOneTypesBG

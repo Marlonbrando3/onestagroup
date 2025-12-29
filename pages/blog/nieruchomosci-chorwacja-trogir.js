@@ -13,7 +13,6 @@ export default function Zarzadzanie() {
 
   return (
     <>
-      <AnalitycsTools />
       <Head>
         <title>Nieruchomości Chorwacja - Onesta Group</title>
         <meta

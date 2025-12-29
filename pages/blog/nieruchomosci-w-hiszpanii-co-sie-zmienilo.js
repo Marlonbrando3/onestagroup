@@ -16,7 +16,6 @@ export default function BlogPost() {
 
   return (
     <>
-      <AnalitycsTools />
       <Newsletter />
       <Head>
         <title>

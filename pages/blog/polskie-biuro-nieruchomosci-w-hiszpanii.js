@@ -17,7 +17,6 @@ export default function BlogPost() {
 
   return (
     <>
-      <AnalitycsTools />
       <Head>
         <title>
           Polskie Biuro Nieruchomości w Hiszpanii, czy jest potrzebne i

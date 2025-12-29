@@ -12,7 +12,6 @@ export default function BlogPost() {
 
   return (
     <>
-      <AnalitycsTools />
       <Head>
         <title>Torrevieja apartamenty na sprzedaż. Region - Onesta Group</title>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>

@@ -19,7 +19,6 @@ export default function BlogPost() {
   return (
     <>
       <Newsletter />
-      <AnalitycsTools />
       <Head>
         <title>Nieruchomości Costa Blanca</title>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>

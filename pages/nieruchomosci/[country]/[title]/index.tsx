@@ -286,7 +286,6 @@ export default function Property() {
 
   return (
     <>
-      <AnalitycsTools />
       <Head>
         <title>Nieruchomości w Hiszpanii - Onesta Group</title>
         <link rel="shortcut icon" href="/logotype.png" />

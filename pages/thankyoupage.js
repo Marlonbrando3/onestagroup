@@ -16,7 +16,6 @@ export default function Thankyoupage() {
 
   return (
     <div className="w-screen h-screen">
-      <AnalitycsTools />
       <Head>
         <title>Dziękujęmy- Onesta Group</title>
         <link rel="shortcut icon" href="/logotype.png" />

@@ -1,20 +1,20 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 // import { verify } from "jsonwebtoken";
-import { useRouter } from "next/router"
-import { secret } from "./api/secret"
+import { useRouter } from "next/router";
+import { secret } from "./api/secret";
 // import AdminInputs from "/components/AdminInputs";
-import AsariCrm from "../components/asariCrm"
-import FacebookVeryfication from "@/components/facebookVeryfication"
-import FacebookGetLeads from "@/components/facebookGetLeads"
-import FacebookGetForms from "@/components/facebookGetForms"
+import AsariCrm from "../components/asariCrm";
+import FacebookVeryfication from "@/components/facebookVeryfication";
+import FacebookGetLeads from "@/components/facebookGetLeads";
+import FacebookGetForms from "@/components/facebookGetForms";
 
 export default function Panel() {
-  const [permission, setPermission] = useState(true)
-  const [dataToShow, setDataToShow] = useState()
+  const [permission, setPermission] = useState(true);
+  const [dataToShow, setDataToShow] = useState();
 
   // adminapi();
 
-  const router = useRouter()
+  const router = useRouter();
   async function adminapi() {
     let ref = await fetch("/api/panel", {
       method: "POST",
@@ -25,19 +25,19 @@ export default function Panel() {
         "Access-Control-Allow-Methods": "GET, POST",
         "Access-Control-Allow-Origin": "*",
       }),
-    })
+    });
 
     if (ref.status === 200) {
-      router.push("/panel")
-      setPermission(true)
+      router.push("/panel");
+      setPermission(true);
     }
     if (ref.status === 300) {
-      setPermission(true)
+      setPermission(true);
     } else {
-      router.push("/login")
+      router.push("/login");
     }
   }
-  console.log(permission)
+  console.log(permission);
 
   return (
     permission && (
@@ -54,5 +54,5 @@ export default function Panel() {
         {dataToShow}
       </div>
     )
-  )
+  );
 }

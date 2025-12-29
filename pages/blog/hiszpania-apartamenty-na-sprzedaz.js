@@ -7,7 +7,6 @@ import HeaderBlogPost from "../../components/HeaderBlogPost";
 import Footer from "../../components/Footer";
 import Blogbuttonoffers from "../../components/blogbuttonoffers";
 import Newsletter from "../../components/newsletter";
-import AnalitycsTools from "@/analitycs/analitycsTools";
 
 export default function BlogPost() {
   const temat = "Hiszpania Apartamenty na Sprzedaż.";
@@ -16,7 +15,6 @@ export default function BlogPost() {
   return (
     <>
       <Newsletter />
-      <AnalitycsTools />
       <Head>
         <title>
           Hiszpania Apartamenty na Sprzedaż: Inwestycja w Marzenia - Onesta

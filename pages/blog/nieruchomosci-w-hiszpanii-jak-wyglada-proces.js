@@ -19,7 +19,6 @@ export default function BlogPost() {
   return (
     <>
       <Newsletter />
-      <AnalitycsTools />
       <Head>
         <title>Nieruchomości w Hiszpanii - jak kupować?</title>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>

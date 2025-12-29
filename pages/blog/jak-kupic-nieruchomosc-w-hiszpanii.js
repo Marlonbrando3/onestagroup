@@ -19,7 +19,6 @@ export default function BlogPost() {
   return (
     <>
       <Newsletter />
-      <AnalitycsTools />
       <Head>
         <title>
           Jak kupować nieruchomości w Hiszpanii - cz.1 - Onesta Group

@@ -27,7 +27,6 @@ export default function Okupados() {
   return (
     <>
       <Newsletter />
-      <AnalitycsTools />
       <Head>
         <title>
           Okupados, ocupas... - kim są i czy stanowią zagrożenie? - Onesta Group

@@ -19,7 +19,6 @@ export default function BlogPost() {
   return (
     <>
       <Newsletter />
-      <AnalitycsTools />
       <Head>
         <title>
           Nieruchomości w Hiszpanii, wszystko co warto wiedzieć na początek

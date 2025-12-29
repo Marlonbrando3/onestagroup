@@ -13,7 +13,6 @@ export default function BlogPost() {
 
   return (
     <>
-      <AnalitycsTools />
       <Head>
         <title>
           Jak kupić nieruchomość w Portugalii?Pigułka - Onesta Group

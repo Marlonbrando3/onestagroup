@@ -9,7 +9,6 @@ import MiniMainViewBlog from "../../components/MiniMainViewBlog";
 export default function Blog() {
   return (
     <div>
-      <AnalitycsTools />
       <Head>
         <title>Baza wiedzy - Onesta Group</title>
         <link rel="shortcut icon" href="/logotype.png" />

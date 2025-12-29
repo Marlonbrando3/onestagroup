@@ -11,7 +11,6 @@ export default function BlogPost() {
 
   return (
     <>
-      <AnalitycsTools />
       <Head>
         <title>Jak kupić nieruchomość w Chorwacji - Onesta Group</title>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>

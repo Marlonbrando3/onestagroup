@@ -38,7 +38,6 @@ export default function ABC() {
 
   return (
     <div>
-      <AnalitycsTools />
       <Head>
         <title>ABC Inwestowania - Onesta Group</title>
         <link rel="shortcut icon" href="/logotype.png" />

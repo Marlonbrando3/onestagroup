@@ -16,7 +16,6 @@ export default function Zarzadzanie() {
   return (
     <>
       <Newsletter />
-      <AnalitycsTools />
       <Head>
         <title>Nieruchomości w Hiszpanii: Costa Blanca - Onesta Group</title>
         <meta
