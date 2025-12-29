@@ -21,9 +21,11 @@ export default function App({ Component, pageProps }: AppProps) {
   // checkCookiesOnLoad();
 
   return (
-    <MyContextProvider>
+    <>
       <AnalitycsTools />
-      <Component {...pageProps} cookiesWindow={cookiesWindow} />
-    </MyContextProvider>
+      <MyContextProvider>
+        <Component {...pageProps} cookiesWindow={cookiesWindow} />
+      </MyContextProvider>
+    </>
   );
 }
