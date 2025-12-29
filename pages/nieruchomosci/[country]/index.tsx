@@ -8,7 +8,7 @@ import Header from "../../../components/Header";
 import SearchEngine from "../../../components/SearchEngine/SearchEngine";
 import Footer from "../../../components/Footer";
 import ContactFormMain from "../../../components/ContactFormMain";
-
+import AnalitycsTools from "@/analitycs/analitycsTools";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 
 interface Property {
@@ -93,6 +93,7 @@ export default function Home(props: any) {
 
   return (
     <>
+      <AnalitycsTools />
       <Head>
         <title>{title}</title>
         <link rel="shortcut icon" href="/logotype.png" />
