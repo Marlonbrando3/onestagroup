@@ -20,8 +20,6 @@ export default function ContactFormMain() {
 
   const confirmation = useRef();
 
-  // console.log(dataForm);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setURLafterFormSending("https://onesta.com.pl" + router.asPath);

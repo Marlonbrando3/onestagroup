@@ -4,7 +4,6 @@ import React from "react";
 import Script from "next/script";
 
 export default function AnalitycsTools() {
-  const GA_MEASUREMENT_ID = "G-P4VZ7P7VZ5";
   return (
     <>
       {/* Cookie consent */}

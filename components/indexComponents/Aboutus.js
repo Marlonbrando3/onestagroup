@@ -25,16 +25,6 @@ export default function Aboutus() {
 
   return (
     <>
-      {/* <!-- Google tag (gtag.js) --> */}
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-P4VZ7P7VZ5"></Script>
-      <Script id="google-analitycs">
-        {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-P4VZ7P7VZ5');
-            `}
-      </Script>
       <div className="bg-gray-900/[0.0]">
         <HowWeWork />
         {/* <AboutSpain /> */}
