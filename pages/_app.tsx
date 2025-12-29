@@ -22,6 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <AnalitycsTools />
       <MyContextProvider>
         <Component {...pageProps} cookiesWindow={cookiesWindow} />
       </MyContextProvider>

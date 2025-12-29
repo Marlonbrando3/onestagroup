@@ -93,7 +93,6 @@ export default function Home(props: any) {
 
   return (
     <>
-      <AnalitycsTools />
       <Head>
         <title>{title}</title>
         <link rel="shortcut icon" href="/logotype.png" />
