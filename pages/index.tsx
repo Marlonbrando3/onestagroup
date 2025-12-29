@@ -38,7 +38,6 @@ export default function FirstView({ cookiesWindow }: AppProps) {
   return (
     <>
       <Head>
-        <AnalitycsTools />
         <meta
           property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"
           content="image"

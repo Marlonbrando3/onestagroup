@@ -97,7 +97,6 @@ export default function Home(props: any) {
   return (
     <>
       <Head>
-        <AnalitycsTools />
         <title>{title}</title>
         <link rel="shortcut icon" href="/logotype.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
