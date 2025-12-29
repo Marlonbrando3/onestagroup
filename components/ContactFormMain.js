@@ -20,6 +20,8 @@ export default function ContactFormMain() {
 
   const confirmation = useRef();
 
+  // console.log(dataForm);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setURLafterFormSending("https://onesta.com.pl" + router.asPath);
@@ -39,9 +41,10 @@ export default function ContactFormMain() {
       console.log("Response received");
       if (res.status === 200) {
         console.log("Response succeeded!");
-        setTimeout(() => {
-          window.dataLayer.push({ event: "form_main_site" });
-        }, 500);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "form_main_site",
+        });
         submitButton.current.style.backgroundColor = "green";
         submitButton.current.innerHTML = "Wiadomość wysłana!";
       } else {
