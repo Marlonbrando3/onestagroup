@@ -86,8 +86,6 @@ export default function Home(props: any) {
     }
   };
 
-  // console.log(router.query.country);
-
   const title = `Nieruchomości ${
     Array.isArray(router.query.country)
       ? router.query.country[0].toUpperCase()
@@ -99,7 +97,6 @@ export default function Home(props: any) {
   return (
     <>
       <Head>
-        {" "}
         <AnalitycsTools />
         <title>{title}</title>
         <link rel="shortcut icon" href="/logotype.png" />
