@@ -41,10 +41,9 @@ export default function ContactFormMain() {
       console.log("Response received");
       if (res.status === 200) {
         console.log("Response succeeded!");
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: "form_main_site",
-        });
+        setTimeout(() => {
+          window.dataLayer.push({ event: "form_main_site" });
+        }, 500);
         submitButton.current.style.backgroundColor = "green";
         submitButton.current.innerHTML = "Wiadomość wysłana!";
       } else {

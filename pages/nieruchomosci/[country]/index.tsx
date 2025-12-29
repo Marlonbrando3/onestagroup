@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import Script from "next/script";
 import { useRouter } from "next/router";
 import DataCountry from "../../../data/DataCountry.json";
 import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
@@ -9,10 +8,8 @@ import Header from "../../../components/Header";
 import SearchEngine from "../../../components/SearchEngine/SearchEngine";
 import Footer from "../../../components/Footer";
 import ContactFormMain from "../../../components/ContactFormMain";
-import MobileFilters from "@/components/MobileFilters";
-import Properties from "../../../public/properties.json";
+
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
-import AnalitycsTools from "@/analitycs/analitycsTools";
 
 interface Property {
   id: string;
