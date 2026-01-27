@@ -1,118 +1,124 @@
-import React, { useMemo, useCallback, useRef, useState, useEffect } from "react"
+import React, {
+  useMemo,
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 
 export default function AsariCrm() {
-  const properties: any = []
-  const [progress, setProgress] = useState<number>(0)
-  const [oneOfferId, setOneOfferId] = useState()
-  const spinner = useRef<any>()
-  const finish = useRef<any>()
+  const properties: any = [];
+  const [progress, setProgress] = useState<number>(0);
+  const [oneOfferId, setOneOfferId] = useState();
+  const spinner = useRef<any>();
+  const finish = useRef<any>();
 
-  let i = 0
-  let percent = 0
+  let i = 0;
+  let percent = 0;
 
   const prog = useCallback(() => {
-    return `${progress} %`
-  }, [progress])
+    return `${progress} %`;
+  }, [progress]);
 
   // 11956264;
 
   const handleDownloadingAllProperties = async (propertiesId: any) => {
     for (const id of propertiesId) {
-      console.log(i)
-      console.log(percent)
+      console.log(i);
+      console.log(percent);
       await new Promise(async (resolve, reject) => {
         let resultProperty = await fetch("/api/asarigetproperties", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: id }),
-        })
-        const result = await resultProperty.json()
+        });
+        const result = await resultProperty.json();
         if (result.list.data.country.name !== "Polska") {
-          properties.push(result.list.data)
-          console.log("Dodano nieruchomość")
+          properties.push(result.list.data);
+          console.log("Dodano nieruchomość");
         } else {
-          console.log("Odrzucono nieruchomość")
+          console.log("Odrzucono nieruchomość");
         }
-        i = i + 1
-        setProgress(Math.round(i / propertiesId.length) * 100)
-        console.log(progress)
-        await delay(3000)
-        resolve(console.log("Zrealizowne"))
-      })
+        i = i + 1;
+        setProgress(Math.round(i / propertiesId.length) * 100);
+        console.log(progress);
+        await delay(4000);
+        resolve(console.log("Zrealizowne"));
+      });
     }
 
-    console.log(`Pobrane ogłoszenia`)
-    console.log(properties)
-    finish.current.style.display = "block"
-    spinner.current.style.display = "none"
+    console.log(`Pobrane ogłoszenia`);
+    console.log(properties);
+    finish.current.style.display = "block";
+    spinner.current.style.display = "none";
 
     //save properties as JSON file
     await fetch("/api/writejsonpropertyfile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ properties }),
-    })
-  }
+    });
+  };
 
   const delay = async (time: any) => {
     await new Promise((resolve) =>
-      setTimeout(() => resolve(console.log("-------")), time)
-    )
-  }
+      setTimeout(() => resolve(console.log("-------")), time),
+    );
+  };
 
   const handleDownloadingDataFromAsari = async () => {
-    finish.current.style.display = "hidden"
-    spinner.current.style.display = "flex"
-    const propertiesId: any = []
+    finish.current.style.display = "hidden";
+    spinner.current.style.display = "flex";
+    const propertiesId: any = [];
 
     try {
       let res = await fetch("/api/asarigetid", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
-      })
-      const resultsData = await res.json()
+      });
+      const resultsData = await res.json();
       resultsData.list.data.map((propId: any) => {
-        propertiesId.push(propId.id)
-      })
+        propertiesId.push(propId.id);
+      });
 
-      console.log(propertiesId)
-      await handleDownloadingAllProperties(propertiesId)
+      console.log(propertiesId);
+      await handleDownloadingAllProperties(propertiesId);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const handleCheckingOneOffer = async () => {
-    finish.current.style.display = "hidden"
-    spinner.current.style.display = "flex"
-    const propertiesId: any = []
+    finish.current.style.display = "hidden";
+    spinner.current.style.display = "flex";
+    const propertiesId: any = [];
 
     try {
       let res = await fetch("/api/asarigetListingId", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: oneOfferId }),
-      })
+      });
       // const resultsData = await res.json();
       // resultsData.list.data.map((propId: any) => {
       //   propertiesId.push(propId.id);
       // });
 
-      console.log(await res.json())
+      console.log(await res.json());
       // await handleDownloadingAllProperties(propertiesId);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const handleChosingOneOffer = (e: any) => {
-    console.log(e.target.value)
-    setOneOfferId(e.target.value)
-  }
+    console.log(e.target.value);
+    setOneOfferId(e.target.value);
+  };
 
   useEffect(() => {
-    console.log("refreshed")
-  }, [])
+    console.log("refreshed");
+  }, []);
 
   return (
     <div>
@@ -163,5 +169,5 @@ export default function AsariCrm() {
         Dane ściągniete!
       </div>
     </div>
-  )
+  );
 }
