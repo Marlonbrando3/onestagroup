@@ -20,7 +20,7 @@ export default function (req: any, res: any) {
   });
 
   const clientMailData = {
-    from: "Onesta Group <www@onesta.com.pl>",
+    from: "Onesta Group <websitemailing@onesta.com.pl>",
     to: req.body.email,
     subject: `Onesta Group || Nieruchomości w Hiszpanii`,
     text: "Hello. This email is for your email verification.",
