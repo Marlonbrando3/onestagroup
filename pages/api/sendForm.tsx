@@ -5,6 +5,10 @@ export default function (req: any, res: any) {
   const fromEmail = process.env.FROM_EMAIL;
   const pass = process.env.EMAIL_PASS;
 
+  if (!req.body || !req.body.name || !req.body.email || !req.body.phone) {
+    return res.status(400).json({ message: "Invalid data" });
+  }
+
   const transporter = nodemailer.createTransport({
     port: 465,
     host: "mail-serwer141299.lh.pl",
