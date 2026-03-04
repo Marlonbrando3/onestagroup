@@ -52,7 +52,7 @@ export default function PriceSearch({
 
   const setNewPriceFrom = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
-    console.log(dataName);
+
     setPriceMinTemp(dataName);
     if (e.target.value === "All") {
       const { cena_od, ...rest } = queries;
@@ -69,7 +69,7 @@ export default function PriceSearch({
 
   const setNewPriceTo = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
-    console.log(dataName);
+
     setPriceMaxTemp(dataName);
     if (e.target.value === "All") {
       const { cena_do, ...rest } = queries;
@@ -87,21 +87,18 @@ export default function PriceSearch({
   useEffect(() => {
     if (priceMinTemp !== prevMinRef.current) {
       // roomsMin się zmienił
-      console.log("Zmiana min");
+
       PriceMinFormated();
       prevMinRef.current = priceMinTemp;
     } else if (priceMaxTemp !== prevMaxRef.current) {
       // roomsMin się zmienił
-      console.log("Zmiana max");
+
       PriceMaxFormated();
       prevMaxRef.current = priceMaxTemp;
     } else {
-      console.log("działa wszytko");
       PriceMinFormated();
       PriceMaxFormated();
     }
-
-    console.log("fired!");
   }, [priceMinTemp, priceMaxTemp]);
 
   const PriceSearchFrom = (
@@ -150,7 +147,7 @@ export default function PriceSearch({
         <option value="200000" data-name="200000">
           do 200 000 €{" "}
         </option>
-        <option value="250000" data-name="200000">
+        <option value="250000" data-name="250000">
           do 250 000 €
         </option>
         <option value="300000" data-name="300000">

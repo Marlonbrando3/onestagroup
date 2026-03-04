@@ -10,33 +10,32 @@ import AboutCyprus from "../aboutCyprus";
 import HowToSearch from "../howToSearch";
 import FaqSpainMain from "../faqSpainMain/faqSpainMain";
 
-export default function SearchResults(...restProps: any) {
+export default function SearchResults(props: any) {
   const router = useRouter();
 
-  const { page } = router.query;
-  const { country } = router.query;
-  console.log(restProps);
+  const { properties } = props;
 
   const [actualPage, setActualPage] = useState(1);
   const [temptSubSite, setTempSubSite] = useState();
-  const [propertiesPerPage, setPropertiesPerPage] = useState(18);
-  const startProperty = (parseInt(page as string) - 1) * propertiesPerPage || 0;
-  const endProperty = startProperty + propertiesPerPage;
 
-  const propertiesSliced = restProps[0].properties.slice(startProperty, endProperty);
-  const propertiesSubSitesLengt = restProps[0].properties.length / propertiesPerPage;
-  const PropertiesDataSubSites = propertiesSliced.filter(
-    (p: any, index: any) => index <= propertiesSubSitesLengt,
-  );
+  const propertiesSafe = Array.isArray(properties) ? properties : [];
+
+  const { page } = router.query;
+
+  const propertiesSubSitesLength = 100;
 
   const handleFiltering = (event: any) => {
     const value = event.target.value;
     if (value === "cheap") {
-      let data = [...Properties].sort((a: any, b: any) => b.price.amount - a.price.amount);
+      let data = [...Properties].sort(
+        (a: any, b: any) => b.price.amount - a.price.amount,
+      );
     }
 
     if (value === "expensive") {
-      let data = [...Properties].sort((a: any, b: any) => a.price.amount - b.price.amount);
+      let data = [...Properties].sort(
+        (a: any, b: any) => a.price.amount - b.price.amount,
+      );
     }
   };
 
@@ -46,7 +45,10 @@ export default function SearchResults(...restProps: any) {
         <div className="w-[300px] h-full bg-white border flex items-center justify-evenly rounded-xl">
           <div className="pr-[10px]">Filtruj:</div>
           <div className="">
-            <select className="text-left font-semibold" onChange={handleFiltering}>
+            <select
+              className="text-left font-semibold"
+              onChange={handleFiltering}
+            >
               <option value="recomended">od popularnych</option>
               <option value="expensive">od najtańszych</option>
               <option value="cheap">od najdroższych</option>
@@ -57,21 +59,21 @@ export default function SearchResults(...restProps: any) {
         </div>
       </div>
       <div className="h-full md:w-[800px] lg:w-[1160px] w-full flex items-center justify-center flex-wrap lg:mx-auto">
-        {propertiesSliced.map((property: any) => (
+        {properties.map((property: any) => (
           <PropertyCard key={property.id} property={property} />
         ))}
       </div>
       <ChangeSite
-        propertiesSubSitesLengt={propertiesSubSitesLengt}
         actualPage={actualPage}
         setActualPage={setActualPage}
         temptSubSite={temptSubSite}
         setTempSubSite={setTempSubSite}
+        count={props.count}
       />
-      {country === "hiszpania" && <FaqSpainMain />}
+      {/* {country === "hiszpania" && <FaqSpainMain />}
       {country === "cypr" && <AboutCyprus />}
       {country === "hiszpania" && <AboutSpain />}
-      {country === "hiszpania" && <HowToSearch />}
+      {country === "hiszpania" && <HowToSearch />} */}
     </div>
   );
 }

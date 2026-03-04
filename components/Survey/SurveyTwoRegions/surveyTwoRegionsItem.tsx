@@ -19,8 +19,6 @@ export default function SurveyTwoRegionsItem({
   // const handleChangingType = () => {
   //   let data = [...ArrowRegions];
 
-  //   console.log(types.name);
-
   //   if (ArrowRegions.includes(types.name)) {
   //     let updatedArray = data.filter((i: any) => i !== types.name);
   //     data = updatedArray;
@@ -36,8 +34,6 @@ export default function SurveyTwoRegionsItem({
     setPageNumber(5);
   };
 
-  console.log(ArrowRegions);
-
   return (
     <div
       onClick={() => handleChosingOptions(regions.name)}
@@ -50,7 +46,12 @@ export default function SurveyTwoRegionsItem({
               <Image src="/Survey/Types/checked.png" objectFit="cover" fill alt="bungalow" />
             </div>
           )} */}
-          <Image src={`/${regions.photo}`} objectFit="cover" fill alt="bungalow" />
+          <Image
+            src={`/${regions.photo}`}
+            objectFit="cover"
+            fill
+            alt="bungalow"
+          />
         </div>
         <p className="ml-[20px] w-[40%] font-semibold text-[18px] leading-[24px] flex-1">
           {regions.name}

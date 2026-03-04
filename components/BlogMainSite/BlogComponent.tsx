@@ -25,7 +25,6 @@ export default function BlogComponent() {
   const [descChoosed, setDescChoosed] = useState("strategy");
 
   const handleShowingDesc = (e: any) => {
-    console.log(e);
     setDescChoosed(e);
   };
 

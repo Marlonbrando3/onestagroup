@@ -8,7 +8,7 @@ export default function SecondDescription({ investition }: Property) {
   const MainDescription = investition[0].description;
 
   const startIndex = MainDescription.indexOf("-2-<br>") + 7;
-  console.log(startIndex);
+
   const endIndex = MainDescription.indexOf("-3-");
   const secondescription = MainDescription.substring(startIndex, endIndex);
 

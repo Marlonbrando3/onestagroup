@@ -15,7 +15,7 @@ export default function Form() {
 
   const sendForm = async (e: any) => {
     e.preventDefault();
-    console.log(name, lastName, email, phone, massege);
+
     try {
       let res = await fetch("/api/form", {
         method: "POST",
@@ -34,7 +34,6 @@ export default function Form() {
       });
 
       const data = await res.status;
-      // console.log(data);
     } catch (err) {
       console.log(err);
     }

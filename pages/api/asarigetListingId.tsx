@@ -1,5 +1,5 @@
 export default async function GET(req: any, res: any) {
-  const id = req.body.id
+  const id = req.body.id;
 
   try {
     let result = await fetch(`https://api.asari.pro/site/listing?id=${id}`, {
@@ -9,14 +9,13 @@ export default async function GET(req: any, res: any) {
         "Content-Type": "multipart/form-data",
         SiteAuth: "68870:9f3vO7R8BLF4ra05tgO5cD38m41a6bLniXn0C4o5",
       },
-    })
+    });
 
-    const data = await result.json()
-    console.log(data)
+    const data = await result.json();
 
-    res.json({ list: data })
+    res.json({ list: data });
   } catch (err) {
-    console.log(err)
-    res.json({ list: err, status: 400 })
+    console.log(err);
+    res.json({ list: err, status: 400 });
   }
 }

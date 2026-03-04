@@ -21,7 +21,6 @@ export default function CountrySearch({
     // searchBtn.current.style.pointerEvents = "none";
     const country = slugify(e.target.value);
 
-    console.log("pushing");
     router.push({ pathname: `/nieruchomosci/${country}` }).then(() => {
       window.location.reload();
     });

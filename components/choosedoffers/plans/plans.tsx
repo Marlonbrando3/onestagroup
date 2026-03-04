@@ -14,8 +14,6 @@ export default function Plans() {
     .flatMap((i) => i.images)
     .filter((i) => i.isScheme === true);
 
-  console.log(choosedProperty);
-
   const [indexPlan, setIndexPlan] = useState(0);
 
   const handlePDFnumber = (index: any) => {
@@ -23,14 +21,15 @@ export default function Plans() {
   };
 
   const selectedPlan = choosedProperty[indexPlan];
-  console.log(selectedPlan);
 
   const subpage = choosedProperty.map((i, index) => (
     <p
       key={index}
       onClick={() => handlePDFnumber(index)}
       className={`${
-        indexPlan === index ? "bg-orange-500 text-white border-white border" : "bg-white"
+        indexPlan === index
+          ? "bg-orange-500 text-white border-white border"
+          : "bg-white"
       } "cursor-pointer text-[30px] w-[40px] h-[40px] place-content-center grid mx-[2px] rounded-md cursor-pointer`}
     >
       {index + 1}
@@ -57,7 +56,10 @@ export default function Plans() {
           name="viewport"
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
         />
-        <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
+        <meta
+          property="og:image"
+          content="https://onesta.com.pl/onesta_og_img.png"
+        />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
       <div className="md:w-[700px] w-[98vw] md:h-[480px] h-[370px] rounded-xl overflow-hidden bg-white flex flex-col items-center">
@@ -65,7 +67,9 @@ export default function Plans() {
           {({ zoomIn, zoomOut }) => (
             <>
               <div className="flex justify-center items-center">
-                <p className="mr-[15px] text-[16px] font-semibold">Powiększenie</p>
+                <p className="mr-[15px] text-[16px] font-semibold">
+                  Powiększenie
+                </p>
                 <button
                   onClick={() => zoomIn()}
                   className="border w-[40px] h-[40px] bg-gray-100 border-gray-400 text-black rounded-md text-[20px] leading-[0px] flex items-center justify-center mr-[3px]"

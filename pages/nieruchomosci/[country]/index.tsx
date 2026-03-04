@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
+import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
 import DataCountry from "../../../data/DataCountry.json";
 import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
@@ -10,6 +11,7 @@ import Footer from "../../../components/Footer";
 import ContactFormMain from "../../../components/ContactFormMain";
 import AnalitycsTools from "@/analitycs/analitycsTools";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
+import Property from "./[title]";
 
 interface Property {
   id: string;
@@ -28,8 +30,6 @@ interface Property {
 
 export default function Home(props: any) {
   const router = useRouter();
-
-  console.log(props);
 
   const menu = useRef<any>();
   const searchEngine = useRef<any>();
@@ -69,7 +69,6 @@ export default function Home(props: any) {
   };
 
   const handleShowMobileFilters = () => {
-    console.log(searchEngine.current.style.top);
     if (
       searchEngine.current.style.top === "-400px" ||
       searchEngine.current.style.top === "-460px" ||
@@ -134,6 +133,7 @@ export default function Home(props: any) {
         handleShowMobileFilters={handleShowMobileFilters}
         searchEngine={searchEngine}
         mobileButtonSearchEngine={mobileButtonSearchEngine}
+        count={props.totalCount}
         {...props}
       />
       <ContactFormMain />
@@ -143,10 +143,11 @@ export default function Home(props: any) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const fs = require("fs");
   const path = require("path");
 
   const { country } = context.params as { country: string };
+  const page = parseInt((context.query.page as string) || "1");
+
   const {
     zabudowa,
     region,
@@ -157,55 +158,57 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     sypialni_do,
     cena_od,
     cena_do,
-    page,
     sort,
   } = context.query;
 
+  //download data from Asari (without costa blanca and costa calida)
   const filePath = path.join(process.cwd(), "public/properties.json");
-  const raw = fs.readFileSync(filePath, "utf-8");
-  const allProperties: Property[] = JSON.parse(raw);
 
-  const formatRegion = () => {
-    const data = DataCountry.find((i) => i.country === country);
-    const reg = data!.query.find((i) => i.query === region);
-    return reg!.querySearch;
+  //download data from supabase for Costa Blanca and Calida (full data)
+
+  const limit = 18;
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  //regions mapping with supabase
+  const regionFilters: Record<any, any> = {
+    "costa-blanca": ["Alicante", "Murcia"],
+    "costa-del-sol": ["Malaga"],
   };
 
-  let filtered = allProperties.filter(
-    (p) =>
-      p.country?.name?.toLowerCase() === country.toLowerCase() &&
-      (!zabudowa ||
-        zabudowa === "All" ||
-        p.section.toLowerCase() == (zabudowa as string)) &&
-      (!region || region === "All" || p.foreignLocation === formatRegion()) &&
-      (!rynek ||
-        rynek === "All" ||
-        p.mortgageMarket ===
-          (rynek === "pierwotny" ? "Primary" : "Secondary")) &&
-      (!lazienek_od || p.noOfBathrooms >= parseInt(lazienek_od as string)) &&
-      (!lazienek_do || p.noOfBathrooms <= parseInt(lazienek_do as string)) &&
-      (!sypialni_od || p.noOfRooms >= parseInt(sypialni_od as string)) &&
-      (!sypialni_do || p.noOfRooms <= parseInt(sypialni_do as string)) &&
-      (!cena_od || p.price?.amount >= parseInt(cena_od as string)) &&
-      (!cena_do || p.price?.amount <= parseInt(cena_do as string))
-  );
+  //choosed region
+  const provinces =
+    region && regionFilters[region] ? regionFilters[region] : undefined;
+  const bathsFrom = lazienek_od ? Number(lazienek_od) : 0;
+  const bathsTo = lazienek_do ? Number(lazienek_do) : 99;
+  const bedsFrom = sypialni_od ? Number(sypialni_od) : 0;
+  const bedsTo = sypialni_do ? Number(sypialni_do) : 99;
+  const priceFrom = cena_od ? Number(cena_od) : 0;
+  const priceTo = cena_do ? Number(cena_do) : 99999999;
+  // const poolFilter = basen ? true : undefined;
 
-  if (sort === "cheap") {
-    filtered = filtered.sort((a, b) => b.price.amount - a.price.amount);
-  } else if (sort === "expensive") {
-    filtered = filtered.sort((a, b) => a.price.amount - b.price.amount);
-  } else {
-    filtered = filtered.sort(
-      (a, b) =>
-        new Date(b.actualisationDate).getTime() -
-        new Date(a.actualisationDate).getTime()
-    );
-  }
+  let query = await supabase
+    .from("properties")
+    .select("*", { count: "exact" })
+    .in("province", provinces ?? ["Alicante", "Murcia", "Malaga"])
+    .gte("baths", bathsFrom)
+    .lte("baths", bathsTo)
+    .gte("beds", bedsFrom)
+    .lte("beds", bedsTo)
+    .gte("price", priceFrom)
+    .lte("price", priceTo)
+    .not("images", "is", null)
+    .neq("images", "[]")
+    .order("external_id", { ascending: false })
+    .range(from, to);
+
+  const { data: properties, count, error: queryError } = await query;
 
   return {
     props: {
-      properties: filtered,
+      properties: properties,
       country,
+      totalCount: count,
       query: context.query,
     },
   };

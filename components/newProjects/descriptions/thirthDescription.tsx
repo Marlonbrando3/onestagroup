@@ -8,7 +8,7 @@ export default function ThirthDescription({ investition }: Property) {
   const MainDescription = investition[0].description;
 
   const startIndex = MainDescription.indexOf("-3-<br>") + 7;
-  console.log(startIndex);
+
   const endIndex = MainDescription.indexOf("-3-");
   const thirdscription = MainDescription.substring(startIndex);
 

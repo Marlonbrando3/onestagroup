@@ -12,7 +12,7 @@ export default function FormOsiedleLesne() {
 
   const sendForm = async (e: any) => {
     e.preventDefault();
-    console.log(name, lastName, email, phone, massege);
+
     try {
       let res = await fetch("/api/contactform", {
         method: "POST",
@@ -29,7 +29,6 @@ export default function FormOsiedleLesne() {
       });
 
       const data = await res.status;
-      // console.log(data);
     } catch (err) {
       console.log(err);
     }

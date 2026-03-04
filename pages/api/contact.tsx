@@ -37,7 +37,6 @@ export default async function (req: any, res: any) {
 
   try {
     const info = await transporter.sendMail(mailData);
-    console.log("Mail wysłany:", info);
 
     return res.status(200).json({ ok: true });
   } catch (err) {

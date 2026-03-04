@@ -38,12 +38,10 @@ export default function (req: any, res: any) {
 
   async function send() {
     await transporter.sendMail(mailData, function (err: any, info: any) {
-      console.log("wysłane");
       if (err) {
-        // console.log(err);
+        console.log(err);
         res.json({ msg: err, status: 400 }).status(400);
       } else {
-        // console.log(info);
         res.json({ msg: "sended", status: 200 }).status(200);
       }
     });

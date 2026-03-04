@@ -9,7 +9,12 @@ type Query = {
   setDataMarket: any;
 };
 
-export default function Types({ setQueries, queries, dataMarket, setDataMarket }: Query) {
+export default function Types({
+  setQueries,
+  queries,
+  dataMarket,
+  setDataMarket,
+}: Query) {
   const router = useRouter();
 
   const { rynek } = router.query;
@@ -64,7 +69,6 @@ export default function Types({ setQueries, queries, dataMarket, setDataMarket }
 
   useEffect(() => {
     RegionFormated();
-    console.log("fired!");
   }, [marketTemp]);
 
   const MarketSearchInput = (

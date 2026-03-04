@@ -24,8 +24,6 @@ export default function AsariCrm() {
 
   const handleDownloadingAllProperties = async (propertiesId: any) => {
     for (const id of propertiesId) {
-      console.log(i);
-      console.log(percent);
       await new Promise(async (resolve, reject) => {
         let resultProperty = await fetch("/api/asarigetproperties", {
           method: "POST",
@@ -48,7 +46,6 @@ export default function AsariCrm() {
     }
 
     console.log(`Pobrane ogłoszenia`);
-    console.log(properties);
     finish.current.style.display = "block";
     spinner.current.style.display = "none";
 
@@ -81,7 +78,6 @@ export default function AsariCrm() {
         propertiesId.push(propId.id);
       });
 
-      console.log(propertiesId);
       await handleDownloadingAllProperties(propertiesId);
     } catch (err) {
       console.log(err);
@@ -104,7 +100,6 @@ export default function AsariCrm() {
       //   propertiesId.push(propId.id);
       // });
 
-      console.log(await res.json());
       // await handleDownloadingAllProperties(propertiesId);
     } catch (err) {
       console.log(err);
@@ -112,13 +107,14 @@ export default function AsariCrm() {
   };
 
   const handleChosingOneOffer = (e: any) => {
-    console.log(e.target.value);
     setOneOfferId(e.target.value);
   };
 
-  useEffect(() => {
-    console.log("refreshed");
-  }, []);
+  const handleMetaInmo = () => {
+    const req = fetch("/api/metainmoToSupabase");
+  };
+
+  useEffect(() => {}, []);
 
   return (
     <div>
@@ -134,9 +130,15 @@ export default function AsariCrm() {
       ></input>
       <div
         onClick={handleCheckingOneOffer}
-        className="bg-orange-600 text-white w-[200px] text-center cursor-pointer"
+        className="bg-green-600 text-white w-[200px] text-center cursor-pointer"
       >
         Sprawdź jedną ofertę
+      </div>
+      <div
+        onClick={handleMetaInmo}
+        className="bg-orange-600 text-white w-[200px] text-center cursor-pointer mt-[40px]"
+      >
+        Aktualizj Metainmo
       </div>
       <div
         ref={spinner}

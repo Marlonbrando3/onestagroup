@@ -21,8 +21,6 @@ export default function SurveyThreeBudgetItem({
   // const handleChangingType = () => {
   //   let data = [...ArrowBudget];
 
-  //   console.log(budget.name);
-
   //   if (ArrowBudget.includes(budget.name)) {
   //     let updatedArray = data.filter((i: any) => i !== budget.name);
   //     data = updatedArray;
@@ -50,7 +48,12 @@ export default function SurveyThreeBudgetItem({
               <Image src="/Survey/Types/checked.png" objectFit="cover" fill alt="bungalow" />
             </div>
           )} */}
-          <Image src={`/${budget.photo}`} objectFit="cover" fill alt="bungalow" />
+          <Image
+            src={`/${budget.photo}`}
+            objectFit="cover"
+            fill
+            alt="bungalow"
+          />
         </div>
         <p className="ml-[20px] w-[60%] font-semibold text-[18px] leading-[24px] flex-1">
           {budget.name}

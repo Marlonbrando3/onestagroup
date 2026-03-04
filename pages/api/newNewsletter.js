@@ -26,16 +26,17 @@ export default function (req, res) {
     subject: `Zapis do newslettera`,
     text: "Zapis do newslettera",
     html:
-      `Imię i nazwisko: ${req.body.name}` + `<br>` + `Email kontaktowy: ${req.body.email}` + `<br>`,
+      `Imię i nazwisko: ${req.body.name}` +
+      `<br>` +
+      `Email kontaktowy: ${req.body.email}` +
+      `<br>`,
   };
 
   transporter.sendMail(mailData, function (err, info) {
-    console.log("wysyłam");
     if (err) {
       console.log(err);
       res.status(400).json({ status: 400 });
     } else {
-      console.log(info);
       res.status(200).json({ status: 200 });
     }
   });

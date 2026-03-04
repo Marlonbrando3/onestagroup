@@ -13,7 +13,7 @@ export default function ContactFormAboutUs({ temat }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(dataForm);
+
     console.log("Sending");
 
     fastContact.current.innerHTML = "Wysyłam";
@@ -25,7 +25,6 @@ export default function ContactFormAboutUs({ temat }) {
       },
       body: JSON.stringify(dataForm),
     }).then((res) => {
-      console.log(res.json());
       if (res.status === 200) {
         console.log("Response succeeded!");
         fastContact.current.innerHTML = "Wysłano!";
@@ -53,7 +52,12 @@ export default function ContactFormAboutUs({ temat }) {
           <div className="flex justify-between flex-col md:flex-row pb-[10px]">
             <p className="py-2 font-bold text-white hidden">
               Ogłoszenie o nr ref.{" "}
-              <input className="bg-gray-900/[0.0]" type="text" value={temat} name="id"></input>
+              <input
+                className="bg-gray-900/[0.0]"
+                type="text"
+                value={temat}
+                name="id"
+              ></input>
             </p>
             {/* <label id="name">Imię i naziwsko</label> */}
             <div className="w-full md:w-[70%]">

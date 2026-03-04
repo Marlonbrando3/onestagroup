@@ -6,6 +6,7 @@ type ServerSideProps = {
   properties: any;
   query: any;
   country: any;
+  count: any;
 };
 
 type FunctionProps = {
@@ -20,6 +21,7 @@ export default function SearchEngine({
   handleShowMobileFilters,
   searchEngine,
   mobileButtonSearchEngine,
+  count,
   ...restProps
 }: SearchEngineProps) {
   return (
@@ -30,7 +32,7 @@ export default function SearchEngine({
           mobileButtonSearchEngine={mobileButtonSearchEngine}
           searchEngine={searchEngine}
         />
-        <SearchResults {...restProps} />
+        <SearchResults {...restProps} count={count} />
       </div>
     </>
   );

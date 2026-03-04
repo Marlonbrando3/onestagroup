@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 type Images = {
+  date: any;
   images: any;
   market: any;
   country: any;
@@ -24,6 +25,7 @@ export default function ResultsSlider({
   region,
   country,
   deliveryDate,
+  date,
   slug,
 }: Images) {
   const [start, setStart] = useState<any>();
@@ -34,12 +36,14 @@ export default function ResultsSlider({
   const image: any = useRef();
   const imagesContainer: any = useRef();
 
-  const imgData = images.map((i: any, key: any) => {
+  const ImagesArray = Array.isArray(images) ? images : images ? [images] : [];
+
+  const imgData = ImagesArray.map((i: any, key: any) => {
     if (key < 4) {
       return (
         <Link
           href={{
-            pathname: `/nieruchomosci/${country.toLowerCase()}/${slug}`,
+            pathname: `/nieruchomosci/${country}/`,
           }}
           ref={image}
           key={key}
@@ -52,7 +56,11 @@ export default function ResultsSlider({
           <Image
             key={i}
             className="object-cover"
-            src={`https://img.asariweb.pl/normal/${i.id}`}
+            src={
+              ImagesArray.length === 1
+                ? ImagesArray[0].url
+                : ImagesArray[key].url
+            }
             alt={i}
             fill
             priority
@@ -96,14 +104,10 @@ export default function ResultsSlider({
     const newMargin = margin + divPX;
 
     if (imgCounter === 0) {
-      console.log("opcja 1");
       setImgCounter(ImagesLength);
-      console.log(newMargin);
       imagesContainer.current.style.marginLeft = `${-(ImagesLength * divPX)}px`;
       setMargin(-(ImagesLength * divPX));
     } else {
-      console.log("opcja 2");
-      console.log(newMargin);
       setImgCounter(imgCounter - 1);
       imagesContainer.current.style.marginLeft = `${newMargin}px`;
       setMargin(margin + divPX);
@@ -111,14 +115,13 @@ export default function ResultsSlider({
   };
 
   const handleChangeSiteLeft = () => {
-    console.log("clicked right");
     const ImagesLength = img.length;
     const divPX = image.current.clientWidth;
     const newMargin = margin - divPX;
 
     if (imgCounter < ImagesLength - 1) {
       setImgCounter(imgCounter + 1);
-      console.log(margin);
+
       imagesContainer.current.style.marginLeft = `${newMargin}px`;
       setMargin(margin - divPX);
     } else {
@@ -130,12 +133,10 @@ export default function ResultsSlider({
 
   const Touchstart = (e: any) => {
     setStart(e.changedTouches[0].clientX);
-    console.log(e.changedTouches[0].clientX);
   };
 
   const Touchend = (e: any) => {
     setEnd(e.changedTouches[0].clientX);
-    console.log(e.changedTouches[0].clientX);
   };
 
   useEffect(() => {
@@ -154,7 +155,7 @@ export default function ResultsSlider({
       </div>
       {market !== "Rynek Wtórny" && deliveryDate !== null && (
         <div className="bg-white absolute z-20 text-[16px] border-yellow-500 text-blue-600 bottom-0 px-[12px] font-normal rounded-r-md h-[24px] leading-[24px] mb-[6px] ml-[0px] ">
-          Dostępne od {deliveryDate?.toString().slice(0, 7)}
+          Data aktualizacji {date.slice(date.lenght, 10)}
         </div>
       )}
       {imgCounter !== 0 && (

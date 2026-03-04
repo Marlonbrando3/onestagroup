@@ -59,9 +59,13 @@ export default function Index() {
   const handlingMassegeSend = async (e: any) => {
     e.preventDefault();
 
-    console.log(region, type, purchaseDate, price, exclusive);
-
-    if (region === "" || type === "" || purchaseDate === "" || exclusive === "" || price === "") {
+    if (
+      region === "" ||
+      type === "" ||
+      purchaseDate === "" ||
+      exclusive === "" ||
+      price === ""
+    ) {
       emptyFieldPopUp.current.style.display = "block";
       window.scrollTo(0, 450);
       setTimeout(() => {
@@ -88,7 +92,6 @@ export default function Index() {
         });
 
         const data = await res.status;
-        console.log(data);
         if (data === 200) {
           router.push("https://onesta.com.pl/form/thankyoupageform");
         }
@@ -120,7 +123,10 @@ export default function Index() {
           name="viewport"
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
         />
-        <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
+        <meta
+          property="og:image"
+          content="https://onesta.com.pl/onesta_og_img.png"
+        />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
       <div
@@ -152,9 +158,12 @@ export default function Index() {
           <p
             className={`${TenorsSans.className} text-[16px] md:w-[550px] w-[90%] text-center my-[50px]`}
           >
-            Our experience, along with that of our partners, spans up to 30 years. That&lsquo;s why
-            can provide offer properties from 90% of the real estate market in Spain.{" "}
-            <span className="font-bold">Please answer a few question below.</span>
+            Our experience, along with that of our partners, spans up to 30
+            years. That&lsquo;s why can provide offer properties from 90% of the
+            real estate market in Spain.{" "}
+            <span className="font-bold">
+              Please answer a few question below.
+            </span>
           </p>
           <div className="w-[300px] h-[2px] bg-yellow-600"></div>
           <div>
@@ -177,7 +186,9 @@ export default function Index() {
                   <option value="Costa Blanca">Costa Blanca</option>
                   <option value="Costa del Sol">Costa del Sol</option>
                   <option value="Other region">Other than above regions</option>
-                  <option value="Didn't decide">I didn&lsquo;t decide yet</option>
+                  <option value="Didn't decide">
+                    I didn&lsquo;t decide yet
+                  </option>
                 </select>
               </div>
               <div className="flex flex-col h-auto py-[5px] justify-evenly mb-[30px] ">
@@ -194,7 +205,9 @@ export default function Index() {
                   </option>
                   <option value="Apartment">Apartment</option>
                   <option value="House">House</option>
-                  <option value="Didn't decide">I didn&lsquo;t decide yet</option>
+                  <option value="Didn't decide">
+                    I didn&lsquo;t decide yet
+                  </option>
                 </select>
               </div>
               <div className="flex flex-col h-auto py-[5px] justify-evenly mb-[30px]">
@@ -210,13 +223,18 @@ export default function Index() {
                     choose from the list
                   </option>
                   <option value="This month">In this month</option>
-                  <option value="By the end of the year">By the end of the year</option>
-                  <option value="Didn't decide">I didn&lsquo;t decide yet</option>
+                  <option value="By the end of the year">
+                    By the end of the year
+                  </option>
+                  <option value="Didn't decide">
+                    I didn&lsquo;t decide yet
+                  </option>
                 </select>
               </div>
               <div className="flex flex-col h-auto py-[5px] justify-evenly mb-[30px]">
                 <p className="font-semibold text-[18px]">
-                  Are you ready for exclusive cooperation if your expectations are met?
+                  Are you ready for exclusive cooperation if your expectations
+                  are met?
                 </p>
                 <select
                   id="exclusivity"
@@ -233,8 +251,8 @@ export default function Index() {
               </div>
               <div className="flex flex-col h-auto py-[5px] justify-evenly mb-[30px]">
                 <p className="font-semibold text-[18px]">
-                  How much are you willing to spend on a property that perfectly meets your
-                  expectations (euros)?
+                  How much are you willing to spend on a property that perfectly
+                  meets your expectations (euros)?
                 </p>
                 <input
                   id="price"
@@ -244,7 +262,9 @@ export default function Index() {
                   required
                 ></input>
               </div>
-              <p className="text-[30px] text-center mt-[40px]">Contact details</p>
+              <p className="text-[30px] text-center mt-[40px]">
+                Contact details
+              </p>
               <div className="flex flex-col h-[70px] justify-evenly ">
                 <input
                   id="fullname"
@@ -288,8 +308,8 @@ export default function Index() {
                   className="md:w-[30px] md:h-[30px] h-[23px] w-[23px] md:-mt-[2px] -mt-[2px] cursor-pointer"
                 ></input>
                 <p className="font-semibold pl-[4px] text-[12px]">
-                  I agree to be contacted by from Onesta Group and processing the information
-                  submitted in order to respond to my request *
+                  I agree to be contacted by from Onesta Group and processing
+                  the information submitted in order to respond to my request *
                 </p>
               </div>
               <button

@@ -31,7 +31,6 @@ export default function FirstView({ cookiesWindow }: AppProps) {
 
   const handleConsultationPopUp = () => {
     setConsultationsShowed(!ConsultationsShowe);
-    console.log("live");
   };
 
   Hotjar.init(siteId, hotjarVersion);

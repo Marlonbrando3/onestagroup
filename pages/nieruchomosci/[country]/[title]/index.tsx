@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useCallback, useRef } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import Head from "next/head";
 import HeaderOffer from "../../../../components/HeaderOffer";
 import { useSearchParams } from "next/navigation";
@@ -26,8 +27,9 @@ import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Loan from "@/components/loanCalc/loan";
 import Link from "next/link";
 import AnalitycsTools from "@/analitycs/analitycsTools";
+import { REGION_MAP, COUNTRY_MAP } from "@/lib/regionMap";
 
-export default function Property() {
+export default function Property({ propertyFromSupabase }: any) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -54,9 +56,8 @@ export default function Property() {
   let showedImage: any | undefined;
   const { title } = router.query;
   const RawTitle = Array.isArray(title) ? title[0] : title;
-  const id = RawTitle?.split("-").pop();
 
-  console.log(id);
+  const id = RawTitle?.split("-").pop();
 
   if (images !== undefined) {
     images?.filter((img) => {
@@ -67,41 +68,33 @@ export default function Property() {
   }
 
   useEffect(() => {
-    // console.log(router);
     if (router.isReady === true) {
       const QueryId = parseInt(id as string);
-      const propertyDataTemp = Properties.filter((i: any) => i.id === QueryId);
 
-      const PropertyImages = propertyDataTemp[0]?.images.filter(
-        (i: any) =>
-          (i.id && i.isScheme === false && i.description === null) ||
-          i.description === "strona"
-      );
-
+      const PropertyImages = propertyFromSupabase.images;
       //delete secheme from images
 
-      setPropertyData(propertyDataTemp);
-      setPropertyImages(PropertyImages);
+      // setPropertyData(propertyDataTemp);
+      // setPropertyImages(PropertyImages);
 
       const imagesTemp = PropertyImages?.map((image: any, index: any) => {
         if (index === 0) {
           return {
             id: index + 1,
-            image: `https://img.asariweb.pl/normal/${image.id}`,
+            image: `${image.url}`,
             count: 1,
             showed: true,
           };
         } else
           return {
             id: index + 1,
-            image: `https://img.asariweb.pl/normal/${image.id}`,
+            image: `${image.url}`,
             count: 0,
             showed: false,
           };
       });
 
       setImages(imagesTemp);
-      // console.log(imagesTemp);
     }
   }, [searchParams]);
 
@@ -146,10 +139,7 @@ export default function Property() {
             oneImageLength * (cutedImage - Math.floor(cutedImage)));
       }
 
-      console.log(photosR - photosC);
-
       photosContainer.current.style.marginLeft = `-${marginWork.toString()}px`;
-      console.log(`-${margin.toString()}`);
 
       setTimeout(() => {
         setMargin(marginWork);
@@ -190,7 +180,6 @@ export default function Property() {
       }
 
       photosContainer.current.style.marginLeft = `-${marginWork.toString()}px`;
-      console.log(`-${margin.toString()}`);
 
       setTimeout(() => {
         setMargin(marginWork);
@@ -200,12 +189,10 @@ export default function Property() {
 
   const Touchstart = (e: any) => {
     setStart(e.changedTouches[0].clientX);
-    // console.log(e.changedTouches[0].clientX);
   };
 
   const Touchend = (e: any) => {
     setEnd(e.changedTouches[0].clientX);
-    // console.log(e.changedTouches[0].clientX);
   };
 
   const handleIntrestedPopUp = () => {
@@ -218,7 +205,7 @@ export default function Property() {
 
   const handleTitleOnScroll = useCallback(() => {
     const { scrollX, scrollY, innerWidth } = window;
-    // console.log("yOffset", innerWidth, "scrollY", scrollY);
+
     if (scrollY > 30 && innerWidth > 1024 && !router.asPath?.includes("blog")) {
       headerTitle.current.style.transition = "0.3s ease-in-out";
       priceTitle.current.style.display = "block";
@@ -336,7 +323,7 @@ export default function Property() {
               {propertyData[0]?.foreignStreet}
             </p>
             <p ref={priceTitle} className="text-orange-500 hidden text-left">
-              od {propertyData[0]?.price.amount.toLocaleString()} €
+              od {propertyFromSupabase.price.toLocaleString()} €
             </p>
           </div>
 
@@ -418,13 +405,15 @@ export default function Property() {
                     <IoMdPin className="w-[80%] h-[80%] text-yellow-600" />
                   </div>
                   <div className="flex flex-col h-full justify-center">
-                    <div className="">{propertyData[0]?.country.name}</div>
+                    <div className="">
+                      {COUNTRY_MAP[propertyFromSupabase.country]?.[0]}
+                    </div>
                     <div className="text-[24px] font-[800]">
-                      {propertyData[0]?.foreignLocation}
+                      {REGION_MAP[propertyFromSupabase.province]?.[0]}
                       <br></br>
                       <p className="text-[16px]">
                         {" "}
-                        {propertyData[0]?.foreignStreet}{" "}
+                        {propertyFromSupabase.town}{" "}
                       </p>
                     </div>
                   </div>
@@ -439,7 +428,7 @@ export default function Property() {
                     <div className="mr-2">
                       <IoBedOutline className="w-[25px] h-[25px]" />
                     </div>
-                    <div>{propertyData[0]?.noOfRooms}</div>
+                    <div>{propertyFromSupabase.beds}</div>
                   </div>
                 </div>
                 <div className="w-1/5 border-2 border-white h-16 bg-gray-50 pt-2">
@@ -450,7 +439,7 @@ export default function Property() {
                     <div className="mr-2">
                       <PiBathtubLight className="w-[25px] h-[25px]" />
                     </div>
-                    <div>{propertyData[0]?.noOfBathrooms}</div>
+                    <div>{propertyFromSupabase.baths}</div>
                   </div>
                 </div>
                 <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
@@ -472,7 +461,7 @@ export default function Property() {
                     <div className="mr-2">
                       <BiArea className="w-[25px] h-[25px]" />
                     </div>
-                    <div>{propertyData[0]?.totalArea}</div>
+                    <div>{propertyFromSupabase.surface_built}</div>
                   </div>
                 </div>
                 <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
@@ -483,7 +472,9 @@ export default function Property() {
                     <div className="mr-2">
                       <FaSwimmingPool className="w-[25px] h-[25px]" />
                     </div>
-                    <div className="font-bold text-md">1</div>
+                    <div>
+                      {propertyFromSupabase.pool === true ? "TAK" : "NIE"}
+                    </div>
                   </div>
                 </div>
                 <div className="w-full h-[240px] relative">
@@ -501,11 +492,11 @@ export default function Property() {
                       od
                     </p>{" "}
                     <p className="leading-[40px]">
-                      {propertyData[0]?.price.amount.toLocaleString()} €
+                      {propertyFromSupabase.price.toLocaleString()} €
                     </p>
                   </div>
                   <p className="text-md text-black font-bold block">
-                    nr ref. {propertyData[0]?.listingId}
+                    nr ref. {propertyFromSupabase.external_id}
                   </p>
                 </div>
                 <div
@@ -520,7 +511,7 @@ export default function Property() {
         </div>
         {/* <Features /> */}
         <Descryption
-          description={propertyData[0]?.description}
+          description={propertyFromSupabase.descriptions.pl}
           bedrooms={propertyData[0]?.bedrooms}
           bathrooms={propertyData[0]?.bathrooms}
           distance={propertyData[0]?.distance}
@@ -532,4 +523,24 @@ export default function Property() {
       </div>
     </>
   );
+}
+
+export async function getServerSideProps(context: any) {
+  const id = context.query.id;
+
+  const { data, error } = await supabase
+    .from("properties")
+    .select("*")
+    .eq("external_id", Number(id))
+    .single();
+
+  if (error) {
+    console.error(error);
+  }
+
+  return {
+    props: {
+      propertyFromSupabase: data ?? null,
+    },
+  };
 }

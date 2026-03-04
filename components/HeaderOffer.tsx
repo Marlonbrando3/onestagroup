@@ -99,7 +99,7 @@ export default function HeaderOffer() {
     });
 
     e.preventDefault();
-    console.log("name " + consultationName, " phone " + consultationPhone);
+
     let res = await fetch("api/consultation", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -138,7 +138,11 @@ export default function HeaderOffer() {
   const onScroll = useCallback(() => {
     const { scrollX, scrollY, innerWidth } = window;
     // console.log("yOffset", innerWidth, "scrollY", scrollY);
-    if (scrollY > 70 && innerWidth >= 1024 && !router.asPath?.includes("blog")) {
+    if (
+      scrollY > 70 &&
+      innerWidth >= 1024 &&
+      !router.asPath?.includes("blog")
+    ) {
       headerDesktop.current.style.transition = "0.3s";
       logo.current.style.transition = "margin-top 0.4s ease-in-out";
       header.current.style.height = "55px";
@@ -146,7 +150,11 @@ export default function HeaderOffer() {
       headerDesktop.current.style.background = "white";
       headerDesktop.current.style.boxShadow = "1px 1px 5px -3px black";
       // headerDesktop.current.style.color = "black";
-    } else if (scrollY < 70 && innerWidth >= 1024 && !router.asPath?.includes("blog")) {
+    } else if (
+      scrollY < 70 &&
+      innerWidth >= 1024 &&
+      !router.asPath?.includes("blog")
+    ) {
       headerDesktop.current.style.background = "transparent";
       header.current.style.height = "75px";
       logo.current.style.transition = "margin-top 0.5s ease-in-out";
@@ -221,7 +229,10 @@ export default function HeaderOffer() {
                   >
                     <Link
                       onClick={handleClearData}
-                      href={{ pathname: "/[country]", query: { country: "hiszpania", page: 1 } }}
+                      href={{
+                        pathname: "/[country]",
+                        query: { country: "hiszpania", page: 1 },
+                      }}
                       className="p-1 text-black rounded-md w-full text-center group"
                       ref={MouseOnSpain}
                       data-name="MouseOnSpain"
@@ -252,7 +263,10 @@ export default function HeaderOffer() {
                       Nieruchomości w Portugalii
                     </Link> */}
                     <Link
-                      href={{ pathname: "/[country]", query: { country: "dominikana", page: 1 } }}
+                      href={{
+                        pathname: "/[country]",
+                        query: { country: "dominikana", page: 1 },
+                      }}
                       className="p-1 text-black rounded-md w-full text-center group"
                       ref={MouseOnDominican}
                       data-name="MouseOnDominican"
@@ -311,7 +325,10 @@ export default function HeaderOffer() {
                     <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                   </Link>
                 </li>
-                <li onClick={handleShowingConsultationPopUp} className="list group">
+                <li
+                  onClick={handleShowingConsultationPopUp}
+                  className="list group"
+                >
                   <p>BEZPŁATNA KONSULTACJA</p>
                   <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                 </li>
@@ -352,11 +369,13 @@ export default function HeaderOffer() {
               className="flex flex-col h-[90%] justify-between"
               onSubmit={handleSendingConsultation}
             >
-              <p className="text-black font-bold text-[18px]">Zamów konsultację</p>
+              <p className="text-black font-bold text-[18px]">
+                Zamów konsultację
+              </p>
               <p className="text-black text-[12px] font-normal italic">
-                Podczas rozmowy przedstawimy Ci kroki w drodze szukania, wyboru oraz formalizacji
-                zakupu nieruchomości abyś zrozumiał proces i mógł podjąć świadomą i
-                satysfakcjonującą decyzję.
+                Podczas rozmowy przedstawimy Ci kroki w drodze szukania, wyboru
+                oraz formalizacji zakupu nieruchomości abyś zrozumiał proces i
+                mógł podjąć świadomą i satysfakcjonującą decyzję.
               </p>
               <input
                 name="name"
@@ -375,11 +394,14 @@ export default function HeaderOffer() {
               <div className="w-full flex items-start">
                 <input type="checkbox" required></input>
                 <p className="text-black text-[10px] pl-[3px]">
-                  Wyrażam zgodę na kontakt oraz akcpetuję politykę prywatności Onesta Group Sp. z
-                  o.o.{" "}
+                  Wyrażam zgodę na kontakt oraz akcpetuję politykę prywatności
+                  Onesta Group Sp. z o.o.{" "}
                 </p>
               </div>
-              <button ref={submitButton} className="bg-yellow-500 rounded-md h-[30px]">
+              <button
+                ref={submitButton}
+                className="bg-yellow-500 rounded-md h-[30px]"
+              >
                 Zamawiam kontakt
               </button>
             </form>

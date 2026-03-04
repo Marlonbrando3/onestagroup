@@ -104,7 +104,7 @@ export default function Header({ handleConsultationPopUp }: data) {
     });
 
     e.preventDefault();
-    console.log("name " + consultationName, " phone " + consultationPhone);
+
     let res = await fetch("api/consultation", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -112,8 +112,6 @@ export default function Header({ handleConsultationPopUp }: data) {
     });
 
     const results = await res.json();
-
-    console.log(results);
 
     if (results.status === 200) {
       submitButton.current.innerHTML = "Wysłano";
@@ -238,7 +236,7 @@ export default function Header({ handleConsultationPopUp }: data) {
                     >
                       Nieruchomości w Chorwacji
                     </Link> */}
-                    <Link
+                    {/* <Link
                       onClick={handleClearData}
                       href={{
                         pathname: "/nieruchomosci/cypr",
@@ -251,8 +249,8 @@ export default function Header({ handleConsultationPopUp }: data) {
                     >
                       Nieruchomości na Cyprze
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
-                    </Link>
-                    <Link
+                    </Link> */}
+                    {/* <Link
                       href={{
                         pathname: "/nieruchomosci/dominikana",
                         // query: { country: "dominikana", page: 1 },
@@ -265,7 +263,7 @@ export default function Header({ handleConsultationPopUp }: data) {
                     >
                       Nieruchomości na Dominikanie
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
-                    </Link>
+                    </Link> */}
                   </div>
                 </li>
 

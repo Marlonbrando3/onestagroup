@@ -4,39 +4,63 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
 type Props = {
-  propertiesSubSitesLengt: any;
   actualPage: any;
   setActualPage: any;
   temptSubSite: any;
   setTempSubSite: any;
+  count: any;
 };
 
 export default function ChangeSite({
-  propertiesSubSitesLengt,
   actualPage,
   setActualPage,
   temptSubSite,
   setTempSubSite,
+  count,
 }: Props) {
   const router = useRouter();
 
   const { page } = router.query;
+  const pages = Math.ceil(count / 18);
 
-  const sites = [];
+  const sites = [count / 18];
 
-  for (let i = 0; i < propertiesSubSitesLengt; i++) {
+  for (let i = 0; i < count; i++) {
     sites.push(i);
   }
 
   const handleInputChanging = (e: any) => {
-    setTempSubSite(e.target.value);
-    // setActualPage(e.target.value);
+    // setTempSubSite(e.target.value);
+    setActualPage(e.target.value);
+
+    let newPage = Number(e.target.value);
+
+    if (newPage > pages) {
+      newPage = pages;
+    }
+    router
+      .push(
+        {
+          pathname: router.pathname,
+          query: {
+            ...router.query,
+            page: newPage,
+          },
+        },
+        undefined,
+        { scroll: false },
+      )
+      .then(() => {
+        window.scrollTo({ top: 350, behavior: "smooth" });
+      });
   };
 
   const handleChanginSite = (e: any) => {
-    e.preventDefault();
+    // e.preventDefault();
     // setActualPage(e.target.value);
-    console.log(e.target.value);
+
+    const page = parseInt(router.query.page as string) - 1;
+
     router.query.page = temptSubSite;
     router
       .push(
@@ -86,16 +110,16 @@ export default function ChangeSite({
       });
   };
 
-  // );
-  console.log(propertiesSubSitesLengt);
-
   const sitesChanger: any = (
-    <form onSubmit={handleChanginSite} className="flex items-center justify-center">
+    <form
+      onSubmit={handleChanginSite}
+      className="flex items-center justify-center"
+    >
       <div className="w-[50px] h-[25px]">
         <IoIosArrowBack
           className={`${
-            ((router.query.page as string) === "1" || (router.query.page as string)) ===
-              undefined && "hidden"
+            ((router.query.page as string) === "1" ||
+              (router.query.page as string)) === undefined && "hidden"
           } w-[50px] h-[25px] cursor-pointer`}
           onClick={handlingBackSite}
         />
@@ -103,14 +127,20 @@ export default function ChangeSite({
       <input
         className="border border-gray-800 rounded-[3px] bg-transparent w-[40px] h-[40px] text-center font-bold text-[20px] placeholder-gray-900 focus:placeholder-gray-400"
         placeholder={(router.query.page as string) || "1"}
-        onChange={handleInputChanging}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleInputChanging(e);
+          }
+        }}
       ></input>
-      <div className="pl-[9px] text-[20px] font-bold">z {Math.ceil(propertiesSubSitesLengt)}</div>
+      <div className="pl-[9px] text-[20px] font-bold">z {Math.ceil(pages)}</div>
       <div className="w-[50px] h-[25px]">
         {" "}
         <IoIosArrowForward
           className={`${
-            parseInt(router.query.page as string) === Math.ceil(propertiesSubSitesLengt) && "hidden"
+            parseInt(router.query.page as string) === Math.ceil(pages) &&
+            "hidden"
           } w-[50px] h-[25px] cursor-pointer`}
           onClick={handlingNextSite}
         />

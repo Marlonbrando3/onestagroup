@@ -22,8 +22,9 @@ export default function RegionsMainPageElement({
   return (
     <Link
       href={`/nieruchomosci/${country.toLowerCase()}?region=${query}`}
-      className={`lg:w-[23%] w-[48%] lg:h-[70%] h-[49.5%] bg-[#275278] relative ovrflow-hidden border md:mt-[${parseInt(
-        number
+      reloadDocument
+      className={`lg:w-[45%] w-[70%] lg:h-[70%] h-[49.5%] bg-[#275278] relative ovrflow-hidden border md:mt-[${parseInt(
+        number,
       )}px] rounded-md overflow-hidden group cursor-pointer`}
     >
       <div className="w-full h-[80px] mx-auto grid place-items-left text-black md:px-[30px] pl-[6px] absolute top-0 text-white font-[700] text-[35px] pt-[10px]">

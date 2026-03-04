@@ -51,7 +51,7 @@ export default function Thankyoupageafter({
       });
 
       const data = await res.status;
-      console.log(data);
+
       if (data === 200) {
         handlepPassingToOffer();
       }
@@ -82,7 +82,8 @@ export default function Thankyoupageafter({
           <br />
           Przejdź do szczegółów ogłoszeń i jednocześnie <br></br>
           <strong className="font-semibold">
-            wyślij szczegóły wybranych ogłoszeń na wskazny wcześniej adres mailowy.
+            wyślij szczegóły wybranych ogłoszeń na wskazny wcześniej adres
+            mailowy.
           </strong>
         </p>
         <div

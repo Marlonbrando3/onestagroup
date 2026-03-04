@@ -52,7 +52,7 @@ export default function Bathrooms({
 
   const setNewBathFrom = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
-    console.log(dataName);
+
     setBathMinTemp(dataName);
     if (e.target.value === "All") {
       const { lazienek_od, ...rest } = queries;
@@ -69,7 +69,7 @@ export default function Bathrooms({
 
   const setNewBathTo = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
-    console.log(dataName);
+
     setBathMaxTemp(dataName);
     if (e.target.value === "All") {
       const { lazienek_do, ...rest } = queries;
@@ -139,20 +139,18 @@ export default function Bathrooms({
   useEffect(() => {
     if (bathMinTemp !== prevMinRef.current) {
       // roomsMin się zmienił
-      console.log("Zmiana min");
+
       BathMinFormated();
       prevMinRef.current = bathMinTemp;
     } else if (bathMaxTemp !== prevMaxRef.current) {
       // roomsMin się zmienił
-      console.log("Zmiana max");
+
       BathMaxFormated();
       prevMaxRef.current = bathMaxTemp;
     } else {
       BathMinFormated();
       BathMaxFormated();
     }
-
-    console.log("fired!");
   }, [bathMinTemp, bathMaxTemp]);
 
   return (

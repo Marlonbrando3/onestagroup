@@ -16,8 +16,6 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
     const dataName = e.target.name;
     const dataValue = e.target.value;
 
-    console.log(e.target.name);
-
     if (dataName === "name") {
       setName(dataValue);
     } else if (dataName === "phone") {
@@ -31,7 +29,6 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
 
   const handleSendingForm = async (e: any) => {
     e.preventDefault();
-    console.log(name, phone, email, msg);
 
     try {
       let res = await fetch("/api/sendFormItresetedOffers", {
@@ -49,7 +46,7 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
       });
 
       const data = await res.status;
-      console.log(data);
+
       if (data === 200) {
         sendButton.current.innerHTML = "Wysłano!";
         // router.push("https://onesta.com.pl/form/thankyoupageform");
@@ -70,7 +67,9 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
         onSubmit={handleSendingForm}
         className="flex flex-col border md:w-[500px] h-full items-center justify-evenly bg-white p-[20px] rounded-xl shadow-[10px_25px_60px_20px_rgba(0,0,0,0.3)]"
       >
-        <p className="text-[20px]">Jakich informacji odnośnie nieruchomości potrzebujesz?</p>
+        <p className="text-[20px]">
+          Jakich informacji odnośnie nieruchomości potrzebujesz?
+        </p>
         <input
           onChange={handleChangingValue}
           name="name"
@@ -105,7 +104,8 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
             required
           ></input>
           <p className="flex-1 ml-[5px]">
-            Potwierdzam, że zapoznałem się i akceptuję regulamin i politykę prywatności (wymagane)
+            Potwierdzam, że zapoznałem się i akceptuję regulamin i politykę
+            prywatności (wymagane)
           </p>
         </div>
         <div className="w-full  h-auto text-[12px] flex">

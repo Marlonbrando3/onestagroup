@@ -8,10 +8,9 @@ export default function FirstDescription({ investition }: Property) {
   const MainDescription = investition[0].description;
 
   const startIndex = MainDescription.indexOf("-1-<br>") + 7;
-  console.log(startIndex);
+
   const endIndex = MainDescription.indexOf("-2-");
   const firstescription = MainDescription.substring(startIndex, endIndex);
-  console.log(firstescription);
 
   return (
     <div className="">

@@ -79,7 +79,7 @@ export default function Firstview({
       });
 
       const data = await res.status;
-      console.log(data);
+
       if (data === 200) {
         router.push({
           pathname: router.pathname,
@@ -94,10 +94,16 @@ export default function Firstview({
 
   return (
     <div className="md:w-[800px] md:h-auto w-full py-[20px] bg-white mx-auto flex flex-col items-center justify-center mt-[110px] md:mt-[110px] rounded-[30px]">
-      <Link href="#form" className="w-full flex flex-col items-center justify-center relative ">
+      <Link
+        href="#form"
+        className="w-full flex flex-col items-center justify-center relative "
+      >
         <div className="h-[4px] w-[130px] absolute bg-gray-700 z-20 top-4 rounded-[10px] md:hidden"></div>
         <p className="text-[20px] md:text-[30px] md:w-[500px] w-[90%] text-center lg:leading-[35px] leading-[23px] mt-[20px] md:mt-auto">
-          Wyświetl i <p className="text-orange-500 font-bold inline">wyślij natychmiast </p>
+          Wyświetl i{" "}
+          <p className="text-orange-500 font-bold inline">
+            wyślij natychmiast{" "}
+          </p>
           <strong>szczegółowe informacje</strong> o wybranej inwestycji tj:
           {/* <span className="text-red-600 font-bold"> w Hiszpanii</span> */}
         </p>
@@ -200,8 +206,9 @@ export default function Firstview({
             className="md:w-[30px] md:h-[30px] h-[30px] w-[73px] md:-mt-[2px] -mt-[2px] cursor-pointer"
           ></input>
           <p className="font-semibold pl-[4px] text-[11px]">
-            Akceptuję politykę prywatności Onesta Group Sp. z o.o. oraz wyrażam zgodę na kontakt,
-            przesłanie oraz przedstawienie ofert zgodnych z treścią mojego zapytania.
+            Akceptuję politykę prywatności Onesta Group Sp. z o.o. oraz wyrażam
+            zgodę na kontakt, przesłanie oraz przedstawienie ofert zgodnych z
+            treścią mojego zapytania.
           </p>
         </div>
         <button

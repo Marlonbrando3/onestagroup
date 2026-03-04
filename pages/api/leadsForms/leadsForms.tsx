@@ -8,15 +8,18 @@ const PAGE_ID = process.env.PAGE_ID;
 export default async function GET(req: any, res: any) {
   try {
     // Wysłanie żądania do Graph API
-    const response = await axios.get(`https://graph.facebook.com/v22.0/${PAGE_ID}/leadgen_forms`, {
-      params: {
-        access_token: ACCESS_TOKEN, // Przekazanie tokena dostępu
+    const response = await axios.get(
+      `https://graph.facebook.com/v22.0/${PAGE_ID}/leadgen_forms`,
+      {
+        params: {
+          access_token: ACCESS_TOKEN, // Przekazanie tokena dostępu
+        },
       },
-    });
+    );
 
     // Zwracamy dane leadów
     const leads = await response.data.data; // Typowane automatycznie jako `any` przez Axios
-    console.log("powrót" + response.data.data);
+
     return res.status(200).json({
       data: leads,
     });

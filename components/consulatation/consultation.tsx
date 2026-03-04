@@ -26,8 +26,6 @@ export default function Consultation({
     const dataName = e.target.name;
     const dataValue = e.target.value;
 
-    console.log(e.target.name);
-
     if (dataName === "name") {
       setName(dataValue);
     } else if (dataName === "phone") {
@@ -41,8 +39,6 @@ export default function Consultation({
 
   const handleSendingForm = async (e: any) => {
     e.preventDefault();
-    console.log(name, phone, email, msg);
-    console.log(offer);
 
     try {
       let res = await fetch("/api/consultation", {
@@ -60,7 +56,7 @@ export default function Consultation({
       });
 
       const data = await res.status;
-      console.log(data);
+
       if (data === 200) {
         thankyoupopup.current.style.display = "flex";
         setTimeout(() => {

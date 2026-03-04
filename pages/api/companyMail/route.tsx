@@ -8,8 +8,6 @@ export async function POST(request: Request) {
   const fromEmail = process.env.FROM_EMAIL;
   const pass = process.env.EMAIL_PASS;
 
-  console.log("Odebrałem dane");
-
   const transporter = nodemailer.createTransport({
     port: 465,
     host: "mail-serwer141299.lh.pl",

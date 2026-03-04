@@ -21,7 +21,6 @@ export default async function connect(req, res) {
     console.log("istnieje");
   } else {
     hash(req.body.pass, 12, async function (err, hash) {
-      console.log(hash);
       if (!err) {
         await UserSchema.create({
           firstname: req.body.firstname,

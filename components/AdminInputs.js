@@ -56,10 +56,6 @@ export default function AdminInputs() {
 
     let imagestoFetch = [];
 
-    for (const file of fileData.files) {
-      console.log("name" + file.name);
-    }
-
     const formData = new FormData();
     for (const file of fileData.files) {
       const data = new Date().toLocaleDateString();
@@ -84,8 +80,6 @@ export default function AdminInputs() {
         .replaceAll(" ", "_")
         .replaceAll(",", "_");
 
-      // console.log(uniqueImgName.toString().replaceAll(' ','_'))
-
       //set links to files for Mongo DB array
       imagestoFetch = [...imagestoFetch, uniqueImgName];
 
@@ -96,7 +90,7 @@ export default function AdminInputs() {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
     }
 

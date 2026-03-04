@@ -20,7 +20,7 @@ export default async function GET(req: any, res: any) {
     // Zwracamy dane leadów
     // const leads = response.data.data; // Typowane automatycznie jako `any` przez Axios
     const leads = await response.data.data; // Typowane automatycznie jako `any` przez Axios
-    console.log("powrót" + response.data.data);
+
     return res.status(200).json({
       data: leads,
     });

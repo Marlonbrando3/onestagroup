@@ -47,16 +47,15 @@ export default function Loan({ propertyRef, propertyId }: Props) {
     } else if (name === "duration") {
       setLoanDuration(value);
     }
-
-    console.log(value);
   };
 
   return (
     <div className={`${Red_Hat_DisplayFont.className} my-[30px]`}>
       <p className="font-bold text-[20px]">Kalkulator kredytowy</p>
       <p className="mt-[20px] italic">
-        Kalkulacja, którą uzyskasz jest orientacyjna, nie jest ofertą ofertą banku ani cześcią
-        umowy. Aby uzyskać wiążącą ofertę wymagana jest weryfikacja w oddziale banku.
+        Kalkulacja, którą uzyskasz jest orientacyjna, nie jest ofertą ofertą
+        banku ani cześcią umowy. Aby uzyskać wiążącą ofertę wymagana jest
+        weryfikacja w oddziale banku.
       </p>
       <div className="border-red-800 flex mt-[30px] w-full flex-col lg:flex-row">
         <div className="lg:w-1/2 flex flex-col h-[480px] justify-between w-full">
@@ -109,8 +108,9 @@ export default function Loan({ propertyRef, propertyId }: Props) {
           <div>
             <p className="text-[18px] mb-[2px]">Prognozowane m-czne raty:</p>
             <div className="text-[24px] italic font-bold w-full lg:w-[400px] h-[50px] border border-gray-800 rounded-[3px] pl-[10px] place-content-center">
-              {(monthlyPayment !== 0 ? Math.round(monthlyPayment * 100) / 100 : "") ||
-                monthlyPayment === null}
+              {(monthlyPayment !== 0
+                ? Math.round(monthlyPayment * 100) / 100
+                : "") || monthlyPayment === null}
             </div>
           </div>
         </div>

@@ -23,8 +23,6 @@ export default function SurveyTwoRegionsBG({
 
   const Regions = DataSurvey.filter((i) => i.type === "Regions");
 
-  console.log(ArrowRegions);
-
   const showedTypes = Regions[0].options.map((i) => (
     <SurveyTwoRegionsItem
       key={i.id}

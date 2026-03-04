@@ -10,7 +10,6 @@ import { isNull } from "util";
 export default function GalleryContainer() {
   const router = useRouter();
   const { offer } = router.query;
-  console.log(offer);
 
   const [indexImage, setIndexImage] = useState(0);
 
@@ -21,14 +20,11 @@ export default function GalleryContainer() {
     .flatMap((i) => i.images)
     .filter((i) => i.isScheme === false && i.description === null);
 
-  console.log(choosedProperty);
-
   const PropertyImagesArray = choosedProperty;
 
   const choosedImage = choosedProperty[indexImage].id;
 
   const [slideWidth, setSlideWidth] = useState({ width: 0 });
-  // console.log(slideWidth);
 
   //slider varables
   const ImagesPerViewMiniSlider = 3;
@@ -61,16 +57,19 @@ export default function GalleryContainer() {
         placeholder="blur"
         blurDataURL={`https://img.asariweb.pl/thumbnail/${choosedImage}`}
         className={`${
-          i.id === choosedProperty[indexImage].id ? "border-orange-600" : "border-white"
+          i.id === choosedProperty[indexImage].id
+            ? "border-orange-600"
+            : "border-white"
         } border-[3px] hover:border-orange-400 duration-200 rounded-md`}
       />
     </div>
   ));
 
-  // console.log(PropertyImages);
-
   const handleChangingSlideForward = () => {
-    if (margin - marginPerView < marginFullLength !== margin >= marginFullLength - marginPerView) {
+    if (
+      margin - marginPerView < marginFullLength !==
+      margin >= marginFullLength - marginPerView
+    ) {
       const maringData = margin;
       const newMaring = maringData + jumpFor;
       miniSlider.current.style.marginLeft = `-${newMaring}px`;
@@ -82,7 +81,6 @@ export default function GalleryContainer() {
   };
 
   const handleChangingSlideBack = () => {
-    console.log("dziala");
     if (margin !== 0) {
       const maringData = margin;
       const newMaring = maringData - jumpFor;
@@ -94,7 +92,6 @@ export default function GalleryContainer() {
   //check on which site is your image
 
   const handleChangingSlideForwardMain = () => {
-    // console.log(whichSliderSetIsActive);
     if (indexImage < propertyImagesLength - 1) {
       const slider = Math.floor((indexImage + 1) / ImagesPerViewMiniSlider);
       const newMaring = slider * jumpFor;
@@ -125,7 +122,6 @@ export default function GalleryContainer() {
 
   const handleTouchStartBig = (e: React.TouchEvent) => {
     touchStartX = e.touches[0].clientX;
-    console.log("ts");
   };
 
   const handleTouchEndBig = (e: React.TouchEvent) => {
@@ -148,13 +144,9 @@ export default function GalleryContainer() {
 
   const handleTouchEndSlider = (e: React.TouchEvent) => {
     touchEndXSlider = e.changedTouches[0].clientX;
-    console.log("end " + touchEndXSlider);
-    console.log("start " + touchStartXSlider);
 
     if (touchStartXSlider - touchEndXSlider > 50) {
-      console.log("fire 1");
       handleChangingSlideForward();
-      // console.log(e.changedTouches[0].clientX);
     } else if (touchStartXSlider - touchEndXSlider < -50) {
       handleChangingSlideBack();
     }
@@ -166,12 +158,11 @@ export default function GalleryContainer() {
 
     if (touchStartXSlider - touchMoveStart > 30) {
       calculate = margin + (touchStartXSlider - touchMoveStart);
-      // console.log(TouchMoveActual);
+
       miniSlider.current.style.marginLeft = `-${calculate}px`;
     } else if (touchStartXSlider - touchMoveStart < -30) {
       calculate = margin + (touchStartXSlider - touchMoveStart);
-      // console.log("lower");
-      // console.log(touchStartXSlider - TouchMoveActual);
+
       miniSlider.current.style.marginLeft = `-${calculate}px`;
     }
   };
@@ -180,7 +171,6 @@ export default function GalleryContainer() {
     // Funkcja aktualizująca rozmiar okna
     const handleResize = () => {
       setSlideWidth(miniSlide.current.offsetWidth);
-      console.log(miniSlide.current.offsetWidth);
     };
 
     // Nasłuchuj zmiany rozdzielczości
@@ -217,7 +207,10 @@ export default function GalleryContainer() {
           name="viewport"
           content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
         />
-        <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
+        <meta
+          property="og:image"
+          content="https://onesta.com.pl/onesta_og_img.png"
+        />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
       <div className="md:w-[700px] w-[98vw] md:h-[480px] h-[370px] bg-white rounded-xl overflow-hidden relative">

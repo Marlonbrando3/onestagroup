@@ -26,6 +26,10 @@ const nextConfig = {
         port: "",
         pathname: "*/**",
       },
+      {
+        protocol: "https",
+        hostname: "es-metainmo.ams3.cdn.digitaloceanspaces.com",
+      },
     ],
   },
   reactStrictMode: true,

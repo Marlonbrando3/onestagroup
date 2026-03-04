@@ -16,19 +16,13 @@ export default function Index() {
   const [slideWidth, setSlideWidth]: any = useState();
 
   const handlePopUpOpen = async (event: any) => {
-    console.log(event);
-
     await router.push({
       pathname: router.pathname,
       query: { ...remainingQuery, recomended: "true" },
     });
-
-    console.log(showPopUp.current);
   };
 
   const handlePopUpClosing = async (event: any) => {
-    console.log(event);
-
     await router.push({
       pathname: router.pathname,
       query: { ...remainingQuery, recomended: "false" },

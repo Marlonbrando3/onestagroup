@@ -1,43 +1,26 @@
-import React, { useRef, useState } from "react";
+import { supabase } from "../lib/supabaseClient";
+import { useRouter } from "next/router";
+import { useRef, useState } from "react";
 import Link from "next/link";
-import Router, { useRouter } from "next/router";
 
 export default function Login() {
   const router = useRouter();
 
   const email = useRef();
-  const pass = useRef();
+  const password = useRef();
   const info = useRef();
   const [comm, setComm] = useState();
 
   const handleLogin = async () => {
-    console.log(email.current.value + " with pass: " + pass.current.value);
-
-    let ref = await fetch("/api/login", {
-      method: "POST",
-      model: "no-cors",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Methods": "GET, POST",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        email: email.current.value,
-        pass: pass.current.value,
-      }),
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.current.value,
+      password: password.current.value,
     });
 
-    if (ref.status === 200) {
-      info.current.style.visibility = "visible";
-      info.current.style.backgroundColor = "green";
-      setTimeout(() => {
-        router.push("/panel");
-      }, 900);
-      setComm("Zalogowano");
+    if (!error) {
+      router.push("/admin");
     } else {
-      info.current.style.visibility = "visible";
-      setComm("Dane nie są zgodne");
+      alert("Błąd logowania");
     }
   };
 
@@ -59,7 +42,7 @@ export default function Login() {
       ></input>
       <label id="pass">Hasło</label>
       <input
-        ref={pass}
+        ref={password}
         name="pass"
         className="border-2 rounded-md h-10"
       ></input>

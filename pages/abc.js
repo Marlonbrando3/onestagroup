@@ -10,14 +10,11 @@ export default function ABC() {
   const chosed = useRef([]);
   const icon = useRef([]);
 
-  console.log(chosed);
-
   const ShowThisQuestion = (index) => {
-    console.log(index + 1);
     let text = Math.ceil(
-      chosed.current[index].innerHTML.toString().length / 45
+      chosed.current[index].innerHTML.toString().length / 45,
     );
-    console.log(text);
+
     Abc.map((evt) => {
       if (evt.id === index + 1) {
         if (chosed.current[evt.id - 1].style.height !== text * 30 + "px") {

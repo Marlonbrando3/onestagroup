@@ -19,8 +19,6 @@ export default function SurveyOne({
   // const handleChangingType = () => {
   //   let data = [...ArrowTypes];
 
-  //   console.log(types.name);
-
   //   if (ArrowTypes.includes(types.name)) {
   //     let updatedArray = data.filter((i: any) => i !== types.name);
   //     data = updatedArray;
@@ -42,7 +40,9 @@ export default function SurveyOne({
 
   return (
     <>
-      {types.name === "Jeszcze nie zdecydowałem" && <p className="md:hidden">lub</p>}
+      {types.name === "Jeszcze nie zdecydowałem" && (
+        <p className="md:hidden">lub</p>
+      )}
       <div
         onClick={() => handleChosingOptions(types.name)}
         className="h-[100px] w-[90%] md:w-[43%] bg-white my-[5px] border-orange-400 border rounded-xl flex justify-center items-center  cursor-pointer duration-200 hover:shadow-[0px_0px_12px_0px_rgba(0,0,0,0.3)] p-[5px]"
@@ -54,7 +54,12 @@ export default function SurveyOne({
               <Image src="/Survey/Types/checked.png" objectFit="cover" fill alt="bungalow" />
             </div> */}
             {/* )} */}
-            <Image src={`/${types.photo}`} objectFit="cover" fill alt="bungalow" />
+            <Image
+              src={`/${types.photo}`}
+              objectFit="cover"
+              fill
+              alt="bungalow"
+            />
           </div>
           <p className="ml-[20px] w-[60%] font-semibold text-[18px] leading-[24px] flex-1">
             {types.name}

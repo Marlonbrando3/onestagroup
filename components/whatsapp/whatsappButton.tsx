@@ -4,10 +4,6 @@ import { RiWhatsappFill } from "react-icons/ri";
 import { IoMdClose } from "react-icons/io";
 
 export default function WhatsAppButton() {
-  const hideWA = () => {
-    console.log("lalal");
-  };
-
   return (
     <>
       <div className="relative">

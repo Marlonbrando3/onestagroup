@@ -20,8 +20,6 @@ export default function ContactFormMain() {
 
   const confirmation = useRef();
 
-  // console.log(dataForm);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setURLafterFormSending("https://onesta.com.pl" + router.asPath);
@@ -37,7 +35,6 @@ export default function ContactFormMain() {
       },
       body: JSON.stringify({ Ref: "Strona główna", dataForm }),
     }).then((res) => {
-      console.log("lala");
       console.log("Response received");
       if (res.status === 200) {
         console.log("Response succeeded!");

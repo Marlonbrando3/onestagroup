@@ -24,8 +24,6 @@ export default function SurveyOneTypesBG({
 
   const Types = DataSurvey.filter((i) => i.type === "TypeOfProperty");
 
-  console.log(ArrowTypes);
-
   const showedTypes = Types[0].options.map((i) => (
     <SurveyOneTypes
       key={i.id}

@@ -1,36 +1,36 @@
-import React, { useRef, useState } from "react"
-import Image from "next/image"
-import { useRouter } from "next/router"
-import MainSearchInSearchEngine from "../MainSearchInSearchEngine"
-import MobileFilters from "../MobileFilters"
-import { Red_Hat_DisplayFont } from "@/fonts/fonts"
-import { IoSearch } from "react-icons/io5"
-import Properties from "../../public/properties.json"
+import React, { useRef, useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import MainSearchInSearchEngine from "../MainSearchInSearchEngine";
+import MobileFilters from "../MobileFilters";
+import { Red_Hat_DisplayFont } from "@/fonts/fonts";
+import { IoSearch } from "react-icons/io5";
+import Properties from "../../public/properties.json";
 
 type Function = {
-  handleShowMobileFilters: any
-  mobileButtonSearchEngine: any
-  searchEngine: any
-}
+  handleShowMobileFilters: any;
+  mobileButtonSearchEngine: any;
+  searchEngine: any;
+};
 
 export default function SearchInput({
   handleShowMobileFilters,
   searchEngine,
   mobileButtonSearchEngine,
 }: Function) {
-  const router = useRouter()
+  const router = useRouter();
 
-  const ShowPopUpChangedApply: any = useRef()
-  const AdvancedMenu = useRef<HTMLParagraphElement>()
-  const AdvancedButton = useRef<HTMLParagraphElement>()
-  const RefOffers = useRef<any>()
+  const ShowPopUpChangedApply: any = useRef();
+  const AdvancedMenu = useRef<HTMLParagraphElement>();
+  const AdvancedButton = useRef<HTMLParagraphElement>();
+  const RefOffers = useRef<any>();
 
-  const [ref, setRef] = useState<string>("")
+  const [ref, setRef] = useState<string>("");
 
-  const [filteredProperties, setFilteredProperties]: any = useState()
+  const [filteredProperties, setFilteredProperties]: any = useState();
 
   const handleChoosingThisOffer = (e: any) => {
-    const slug = slugify(e.headerAdvertisement, e.id)
+    const slug = slugify(e.headerAdvertisement, e.id);
     function slugify(title: string, id: string): string {
       return (
         title
@@ -43,39 +43,35 @@ export default function SearchInput({
           .replace(/\s+/g, "-") +
         "-" +
         id
-      )
+      );
     }
 
     const country = (
       typeof router.query.country === "string"
         ? router.query.country
         : router.query.country?.[0] || ""
-    ).toLowerCase()
+    ).toLowerCase();
 
-    console.log(e.id)
-    const property = Properties.filter((i) => i.id === e.id)
-    console.log(property[0].id)
+    const property = Properties.filter((i) => i.id === e.id);
+
     router.push({
       pathname: `/nieruchomosci/${country?.toLowerCase()}/${slug}`,
-    })
-  }
+    });
+  };
 
   const handleInputData = (e: any) => {
-    const refNumber = e.target.value
-    setRef(refNumber)
-    console.log(RefOffers)
-
-    console.log(refNumber.length)
+    const refNumber = e.target.value;
+    setRef(refNumber);
 
     if (refNumber.length > 2) {
-      RefOffers.current.style.display = "block"
+      RefOffers.current.style.display = "block";
     } else {
-      RefOffers.current.style.display = "block"
-      RefOffers.current.style.display = "none"
+      RefOffers.current.style.display = "block";
+      RefOffers.current.style.display = "none";
     }
 
     let data = Properties.filter((i: any) =>
-      i.listingId.includes(refNumber)
+      i.listingId.includes(refNumber),
     ).map((e) => (
       <div
         key={e.id}
@@ -100,17 +96,10 @@ export default function SearchInput({
           <div className="text-[10px]">{e.listingId}</div>
         </div>
       </div>
-    ))
-    console.log(data)
+    ));
 
-    setFilteredProperties(data)
-  }
-  const handleSearchingOffer = () => {
-    let data = [...Properties].filter((i) => i.listingId === ref.toUpperCase())
-    if (data.length === 0) {
-      console.log("nie ma ")
-    } else console.log("DDD")
-  }
+    setFilteredProperties(data);
+  };
 
   return (
     <>
@@ -220,5 +209,5 @@ export default function SearchInput({
         <div className="flex flex-col justify-center items-center xl:mx-[45px] lg:mt-0"></div>
       </div>
     </>
-  )
+  );
 }

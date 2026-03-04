@@ -20,7 +20,7 @@ export default function (req: any, res: any) {
   });
 
   const mailData = {
-    from: "Onesta Group <www@onesta.com.pl>",
+    from: "Onesta Group <websitemailing@onesta.com.pl>",
     to: endEmail,
     subject: `Facebook Ankieta www: ${req.body.name}`,
     text: "Hello. This email is for your email verification.",

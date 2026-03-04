@@ -1,33 +1,33 @@
-import React, { useState, useRef } from "react"
-import { useRouter } from "next/router"
-import DataCountry from "../data/DataCountry.json"
+import React, { useState, useRef } from "react";
+import { useRouter } from "next/router";
+import DataCountry from "../data/DataCountry.json";
 import {
   BonheurRoyaleFont,
   Red_Hat_DisplayFont,
   MontserratSans,
-} from "../fonts/fonts"
-import { IoSearchOutline } from "react-icons/io5"
-import Properties from "../public/properties.json"
+} from "../fonts/fonts";
+import { IoSearchOutline } from "react-icons/io5";
+import Properties from "../public/properties.json";
 
 export default function SearchButton() {
-  const router = useRouter()
-  const advancedSearch = useRef<any>()
+  const router = useRouter();
+  const advancedSearch = useRef<any>();
 
-  const countryData = useRef<any>()
+  const countryData = useRef<any>();
 
-  const [showedadvancedSearch, setshowedadvancedSearch] = useState(false)
+  const [showedadvancedSearch, setshowedadvancedSearch] = useState(false);
 
-  const [countryChoosed, setCountryChoosed] = useState("hiszpania")
+  const [countryChoosed, setCountryChoosed] = useState("hiszpania");
 
-  const [dataRegion, setDataRegion] = useState<any>()
-  const [dataType, setDataType] = useState<any>()
-  const [dataMarket, setDataMarket] = useState<any>()
-  const [dataBathsmin, setDataBathsmin] = useState<any>()
-  const [dataBathsmax, setDataBathsmax] = useState<any>()
-  const [dataBedsmin, setDataBedsmin] = useState<any>()
-  const [dataBedsmax, setDataBedsmax] = useState<any>()
-  const [dataPricemin, setDataPricemin] = useState<any>()
-  const [dataPricemax, setDataPricemax] = useState<any>()
+  const [dataRegion, setDataRegion] = useState<any>();
+  const [dataType, setDataType] = useState<any>();
+  const [dataMarket, setDataMarket] = useState<any>();
+  const [dataBathsmin, setDataBathsmin] = useState<any>();
+  const [dataBathsmax, setDataBathsmax] = useState<any>();
+  const [dataBedsmin, setDataBedsmin] = useState<any>();
+  const [dataBedsmax, setDataBedsmax] = useState<any>();
+  const [dataPricemin, setDataPricemin] = useState<any>();
+  const [dataPricemax, setDataPricemax] = useState<any>();
 
   const regions = DataCountry.map((r) => {
     if (r.country === countryChoosed) {
@@ -35,16 +35,15 @@ export default function SearchButton() {
         <option key={i} className="hover:bg-orange-400" value={r.showed[index]}>
           {i}
         </option>
-      ))
+      ));
     }
-  })
+  });
 
   const handleChoosingCountry = (e: any) => {
     // setQueries({ ...queries });
-    let paramsName = e.target.name
-    // console.log(paramsBolean)
-    let paramsValues = e.target.value
-    // console.log(paramsValues);
+    let paramsName = e.target.name;
+
+    let paramsValues = e.target.value;
 
     if (
       paramsValues === "hiszpania" ||
@@ -54,21 +53,21 @@ export default function SearchButton() {
       paramsValues === "dominikana" ||
       paramsValues === "włochy"
     ) {
-      setCountryChoosed(paramsValues)
+      setCountryChoosed(paramsValues);
     }
-  }
+  };
 
-  const [queries, setQueries] = useState<any>("")
+  const [queries, setQueries] = useState<any>("");
 
   const showingAdvancedFilters = () => {
-    setshowedadvancedSearch(!showedadvancedSearch)
+    setshowedadvancedSearch(!showedadvancedSearch);
     if (showedadvancedSearch === true) {
-      advancedSearch.current.style.height = "23px"
-      advancedSearch.current.style.top = "-23px"
-      advancedSearch.current.style.height = "300px"
-      advancedSearch.current.style.top = "-230px"
+      advancedSearch.current.style.height = "23px";
+      advancedSearch.current.style.top = "-23px";
+      advancedSearch.current.style.height = "300px";
+      advancedSearch.current.style.top = "-230px";
     }
-  }
+  };
 
   const CountingProperties = () => {
     let PropertiesFounded: any = Properties.filter((p) => {
@@ -93,11 +92,10 @@ export default function SearchButton() {
           queries.cena_do === undefined ||
           queries.cena_do === "All")
       )
-        return true
-    })
-    // console.log(PropertiesFounded.length);
-    return PropertiesFounded.length
-  }
+        return true;
+    });
+    return PropertiesFounded.length;
+  };
 
   const handleFormating = (data: any) => {
     const dataTemp = data
@@ -112,94 +110,94 @@ export default function SearchButton() {
       .replace(/ś/g, "s")
       .replace(/ź/g, "z")
       .replace(/ż/g, "z")
-      .replace(/á/g, "a")
-    console.log(dataTemp)
-    return dataTemp
-  }
+      .replace(/á/g, "a");
+
+    return dataTemp;
+  };
 
   const handleChoosingRegion = (e: any) => {
     if (e.target.value === "All") {
-      const { region, ...rest } = queries
-      setQueries(rest)
-      setDataRegion("All")
+      const { region, ...rest } = queries;
+      setQueries(rest);
+      setDataRegion("All");
     } else {
-      setDataRegion(e.target.value)
+      setDataRegion(e.target.value);
       setQueries({
         ...queries,
         region: handleFormating(e.target.value),
-      })
+      });
     }
-  }
+  };
 
   const handleChangingType = (e: any) => {
     if (e.target.value === "All") {
-      const { zabudowa, ...rest } = queries
-      setQueries(rest)
-      setDataType("All")
+      const { zabudowa, ...rest } = queries;
+      setQueries(rest);
+      setDataType("All");
     } else {
-      setDataType(e.target.value)
+      setDataType(e.target.value);
       setQueries({
         ...queries,
         zabudowa: handleFormating(e.target.value),
-      })
+      });
     }
-  }
+  };
 
   const handleChangingPriceFrom = (e: any) => {
     if (e.target.value === "All") {
-      const { cena_od, ...rest } = queries
-      setQueries(rest)
-      setDataPricemin("All")
+      const { cena_od, ...rest } = queries;
+      setQueries(rest);
+      setDataPricemin("All");
     } else {
-      setDataPricemin(e.target.value)
+      setDataPricemin(e.target.value);
       setQueries({
         ...queries,
         cena_od: handleFormating(e.target.value),
-      })
+      });
     }
-  }
+  };
 
   const handleChangingPriceTo = (e: any) => {
     if (e.target.value === "All") {
-      const { cena_do, ...rest } = queries
-      setQueries(rest)
-      setDataPricemax("All")
+      const { cena_do, ...rest } = queries;
+      setQueries(rest);
+      setDataPricemax("All");
     } else {
-      setDataType(e.target.value)
+      setDataType(e.target.value);
       setQueries({
         ...queries,
         cena_do: handleFormating(e.target.value),
-      })
+      });
     }
-  }
+  };
 
   const handleChangingBedsFrom = (e: any) => {
     if (e.target.value === "All") {
-      const { sypialni_od, ...rest } = queries
-      setQueries(rest)
-      setDataPricemax("All")
+      const { sypialni_od, ...rest } = queries;
+      setQueries(rest);
+      setDataPricemax("All");
     } else {
-      setDataType(e.target.value)
+      setDataType(e.target.value);
       setQueries({
         ...queries,
         sypialni_od: handleFormating(e.target.value),
-      })
+      });
     }
-  }
+  };
 
   const handleChangingBedsTo = (e: any) => {
     if (e.target.value === "All") {
-      const { sypialni_do, ...rest } = queries
-      setQueries(rest)
-      setDataPricemax("All")
+      const { sypialni_do, ...rest } = queries;
+      setQueries(rest);
+      setDataPricemax("All");
     } else {
-      setDataType(e.target.value)
+      setDataType(e.target.value);
       setQueries({
         ...queries,
         sypialni_do: handleFormating(e.target.value),
-      })
+      });
     }
-  }
+  };
 
   function slugify(title: string): string {
     return title
@@ -209,18 +207,18 @@ export default function SearchButton() {
       .replace(/ł/g, "l") // osobno: ł → l
       .replace(/[^a-z0-9\s-]/g, "") // usuwa wszystko poza literami, cyframi i myślnikami
       .trim()
-      .replace(/\s+/g, "-")
+      .replace(/\s+/g, "-");
   }
 
   const handleSearch = (e: any) => {
-    const country = slugify(countryChoosed as string)
+    const country = slugify(countryChoosed as string);
 
-    e.preventDefault()
+    // e.preventDefault();
     router.push({
       pathname: `/nieruchomosci/${country}`,
       query: queries,
-    })
-  }
+    });
+  };
 
   const advancedSearchDiv = (
     <div
@@ -292,7 +290,7 @@ export default function SearchButton() {
         </div>
       </div>
     </div>
-  )
+  );
 
   return (
     <>
@@ -483,5 +481,5 @@ export default function SearchButton() {
         </div>
       </div>
     </>
-  )
+  );
 }

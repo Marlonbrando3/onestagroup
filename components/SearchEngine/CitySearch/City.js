@@ -17,7 +17,6 @@ export default function Types() {
   };
 
   const handleCityListShow = () => {
-    console.log(SearchFilters.region);
     if (region.length > 0) {
       citylist.current.style.height = "300px";
     }
@@ -29,8 +28,6 @@ export default function Types() {
     const typeOfProperty = e.target.getAttribute("name");
     const valueOfProperty = e.target.getAttribute("value");
 
-    console.log(typeOfProperty);
-    console.log("wchodzi Cities");
     if (cities.toString().includes(valueOfProperty.toString())) {
       setCities([...cities.filter((o) => o !== valueOfProperty)]);
 
@@ -51,8 +48,6 @@ export default function Types() {
   };
 
   const ChoosedCities = SearchFilters.city.map((city) => {
-    // console.log(cities.length)
-
     return (
       <div
         key={city}
@@ -125,7 +120,9 @@ export default function Types() {
       <div id="city" className=" flex md:w-[450px] min-h-[25px] relative">
         <div
           className={
-            cities.length > 0 ? "hidden" : "absolute w-full h-full flex justify-center items-center"
+            cities.length > 0
+              ? "hidden"
+              : "absolute w-full h-full flex justify-center items-center"
           }
         >
           <p className="text-gray-500 text-[14px]">Wszystkie miasta</p>

@@ -52,7 +52,7 @@ export default function Bedrooms({
 
   const setNewBedsFrom = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
-    console.log(dataName);
+
     setBedsMinTemp(dataName);
     if (e.target.value === "All") {
       const { sypialni_od, ...rest } = queries;
@@ -69,7 +69,6 @@ export default function Bedrooms({
 
   const setNewBedsTo = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
-    console.log(dataName);
     setBedsMaxTemp(dataName);
     if (e.target.value === "All") {
       const { sypialni_do, ...rest } = queries;
@@ -144,21 +143,18 @@ export default function Bedrooms({
   useEffect(() => {
     if (bedsMinTemp !== prevMinRef.current) {
       // roomsMin się zmienił
-      console.log("Zmiana min");
+
       BedsMinFormated();
       prevMinRef.current = bedsMinTemp;
     } else if (bedsMaxTemp !== prevMaxRef.current) {
       // roomsMin się zmienił
-      console.log("Zmiana max");
+
       BedsMaxFormated();
       prevMaxRef.current = bedsMaxTemp;
     } else {
-      console.log("działa wszytko");
       BedsMaxFormated();
       BedsMinFormated();
     }
-
-    console.log("fired!");
   }, [bedsMinTemp, bedsMaxTemp]);
 
   return (

@@ -13,8 +13,6 @@ export default function Signup() {
   const [comm, setComm] = useState();
 
   const handleSignIn = (e) => {
-    console.log(email.current.value + " with pass: " + pass.current.value);
-
     e.preventDefault();
 
     fetch("/api/signup", {
@@ -36,7 +34,10 @@ export default function Signup() {
   return (
     <form className="bg-gray-100 w-[300px] flex flex-col p-5 mx-auto mt-52">
       <div className="text-center text-lg pb-5 font-bold">Logowanie</div>
-      <div ref={info} className="invisible w-80 h-10 bg-red-600 text-white text-center">
+      <div
+        ref={info}
+        className="invisible w-80 h-10 bg-red-600 text-white text-center"
+      >
         {comm}
       </div>
       <label id="firstname">Imię</label>
@@ -54,11 +55,25 @@ export default function Signup() {
         className="border-2 rounded-md mb-3 h-10"
       ></input>
       <label id="email">Adres e-mail</label>
-      <input ref={email} name="email" type="mail" className="border-2 rounded-md mb-3 h-10"></input>
+      <input
+        ref={email}
+        name="email"
+        type="mail"
+        className="border-2 rounded-md mb-3 h-10"
+      ></input>
       <label id="phone">Numer telefonu</label>
-      <input ref={phone} name="phone" type="mail" className="border-2 rounded-md mb-3 h-10"></input>
+      <input
+        ref={phone}
+        name="phone"
+        type="mail"
+        className="border-2 rounded-md mb-3 h-10"
+      ></input>
       <label id="pass">Hasło</label>
-      <input ref={pass} name="pass" className="border-2 rounded-md h-10"></input>
+      <input
+        ref={pass}
+        name="pass"
+        className="border-2 rounded-md h-10"
+      ></input>
       <button
         type="submit"
         onClick={handleSignIn}

@@ -15,8 +15,6 @@ export default function FormPoUpIntrested() {
     const dataName = e.target.name;
     const dataValue = e.target.value;
 
-    console.log(e.target.name);
-
     if (dataName === "name") {
       setName(dataValue);
     } else if (dataName === "phone") {
@@ -30,8 +28,6 @@ export default function FormPoUpIntrested() {
 
   const handleSendingForm = async (e: any) => {
     e.preventDefault();
-    console.log(name, phone, email, msg);
-    console.log(offer);
 
     try {
       let res = await fetch("/api/sendFormIntresetedThisOneOffer", {
@@ -49,7 +45,7 @@ export default function FormPoUpIntrested() {
       });
 
       const data = await res.status;
-      console.log(data);
+
       if (data === 200) {
         sendButton.current.innerHTML = "Wysłano!";
         // router.push("https://onesta.com.pl/form/thankyoupageform");
@@ -59,9 +55,7 @@ export default function FormPoUpIntrested() {
         //   intrestedPopUp.current.style.display = "none";
         // }, 2000);
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   return (
@@ -70,7 +64,9 @@ export default function FormPoUpIntrested() {
         onSubmit={handleSendingForm}
         className="flex flex-col md:w-[500px] h-full items-center justify-evenly bg-white p-[20px]"
       >
-        <p className="text-[20px]">Jakich informacji odnośnie nieruchomości potrzebujesz?</p>
+        <p className="text-[20px]">
+          Jakich informacji odnośnie nieruchomości potrzebujesz?
+        </p>
         <input
           onChange={handleChangingValue}
           name="name"
@@ -105,7 +101,8 @@ export default function FormPoUpIntrested() {
             required
           ></input>
           <p className="flex-1 ml-[5px]">
-            Potwierdzam, że zapoznałem się i akceptuję regulamin i politykę prywatności (wymagane)
+            Potwierdzam, że zapoznałem się i akceptuję regulamin i politykę
+            prywatności (wymagane)
           </p>
         </div>
         <div className="w-full  h-auto text-[12px] flex">

@@ -2,7 +2,10 @@ import React from "react";
 import { useRouter } from "next/router";
 import DataCountry from "../../../data/DataCountry.json";
 
-export default function CountrySearch({ activeRegionList, setActiveRegionList }) {
+export default function CountrySearch({
+  activeRegionList,
+  setActiveRegionList,
+}) {
   const router = useRouter();
 
   const country = router.query.country;
@@ -13,7 +16,6 @@ export default function CountrySearch({ activeRegionList, setActiveRegionList })
     if (obj.country === country) {
       obj.region.map((v) => {
         regions = [...regions, v.region];
-        // console.log(regions)
       });
     }
   });

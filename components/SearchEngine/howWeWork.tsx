@@ -15,7 +15,6 @@ export default function HowWeWork() {
   const handleMovingSliderForward = () => {
     const Length = OurJobTXT.length;
 
-    console.log(margin);
     const actualMargin = margin - 350;
     if (margin > 350 * (Length - 1) * -1) {
       aboutUsSlider.current.style.marginLeft = `${actualMargin}px`;
@@ -23,7 +22,6 @@ export default function HowWeWork() {
     }
   };
   const handleMovingSliderBack = () => {
-    console.log(margin);
     const actualMargin = margin + 350;
     if (margin < 0) {
       aboutUsSlider.current.style.marginLeft = `${actualMargin}px`;
@@ -71,7 +69,8 @@ export default function HowWeWork() {
         <div className="w-[230px] h-full md:float-right flex justify-evenly">
           <div
             className={`${
-              margin === 0 && "bg-white/[0.2] border-white/[0.2] hover:bg-white/[0.2]"
+              margin === 0 &&
+              "bg-white/[0.2] border-white/[0.2] hover:bg-white/[0.2]"
             }  flex items-center justify-center cursor-pointer hover:bg-white/[0.5] duration-150 relative w-[80px] h-[80px] `}
           >
             <div

@@ -14,7 +14,7 @@ export default function RegionsMainPage() {
       >
         <div className="w-full h-[100px]">
           <p className="md:text-[32px] text-[25px]  text-[#275278] w-auto font-[400] h-full items-center lg:inline-flex">
-            W którym regionie świata szukasz{" "}
+            W którym regionie Hiszpanii szukasz?
             <span className="font-[800]"> &nbsp;miejsca dla siebie?</span>
           </p>
         </div>
@@ -43,7 +43,7 @@ export default function RegionsMainPage() {
             number="40"
             img="costadelsol.png"
           />
-          <RegionsMainPageElement
+          {/* <RegionsMainPageElement
             icon={
               <BsPersonHearts className="w-[100px] h-[90px] text-[#E9B75F]" />
             }
@@ -65,7 +65,7 @@ export default function RegionsMainPage() {
             d="Relacyjność i zrozumienie przez empatyczny zespół to coś co skutkuje dobrą komunikacją i efektywną pracą z oczekiwanymi efekami."
             number="0"
             img="cypr.png"
-          />
+          /> */}
         </div>
       </div>
     </div>

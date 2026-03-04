@@ -14,11 +14,13 @@
   "dependencies": {
     "@hotjar/browser": "^1.0.9",
     "@react-icons/all-files": "^4.1.0",
+    "@supabase/supabase-js": "^2.97.0",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "clsx": "^2.1.1",
     "cookies-next": "^4.1.1",
     "crypto-random-string": "^5.0.0",
+    "fast-xml-parser": "^5.3.7",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
     "module-name": "^0.0.1-security",

@@ -9,7 +9,12 @@ type Query = {
   setDataRegion: any;
 };
 
-export default function Regions({ setQueries, queries, dataRegion, setDataRegion }: Query) {
+export default function Regions({
+  setQueries,
+  queries,
+  dataRegion,
+  setDataRegion,
+}: Query) {
   const router = useRouter();
 
   const { country, region } = router.query;
@@ -22,19 +27,18 @@ export default function Regions({ setQueries, queries, dataRegion, setDataRegion
         return true;
       }
       if (regionTemp === undefined && region === i.query) {
-        console.log(i.querySearch);
         setRegionTemp(i.query);
         return true; // i tak zatrzymuje find
       }
     });
-    // console.log(reg?.querySearch);
+
     return reg?.querySearch;
   };
 
   const setNewRegion = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
     setRegionTemp(dataName);
-    // console.log(regionTemp);
+
     if (e.target.value === "All") {
       const { region, ...rest } = queries;
       setQueries(rest);
@@ -62,7 +66,6 @@ export default function Regions({ setQueries, queries, dataRegion, setDataRegion
 
   useEffect(() => {
     RegionFormated();
-    console.log("fired!");
   }, [regionTemp]);
 
   return (
@@ -78,9 +81,12 @@ export default function Regions({ setQueries, queries, dataRegion, setDataRegion
             <option value="All">Wszystkie</option>
             {DataCountry.map((c) => {
               if (c.country === country) {
-                // console.log(c.region);
                 return c.region.map((r, index) => (
-                  <option key={r} value={c.query[index].query} data-name={c.query[index].query}>
+                  <option
+                    key={r}
+                    value={c.query[index].query}
+                    data-name={c.query[index].query}
+                  >
                     {r}
                   </option>
                 ));

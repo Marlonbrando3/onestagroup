@@ -8,7 +8,12 @@ type Query = {
   setDataType: any;
 };
 
-export default function Types({ setQueries, queries, dataType, setDataType }: Query) {
+export default function Types({
+  setQueries,
+  queries,
+  dataType,
+  setDataType,
+}: Query) {
   const router = useRouter();
 
   const { zabudowa } = router.query;
@@ -27,7 +32,6 @@ export default function Types({ setQueries, queries, dataType, setDataType }: Qu
       }
 
       if (typeTemp === undefined && zabudowa === i.query.toLowerCase()) {
-        console.log(i.query);
         setTypeTemp(i.query);
         return true; // i tak zatrzymuje find
       }
@@ -36,7 +40,7 @@ export default function Types({ setQueries, queries, dataType, setDataType }: Qu
 
   const setNewType = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
-    console.log(dataName);
+
     setTypeTemp(dataName);
     if (e.target.value === "All") {
       const { zabudowa, ...rest } = queries;
@@ -65,7 +69,6 @@ export default function Types({ setQueries, queries, dataType, setDataType }: Qu
 
   useEffect(() => {
     TypeFormated();
-    console.log("fired!");
   }, [typeTemp]);
 
   const TypesSearchInput = (
