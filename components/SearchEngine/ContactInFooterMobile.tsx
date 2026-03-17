@@ -2,12 +2,13 @@ import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { OutfitSans, TenorsSans } from "../../fonts/fonts";
+import { MdOutlineSend } from "react-icons/md";
 
 type Props = {
   propertyRef: any;
 };
 
-export default function ContactOnPropertyCard({ propertyRef }: Props) {
+export default function ContactInFooterMobile({ propertyRef }: Props) {
   const router = useRouter();
 
   const { id } = router.query;
@@ -16,7 +17,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
   const [Phone, setPhone] = useState();
   const [Mail, setHandleMarginSlider] = useState();
   const [massege, setMessage] = useState(
-    "Proszę o kontakt w sprawie tej nieruchomości",
+    "Chętnie dowiem się więcej na temat tej nieruchomości. Proszę o kontakt",
   );
 
   const submitButton: any = useRef();
@@ -63,8 +64,8 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
     }
   };
   return (
-    <div className={`${OutfitSans.className} h-auto grow`}>
-      <div className=" bg-white rounded-md p-4 h-[480px] hidden lg:block z-40 bg-yellow-300/[0.2]">
+    <div className={`${OutfitSans.className} h-auto `}>
+      <div className=" bg-white rounded-md p-4 h-[480px] md:hidden block z-40 bg-yellow-400/[0.8]">
         <p className="font-[500] pb-4 text-[20px]"> Jestem zainteresowany</p>
         <p className="font-[300] pb-4 text-[16px] leading-[18px]">
           {" "}
@@ -101,15 +102,16 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
           ></input>
           <textarea
             name="msg"
-            value={`${massege} (${propertyRef})`}
+            value={`${massege} (oferta nr. ${propertyRef}).`}
             onChange={handleChangingForm}
             className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[150px]"
           ></textarea>
           <button
             ref={submitButton}
-            className="bg-yellow-500 rounded-md text-white font-bold h-[40px]"
+            className="bg-yellow-600 rounded-md text-white font-bold h-[40px] flex items-center justify-center "
           >
-            Wyślij
+            <MdOutlineSend className="mr-[10px]" />
+            WYŚLIJ WIADOMOŚĆ
           </button>
         </form>
       </div>

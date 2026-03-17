@@ -23,13 +23,13 @@ export default function MiniHomeView() {
 
   return (
     <div
-      className={`${MoonDance.className} lg:w-full w-full md:h-[350px] h-[310px] mx-auto `}
+      className={`${MoonDance.className} lg:w-full w-full md:h-[200px] h-[100px] mx-auto `}
     >
       <div className=" bg-white w-full h-[75px]"></div>
       <div className=" bg-white w-full h-full bg-[center_320px] relative">
         {/* <div className="absolute w-full h-full bg-gray-900/[0.5] z-0"></div> */}
         <div className="lg:pt-[20px] pt-[50px] lg:w-[1100px] w-[90%] mx-auto z-30 relative">
-          <span className="w-[100px] bg-white ">
+          {/* <span className="w-[100px] bg-white ">
             <h1 className="md:text-[49px] text-[34px] text-white leading-[30px] lg:leading-[49px]">
               Nieruchomości {country} – domy i apartamenty na sprzedaż
             </h1>
@@ -63,7 +63,7 @@ export default function MiniHomeView() {
                 Cyprze.
               </span>
             )}
-          </span>
+          </span> */}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import {
+  Playfair,
   DM_Serif_Text,
   Tenor_Sans,
   Work_Sans,
@@ -12,12 +13,21 @@ import {
   Montserrat,
   Poppins,
   Gwendolyn,
+  Outfit,
 } from "next/font/google";
 
 export const DMSerif = DM_Serif_Text({ subsets: ["latin-ext"], weight: "400" });
+export const PlayfairSans = Playfair({
+  subsets: ["latin-ext"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
 export const GwendolynSans = Gwendolyn({
   subsets: ["latin-ext"],
   weight: ["400", "700"],
+});
+export const OutfitSans = Outfit({
+  subsets: ["latin-ext"],
+  weight: ["100", "200", "300", "400", "500", "600"],
 });
 export const MontserratSans = Montserrat({
   subsets: ["latin-ext"],

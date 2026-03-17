@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Red_Hat_DisplayFont } from "../fonts/fonts";
+import { Red_Hat_DisplayFont, OutfitSans } from "../fonts/fonts";
 import Image from "next/image";
 import Link from "next/link";
 import Logotype from "./images/logotype.png";
@@ -177,7 +177,7 @@ export default function HeaderOffer() {
     <>
       <div
         ref={header}
-        className={`${Red_Hat_DisplayFont.className} transition-all duration-700 w-screen h-[70px] lg:h-[85px] top-0 left-0 text-gray-900 z-40 border-gray-900 tracking-[1.4px]`}
+        className={`${OutfitSans.className} transition-all duration-700 w-screen h-[70px] lg:h-[85px] top-0 left-0 text-gray-900 z-10 border-gray-900 tracking-[1.4px]`}
       >
         <div
           ref={headerDesktop}
@@ -189,13 +189,13 @@ export default function HeaderOffer() {
             }
           `}
         >
-          <div className="flex mx-auto h-full lg:w-[1180px] w-full lg:justify-center justify-between items-center bg-white lg:bg-transparent px-[10px] lg:px-0 duration-200">
+          <div className="flex mx-auto h-full lg:w-[90vw] w-full lg:justify-center justify-between items-center bg-white lg:bg-transparent px-[10px] lg:px-0 duration-200">
             <Link
               onClick={handleBackToMainPage}
               className="cursor-pointer flex items-end h-full bg-white rounded-b-[8px]"
               href="/"
             >
-              <div className="md:h-full lg:h-[70px] md:w-[210px] h-[50px] w-[150px] relative">
+              <div className="md:h-full lg:h-[70px] md:w-[210px] h-[60px] md:h-[70px] w-[150px] relative">
                 <Image
                   ref={logo}
                   className="object-contain px-[10px] pb-[4px]"
@@ -208,9 +208,9 @@ export default function HeaderOffer() {
             {/* menu items */}
             <div
               ref={menu}
-              className="absolute w-full lg:static lg:h-[32px] h-[300px] lg:w-auto lg:justify-start flex items-center z-50 top-[69px] -right-[100vw] bg-white lg:bg-transparent duration-200 justify-center md:shadow-none shadow-xl font-[11px] flex-1 ml-[40px]"
+              className="absolute w-full lg:static lg:h-[32px] h-[300px] lg:w-auto lg:justify-start flex items-center top-[69px] -right-[100vw] bg-white lg:bg-transparent duration-200 lg:justify-center justify-start lg:shadow-none shadow-xl font-[11px] flex-1 ml-[40px]"
             >
-              <ul className="flex flex-col lg:flex-row justify-center h-full lg:h-[24px] lg:items-center">
+              <ul className="flex flex-col lg:flex-row lg:justify-center justify-evenly h-full lg:h-[24px] lg:items-center">
                 {/* <li className="list group">
                   <Link onClick={handleBackToMainPage} href="/">
                     Strona główna
@@ -230,8 +230,8 @@ export default function HeaderOffer() {
                     <Link
                       onClick={handleClearData}
                       href={{
-                        pathname: "/[country]",
-                        query: { country: "hiszpania", page: 1 },
+                        pathname: "/nieruchomosci/[country]",
+                        query: { country: "hiszpania" },
                       }}
                       className="p-1 text-black rounded-md w-full text-center group"
                       ref={MouseOnSpain}
@@ -262,7 +262,7 @@ export default function HeaderOffer() {
                     >
                       Nieruchomości w Portugalii
                     </Link> */}
-                    <Link
+                    {/* <Link
                       href={{
                         pathname: "/[country]",
                         query: { country: "dominikana", page: 1 },
@@ -275,7 +275,7 @@ export default function HeaderOffer() {
                     >
                       Nieruchomości na DOMINIKANIE
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
-                    </Link>
+                    </Link> */}
                   </div>
                 </li>
 
@@ -343,7 +343,7 @@ export default function HeaderOffer() {
             <div className="h-[40px] w-[40px] flex md:justify-center items-center lg:hidden">
               <div ref={mobileClosedMenu}>
                 <HiOutlineMenu
-                  className="transition-all duration-700 cursor-pointer z-50 h-[40px] w-[40px] lg:hidden block"
+                  className="transition-all duration-700 cursor-pointer z-10 h-[40px] w-[40px] lg:hidden block"
                   onClick={handlingShowingMobileMenu}
                 />
               </div>

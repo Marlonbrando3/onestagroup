@@ -70,14 +70,14 @@ export default function Home(props: any) {
 
   const handleShowMobileFilters = () => {
     if (
-      searchEngine.current.style.top === "-400px" ||
+      searchEngine.current.style.top === "-450px" ||
       searchEngine.current.style.top === "-460px" ||
       searchEngine.current.style.top === ""
     ) {
       searchEngine.current.style.top = "70px";
       mobileButtonSearchEngine.current.innerHTML = "Zamknij";
     } else {
-      searchEngine.current.style.top = "-460px";
+      searchEngine.current.style.top = "-450px";
       mobileButtonSearchEngine.current.innerHTML = "Filtry";
     }
   };

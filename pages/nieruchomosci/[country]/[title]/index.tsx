@@ -16,10 +16,12 @@ import { IoBedOutline } from "react-icons/io5";
 import { PiBathtubLight } from "react-icons/pi";
 import { FaSwimmingPool } from "react-icons/fa";
 import { BiArea } from "react-icons/bi";
+import { IoBed } from "react-icons/io5";
+
 import Descryption from "../../../../components/Descryption";
 import Properties from "../../../../public/properties.json";
 import Footer from "@/components/Footer";
-import { TenorsSans } from "../../../../fonts/fonts";
+import { OutfitSans, TenorsSans } from "../../../../fonts/fonts";
 import { CiParking1 } from "react-icons/ci";
 import Form from "@/components/SearchEngine/IntresetedPopUp/form";
 import { IoClose } from "react-icons/io5";
@@ -28,13 +30,16 @@ import Loan from "@/components/loanCalc/loan";
 import Link from "next/link";
 import AnalitycsTools from "@/analitycs/analitycsTools";
 import { REGION_MAP, COUNTRY_MAP } from "@/lib/regionMap";
+import Slider from "@/components/SliderInOfferPage/slider";
+import Gallery from "@/components/SliderInOfferPage/gallery";
+import ContactInFooterMobile from "@/components/SearchEngine/ContactInFooterMobile";
 
 export default function Property({ propertyFromSupabase }: any) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [propertyData, setPropertyData] = useState<any[]>([]);
-  const [PropertyImages, setPropertyImages] = useState<any[]>([]);
+  // const [PropertyImages, setPropertyImages] = useState<any[]>([]);
 
   const moreInfoLink = useRef<any>();
   const headerTitle = useRef<any>();
@@ -46,18 +51,14 @@ export default function Property({ propertyFromSupabase }: any) {
   const photosRow = useRef<any>();
   const intrestedPopUp: any = useRef();
 
-  const [start, setStart] = useState();
-  const [end, setEnd] = useState();
-
-  const [actualImage, setActualImage] = useState(1);
-  const [searchShow, setSearchShow] = useState(true);
   const [images, setImages] = useState<any[]>();
+  const [choosedImage, setChoosedImage] = useState(0);
+  const [showSlider, setShowSlider] = useState(false);
+  const [showGallery, setShowGallery] = useState(false);
 
   let showedImage: any | undefined;
   const { title } = router.query;
   const RawTitle = Array.isArray(title) ? title[0] : title;
-
-  const id = RawTitle?.split("-").pop();
 
   if (images !== undefined) {
     images?.filter((img) => {
@@ -67,36 +68,12 @@ export default function Property({ propertyFromSupabase }: any) {
     });
   }
 
-  useEffect(() => {
-    if (router.isReady === true) {
-      const QueryId = parseInt(id as string);
+  const handleShowingGallery = (e: any) => {
+    setShowGallery(true);
+    // setChoosedImage(1);
+  };
 
-      const PropertyImages = propertyFromSupabase.images;
-      //delete secheme from images
-
-      // setPropertyData(propertyDataTemp);
-      // setPropertyImages(PropertyImages);
-
-      const imagesTemp = PropertyImages?.map((image: any, index: any) => {
-        if (index === 0) {
-          return {
-            id: index + 1,
-            image: `${image.url}`,
-            count: 1,
-            showed: true,
-          };
-        } else
-          return {
-            id: index + 1,
-            image: `${image.url}`,
-            count: 0,
-            showed: false,
-          };
-      });
-
-      setImages(imagesTemp);
-    }
-  }, [searchParams]);
+  const PropertyImages = propertyFromSupabase?.images;
 
   const [handleMarginSlider, setHandleMarginSlider] = useState(false);
   const [margin, setMargin] = useState(0);
@@ -113,39 +90,28 @@ export default function Property({ propertyFromSupabase }: any) {
     } else {
       multipler = 1;
     }
-
-    if (images !== undefined) {
-      let oneImageLength = photosR / images.length;
-      let cutedImage = photosCM / oneImageLength;
-
-      let marginWork = 0;
-
-      if (photosC - photosCM < oneImageLength * multipler) {
-        marginWork = 0;
-      }
-
-      if (photosC - photosCM >= oneImageLength * multipler) {
-        marginWork = margin - oneImageLength * multipler;
-      }
-
-      if (photosC === photosCM) {
-        marginWork = photosR - photosCM;
-      }
-
-      if (photosC - photosR === 0) {
-        marginWork =
-          margin -
-          (oneImageLength -
-            oneImageLength * (cutedImage - Math.floor(cutedImage)));
-      }
-
-      photosContainer.current.style.marginLeft = `-${marginWork.toString()}px`;
-
-      setTimeout(() => {
-        setMargin(marginWork);
-      }, 400);
-    }
   };
+
+  const imagesMiniData = propertyFromSupabase.images
+    ?.slice(1, 7)
+    .map((i: any, index: any) => {
+      return (
+        <div
+          key={i["@_id"]}
+          className="lg:w-[170px] lg:h-[170px] md:w-[121px] md:h-[122px] w-[15vw] h-[10vw] relative cursor-pointer hover:brightness-125 duration-100"
+          onClick={() => handleShowingGallery(i["@_id"])}
+        >
+          <Image
+            src={i.url}
+            fill
+            objectFit="cover"
+            alt="alt"
+            className="rounded-md"
+          ></Image>
+          ;
+        </div>
+      );
+    });
 
   const handleChangeSlideRight = () => {
     // setHandleMarginSlider('true')
@@ -153,47 +119,15 @@ export default function Property({ propertyFromSupabase }: any) {
     const photosCM = photosContainerMain.current.offsetWidth;
     const photosC = photosContainer.current.offsetWidth;
     const photosR = photosRow.current.offsetWidth;
-
-    if (images !== undefined) {
-      let oneImageLength = photosR / images.length;
-      let cutedImage = photosCM / oneImageLength;
-
-      let multipler = 0;
-
-      if (window.outerWidth > 780) {
-        multipler = 2;
-      } else {
-        multipler = 1;
-      }
-
-      let marginWork = 0;
-
-      if (photosR - photosC > oneImageLength * multipler) {
-        marginWork = margin + oneImageLength * multipler;
-      }
-      if (photosR - photosC < oneImageLength * multipler) {
-        marginWork = margin + (photosR - photosC);
-      }
-
-      if (photosR - photosC < 10) {
-        marginWork = 0;
-      }
-
-      photosContainer.current.style.marginLeft = `-${marginWork.toString()}px`;
-
-      setTimeout(() => {
-        setMargin(marginWork);
-      }, 400);
-    }
   };
 
-  const Touchstart = (e: any) => {
-    setStart(e.changedTouches[0].clientX);
-  };
+  // const Touchstart = (e: any) => {
+  //   setStart(e.changedTouches[0].clientX);
+  // };
 
-  const Touchend = (e: any) => {
-    setEnd(e.changedTouches[0].clientX);
-  };
+  // const Touchend = (e: any) => {
+  //   setEnd(e.changedTouches[0].clientX);
+  // };
 
   const handleIntrestedPopUp = () => {
     intrestedPopUp.current.style.display = "flex";
@@ -203,73 +137,7 @@ export default function Property({ propertyFromSupabase }: any) {
     intrestedPopUp.current.style.display = "none";
   };
 
-  const handleTitleOnScroll = useCallback(() => {
-    const { scrollX, scrollY, innerWidth } = window;
-
-    if (scrollY > 30 && innerWidth > 1024 && !router.asPath?.includes("blog")) {
-      headerTitle.current.style.transition = "0.3s ease-in-out";
-      priceTitle.current.style.display = "block";
-      // headerTitle.current.style.width = "95%";
-      headerTitle.current.style.height = "80px";
-      headerTitle.current.style.borderRadius = "0.5rem";
-      headerTitle.current.style.justifyContent = "space-between";
-      headerTitle.current.style.boxShadow = "0 3px 12px 0 rgba(0, 0, 0, 0.45)";
-
-      headerTitle.current.style.top = "-7px";
-      moreInfoLink.current.style.display = "block";
-
-      // headerDesktop.current.style.color = "black";
-    } else if (
-      scrollY < 30 &&
-      innerWidth > 1024 &&
-      !router.asPath?.includes("blog")
-    ) {
-      headerTitle.current.style.transition = "0.3s ease-in-out";
-      headerTitle.current.style.width = "100%";
-      priceTitle.current.style.display = "none";
-      headerTitle.current.style.boxShadow = "none";
-      moreInfoLink.current.style.display = "none";
-      headerTitle.current.style.top = "60px";
-      headerTitle.current.style.justifyContent = "center";
-    }
-    // mobile changing title
-    else if (
-      scrollY > 30 &&
-      innerWidth < 1024 &&
-      !router.asPath?.includes("blog")
-    ) {
-      headerTitle.current.style.transition = "0.3s ease-in-out";
-      priceTitle.current.style.display = "block";
-      // headerTitle.current.style.width = "95%";
-      headerTitle.current.style.height = "120px";
-      headerTitle.current.style.borderRadius = "0.5rem";
-      headerTitle.current.style.justifyContent = "space-between";
-      headerTitle.current.style.boxShadow = "0 3px 12px 0 rgba(0, 0, 0, 0.45)";
-
-      headerTitle.current.style.top = "-7px";
-      moreInfoLink.current.style.display = "block";
-    } else if (
-      scrollY < 30 &&
-      innerWidth < 1024 &&
-      !router.asPath?.includes("blog")
-    ) {
-      headerTitle.current.style.transition = "0.3s ease-in-out";
-      headerTitle.current.style.width = "100%";
-      priceTitle.current.style.display = "none";
-      headerTitle.current.style.boxShadow = "none";
-      moreInfoLink.current.style.display = "none";
-      headerTitle.current.style.top = "60px";
-      headerTitle.current.style.justifyContent = "center";
-    }
-  }, []);
-  useEffect(() => {
-    // headerDesktop;
-
-    window.addEventListener("scroll", handleTitleOnScroll);
-    return () => {
-      window.removeEventListener("scroll", handleTitleOnScroll);
-    };
-  });
+  console.log(propertyFromSupabase.price);
 
   return (
     <>
@@ -288,8 +156,25 @@ export default function Property({ propertyFromSupabase }: any) {
         ></link>
       </Head>
       <div
-        className={`${TenorsSans.className} max-w-[100vw] flex flex-col bg-[#fcf7f4] mx-[5px] sm:mx-auto relative overflow-x-hidden `}
+        className={`${OutfitSans.className} max-w-[1350px] flex flex-col mx-[5px] sm:mx-auto relative overflow-x-hidden `}
       >
+        <Gallery
+          choosedImage={choosedImage}
+          setChoosedImage={setChoosedImage}
+          showSlider={showSlider}
+          setShowSlider={setShowSlider}
+          showGallery={showGallery}
+          setShowGallery={setShowGallery}
+          images={propertyFromSupabase.images}
+        />
+        <Slider
+          showSlider={showSlider}
+          choosedImage={choosedImage}
+          setChoosedImage={setChoosedImage}
+          setShowSlider={setShowSlider}
+          images={propertyFromSupabase.images}
+          propertyDetails={propertyFromSupabase}
+        />
         <WhatsAppButton />
         <div
           ref={intrestedPopUp}
@@ -307,218 +192,50 @@ export default function Property({ propertyFromSupabase }: any) {
             />
           </div>
         </div>
-        <div className="w-full  bg-white z-[999]">
-          <HeaderOffer />
+        <div className="w-full bg-white z-[90]">
+          <HeaderOffer />{" "}
         </div>
-        <MiniHomeViewOffer />
-        <div
-          ref={headerTitle}
-          className="fixed left-0 right-0 flex items-center h-[80px] w-full px-auto my-[10px] mx-auto bg-white top-[60px] z-40 px-[30px] justify-center"
-        >
-          <div className=" md:text-[22px] text-[17px] font-bold text-start min-w-[100px]">
-            <p className="lg:text-2xl text-sm">
-              {propertyData[0]?.headerAdvertisement}
-            </p>
-            <p className="font-thin lg:text-[16px] text-[14px] italic">
-              {propertyData[0]?.foreignStreet}
-            </p>
-            <p ref={priceTitle} className="text-orange-500 hidden text-left">
-              od {propertyFromSupabase.price.toLocaleString()} €
-            </p>
-          </div>
-
-          <Link
-            ref={moreInfoLink}
-            href="#contact"
-            className="bg-orange-500 h-[50px] text-white place-content-center px-[10px] rounded-md hidden text-center"
-          >
-            Więcej informacji
-          </Link>
-        </div>
-        <div className="lg:w-[1150px] md:w-[780px] w-full md:p-[20px] pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
-          <div className="flex flex-col lg:flex-row mx-auto">
-            <div className="md:w-[740px] md:h-[570px] w-full sm:h-[470px] h-[400px] overflow-hidden mr-[20px] ">
-              <div className="flex md:h-full sm:h-full h-[400px] w-full flex-col justify-between">
-                <div className="lg:w-[800px] md:w-[740px] h-[500px] sm:h-full w-[700px] overflow-hidden hidden sm:block select-none relative rounded-md mx-auto">
+        {/* <MiniHomeViewOffer /> */}
+        <div className="lg:w-full md:w-[95vw] w-full pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
+          <div className="flex flex-col md:flex-row items-center justify-center">
+            {/* MAIN GALLERY IMAGE */}
+            <div className="md:flex-1 md:h-[255px] lg:h-[360px] md:w-[60vw] h-[200px] overflow-hidden mx-[10px]">
+              <div className="flex md:h-full sm:h-full h-[900px] w-full flex-col justify-between rounded-md overflow-hidden">
+                <div className="lg:w-full md:w-full md:h-[500px] h-[200px] w-[95vw] sm:block select-none relative mx-auto relative rounded-md cursor-pointer">
                   <Image
-                    className="w-[300px] object-cover relative"
-                    src={showedImage}
+                    className="rounded-md"
+                    src={propertyFromSupabase.images[0].url}
                     fill
                     objectFit="cover"
                     alt="nieruchomosci-w-hiszpanii"
+                    onClick={handleShowingGallery}
                   ></Image>
-                </div>
-                <div className="relative">
-                  <div
-                    onClick={handleChangeSlideLeft}
-                    // ref={buttonLeft}
-                    className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex left-0 z-30 h-full justify-center items-center cursor-pointer duration-300"
-                  >
-                    <FaChevronLeft
-                      className="h-[30px] w-[30px] text-yellow-500 block"
-                      onClick={handleChangeSlideLeft}
-                    />
-                  </div>
-                  <div
-                    onClick={handleChangeSlideRight}
-                    ref={buttonRight}
-                    className="absolute select-none lg:w-[25px] w-[40px] sm:h-[100px] flex right-0 z-30 h-full justify-center items-center cursor-pointer duration-300"
-                  >
-                    <FaChevronRight
-                      className="h-[30px] w-[30px] text-yellow-500 block"
-                      onClick={handleChangeSlideRight}
-                    />
-                  </div>
-                  <div
-                    ref={photosContainerMain}
-                    onTouchStart={Touchstart}
-                    onTouchEnd={Touchend}
-                    className="lg:w-[90%] md:w-[650px] w-[92.2vw] sm:w-[87vw] mx-auto relative flex sm:h-[134px] md:h-[100px] md:rounded-auto rounded-md overflow-hidden md:mt-[5px]"
-                  >
-                    <div
-                      ref={photosContainer}
-                      className="overflow-x-hidden duration-300 flex sm:h-[100px] h-[340px] sm:border-2 md:border-0 select-none"
-                    >
-                      <div
-                        ref={photosRow}
-                        className={
-                          handleMarginSlider
-                            ? "duration-300 flex flex-nowrap sm:h-[100px] h-[320px]"
-                            : "flex flex-nowrap ml-0 select-none"
-                        }
-                      >
-                        <ImagesInPropetyCard
-                          mainImage={images}
-                          images={images}
-                          setImages={setImages}
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col justify-center lg:w-[37%] w-full bg-gray-50">
-              <div className="w-full h-[100px]">
-                <div className="flex h-[90px] items-center">
-                  <div className="h-[40px] w-[40px] flex items-center justify-center">
-                    <IoMdPin className="w-[80%] h-[80%] text-yellow-600" />
-                  </div>
-                  <div className="flex flex-col h-full justify-center">
-                    <div className="">
-                      {COUNTRY_MAP[propertyFromSupabase.country]?.[0]}
-                    </div>
-                    <div className="text-[24px] font-[800]">
-                      {REGION_MAP[propertyFromSupabase.province]?.[0]}
-                      <br></br>
-                      <p className="text-[16px]">
-                        {" "}
-                        {propertyFromSupabase.town}{" "}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-wrap justify-between content-center">
-                <div className="w-1/5 border-2 border-white h-[70px] bg-gray-50 pt-2">
-                  <div className="w-full flex justify-center text-[16px]">
-                    Sypalni
-                  </div>
-                  <div className="flex justify-center items-center">
-                    <div className="mr-2">
-                      <IoBedOutline className="w-[25px] h-[25px]" />
-                    </div>
-                    <div>{propertyFromSupabase.beds}</div>
-                  </div>
-                </div>
-                <div className="w-1/5 border-2 border-white h-16 bg-gray-50 pt-2">
-                  <div className="w-full flex justify-center text-[16px]">
-                    Łazienki
-                  </div>
-                  <div className="flex justify-center items-center">
-                    <div className="mr-2">
-                      <PiBathtubLight className="w-[25px] h-[25px]" />
-                    </div>
-                    <div>{propertyFromSupabase.baths}</div>
-                  </div>
-                </div>
-                <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
-                  <div className="w-full flex justify-center text-[16px]">
-                    Parking
-                  </div>
-                  <div className="flex justify-center items-center">
-                    <div className="mr-2">
-                      <CiParking1 className="w-[25px] h-[25px]" />
-                    </div>
-                    <div>1</div>
-                  </div>
-                </div>
-                <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
-                  <div className="w-full flex justify-center text-[16px]">
-                    Metraż
-                  </div>
-                  <div className="flex justify-center items-center">
-                    <div className="mr-2">
-                      <BiArea className="w-[25px] h-[25px]" />
-                    </div>
-                    <div>{propertyFromSupabase.surface_built}</div>
-                  </div>
-                </div>
-                <div className="w-1/5 border-2 border-white h-16 bg-gray-50  pt-2">
-                  <div className="w-full flex justify-center text-[16px]">
-                    Basen
-                  </div>
-                  <div className="flex justify-center ">
-                    <div className="mr-2">
-                      <FaSwimmingPool className="w-[25px] h-[25px]" />
-                    </div>
-                    <div>
-                      {propertyFromSupabase.pool === true ? "TAK" : "NIE"}
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full h-[240px] relative">
-                  <iframe
-                    src={`https://www.google.com/maps?q=${propertyData[0]?.foreignStreet}, ${propertyData[0]?.country.name}&output=embed`}
-                    // width="408"
-                    // height="200"
-                    loading="lazy"
-                    className="w-full h-full"
-                  ></iframe>
-                </div>
-                <div className="bg-white w-full h-[90px] flex flex-col justify-center items-end pl-4">
-                  <div className="text-[55px] font-[800] text-yellow-500 flex items-end leading-[20px]">
-                    <p className="inline text-[30px] leading-[25px] pr-[5px]">
-                      od
-                    </p>{" "}
-                    <p className="leading-[40px]">
-                      {propertyFromSupabase.price.toLocaleString()} €
-                    </p>
-                  </div>
-                  <p className="text-md text-black font-bold block">
-                    nr ref. {propertyFromSupabase.external_id}
-                  </p>
-                </div>
-                <div
-                  onClick={handleIntrestedPopUp}
-                  className="w-full border rounded-[5px] border-transparent bg-blue-500 h-[60px] place-content-center grid text-white font-bold text-[24px] cursor-pointer duration-150 hover:bg-white hover:border hover:border-gray-900 hover:text-black"
-                >
-                  Jestem zainteresowany
-                </div>
-              </div>
+            {/* mini-gallery */}
+            <div className="flex md:justify-center justify-between items-start lg:w-[570px] md:w-[400px] w-[95vw] lg:flex-none  flex-wrap lg:gap-5 md:gap-3 gap-0  mt-[5px] md:mt-auto">
+              {imagesMiniData}
             </div>
           </div>
         </div>
         {/* <Features /> */}
         <Descryption
+          localization={{
+            lat: propertyFromSupabase.latitude,
+            lng: propertyFromSupabase.longitude,
+          }}
+          features={propertyFromSupabase.features}
           description={propertyFromSupabase.descriptions.pl}
-          bedrooms={propertyData[0]?.bedrooms}
-          bathrooms={propertyData[0]?.bathrooms}
+          bedrooms={propertyFromSupabase.beds}
+          bathrooms={propertyFromSupabase.baths}
           distance={propertyData[0]?.distance}
-          pool={propertyData[0]?.pool}
+          pool={propertyFromSupabase.pool}
           propertyId={propertyData[0]?.id}
           propertyRef={propertyData[0]?.listingId}
+          propertyPrice={propertyFromSupabase.price}
         />
+        <ContactInFooterMobile propertyRef={propertyFromSupabase.external_id} />
         <Footer />
       </div>
     </>

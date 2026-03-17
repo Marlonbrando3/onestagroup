@@ -15,13 +15,18 @@ export default function Header({ handlePopUpOpen }: Data) {
 
   return (
     <div className="w-full bg-white overflow-hidden">
-      <div className="h-[80px] lg:w-[1100px] mx-auto flex items-center">
+      <div className="h-[80px] lg:w-[90vw] mx-auto flex items-center">
         <div className="w-[260px] h-[70px] bg-white rounded-b-xl place-content-center">
           <div
             onClick={handlePopUpOpen}
             className="md:w-[90%] w-[79%] md:h-[50%] h-[60%] relative md:mx-auto cursor-pointer"
           >
-            <Image src="/logotype_full.png" fill objectFit="contain" alt="logo" />
+            <Image
+              src="/logotype_full.png"
+              fill
+              objectFit="contain"
+              alt="logo"
+            />
           </div>
         </div>{" "}
         {menu !== "false" && (

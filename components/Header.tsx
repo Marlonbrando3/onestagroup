@@ -180,7 +180,7 @@ export default function Header({ handleConsultationPopUp }: data) {
               className="cursor-pointer flex items-end h-full"
               href="/"
             >
-              <div className="md:h-full lg:h-[100%] md:w-[210px] h-[50px] w-[150px] relative flex justify-center ">
+              <div className="md:h-full lg:h-[100%] md:w-[210px] h-[70px] w-[150px] relative flex justify-center ">
                 <Image
                   ref={logo}
                   className="object-contain px-[10px]"
@@ -209,7 +209,7 @@ export default function Header({ handleConsultationPopUp }: data) {
                 >
                   Oferty
                   <div
-                    className="hidden absolute bg-white flex-col items-center border border-[#C9AC77] -mt-[1px] -ml-[80px]"
+                    className="hidden absolute bg-white flex-col items-center border border-[#C9AC77] -mt-[1px] md:-ml-[80px]"
                     ref={MouseOnProperties}
                   >
                     <Link

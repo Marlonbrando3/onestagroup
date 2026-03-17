@@ -28,7 +28,7 @@ export default function Footer() {
       <div
         className={`${Red_Hat_DisplayFont.className} w-screen lg:text-sm text-xs flex z-20 items-center  mt-10 justify-between text-white h-auto py-[50px]  bg-cover bg-center relative`}
       >
-        <div className="lg:w-[1150px] w-full mx-auto flex z-10 lg:flex-row flex-col px-[50px] ">
+        <div className="lg:w-[95vw] w-full mx-auto flex z-10 lg:flex-row px-[20px] md:px-0 flex-col">
           <div className="border-black w-[300px] h-[200px]">
             <Image
               src={LogoType}
