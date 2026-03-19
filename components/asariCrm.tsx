@@ -7,7 +7,7 @@ import React, {
 } from "react";
 
 export default function AsariCrm() {
-  const properties: any = [];
+  const rawProperties: any = [];
   const [progress, setProgress] = useState<number>(0);
   const [oneOfferId, setOneOfferId] = useState();
   const spinner = useRef<any>();
@@ -23,7 +23,7 @@ export default function AsariCrm() {
   // 11956264;
 
   const handleDownloadingAllProperties = async (propertiesId: any) => {
-    for (const id of propertiesId) {
+    for (const id of propertiesId.slice(0, 2)) {
       await new Promise(async (resolve, reject) => {
         let resultProperty = await fetch("/api/asarigetproperties", {
           method: "POST",
@@ -31,30 +31,80 @@ export default function AsariCrm() {
           body: JSON.stringify({ id: id }),
         });
         const result = await resultProperty.json();
-        if (result.list.data.country.name !== "Polska") {
-          properties.push(result.list.data);
-          console.log("Dodano nieruchomość");
+        if (
+          result.list.data.country.name !== "Polska"
+          // result.list.data.country.name !== "Hiszpania"
+        ) {
+          rawProperties.push(result.list.data);
+          console.log(result.list.data.country.name + " Dodano nieruchomość");
+          console.log(result.list.data?.apartmentTypeList[0]);
         } else {
-          console.log("Odrzucono nieruchomość");
+          console.log(
+            result.list.data.country.name + " Odrzucono nieruchomość",
+          );
         }
         i = i + 1;
         setProgress(Math.round(i / propertiesId.length) * 100);
-        console.log(progress);
+        console.log(id);
         await delay(4000);
         resolve(console.log("Zrealizowne"));
       });
     }
 
-    console.log(`Pobrane ogłoszenia`);
+    const properties = rawProperties.map((property: any) => ({
+      source: "ASARI",
+      external_id: property.ListingId,
+      complex_id: property.complex_id ?? null,
+
+      price: Number(property.price),
+      currency: property.currency,
+      price_freq: property.price.amount,
+
+      part_ownership: Boolean(property.part_ownership),
+      leasehold: Boolean(property.leasehold) ?? null,
+      new_build: property.mortgageMarket === "Primary" ? true : false,
+
+      type: property.apartmentTypeList[0]?.toLowerCase() ?? "no-data",
+      // town: property.foreignStreet,
+      // province: property.foreignLocation,
+      // country: property.country.name,
+      // ref: property.ListingId,
+
+      // surface_built: property.totalArea ?? null,
+      // surface_plot: property.surface_area?.plot ?? null,
+
+      // latitude: property.geoLat ?? null,
+      // longitude: property.geoLng ?? null,
+
+      // beds: property.noOfRooms,
+      // baths: property.noOfBathrooms,
+      // pool: property.availableNeighborhoodList.includes("Pool") ? true : false,
+
+      // urls: (property.url ?? {}) || null,
+      // descriptions: { pl: property.description },
+      // features: property.features?.feature ?? [],
+      // images:
+      //   property.images?.map((img: any) => ({
+      //     id: img.id,
+      //     url: `https://img.asariweb.pl/normal/${img.id}`,
+      //   })) ?? [],
+
+      // date: property.changePriceDate,
+      // updated_at: new Date(),
+    }));
+
+    console.log(properties);
+
+    // console.log(`Pobrane ogłoszenia`);
     finish.current.style.display = "block";
     spinner.current.style.display = "none";
 
     //save properties as JSON file
-    await fetch("/api/writejsonpropertyfile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ properties }),
-    });
+    // await fetch("/api/asariToSupabase", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ properties }),
+    // });
   };
 
   const delay = async (time: any) => {
@@ -77,6 +127,8 @@ export default function AsariCrm() {
       resultsData.list.data.map((propId: any) => {
         propertiesId.push(propId.id);
       });
+
+      // console.log(propertiesId);
 
       await handleDownloadingAllProperties(propertiesId);
     } catch (err) {

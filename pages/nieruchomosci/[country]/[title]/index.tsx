@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Head from "next/head";
 import HeaderOffer from "../../../../components/HeaderOffer";
@@ -9,15 +9,6 @@ import MiniHomeViewOffer from "../../../../components/SearchEngine/MiniHomeViewO
 import ImagesInPropetyCard from "@/components/ImagesInPropetyCard";
 import { useState, useEffect } from "react";
 import React from "react";
-import { FaChevronRight } from "react-icons/fa6";
-import { FaChevronLeft } from "react-icons/fa6";
-import { IoMdPin } from "react-icons/io";
-import { IoBedOutline } from "react-icons/io5";
-import { PiBathtubLight } from "react-icons/pi";
-import { FaSwimmingPool } from "react-icons/fa";
-import { BiArea } from "react-icons/bi";
-import { IoBed } from "react-icons/io5";
-
 import Descryption from "../../../../components/Descryption";
 import Properties from "../../../../public/properties.json";
 import Footer from "@/components/Footer";
@@ -214,7 +205,7 @@ export default function Property({ propertyFromSupabase }: any) {
               </div>
             </div>
             {/* mini-gallery */}
-            <div className="flex md:justify-center justify-between items-start lg:w-[570px] md:w-[400px] w-[95vw] lg:flex-none  flex-wrap lg:gap-5 md:gap-3 gap-0  mt-[5px] md:mt-auto">
+            <div className="flex md:justify-start justify-between items-start lg:w-[570px] md:w-[400px] w-[95vw] lg:flex-none  flex-wrap lg:gap-5 md:gap-3 gap-0  mt-[5px] md:mt-auto">
               {imagesMiniData}
             </div>
           </div>
@@ -225,6 +216,7 @@ export default function Property({ propertyFromSupabase }: any) {
             lat: propertyFromSupabase.latitude,
             lng: propertyFromSupabase.longitude,
           }}
+          propertyData={propertyFromSupabase}
           features={propertyFromSupabase.features}
           description={propertyFromSupabase.descriptions.pl}
           bedrooms={propertyFromSupabase.beds}
@@ -234,6 +226,7 @@ export default function Property({ propertyFromSupabase }: any) {
           propertyId={propertyData[0]?.id}
           propertyRef={propertyData[0]?.listingId}
           propertyPrice={propertyFromSupabase.price}
+          propertType={propertyFromSupabase.type}
         />
         <ContactInFooterMobile propertyRef={propertyFromSupabase.external_id} />
         <Footer />

@@ -7,8 +7,10 @@ import { FaBath } from "react-icons/fa6";
 import { FaSwimmingPool } from "react-icons/fa";
 import ContactAgentInOffer from "./ContactAgentInOffer";
 import ContactAgentInOfferMobile from "./ContactAgentInOfferMobile";
+import { typeDictionary, countryDictionary } from "@/lib/titlesDictionary";
 
 export default function DescAboutObiect({
+  propertyData,
   description,
   features,
   localization,
@@ -18,6 +20,7 @@ export default function DescAboutObiect({
   propertyPrice,
 }) {
   const desc = { html: description };
+  const { type, town, price, beds, bath, country } = propertyData;
 
   const translator = {
     Sauna: "Sauna",
@@ -49,7 +52,7 @@ export default function DescAboutObiect({
     "Green Zones": "Obszary zielone",
   };
 
-  console.log(features);
+  console.log(town);
 
   const featuresComparision = features.map((i) => {
     if (translator[i] !== undefined)
@@ -60,7 +63,7 @@ export default function DescAboutObiect({
       );
   });
 
-  console.log(localization);
+  // console.log(localization);
 
   return (
     <div className="rounded-md lg:w-auto lg:mr-2 bg-white flex-1 text-[18px] tracking-[1.1px] font-[300] mx-[10px]">
@@ -68,9 +71,10 @@ export default function DescAboutObiect({
         {/* TITLE NAD LOCATION */}
         <div className="flex flex-col mb-[20px] md:text-[36px] text-[32px] leading-[34px] font-[400] min-h-[100px]">
           <div
-            className={`${PlayfairSans.className} pb-[20px] font-[500] tracking-[0.6px] scale-x-[0.9] scale-y-[1.04] -ml-[27px]`}
+            className={`${PlayfairSans.className} pb-[20px] font-[500] tracking-[0.6px] scale-x-[0.9] scale-y-[1.04] -ml-[23px]`}
           >
-            Bungalowy w Torre de La Horadada
+            {type && typeDictionary[type] ? typeDictionary[type] : "any"}
+            &nbsp;w {town}
           </div>
           <div className="flex h-full items-center">
             <div className="h-full">
@@ -78,8 +82,12 @@ export default function DescAboutObiect({
             </div>
             <div className="h-full">
               {" "}
-              <p className="text-[18px] leading-[18px] font-[600]">Hiszpania</p>
-              <p className="text-[18px]">Costa Blanca, Torre de la Horadada</p>
+              <p className="text-[18px] leading-[18px] font-[600]">
+                {country && country in countryDictionary
+                  ? countryDictionary[country]
+                  : "any"}
+              </p>
+              <p className="text-[18px]">Costa Blanca, {town}</p>
               {/* <div className="text-[18px]">2 sypilanie, 2 łazienki, basen</div> */}
             </div>
           </div>

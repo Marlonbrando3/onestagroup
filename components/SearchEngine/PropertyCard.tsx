@@ -9,6 +9,7 @@ import { BiArea } from "react-icons/bi";
 import ResultsSlider from "./ResultsSlider";
 import { MdIosShare } from "react-icons/md";
 import DataCountry from "../../data/DataCountry.json";
+import { typeDictionary, countryDictionary } from "../../lib/titlesDictionary";
 
 type Property = {
   property: any;
@@ -100,13 +101,15 @@ export default function PropertyCard({ property }: Property) {
                 <span className="text-[16px] font-semibold">
                   {regions[property.province]}
                 </span>
-                <br></br> {property.town}
+                <br></br> {property.town}{" "}
               </p>
             </div>
             <div className="w-full md:h-28 lg:leading-6 md:pl-8 md:pt-8 pr-12 leading-auto lg:text-[18px] text-[20px] leading-[24px] md:leading-auto pl-8 py-[1px] font-semibold">
               <p>
-                {property.type.charAt(0).toUpperCase() + property.type.slice(1)}{" "}
-                w {property.town}
+                {property.type && typeDictionary[property.type]
+                  ? typeDictionary[property.type]
+                  : "any"}
+                &nbsp;w {property.town}
               </p>
               <p className="text-[12px] mt-[10px]">nr ref. {property.id}</p>
             </div>

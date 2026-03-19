@@ -7,6 +7,7 @@ import Loan from "./loanCalc/loan";
 import ContactColumnInOffer from "./ContactColumnInOffer";
 
 type Props = {
+  propertyData: any;
   features: any;
   description: any;
   bedrooms: any;
@@ -17,6 +18,7 @@ type Props = {
   propertyRef: any;
   localization: any;
   propertyPrice: any;
+  propertType: any;
 };
 
 export default function Descryption({
@@ -30,12 +32,15 @@ export default function Descryption({
   propertyId,
   propertyRef,
   propertyPrice,
+  propertType,
+  propertyData,
 }: Props) {
   return (
     <div className="lg:flex lg:flex-wrap w-full rounded-md lg:w-[1580px] md:w-[95vw] max-w-full lg:leading-7 mx-auto mt-[10px] relative filter">
       {/* container for 2 colums left:desc and contact form, right: contact with agent (only desktop) */}
       <div className="lg:flex lg:w-full rounded-md justify-between bg-white lg:mr-3 pt-8">
         <DescAboutObiect
+          propertyData={propertyData}
           description={description}
           features={features}
           localization={localization}
@@ -43,6 +48,7 @@ export default function Descryption({
           bathrooms={bathrooms}
           pool={pool}
           propertyPrice={propertyPrice}
+          propertType={propertType}
         />
         <ContactColumnInOffer propertyPrice={propertyPrice} />
       </div>

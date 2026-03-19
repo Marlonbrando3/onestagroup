@@ -31,6 +31,7 @@ export default async function handler(
 
     // 🔹 mapowanie XML → struktura do Supabase
     const mapped = properties.map((property: any) => ({
+      source: "METAINMO",
       external_id: property.id.toString(),
       complex_id: property.complex_id ?? null,
 
