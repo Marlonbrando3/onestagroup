@@ -213,7 +213,7 @@ export async function getServerSideProps(context: any) {
   const { data, error } = await supabase
     .from("properties")
     .select("*")
-    .eq("external_id", Number(id))
+    .eq("external_id", String(id))
     .single();
 
   if (error) {

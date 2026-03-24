@@ -32,7 +32,7 @@ export default async function handler(
     // 🔹 mapowanie XML → struktura do Supabase
     const mapped = properties.map((property: any) => ({
       source: "METAINMO",
-      external_id: property.id.toString(),
+      external_id: `MTI-${property.id}`,
       complex_id: property.complex_id ?? null,
 
       price: Number(property.price),
@@ -67,6 +67,8 @@ export default async function handler(
       date: property.date,
       updated_at: new Date(),
     }));
+
+    console.log("MTN");
 
     // 🔹 USUWANIE DUPLIKATÓW KOMPLEKSÓW (zostaje najtańsze)
     const uniqueByComplex = Object.values(

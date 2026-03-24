@@ -1,10 +1,4 @@
-import React, {
-  useMemo,
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-} from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 
 export default function AsariCrm() {
   const rawProperties: any = [];
@@ -37,7 +31,7 @@ export default function AsariCrm() {
         ) {
           rawProperties.push(result.list.data);
           console.log(result.list.data.country.name + " Dodano nieruchomość");
-          console.log(result.list.data?.apartmentTypeList[0]);
+          // console.log(result.list.data?.apartmentTypeList[0]);
         } else {
           console.log(
             result.list.data.country.name + " Odrzucono nieruchomość",
@@ -53,44 +47,44 @@ export default function AsariCrm() {
 
     const properties = rawProperties.map((property: any) => ({
       source: "ASARI",
-      external_id: property.ListingId,
-      complex_id: property.complex_id ?? null,
+      external_id: `ASR-${property.listingId}`,
+      complex_id: null,
 
-      price: Number(property.price),
-      currency: property.currency,
-      price_freq: property.price.amount,
+      price: Number(property.price.amount),
+      currency: property.price.currency,
+      price_freq: "sale",
 
-      part_ownership: Boolean(property.part_ownership),
-      leasehold: Boolean(property.leasehold) ?? null,
+      part_ownership: Boolean(false),
+      leasehold: Boolean(false),
       new_build: property.mortgageMarket === "Primary" ? true : false,
 
-      type: property.apartmentTypeList[0]?.toLowerCase() ?? "no-data",
-      // town: property.foreignStreet,
-      // province: property.foreignLocation,
-      // country: property.country.name,
-      // ref: property.ListingId,
+      type: property?.apartmentTypeList?.[0]?.toLowerCase() ?? "no-data",
+      town: property.foreignStreet,
+      province: property.foreignLocation,
+      country: property.country.name,
+      ref: property.listingId,
 
-      // surface_built: property.totalArea ?? null,
-      // surface_plot: property.surface_area?.plot ?? null,
+      surface_built: property.totalArea ?? null,
+      surface_plot: property.surface_area?.plot ?? null,
 
-      // latitude: property.geoLat ?? null,
-      // longitude: property.geoLng ?? null,
+      latitude: property.geoLat ?? null,
+      longitude: property.geoLng ?? null,
 
-      // beds: property.noOfRooms,
-      // baths: property.noOfBathrooms,
-      // pool: property.availableNeighborhoodList.includes("Pool") ? true : false,
+      beds: property.noOfRooms,
+      baths: property.noOfBathrooms,
+      pool: property.availableNeighborhoodList.includes("Pool") ? true : false,
 
-      // urls: (property.url ?? {}) || null,
-      // descriptions: { pl: property.description },
-      // features: property.features?.feature ?? [],
-      // images:
-      //   property.images?.map((img: any) => ({
-      //     id: img.id,
-      //     url: `https://img.asariweb.pl/normal/${img.id}`,
-      //   })) ?? [],
+      urls: (property.url ?? {}) || null,
+      descriptions: { pl: property.description },
+      features: property.features?.feature ?? [],
+      images:
+        property.images?.map((img: any, index: any) => ({
+          ["id_@"]: index + 1,
+          url: `https://img.asariweb.pl/normal/${img.id}`,
+        })) ?? [],
 
-      // date: property.changePriceDate,
-      // updated_at: new Date(),
+      date: property.changePriceDate,
+      updated_at: new Date(),
     }));
 
     console.log(properties);
@@ -128,7 +122,7 @@ export default function AsariCrm() {
         propertiesId.push(propId.id);
       });
 
-      // console.log(propertiesId);
+      console.log(propertiesId);
 
       await handleDownloadingAllProperties(propertiesId);
     } catch (err) {

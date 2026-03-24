@@ -16,7 +16,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
   const [Phone, setPhone] = useState();
   const [Mail, setHandleMarginSlider] = useState();
   const [massege, setMessage] = useState(
-    "Proszę o kontakt w sprawie tej nieruchomości",
+    "Zainteresowało mnie to ogłoszenie.\nProszę o kontakt w celu przekazania szczegółów lub ustalenia terminu spotkania. Nr. ogłoszenia ",
   );
 
   const submitButton: any = useRef();
@@ -44,6 +44,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
       phone: Phone,
       mail: Mail,
       massege: `${massege} (${propertyRef})`,
+      ref: propertyRef,
     });
 
     let res = await fetch("/api/formFromProperty", {
@@ -106,9 +107,9 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
           ></input>
           <textarea
             name="msg"
-            value={`${massege} (${propertyRef})`}
+            value={`${massege} ${propertyRef}`}
             onChange={handleChangingForm}
-            className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[150px]"
+            className="border-[0.5px] rounded-md border-gray-600 pl-2 h-[150px] leading-[22px] p-2"
           ></textarea>
           <button
             ref={submitButton}

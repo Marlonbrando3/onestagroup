@@ -17,7 +17,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
   const [Phone, setPhone] = useState();
   const [Mail, setMail] = useState();
   const [massege, setMessage] = useState(
-    "Proszę o kontakt w sprawie tej nieruchomości",
+    "Zainteresowało mnie to ogłoszenie.\nProszę o kontakt w celu przekazania szczegółów lub ustalenia terminu spotkania. Nr. ogłoszenia ",
   );
 
   const submitButton: any = useRef();
@@ -45,6 +45,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
       phone: Phone,
       mail: Mail,
       massege: `${massege} (${propertyRef})`,
+      ref: propertyRef,
     });
 
     let res = await fetch("/api/formFromProperty", {
@@ -108,7 +109,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
           ></input>
           <textarea
             name="msg"
-            value={`${massege} (${propertyRef})`}
+            value={`${massege} ${propertyRef}`}
             onChange={handleChangingForm}
             className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[150px]"
           ></textarea>

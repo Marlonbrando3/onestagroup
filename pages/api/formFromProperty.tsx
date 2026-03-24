@@ -32,7 +32,8 @@ export default function (req: any, res: any) {
       `E-mail: ${req.body.mail}` +
       `<br><br>` +
       `Wiadomość: ${req.body.massege}` +
-      `<br><br>`,
+      `<br><br>` +
+      `Ogłoszenie nr. ${req.body.ref} `,
   };
 
   async function send() {
