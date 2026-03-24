@@ -15,7 +15,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
 
   const [Name, setName] = useState();
   const [Phone, setPhone] = useState();
-  const [Mail, setHandleMarginSlider] = useState();
+  const [Mail, setMail] = useState();
   const [massege, setMessage] = useState(
     "Proszę o kontakt w sprawie tej nieruchomości",
   );
@@ -26,8 +26,11 @@ export default function ContactInSlider({ propertyRef }: Props) {
     if (e.target.name === "name") {
       setName(e.target.value);
     }
-    if (e.target.name === "contact") {
+    if (e.target.name === "phone") {
       setPhone(e.target.value);
+    }
+    if (e.target.name === "email") {
+      setMail(e.target.value);
     }
     if (e.target.name === "msg") {
       setMessage(e.target.value);
@@ -40,6 +43,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
       id,
       name: Name,
       phone: Phone,
+      mail: Mail,
       massege: `${massege} (${propertyRef})`,
     });
 
@@ -86,6 +90,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
           ></input>
           <input
             name="phone"
+            type="number"
             value={Phone}
             onChange={handleChangingForm}
             placeholder="Numer telefonu"
@@ -93,7 +98,8 @@ export default function ContactInSlider({ propertyRef }: Props) {
             required
           ></input>
           <input
-            name="mail"
+            name="email"
+            type="email"
             value={Mail}
             onChange={handleChangingForm}
             placeholder="Adres emial"

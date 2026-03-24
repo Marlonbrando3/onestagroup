@@ -48,9 +48,11 @@ export default function Descryption({
           bathrooms={bathrooms}
           pool={pool}
           propertyPrice={propertyPrice}
-          propertType={propertType}
         />
-        <ContactColumnInOffer propertyPrice={propertyPrice} />
+        <ContactColumnInOffer
+          propertyPrice={propertyPrice}
+          propertyRef={propertyRef}
+        />
       </div>
 
       {/* <ContactOnPropertyCard propertyRef={propertyRef} /> */}

@@ -49,7 +49,6 @@ export default function Property({ propertyFromSupabase }: any) {
 
   let showedImage: any | undefined;
   const { title } = router.query;
-  const RawTitle = Array.isArray(title) ? title[0] : title;
 
   if (images !== undefined) {
     images?.filter((img) => {
@@ -62,25 +61,6 @@ export default function Property({ propertyFromSupabase }: any) {
   const handleShowingGallery = (e: any) => {
     setShowGallery(true);
     // setChoosedImage(1);
-  };
-
-  const PropertyImages = propertyFromSupabase?.images;
-
-  const [handleMarginSlider, setHandleMarginSlider] = useState(false);
-  const [margin, setMargin] = useState(0);
-
-  const handleChangeSlideLeft = () => {
-    const photosCM = photosContainerMain.current.offsetWidth;
-    const photosC = photosContainer.current.offsetWidth;
-    const photosR = photosRow.current.offsetWidth;
-
-    let multipler = 0;
-
-    if (window.outerWidth > 780) {
-      multipler = 2;
-    } else {
-      multipler = 1;
-    }
   };
 
   const imagesMiniData = propertyFromSupabase.images
@@ -103,14 +83,6 @@ export default function Property({ propertyFromSupabase }: any) {
         </div>
       );
     });
-
-  const handleChangeSlideRight = () => {
-    // setHandleMarginSlider('true')
-
-    const photosCM = photosContainerMain.current.offsetWidth;
-    const photosC = photosContainer.current.offsetWidth;
-    const photosR = photosRow.current.offsetWidth;
-  };
 
   // const Touchstart = (e: any) => {
   //   setStart(e.changedTouches[0].clientX);
@@ -224,7 +196,7 @@ export default function Property({ propertyFromSupabase }: any) {
           distance={propertyData[0]?.distance}
           pool={propertyFromSupabase.pool}
           propertyId={propertyData[0]?.id}
-          propertyRef={propertyData[0]?.listingId}
+          propertyRef={propertyFromSupabase.external_id}
           propertyPrice={propertyFromSupabase.price}
           propertType={propertyFromSupabase.type}
         />

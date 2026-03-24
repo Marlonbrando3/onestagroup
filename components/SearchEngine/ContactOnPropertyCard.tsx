@@ -25,11 +25,14 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
     if (e.target.name === "name") {
       setName(e.target.value);
     }
-    if (e.target.name === "contact") {
+    if (e.target.name === "phone") {
       setPhone(e.target.value);
     }
     if (e.target.name === "msg") {
       setMessage(e.target.value);
+    }
+    if (e.target.name === "email") {
+      setHandleMarginSlider(e.target.value);
     }
   };
 
@@ -39,6 +42,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
       id,
       name: Name,
       phone: Phone,
+      mail: Mail,
       massege: `${massege} (${propertyRef})`,
     });
 
@@ -92,7 +96,8 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
             required
           ></input>
           <input
-            name="mail"
+            name="email"
+            type="email"
             value={Mail}
             onChange={handleChangingForm}
             placeholder="Adres emial"

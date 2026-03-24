@@ -29,6 +29,8 @@ export default function (req: any, res: any) {
       `<br>` +
       `Telefon kontaktowy: ${req.body.phone}` +
       `<br><br>` +
+      `E-mail: ${req.body.mail}` +
+      `<br><br>` +
       `Wiadomość: ${req.body.massege}` +
       `<br><br>`,
   };

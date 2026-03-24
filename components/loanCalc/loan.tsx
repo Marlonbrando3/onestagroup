@@ -3,16 +3,10 @@ import { Red_Hat_DisplayFont, OutfitSans } from "../../fonts/fonts";
 import ContactForm from "../ContactForm";
 
 type Props = {
-  propertyId: any;
-  propertyRef: any;
   propertyPrice: any;
 };
 
-export default function Loan({
-  propertyRef,
-  propertyId,
-  propertyPrice,
-}: Props) {
+export default function Loan({ propertyPrice }: Props) {
   const loanDurationSelect = 30;
   let i = 0;
 
