@@ -111,7 +111,9 @@ export default function PropertyCard({ property }: Property) {
                   : "any"}
                 &nbsp;w {property.town}
               </p>
-              <p className="text-[12px] mt-[10px]">nr ref. {property.id}</p>
+              <p className="text-[12px] mt-[10px]">
+                nr ref. {property.external_id}
+              </p>
             </div>
             <div className="flex items-center justify-between w-full pt-[1px] bg-gray-900/[0.1]">
               <div className="flex flex-col items-center justify-center w-[25%] bg-white md:p-1 py-2">
