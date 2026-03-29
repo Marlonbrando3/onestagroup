@@ -7,7 +7,7 @@ async function runImport() {
   );
 
   if (!response.ok) {
-    throw new Error("Nie udało się pobrać XML");
+    throw new Error("TWOJA STARA");
   }
 
   const xmlData = await response.text();
