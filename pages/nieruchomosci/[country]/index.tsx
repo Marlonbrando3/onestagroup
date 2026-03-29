@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase, supabaseServer } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
 import DataCountry from "../../../data/DataCountry.json";
 import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
@@ -187,7 +187,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const priceTo = cena_do ? Number(cena_do) : 99999999;
   // const poolFilter = basen ? true : undefined;
 
-  let query = await supabase
+  let query = await supabaseServer
     .from("properties")
     .select("*", { count: "exact" })
     .in("province", provinces ?? ["Alicante", "Murcia", "Malaga"])

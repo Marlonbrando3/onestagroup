@@ -214,7 +214,7 @@ export async function getServerSideProps(context: any) {
     .from("properties")
     .select("*")
     .eq("external_id", String(id))
-    .maybeSingle();
+    .single();
 
   if (error) {
     console.error(error);
