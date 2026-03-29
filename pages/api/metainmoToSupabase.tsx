@@ -68,8 +68,6 @@ export default async function handler(
       updated_at: new Date(),
     }));
 
-    console.log("MTN");
-
     // 🔹 USUWANIE DUPLIKATÓW KOMPLEKSÓW (zostaje najtańsze)
     const uniqueByComplex = Object.values(
       mapped.reduce((acc: any, property: any) => {
@@ -96,8 +94,10 @@ export default async function handler(
       }, {}),
     );
 
+    console.log(uniqueByComplex.length);
+
     // 🔹 kasowanie starych rekordów
-    await supabase.from("properties").delete().eq("country", "Spain");
+    await supabase.from("properties").delete().eq("source", "METAINMO");
 
     const chunkSize = 300;
 

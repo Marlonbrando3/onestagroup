@@ -14,10 +14,8 @@ export default function AsariCrm() {
     return `${progress} %`;
   }, [progress]);
 
-  // 11956264;
-
   const handleDownloadingAllProperties = async (propertiesId: any) => {
-    for (const id of propertiesId.slice(0, 2)) {
+    for (const id of propertiesId.slice(230, 270)) {
       await new Promise(async (resolve, reject) => {
         let resultProperty = await fetch("/api/asarigetproperties", {
           method: "POST",
@@ -26,12 +24,11 @@ export default function AsariCrm() {
         });
         const result = await resultProperty.json();
         if (
-          result.list.data.country.name !== "Polska"
-          // result.list.data.country.name !== "Hiszpania"
+          result.list.data.country.name !== "Polska" &&
+          result.list.data.country.name !== "Hiszpania"
         ) {
           rawProperties.push(result.list.data);
           console.log(result.list.data.country.name + " Dodano nieruchomość");
-          // console.log(result.list.data?.apartmentTypeList[0]);
         } else {
           console.log(
             result.list.data.country.name + " Odrzucono nieruchomość",
@@ -89,16 +86,16 @@ export default function AsariCrm() {
 
     console.log(properties);
 
-    // console.log(`Pobrane ogłoszenia`);
+    // save properties in supabase
+
+    await fetch("/api/asariToSupabase", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ properties }),
+    });
+
     finish.current.style.display = "block";
     spinner.current.style.display = "none";
-
-    //save properties as JSON file
-    // await fetch("/api/asariToSupabase", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ properties }),
-    // });
   };
 
   const delay = async (time: any) => {
@@ -122,8 +119,6 @@ export default function AsariCrm() {
         propertiesId.push(propId.id);
       });
 
-      console.log(propertiesId);
-
       await handleDownloadingAllProperties(propertiesId);
     } catch (err) {
       console.log(err);
@@ -146,7 +141,7 @@ export default function AsariCrm() {
       //   propertiesId.push(propId.id);
       // });
 
-      // await handleDownloadingAllProperties(propertiesId);
+      await handleDownloadingAllProperties(propertiesId);
     } catch (err) {
       console.log(err);
     }
