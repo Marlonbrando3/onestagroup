@@ -155,8 +155,6 @@ export default function AsariCrm() {
     const req = fetch("/api/metainmoToSupabase");
   };
 
-  useEffect(() => {}, []);
-
   return (
     <div>
       <div
