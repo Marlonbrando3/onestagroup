@@ -21,4 +21,4 @@ async function runImport() {
   fs.writeFileSync("parsed-output.json", JSON.stringify(parsed, null, 2));
 }
 
-runImport();
+// runImport();
