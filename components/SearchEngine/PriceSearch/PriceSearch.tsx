@@ -106,7 +106,7 @@ export default function PriceSearch({
       <select
         value={priceMinTemp}
         onChange={setNewPriceFrom}
-        className="md:w-[170px] w-full h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[5px] text-[15px]"
+        className="lg:w-[170px] w-full h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
       >
         <option value="All" data-name="od najniższej">
           od najniższej
@@ -141,7 +141,7 @@ export default function PriceSearch({
       <select
         value={priceMaxTemp}
         onChange={setNewPriceTo}
-        className="md:w-[170px] w-full h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[5px] text-[15px]"
+        className="lg:w-[180px] w-full h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
       >
         <option value="All">do najwyższej</option>
         <option value="200000" data-name="200000">
@@ -179,7 +179,7 @@ export default function PriceSearch({
             className="InputsStyle h-auto xl:w-[px] lg:w-full w-full xl:items-center justify-center flex-row"
           >
             {PriceSearchFrom}
-            <div className="lg:w-[10px] w-[6%] h-[1px] bg-yellow-500"></div>
+            <div className="lg:w-[18px] w-[6%] h-[1px] bg-yellow-500"></div>
             {PriceSearchTo}
           </div>
         </div>

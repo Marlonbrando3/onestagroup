@@ -20,7 +20,7 @@ export default function MobileFilters({
         router.pathname !== "/nieruchomosci" &&
         router.pathname !== "/nieruchomosci/[country]/[offers]" &&
         router.pathname === "/nieruchomosci/[country]"
-          ? "bg-gradient-to-r from-orange-500  to-indigo-400 rounded-b-xl border-blue-900 border-b-2 px-2 py-1 ml-4 mt-[0px] w-44 mr-4 z-0 lg:hidden fixed right-0 visible block"
+          ? "bg-gradient-to-r from-orange-500 to-indigo-400 rounded-b-xl border-blue-900 border-b-2 px-2 py-1 ml-4 mt-[0px] w-44 mr-4 z-0 lg:hidden fixed right-0 visible block"
           : "none"
       }
       onClick={handleShowMobileFilters}

@@ -58,7 +58,7 @@ export default function SearchResults(props: any) {
           </div>
         </div>
       </div>
-      <div className="h-full md:w-[800px] lg:w-[1160px] w-full flex items-center justify-center flex-wrap lg:mx-auto">
+      <div className="h-full md:w-[800px] lg:w-[1160px] lg:w-[99vw] w-full flex items-center justify-center flex-wrap lg:mx-auto">
         {properties.map((property: any) => (
           <PropertyCard key={property.id} property={property} />
         ))}

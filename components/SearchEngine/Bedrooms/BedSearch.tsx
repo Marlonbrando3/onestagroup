@@ -87,10 +87,10 @@ export default function Bedrooms({
       <select
         value={bedsMinTemp}
         onChange={(e) => setNewBedsFrom(e)}
-        className="md:w-[60px] h-[35px] w-full rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[8px] text-[15px]"
+        className="lg:w-[60px] h-[35px] w-full rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
       >
         <option value="All" data-name="od">
-          do
+          od
         </option>
         <option value="1" data-name="1">
           1
@@ -116,7 +116,7 @@ export default function Bedrooms({
       <select
         value={bedsMaxTemp}
         onChange={(e) => setNewBedsTo(e)}
-        className="md:w-[60px] h-[35px] w-full rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[8px] text-[15px]"
+        className="lg:w-[60px] h-[35px] w-full rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
       >
         <option value="All" data-name="do">
           do
@@ -167,7 +167,7 @@ export default function Bedrooms({
             className="InputsStyle h-auto xl:w-[px] lg:w-full w-full xl:items-center justify-center flex-row"
           >
             {bedsFrom}
-            <div className="lg:w-[5px] w-[6%] h-[1px] bg-yellow-500"></div>
+            <div className="lg:w-[10px] w-[6%] h-[1px] bg-yellow-500"></div>
             {bedsTo}
           </div>
         </div>

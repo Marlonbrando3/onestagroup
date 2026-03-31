@@ -107,7 +107,7 @@ export default function SearchInput({
         ref={searchEngine}
         className={`${Red_Hat_DisplayFont.className} transition-all duration-500 fixed -top-[450px] lg:mt-0 flex-col items-center justify-center lg:h-[100px] h-auto w-screen lg:w-screen bg-[#fcf7f4] lg:flex lg:sticky z-30`}
       >
-        <form className="lg:-mt-[100px] p-[10px] rounded-[7px] flex md:flex-row flex-col justify-center items-center lg:w-[1100px] h-auto md:h-auto relative shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] bg-white">
+        <form className="lg:-mt-[100px] mt-[60px] p-[10px] rounded-[7px] flex md:flex-row flex-col justify-center items-center lg:max-w-[1180px] lg:w-[95vw] h-auto relative shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] bg-white">
           <div className="h-auto flex items-center w-full mx-auto">
             <MainSearchInSearchEngine
               handleShowMobileFilters={handleShowMobileFilters}
@@ -179,7 +179,7 @@ export default function SearchInput({
               Szukaj
             </div> */}
         </form>
-        <div className="w-full lg:w-[1100px] flex justify-start mx-auto items-center">
+        {/* <div className="w-full lg:w-[1100px] flex justify-start mx-auto items-center">
           <div className="bg-white z-10 flex mt-[10px] float-left rounded-md shadow-md p-[7px] relative">
             <div
               ref={RefOffers}
@@ -198,9 +198,9 @@ export default function SearchInput({
             {/* <IoSearch
               onClick={handleSearchingOffer}
               className="cursor-pointer hover:bg-white hover:text-green-500 border border-green-500 m-auto bg-green-500 rounded-md h-[25px] w-[25px] p-[4px] ml-[4px] text-white duration-200"
-            /> */}
+            />
           </div>
-        </div>
+        </div> */}
         <MobileFilters
           handleShowMobileFilters={handleShowMobileFilters}
           searchEngine={searchEngine}

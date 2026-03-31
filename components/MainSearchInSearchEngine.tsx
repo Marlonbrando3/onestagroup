@@ -1,28 +1,29 @@
-import { useRouter } from "next/router"
-import { useRef, useState } from "react"
-import DataCountry from "../data/DataCountry.json"
-import CountrySearch from "./SearchEngine/Country/CountrySearch"
-import Region from "./SearchEngine/RegionSearch/Region"
-import Types from "./SearchEngine/TypeSearch/Types"
-import Market from "./SearchEngine/Market/Market"
-import Bathrooms from "./SearchEngine/Bathrooms/BathSearch"
-import Bedrooms from "./SearchEngine/Bedrooms/BedSearch"
-import PriceSearch from "./SearchEngine/PriceSearch/PriceSearch"
-import { IoSearch } from "react-icons/io5"
+import { useRouter } from "next/router";
+import { useRef, useState } from "react";
+import DataCountry from "../data/DataCountry.json";
+import CountrySearch from "./SearchEngine/Country/CountrySearch";
+import Region from "./SearchEngine/RegionSearch/Region";
+import Types from "./SearchEngine/TypeSearch/Types";
+import Market from "./SearchEngine/Market/Market";
+import Bathrooms from "./SearchEngine/Bathrooms/BathSearch";
+import Bedrooms from "./SearchEngine/Bedrooms/BedSearch";
+import PriceSearch from "./SearchEngine/PriceSearch/PriceSearch";
+import { IoSearch } from "react-icons/io5";
+import { OutfitSans } from "@/fonts/fonts";
 
 type Props = {
-  handleShowMobileFilters: any
-  searchEngine: any
-  mobileButtonSearchEngine: any
-}
+  handleShowMobileFilters: any;
+  searchEngine: any;
+  mobileButtonSearchEngine: any;
+};
 
 export default function Home({
   mobileButtonSearchEngine,
   searchEngine,
 }: Props) {
-  const router = useRouter()
-  const AdvancedButton = useRef()
-  const searchBtn = useRef<HTMLDivElement>(null)
+  const router = useRouter();
+  const AdvancedButton = useRef();
+  const searchBtn = useRef<HTMLDivElement>(null);
 
   const {
     region,
@@ -35,17 +36,17 @@ export default function Home({
     cena_od,
     cena_do,
     page,
-  } = router.query
+  } = router.query;
 
-  const [dataRegion, setDataRegion] = useState(region || "All")
-  const [dataType, setDataType] = useState(zabudowa || "All")
-  const [dataMarket, setDataMarket] = useState(rynek || "All")
-  const [dataBathsmin, setDataBathsmin] = useState(lazienek_od || "All")
-  const [dataBathsmax, setDataBathsmax] = useState(lazienek_do || "All")
-  const [dataBedsmin, setDataBedsmin] = useState(sypialni_od || "All")
-  const [dataBedsmax, setDataBedsmax] = useState(sypialni_do || "All")
-  const [dataPricemin, setDataPricemin] = useState(cena_od || "All")
-  const [dataPricemax, setDataPricemax] = useState(cena_do || "All")
+  const [dataRegion, setDataRegion] = useState(region || "All");
+  const [dataType, setDataType] = useState(zabudowa || "All");
+  const [dataMarket, setDataMarket] = useState(rynek || "All");
+  const [dataBathsmin, setDataBathsmin] = useState(lazienek_od || "All");
+  const [dataBathsmax, setDataBathsmax] = useState(lazienek_do || "All");
+  const [dataBedsmin, setDataBedsmin] = useState(sypialni_od || "All");
+  const [dataBedsmax, setDataBedsmax] = useState(sypialni_do || "All");
+  const [dataPricemin, setDataPricemin] = useState(cena_od || "All");
+  const [dataPricemax, setDataPricemax] = useState(cena_do || "All");
 
   const [queries, setQueries] = useState(() => ({
     ...(region && { region }),
@@ -55,7 +56,7 @@ export default function Home({
     ...(sypialni_do && { sypialni_do }),
     ...(cena_od && { cena_od }),
     ...(cena_do && { cena_do }),
-  }))
+  }));
 
   function slugify(title: string): string {
     return title
@@ -65,46 +66,48 @@ export default function Home({
       .replace(/ł/g, "l") // osobno: ł → l
       .replace(/[^a-z0-9\s-]/g, "") // usuwa wszystko poza literami, cyframi i myślnikami
       .trim()
-      .replace(/\s+/g, "-")
+      .replace(/\s+/g, "-");
   }
 
   const handleNewSearch = () => {
-    const country = slugify(router.query.country as string)
+    const country = slugify(router.query.country as string);
     // const region = slugify(dataRegion as string);
 
     if (searchEngine.current.style.top)
-      searchEngine.current.style.top = "-460px"
+      searchEngine.current.style.top = "-460px";
     router.push({
       pathname: `/nieruchomosci/${country}/`,
       query: queries,
-    })
-    mobileButtonSearchEngine.current.innerHTML = "Filtry"
-  }
+    });
+    mobileButtonSearchEngine.current.innerHTML = "Filtry";
+  };
 
   const handleResetingSearch = () => {
-    setDataRegion("All")
-    setDataType("All")
-    setDataMarket("All")
-    setDataBathsmin("All")
-    setDataBathsmax("All")
-    setDataBedsmin("All")
-    setDataBedsmax("All")
-    setDataPricemin("All")
-    setDataPricemax("All")
+    setDataRegion("All");
+    setDataType("All");
+    setDataMarket("All");
+    setDataBathsmin("All");
+    setDataBathsmax("All");
+    setDataBedsmin("All");
+    setDataBedsmax("All");
+    setDataPricemin("All");
+    setDataPricemax("All");
     router
       .push({ pathname: `/nieruchomosci/${router.query.country}` })
       .then(() => {
-        window.location.reload()
-      })
-  }
-
+        window.location.reload();
+      });
+  };
   return (
     <>
-      <div id="search-wrapper" className="flex flex-col  mx-auto">
+      <div
+        id="search-wrapper"
+        className={`${OutfitSans.className} flex flex-col  mx-auto tracking-[1.2px] `}
+      >
         <div className="flex flex-col justify-end w-full">
           <div
             id="search-params-wrapper"
-            className="flex w-full mt-0 flex-col lg:flex-row mx-auto lg:flex-wrap items-center justify-between"
+            className="flex w-full flex-col lg:flex-row mx-auto lg:flex-wrap items-center justify-between"
           >
             <CountrySearch
               searchBtn={searchBtn}
@@ -130,14 +133,6 @@ export default function Home({
               dataMarket={dataMarket}
               setDataMarket={setDataMarket}
             />
-            <Bathrooms
-              setQueries={setQueries}
-              queries={queries}
-              dataBathsmin={dataBathsmin}
-              setDataBathsmin={setDataBathsmin}
-              dataBathsmax={dataBathsmax}
-              setDataBathsmax={setDataBathsmax}
-            />
             <Bedrooms
               setQueries={setQueries}
               queries={queries}
@@ -145,6 +140,14 @@ export default function Home({
               setDataBedsmin={setDataBedsmin}
               dataBedsmax={dataBedsmax}
               setDataBedsmax={setDataBedsmax}
+            />
+            <Bathrooms
+              setQueries={setQueries}
+              queries={queries}
+              dataBathsmin={dataBathsmin}
+              setDataBathsmin={setDataBathsmin}
+              dataBathsmax={dataBathsmax}
+              setDataBathsmax={setDataBathsmax}
             />
             <PriceSearch
               setQueries={setQueries}
@@ -165,7 +168,7 @@ export default function Home({
             <div className="flex">
               {router.asPath.length > 20 && (
                 <div
-                  className="h-[40px] w-[170px] text-black rounded-3xl bg-white cursor-pointer flex items-center justify-center mt-[14px] border-[0.5px] border-gray-400"
+                  className="h-[40px] w-[170px] text-black rounded-[2px] bg-white cursor-pointer flex items-center justify-center mt-[14px] border-[0.5px] border-gray-400"
                   onClick={handleResetingSearch}
                 >
                   Wyczyść filtry
@@ -173,7 +176,7 @@ export default function Home({
               )}
               <div
                 ref={searchBtn}
-                className="ml-[10px] h-[40px] w-[170px] md:w-[210px] text-white rounded-3xl bg-gradient-to-r from-orange-500  to-indigo-400 cursor-pointer flex items-center justify-center mt-[14px]"
+                className="ml-[10px] h-[40px] w-[170px] md:w-[210px] text-white rounded-[2px] bg-gradient-to-r from-orange-500  to-indigo-400 cursor-pointer flex items-center justify-center mt-[14px]"
                 onClick={handleNewSearch}
               >
                 <IoSearch />
@@ -184,5 +187,5 @@ export default function Home({
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -23,10 +23,10 @@ export default function MiniHomeView() {
 
   return (
     <div
-      className={`${MoonDance.className} lg:w-full w-full md:h-[200px] h-[100px] mx-auto `}
+      className={`${MoonDance.className} lg:w-full w-full md:h-[200px] h-[100px] mx-auto mb-[60px] `}
     >
       <div className=" bg-white w-full h-[75px]"></div>
-      <div className=" bg-white w-full h-full bg-[center_320px] relative">
+      <div className="bg-[url('/bg_second.png')] w-full h-full bg-[center_320px] bg-cover relative ">
         {/* <div className="absolute w-full h-full bg-gray-900/[0.5] z-0"></div> */}
         <div className="lg:pt-[20px] pt-[50px] lg:w-[1100px] w-[90%] mx-auto z-30 relative">
           {/* <span className="w-[100px] bg-white ">

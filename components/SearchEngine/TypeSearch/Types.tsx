@@ -76,7 +76,7 @@ export default function Types({
       <select
         value={typeTemp}
         onChange={(e) => setNewType(e)}
-        className="md:w-[240px] w-[90vw] h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[5px] text-[15px]"
+        className="lg:w-[240px] w-[90vw] h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
       >
         <option value="All" data-name="wszystkie">
           Wszystkie
