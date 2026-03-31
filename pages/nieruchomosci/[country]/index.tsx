@@ -185,6 +185,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const bedsTo = sypialni_do ? Number(sypialni_do) : 99;
   const priceFrom = cena_od ? Number(cena_od) : 0;
   const priceTo = cena_do ? Number(cena_do) : 99999999;
+  const type = zabudowa ? String(zabudowa) : null;
   // const poolFilter = basen ? true : undefined;
 
   let query = await supabaseServer
@@ -199,6 +200,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .lte("price", priceTo)
     .not("images", "is", null)
     .neq("images", "[]")
+    .eq("type", type)
     .order("external_id", { ascending: false })
     .range(from, to);
 

@@ -50,26 +50,26 @@ export default function Types({
       setDataType(e.target.value);
       setQueries({
         ...queries,
-        zabudowa: e.target.value
-          .replace(/\s+/g, "-")
-          .toLowerCase()
-          .replace(/ą/g, "a")
-          .replace(/ć/g, "c")
-          .replace(/ę/g, "e")
-          .replace(/ł/g, "l")
-          .replace(/ń/g, "n")
-          .replace(/ó/g, "o")
-          .replace(/ś/g, "s")
-          .replace(/ź/g, "z")
-          .replace(/ż/g, "z")
-          .replace(/á/g, "a"),
+        zabudowa: e.target.value,
+        // .replace(/\s+/g, "-")
+        // .toLowerCase()
+        // .replace(/ą/g, "a")
+        // .replace(/ć/g, "c")
+        // .replace(/ę/g, "e")
+        // .replace(/ł/g, "l")
+        // .replace(/ń/g, "n")
+        // .replace(/ó/g, "o")
+        // .replace(/ś/g, "s")
+        // .replace(/ź/g, "z")
+        // .replace(/ż/g, "z")
+        // .replace(/á/g, "a"),
       });
     }
   };
 
-  useEffect(() => {
-    TypeFormated();
-  }, [typeTemp]);
+  // useEffect(() => {
+  //   TypeFormated();
+  // }, [typeTemp]);
 
   const TypesSearchInput = (
     <div>
@@ -81,11 +81,17 @@ export default function Types({
         <option value="All" data-name="wszystkie">
           Wszystkie
         </option>
-        <option value="apartmentSale" data-name="apartmentSale">
+        <option value="apartment" data-name="apartment">
           Apartament
         </option>
-        <option value="houseSale" data-name="houseSale">
+        <option value="villa" data-name="villa">
           Dom/Willa
+        </option>
+        <option value="bungalow" data-name="bungalow">
+          Bungalow
+        </option>
+        <option value="townhouse" data-name="townhouse">
+          Szeregówka
         </option>
       </select>
     </div>
