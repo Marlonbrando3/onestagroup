@@ -211,8 +211,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const market = rynekpierwotny ? rynekpierwotny : null;
   // const poolFilter = basen ? true : undefined;
 
-  console.log("LALALLALLALA" + market);
-
   let query = await supabaseServer
     .from("properties")
     .select("*", { count: "exact" })

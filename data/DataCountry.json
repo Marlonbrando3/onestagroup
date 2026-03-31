@@ -2,11 +2,11 @@
   {
     "country": "hiszpania",
     "region": ["Costa Blanca", "Costa Calida", "Costa del Sol"],
-    "showed": ["Costa Blanca", "Costa del Sol"],
+    "showed": ["Costa Blanca", "Costa Calida", "Costa del Sol"],
     "query": [
       { "query": "costa-blanca", "querySearch": "Costa Blanca" },
-      { "query": "costa-del-sol", "querySearch": "Costa del Sol" },
-      { "query": "costa-calida", "querySearch": "Costa Calida" }
+      { "query": "costa-calida", "querySearch": "Costa Calida" },
+      { "query": "costa-del-sol", "querySearch": "Costa del Sol" }
     ],
     "cities": [
       {
