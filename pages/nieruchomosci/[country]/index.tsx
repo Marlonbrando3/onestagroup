@@ -11,6 +11,8 @@ import Footer from "../../../components/Footer";
 import ContactFormMain from "../../../components/ContactFormMain";
 import AnalitycsTools from "@/analitycs/analitycsTools";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
+import { usePathname, useSearchParams } from "next/navigation";
+
 import Property from "./[title]";
 
 interface Property {
@@ -34,6 +36,9 @@ export default function Home(props: any) {
   const menu = useRef<any>();
   const searchEngine = useRef<any>();
   const mobileButtonSearchEngine = useRef<any>();
+  const [loader, setLoader] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const { country } = router.query;
 
@@ -90,6 +95,11 @@ export default function Home(props: any) {
 
   const canonicalHref = `https://onesta.com.pl/nieruchomosci/${country}`;
 
+  useEffect(() => {
+    setLoader(false);
+    console.log(pathname);
+  }, [pathname, searchParams]);
+
   return (
     <>
       <Head>
@@ -123,6 +133,15 @@ export default function Home(props: any) {
         />
       </Head>
       <WhatsAppButton />
+      <div
+        className={`${loader === true ? "flex" : "hidden"} flex items-center justify-center gap-2 absolute w-screen h-screen z-[40] right-0 left-0 mx-auto bg-white/[0.6]`}
+      >
+        <div className="flex items-center gap-2 justify-center">
+          <span className="w-[30px] h-[30px] bg-yellow-600 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+          <span className="w-[30px] h-[30px] bg-yellow-600 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+          <span className="w-[30px] h-[30px] bg-yellow-600 rounded-full animate-bounce"></span>
+        </div>
+      </div>
       <div ref={menu} className="duration-700 w-full z-50 bg-white">
         <Header />
       </div>
@@ -130,6 +149,8 @@ export default function Home(props: any) {
       {/* <div className="fixed w-screen h-screen bg-red-900 z-30">lalalaal</div> */}
       <MiniHomeView />
       <SearchEngine
+        loader={loader}
+        setLoader={setLoader}
         handleShowMobileFilters={handleShowMobileFilters}
         searchEngine={searchEngine}
         mobileButtonSearchEngine={mobileButtonSearchEngine}
@@ -151,7 +172,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const {
     zabudowa,
     region,
-    rynek,
+    rynekpierwotny,
     lazienek_od,
     lazienek_do,
     sypialni_od,
@@ -172,8 +193,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   //regions mapping with supabase
   const regionFilters: Record<any, any> = {
-    "costa-blanca": ["Alicante", "Murcia"],
+    "costa-blanca": ["Alicante"],
     "costa-del-sol": ["Malaga"],
+    "costa-calida": ["Murcia"],
   };
 
   //choosed region
@@ -186,7 +208,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const priceFrom = cena_od ? Number(cena_od) : 0;
   const priceTo = cena_do ? Number(cena_do) : 99999999;
   const type = zabudowa ? String(zabudowa) : null;
+  const market = rynekpierwotny ? rynekpierwotny : null;
   // const poolFilter = basen ? true : undefined;
+
+  console.log("LALALLALLALA" + market);
 
   let query = await supabaseServer
     .from("properties")
@@ -200,7 +225,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .lte("price", priceTo)
     .not("images", "is", null)
     .neq("images", "[]")
-    .eq("type", type)
+    .in("new_build", market !== null ? [market] : [true, false])
     .order("external_id", { ascending: false })
     .range(from, to);
 

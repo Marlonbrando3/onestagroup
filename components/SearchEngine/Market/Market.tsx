@@ -17,7 +17,7 @@ export default function Types({
 }: Query) {
   const router = useRouter();
 
-  const { rynek } = router.query;
+  const { rynekpierwotny } = router.query;
 
   const marketTypes = [
     { query: "wtorny", name: "Wtórny" },
@@ -26,31 +26,18 @@ export default function Types({
 
   const [marketTemp, setMarketTemp] = useState<any>(undefined);
 
-  const RegionFormated = () => {
-    const data = marketTypes.find((i) => {
-      if (marketTemp !== undefined && i.query === marketTemp) {
-        return true;
-      }
-
-      if (marketTemp === undefined && i.query === rynek) {
-        setMarketTemp(i.query);
-        return true;
-      }
-    });
-  };
-
   const setNewMarket = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
     setMarketTemp(dataName);
     if (e.target.value === "All") {
-      const { rynek, ...rest } = queries;
+      const { rynekpierwotny, ...rest } = queries;
       setQueries(rest);
       setDataMarket("All");
     } else {
       setDataMarket(e.target.value);
       setQueries({
         ...queries,
-        rynek: e.target.value
+        rynekpierwotny: e.target.value
           .replace(/\s+/g, "-")
           .toLowerCase()
           .replace(/ą/g, "a")
@@ -67,9 +54,9 @@ export default function Types({
     }
   };
 
-  useEffect(() => {
-    RegionFormated();
-  }, [marketTemp]);
+  // useEffect(() => {
+  //   RegionFormated();
+  // }, [marketTemp]);
 
   const MarketSearchInput = (
     <div>
@@ -78,13 +65,13 @@ export default function Types({
         onChange={(e) => setNewMarket(e)}
         className="lg:w-[200px] w-[90vw] h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
       >
-        <option value="All" data-name="pierwotny i wtorny">
+        <option value="All" data-name="all">
           Pierwotny i wtórny
         </option>
-        <option value="pierwotny" data-name="pierwotny">
+        <option value="true" data-name="true">
           Pierwotny
         </option>
-        <option value="wtorny" data-name="wtorny">
+        <option value="false" data-name="false">
           Wtórny
         </option>
       </select>

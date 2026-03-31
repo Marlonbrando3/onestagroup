@@ -13,6 +13,8 @@ type FunctionProps = {
   handleShowMobileFilters: any;
   mobileButtonSearchEngine: any;
   searchEngine: any;
+  loader: any;
+  setLoader: any;
 };
 
 type SearchEngineProps = FunctionProps & ServerSideProps;
@@ -22,12 +24,16 @@ export default function SearchEngine({
   searchEngine,
   mobileButtonSearchEngine,
   count,
+  loader,
+  setLoader,
   ...restProps
 }: SearchEngineProps) {
   return (
     <>
       <div className="flex flex-col items-start justify-center w-full pt-4 bg-[#fcf7f4]">
         <SearchComponentsList
+          loader={loader}
+          setLoader={setLoader}
           handleShowMobileFilters={handleShowMobileFilters}
           mobileButtonSearchEngine={mobileButtonSearchEngine}
           searchEngine={searchEngine}

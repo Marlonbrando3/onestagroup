@@ -11,12 +11,16 @@ type Function = {
   handleShowMobileFilters: any;
   mobileButtonSearchEngine: any;
   searchEngine: any;
+  loader: any;
+  setLoader: any;
 };
 
 export default function SearchInput({
   handleShowMobileFilters,
   searchEngine,
   mobileButtonSearchEngine,
+  loader,
+  setLoader,
 }: Function) {
   const router = useRouter();
 
@@ -110,6 +114,8 @@ export default function SearchInput({
         <form className="lg:-mt-[100px] mt-[60px] p-[10px] rounded-[7px] flex md:flex-row flex-col justify-center items-center lg:max-w-[1180px] lg:w-[95vw] h-auto relative shadow-[20px_35px_60px_-15px_rgba(0,0,0,0.3)] bg-white">
           <div className="h-auto flex items-center w-full mx-auto">
             <MainSearchInSearchEngine
+              loader={loader}
+              setLoader={setLoader}
               handleShowMobileFilters={handleShowMobileFilters}
               searchEngine={searchEngine}
               mobileButtonSearchEngine={mobileButtonSearchEngine}

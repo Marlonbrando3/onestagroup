@@ -25,19 +25,6 @@ export default function Types({
 
   const [typeTemp, setTypeTemp] = useState<any>(undefined);
 
-  const TypeFormated = () => {
-    const reg = TypeTypes.find((i) => {
-      if (typeTemp !== undefined && i.query === typeTemp) {
-        return true;
-      }
-
-      if (typeTemp === undefined && zabudowa === i.query.toLowerCase()) {
-        setTypeTemp(i.query);
-        return true; // i tak zatrzymuje find
-      }
-    });
-  };
-
   const setNewType = (e: any) => {
     const dataName = e.target.selectedOptions[0].getAttribute("data-name");
 
@@ -51,25 +38,9 @@ export default function Types({
       setQueries({
         ...queries,
         zabudowa: e.target.value,
-        // .replace(/\s+/g, "-")
-        // .toLowerCase()
-        // .replace(/ą/g, "a")
-        // .replace(/ć/g, "c")
-        // .replace(/ę/g, "e")
-        // .replace(/ł/g, "l")
-        // .replace(/ń/g, "n")
-        // .replace(/ó/g, "o")
-        // .replace(/ś/g, "s")
-        // .replace(/ź/g, "z")
-        // .replace(/ż/g, "z")
-        // .replace(/á/g, "a"),
       });
     }
   };
-
-  // useEffect(() => {
-  //   TypeFormated();
-  // }, [typeTemp]);
 
   const TypesSearchInput = (
     <div>

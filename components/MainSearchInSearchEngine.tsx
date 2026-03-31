@@ -15,11 +15,15 @@ type Props = {
   handleShowMobileFilters: any;
   searchEngine: any;
   mobileButtonSearchEngine: any;
+  loader: any;
+  setLoader: any;
 };
 
 export default function Home({
   mobileButtonSearchEngine,
   searchEngine,
+  loader,
+  setLoader,
 }: Props) {
   const router = useRouter();
   const AdvancedButton = useRef();
@@ -74,12 +78,13 @@ export default function Home({
     // const region = slugify(dataRegion as string);
 
     if (searchEngine.current.style.top)
-      searchEngine.current.style.top = "-460px";
+      searchEngine.current.style.top = "-450px";
     router.push({
       pathname: `/nieruchomosci/${country}/`,
       query: queries,
     });
     mobileButtonSearchEngine.current.innerHTML = "Filtry";
+    setLoader(true);
   };
 
   const handleResetingSearch = () => {
