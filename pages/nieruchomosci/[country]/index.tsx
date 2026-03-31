@@ -225,6 +225,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .lte("price", priceTo)
     .not("images", "is", null)
     .neq("images", "[]")
+    .ilike("type", type ? type : "%")
     .in("new_build", market !== null ? [market] : [true, false])
     .order("external_id", { ascending: false })
     .range(from, to);
