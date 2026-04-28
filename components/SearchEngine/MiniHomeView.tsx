@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { GreatVibes, Red_Hat_DisplayFont, MoonDance } from "../../fonts/fonts";
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 export default function MiniHomeView() {
   const router = useRouter();
-  const [country, setCountry] = useState("");
+
+  const { country } = router.query;
 
   const Dictionary = [
     { name: "portugalia", new: "w Portugalii" },
@@ -12,58 +15,23 @@ export default function MiniHomeView() {
     { name: "dominikana", new: "na Dominikanie" },
     { name: "cypr", new: "na Cyprze" },
   ];
-
-  useEffect(() => {
-    Dictionary.map((i) => {
-      if (i.name === router.query.country) {
-        setCountry(i.new);
-      }
-    });
-  }, [router.isReady, router.query.country]);
-
   return (
     <div
-      className={`${MoonDance.className} lg:w-full w-full md:h-[200px] h-[100px] mx-auto mb-[60px] `}
+      className={`${Red_Hat_DisplayFont.className} w-full md:h-[230px] h-auto mx-auto md:text-[18px] -mt-[100px] `}
     >
-      <div className=" bg-white w-full h-[75px]"></div>
-      <div className="bg-[url('/bg_second.png')] w-full h-full bg-[center_320px] bg-cover relative ">
-        {/* <div className="absolute w-full h-full bg-gray-900/[0.5] z-0"></div> */}
-        <div className="lg:pt-[20px] pt-[50px] lg:w-[1100px] w-[90%] mx-auto z-30 relative">
-          {/* <span className="w-[100px] bg-white ">
-            <h1 className="md:text-[49px] text-[34px] text-white leading-[30px] lg:leading-[49px]">
-              Nieruchomości {country} – domy i apartamenty na sprzedaż
-            </h1>
-            {router.query.country === "hiszpania" && (
-              <span
-                className={`${Red_Hat_DisplayFont.className} bg-white text-left rounded-[3px] mt-[20px] md:text-[18px] text-[12px] `}
-              >
-                {" "}
-                Planujesz zakup <strong>nieruchomości w Hiszpanii</strong>?
-                Znajdziesz tu atrakcyjne oferty domów, mieszkań i apartamentów w
-                popularnych lokalizacjach takich jak Costa Blanca, Costa del
-                Sol, Alicante czy Torrevieja itd. Hiszpański rynek nieruchomości
-                oferuje świetne możliwości zarówno dla inwestorów, jak i osób
-                szukających drugiego domu na słoneczne wakacje. Przeglądaj
-                dostępne ogłoszenia i wybierz swoją wymarzoną nieruchomość.
-              </span>
-            )}
-            {router.query.country === "cypr" && (
-              <span
-                className={`${Red_Hat_DisplayFont.className} bg-white text-left rounded-[3px] mt-[20px] md:text-[18px] text-[12px] `}
-              >
-                {" "}
-                Odkryj wyjątkowe <strong>nieruchomości na Cyprze</strong> –
-                domy, wille i apartamenty na sprzedaż w najbardziej pożądanych
-                lokalizacjach wyspy. W ofercie znajdziesz zarówno nowoczesne
-                apartamenty z widokiem na morze, jak i komfortowe domy na
-                sprzedaż na Cyprze. Jako inwestycję lub swój drugi dom.
-                Słoneczny klimat przez cały rok, bezpieczeństwo, korzystne
-                warunki podatkowe i stabilny rynek. Znajdź coś dla siebie, coś
-                co spełni Twoje oczekiwania. Przeglądaj aktualne oferty na
-                Cyprze.
-              </span>
-            )}
-          </span> */}
+      <div className="w-full md:h-[140px] h-[100px] bg-red-900 bg-[url('/bg_mini.png')] bg-cover"></div>
+      <div className="w-full h-full bg-[center_320px] bg-cover relative ">
+        <div className="pt-[20px] w-[90vw] max-w-[1300px] mx-auto z-30 relative flex items-center">
+          <Link href="#">Strona startowa</Link>
+          <MdKeyboardArrowRight className="md:mx-[10px] h-[25px] w-[25px] text-yellow-800" />
+          <Link href="#">Nieruchomości</Link>
+          <MdKeyboardArrowRight className="md:mx-[10px] h-[25px] w-[25px] text-yellow-800" />{" "}
+          <Link href="#" className="capitalize">
+            {country}
+          </Link>
+        </div>
+        <div className="w-[90vw] max-w-[1300px] mx-auto md:text-[40px] text-[24px] font-[600]">
+          Luksusowe oferty nieruchomości w Hiszpanii
         </div>
       </div>
     </div>

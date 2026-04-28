@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { MontserratSans } from "../../fonts/fonts";
@@ -55,7 +55,7 @@ export default function Consultation({
         }),
       });
 
-      const data = await res.status;
+      const data = res.status;
 
       if (data === 200) {
         thankyoupopup.current.style.display = "flex";
@@ -98,7 +98,7 @@ export default function Consultation({
           <p className="text-[18px] text-center font-[800] px-[10px]">
             Dziękujemy!<br></br>Wkrótce się z Tobą skontaktujemy.
             <br></br>
-            <p>Do usłyszenia!</p>
+            <span>Do usłyszenia!</span>
           </p>
           <div
             className="mt-[150px] cursor-pointer"

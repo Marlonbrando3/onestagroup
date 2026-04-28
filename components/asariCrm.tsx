@@ -177,7 +177,7 @@ export default function AsariCrm() {
         onClick={handleMetaInmo}
         className="bg-orange-600 text-white w-[200px] text-center cursor-pointer mt-[40px]"
       >
-        Aktualizj Metainmo
+        Aktualizuj Metainmo
       </div>
       <div
         ref={spinner}

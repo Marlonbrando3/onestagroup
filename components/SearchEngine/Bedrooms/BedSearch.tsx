@@ -84,13 +84,13 @@ export default function Bedrooms({
   };
   const bedsFrom = (
     <div className="w-[47%]">
-      <select
+      <div
         value={bedsMinTemp}
         onChange={(e) => setNewBedsFrom(e)}
         className="lg:w-[60px] h-[35px] w-full rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
       >
         <option value="All" data-name="od">
-          od
+          Liczba sypilani
         </option>
         <option value="1" data-name="1">
           1
@@ -107,36 +107,7 @@ export default function Bedrooms({
         <option value="5" data-name="5">
           5
         </option>
-      </select>
-    </div>
-  );
-
-  const bedsTo = (
-    <div className="w-[47%]">
-      <select
-        value={bedsMaxTemp}
-        onChange={(e) => setNewBedsTo(e)}
-        className="lg:w-[60px] h-[35px] w-full rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
-      >
-        <option value="All" data-name="do">
-          do
-        </option>
-        <option value="1" data-name="1">
-          1
-        </option>
-        <option value="2" data-name="2">
-          2
-        </option>
-        <option value="3" data-name="3">
-          3
-        </option>
-        <option value="4" data-name="4">
-          4
-        </option>
-        <option value="5" data-name="5">
-          5
-        </option>
-      </select>
+      </div>
     </div>
   );
 
@@ -161,14 +132,12 @@ export default function Bedrooms({
     <>
       <div className="relative min-h-[25px] border-gray-900/[0.4] rounded-[7px] lg:m-auto lg:mx-[4px] pb-[1px] lg:w-auto w-[90vw] mx-auto ">
         <div className="lg:w-auto w-full h-auto flex flex-col justify-center">
-          <p className="mx-[5px] text-[12px]">Liczba sypialni</p>
+          {/* <p className="mx-[5px] text-[12px]">Liczba sypialni</p> */}
           <div
             // ref={pricesInputs}
             className="InputsStyle h-auto xl:w-[px] lg:w-full w-full xl:items-center justify-center flex-row"
           >
             {bedsFrom}
-            <div className="lg:w-[10px] w-[6%] h-[1px] bg-yellow-500"></div>
-            {bedsTo}
           </div>
         </div>
       </div>

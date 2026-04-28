@@ -1,152 +1,157 @@
 import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import { supabase, supabaseServer } from "@/lib/supabaseClient";
+import { supabaseServer } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
-import DataCountry from "../../../data/DataCountry.json";
+import locationsData from "@/data/locations.json";
+import { COAST_TO_PROVINCES } from "@/lib/regionMap";
 import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
-import Header from "../../../components/Header";
+import HeaderListings from "../../../components/HeaderListings";
 import SearchEngine from "../../../components/SearchEngine/SearchEngine";
 import Footer from "../../../components/Footer";
 import ContactFormMain from "../../../components/ContactFormMain";
-import AnalitycsTools from "@/analitycs/analitycsTools";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
-import { usePathname, useSearchParams } from "next/navigation";
-
-import Property from "./[title]";
+import Consultation from "@/components/consulatation/consultation";
 
 interface Property {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  country: { name: string };
-  section: string;
-  foreignLocation: string;
-  mortgageMarket: string;
-  noOfBathrooms: number;
-  noOfRooms: number;
-  price: { amount: number };
-  actualisationDate: string;
+  external_id: string | number;
+  type: string;
+  town: string;
+  province: string;
+  price: number;
+  beds: number;
+  baths: number;
+  images: string[];
+  new_build: boolean;
+  surface_built: number;
+  pool: boolean;
+  headerAdvertisement: string;
+  vacantFromDate: string | null;
+  updated_at: string;
+  country: string;
 }
 
-export default function Home(props: any) {
+interface PageProps {
+  properties: Property[];
+  country: string;
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  perPage: number;
+  query: Record<string, string | string[]>;
+}
+
+export default function ListingsPage(props: PageProps) {
   const router = useRouter();
-
-  const menu = useRef<any>();
-  const searchEngine = useRef<any>();
-  const mobileButtonSearchEngine = useRef<any>();
-  const [loader, setLoader] = useState(false);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
   const { country } = router.query;
 
-  const countryNames: Record<string, string> = {
-    hiszpania: "Hiszpania",
-    portugalia: "Portugalia",
-    cypr: "Cypr",
-    wlochy: "Włochy",
+  const searchEngine = useRef<HTMLDivElement>(null);
+  const mobileButtonSearchEngine = useRef<HTMLButtonElement>(null);
+
+  const [loader, setLoader] = useState(false);
+  const [propertiesState, setPropertiesState] = useState<Property[]>(
+    props.properties ?? [],
+  );
+  const [pageState, setPageState] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [consultationOpen, setConsultationOpen] = useState(false);
+
+  const handleConsultationPopUp = () => setConsultationOpen((prev) => !prev);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastElementRef = (node: HTMLDivElement | null) => {
+    if (loadingMore) return;
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPageState((prev) => prev + 1);
+      }
+    });
+
+    if (node) observer.current.observe(node);
   };
 
-  // Jeśli jeszcze nie gotowe
-  if (!country || typeof country !== "string") return null;
+  useEffect(() => {
+    setPropertiesState(props.properties ?? []);
+    setPageState(1);
+    setHasMore(true);
+  }, [props.properties]);
 
-  const countryName = countryNames[country.toLowerCase()] || country;
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Strona główna",
-        item: "https://onesta.com.pl",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: countryName,
-        item: `https://onesta.com.pl/nieruchomosci/${country}`,
-      },
-    ],
-  };
-
-  const handleShowMobileFilters = () => {
+  useEffect(() => {
     if (
-      searchEngine.current.style.top === "-450px" ||
-      searchEngine.current.style.top === "-460px" ||
-      searchEngine.current.style.top === ""
+      typeof window !== "undefined" &&
+      window.innerWidth < 768 &&
+      searchEngine.current
     ) {
-      searchEngine.current.style.top = "70px";
-      mobileButtonSearchEngine.current.innerHTML = "Zamknij";
-    } else {
-      searchEngine.current.style.top = "-450px";
-      mobileButtonSearchEngine.current.innerHTML = "Filtry";
+      searchEngine.current.style.top = "-120vh";
     }
-  };
-
-  const title = `Nieruchomości ${
-    Array.isArray(router.query.country)
-      ? router.query.country[0].toUpperCase()
-      : router.query.country?.toUpperCase()
-  }`;
-
-  const canonicalHref = `https://onesta.com.pl/nieruchomosci/${country}`;
+  }, []);
 
   useEffect(() => {
     setLoader(false);
-    console.log(pathname);
-  }, [pathname, searchParams]);
+  }, [router.asPath]);
+
+  // useEffect(() => {
+  //   if (pageState === 1) return;
+
+  //   const fetchMore = async () => {
+  //     setLoadingMore(true);
+
+  //     const params = new URLSearchParams({
+  //       ...Object.fromEntries(
+  //         Object.entries(router.query).map(([k, v]) => [
+  //           k,
+  //           Array.isArray(v) ? v.join(",") : String(v ?? ""),
+  //         ]),
+  //       ),
+  //       page: String(pageState),
+  //     });
+
+  //     try {
+  //       const res = await fetch(`/api/properties?${params.toString()}`);
+  //       if (!res.ok) return;
+
+  //       const data: Property[] = await res.json();
+  //       if (data.length < props.perPage) setHasMore(false);
+  //       setPropertiesState((prev) => [...prev, ...data]);
+  //     } finally {
+  //       setLoadingMore(false);
+  //     }
+  //   };
+
+  //   fetchMore();
+  // }, [pageState]);
+
+  if (!country || typeof country !== "string") return null;
+
+  const handleShowMobileFilters = () => {
+    if (!searchEngine.current || !mobileButtonSearchEngine.current) return;
+    if (typeof window !== "undefined" && window.innerWidth >= 768) return;
+
+    const next = !isMobileFiltersOpen;
+    setIsMobileFiltersOpen(next);
+
+    searchEngine.current.style.top = next ? "0px" : "-120vh";
+    mobileButtonSearchEngine.current.innerHTML = next ? "Zamknij" : "Filtry";
+  };
+
+  const title = `Nieruchomości ${country.toUpperCase()}`;
 
   return (
     <>
       <Head>
         <title>{title}</title>
-        <link rel="shortcut icon" href="/logotype.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com"></link>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;500;600&display=swap"
-          rel="stylesheet"
-        ></link>
-        <meta
-          name="viewport"
-          content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
-        />
-        <meta
-          name="Description"
-          content="Biura pośrednictwa sprzedaży nieruchomości, które prezetuje najciekawsze ogłoszenia w ciepłych krajach. Przeprowdzimy Cię przez cały proces zakupowy Twojego drugiego domu"
-        />
-        <meta
-          property="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"
-          content="image"
-        />
-        <meta
-          property="og:title"
-          content="Nieruchomości w Hiszpanii, Chorwacji, Portugalii"
-        ></meta>
-        <meta
-          property="og:image"
-          content="https://onesta.com.pl/onesta_og_img.png"
-        />
       </Head>
       <WhatsAppButton />
-      <div
-        className={`${loader === true ? "flex" : "hidden"} flex items-center justify-center gap-2 absolute w-screen h-screen z-[40] right-0 left-0 mx-auto bg-white/[0.6]`}
-      >
-        <div className="flex items-center gap-2 justify-center">
-          <span className="w-[30px] h-[30px] bg-yellow-600 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-          <span className="w-[30px] h-[30px] bg-yellow-600 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-          <span className="w-[30px] h-[30px] bg-yellow-600 rounded-full animate-bounce"></span>
-        </div>
-      </div>
-      <div ref={menu} className="duration-700 w-full z-50 bg-white">
-        <Header />
-      </div>
-      {/* <Newsletter /> */}
-      {/* <div className="fixed w-screen h-screen bg-red-900 z-30">lalalaal</div> */}
+      <Consultation
+        handleConsultationPopUp={handleConsultationPopUp}
+        ConsultationsShowed={consultationOpen}
+      />
+      <HeaderListings handleConsultationPopUp={handleConsultationPopUp} />
       <MiniHomeView />
       <SearchEngine
         loader={loader}
@@ -156,86 +161,165 @@ export default function Home(props: any) {
         mobileButtonSearchEngine={mobileButtonSearchEngine}
         count={props.totalCount}
         {...props}
+        properties={propertiesState}
+        isMobileFiltersOpen={isMobileFiltersOpen}
+        setIsMobileFiltersOpen={setIsMobileFiltersOpen}
       />
+
+      <div ref={lastElementRef} style={{ height: 50 }} />
+
+      {loadingMore && (
+        <div className="flex items-center justify-center gap-2 mb-[50px]">
+          <span className="w-6 h-6 bg-yellow-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
+          <span className="w-6 h-6 bg-yellow-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
+          <span className="w-6 h-6 bg-yellow-500 rounded-full animate-bounce" />
+        </div>
+      )}
+
       <ContactFormMain />
       <Footer />
     </>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const path = require("path");
+function getAllDescendants(id: string): string[] {
+  const children = locationsData.filter((l) => l.parentId === id);
+  return [id, ...children.flatMap((child) => getAllDescendants(child.id))];
+}
 
+function parseCsvParam(val: unknown): string[] {
+  if (!val) return [];
+  const raw = Array.isArray(val) ? val.join(",") : String(val);
+  return raw
+    .split(",")
+    .map((v) => v.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function parseNumList(val: unknown): number[] {
+  if (!val) return [];
+  const raw = Array.isArray(val) ? val.join(",") : String(val);
+  return raw
+    .split(",")
+    .map((v) => Number(v.trim()))
+    .filter((n) => Number.isFinite(n));
+}
+
+export const getServerSideProps: GetServerSideProps<PageProps> = async (
+  context,
+) => {
   const { country } = context.params as { country: string };
-  const page = parseInt((context.query.page as string) || "1");
-
-  const {
-    zabudowa,
-    region,
-    rynekpierwotny,
-    lazienek_od,
-    lazienek_do,
-    sypialni_od,
-    sypialni_do,
-    cena_od,
-    cena_do,
-    sort,
-  } = context.query;
-
-  //download data from Asari (without costa blanca and costa calida)
-  const filePath = path.join(process.cwd(), "public/properties.json");
-
-  //download data from supabase for Costa Blanca and Calida (full data)
-
+  const page = Math.max(1, parseInt((context.query.page as string) || "1"));
   const limit = 18;
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
-  //regions mapping with supabase
-  const regionFilters: Record<any, any> = {
-    "costa-blanca": ["Alicante"],
-    "costa-del-sol": ["Malaga"],
-    "costa-calida": ["Murcia"],
-  };
+  const {
+    type,
+    region,
+    market,
+    baths,
+    bathsMin,
+    bathsMax,
+    beds,
+    bedsMin,
+    bedsMax,
+    priceMin,
+    priceMax,
+    location,
+  } = context.query;
 
-  //choosed region
-  const provinces =
-    region && regionFilters[region] ? regionFilters[region] : undefined;
-  const bathsFrom = lazienek_od ? Number(lazienek_od) : 0;
-  const bathsTo = lazienek_do ? Number(lazienek_do) : 99;
-  const bedsFrom = sypialni_od ? Number(sypialni_od) : 0;
-  const bedsTo = sypialni_do ? Number(sypialni_do) : 99;
-  const priceFrom = cena_od ? Number(cena_od) : 0;
-  const priceTo = cena_do ? Number(cena_do) : 99999999;
-  const type = zabudowa ? String(zabudowa) : null;
-  const market = rynekpierwotny ? rynekpierwotny : null;
-  // const poolFilter = basen ? true : undefined;
+  const provinces = region ? COAST_TO_PROVINCES[region as string] : undefined;
 
-  let query = await supabaseServer
+  const bathsFrom = bathsMin ? Number(bathsMin) : 0;
+  const bathsTo = bathsMax ? Number(bathsMax) : 99;
+  const bedsFrom = bedsMin ? Number(bedsMin) : 0;
+  const bedsTo = bedsMax ? Number(bedsMax) : 99;
+  const priceFrom = priceMin ? Number(priceMin) : 0;
+  const priceTo = priceMax ? Number(priceMax) : 99_999_999;
+  const marketType = market ?? null;
+
+  const typeList = parseCsvParam(type);
+  const bathsExact = parseNumList(baths);
+  const bedsExact = parseNumList(beds);
+
+  const locationParam = location ? String(location).split(",") : [];
+  const expandedIds = [
+    ...new Set(locationParam.flatMap((id) => getAllDescendants(id))),
+  ];
+
+  const selectedTowns = expandedIds
+    .map((id) => locationsData.find((l) => l.id === id))
+    .filter((l) => l?.type === "city")
+    .map((l) => l!.name);
+
+  const selectedProvinces = expandedIds
+    .map((id) => locationsData.find((l) => l.id === id))
+    .filter((l) => l?.type === "province")
+    .map((l) => l!.name);
+
+  let query = supabaseServer
     .from("properties")
     .select("*", { count: "exact" })
-    .in("province", provinces ?? ["Alicante", "Murcia", "Malaga"])
-    .gte("baths", bathsFrom)
-    .lte("baths", bathsTo)
-    .gte("beds", bedsFrom)
-    .lte("beds", bedsTo)
     .gte("price", priceFrom)
     .lte("price", priceTo)
     .not("images", "is", null)
     .neq("images", "[]")
-    .ilike("type", type ? type : "%")
-    .in("new_build", market !== null ? [market] : [true, false])
+    .in("new_build", marketType !== null ? [marketType] : [true, false])
     .order("external_id", { ascending: false })
     .range(from, to);
 
-  const { data: properties, count, error: queryError } = await query;
+  if (typeList.length === 1) {
+    query = query.ilike("type", typeList[0]);
+  } else if (typeList.length > 1) {
+    query = query.or(typeList.map((t) => `type.ilike.${t}`).join(","));
+  }
+
+  if (bathsExact.length > 0) {
+    query = query.in("baths", bathsExact);
+  } else {
+    query = query.gte("baths", bathsFrom).lte("baths", bathsTo);
+  }
+
+  if (bedsExact.length > 0) {
+    query = query.in("beds", bedsExact);
+  } else {
+    query = query.gte("beds", bedsFrom).lte("beds", bedsTo);
+  }
+
+  if (locationParam.length > 0) {
+    if (selectedTowns.length > 0 && selectedProvinces.length > 0) {
+      query = query.or(
+        `town.in.(${selectedTowns.map((t) => `"${t}"`).join(",")}),province.in.(${selectedProvinces.map((p) => `"${p}"`).join(",")})`,
+      );
+    } else if (selectedTowns.length > 0) {
+      query = query.in("town", selectedTowns);
+    } else if (selectedProvinces.length > 0) {
+      query = query.in("province", selectedProvinces);
+    }
+  } else {
+    query = query.in("province", provinces ?? ["Alicante", "Murcia", "Malaga"]);
+  }
+
+  const { data: properties, count, error } = await query;
+
+  if (error) {
+    console.error("Supabase query error:", error.message);
+  }
+
+  const totalCount = count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+  const currentPage = Math.min(page, totalPages);
 
   return {
     props: {
-      properties: properties,
+      properties: properties ?? [],
       country,
-      totalCount: count,
-      query: context.query,
+      totalCount,
+      totalPages,
+      currentPage,
+      perPage: limit,
+      query: context.query as Record<string, string | string[]>,
     },
   };
 };

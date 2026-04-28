@@ -468,7 +468,7 @@ select {
   }
 
   .list {
-    @apply ml-7 font-[300] px-1 list-none cursor-pointer leading-[18px] lg:text-[15px] xl:font-[400] text-2xl mt-[30px] md:mt-[0px];
+    @apply ml-7 font-[600] px-1 list-none cursor-pointer leading-[18px] lg:text-[15px] xl:font-[600] text-2xl mt-[30px] md:mt-[0px];
   }
 
   .listToChoose {
@@ -552,5 +552,27 @@ select {
       transform: translateY(15px);
       opacity: 0.3;
     }
+  }
+
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      #e5e7eb 0%,
+      #f3f4f6 35%,
+      #ffffff 50%,
+      #f3f4f6 65%,
+      #e5e7eb 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.6s linear infinite;
   }
 }

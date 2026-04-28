@@ -10,8 +10,8 @@ export default function Mainview() {
             <p className="text-orange-500 font-bold md:text-[38px] text-[30px] italice">
               2-dniowe spoktanie/prezentacje
             </p>{" "}
-            na którym poznasz model inwestowania w nieruchomości w Hiszpanii oraz zobaczysz
-            najciekawsze oferty.
+            na którym poznasz model inwestowania w nieruchomości w Hiszpanii
+            oraz zobaczysz najciekawsze oferty.
           </p>
         </div>
       </div>

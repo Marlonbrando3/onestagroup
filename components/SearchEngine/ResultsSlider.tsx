@@ -1,192 +1,157 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/router";
-import { FaChevronRight } from "react-icons/fa6";
-import { FaChevronLeft } from "react-icons/fa6";
+// ResultsSlider.tsx
+import { useState, useRef, useMemo, useEffect } from "react";
+import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
 import Image from "next/image";
 import Link from "next/link";
 
 type Images = {
-  date: any;
+  date: string | null;
   images: any;
-  market: any;
-  country: any;
+  market: string;
+  countrySlug: string;
   deliveryDate: any;
   region: any;
-  propertyId: any;
-  propertyTitle: any;
-  slug: any;
+  propertyId: string | number;
+  propertyTitle: string;
+  slug: string;
 };
 
 export default function ResultsSlider({
   propertyId,
-  propertyTitle,
   images,
   market,
-  region,
-  country,
+  countrySlug,
   deliveryDate,
   date,
   slug,
 }: Images) {
-  const [start, setStart] = useState<any>();
-  const [end, setEnd] = useState<any>();
+  const [index, setIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
 
-  const router = useRouter();
+  const imagesArray = Array.isArray(images) ? images : images ? [images] : [];
 
-  const image: any = useRef();
-  const imagesContainer: any = useRef();
+  const slides = useMemo(() => {
+    const base = imagesArray.slice(0, 4).map((img: any, i: number) => ({
+      key: `img-${i}`,
+      type: "image" as const,
+      url: typeof img === "string" ? img : img?.url,
+    }));
 
-  const ImagesArray = Array.isArray(images) ? images : images ? [images] : [];
-
-  const imgData = ImagesArray.map((i: any, key: any) => {
-    if (key < 4) {
-      return (
-        <Link
-          href={{
-            pathname: `/nieruchomosci/${country}/`,
-          }}
-          ref={image}
-          key={key}
-          className="md:h-[270px] h-[220px] sm:h-[300px] md:w-[370px] w-[92vw] relative object-cover text-sm"
-        >
-          <div className="relative w-full h-full">
-            <div className="loaderImage absolute top-[30%] left-o right-0 mx-auto"></div>{" "}
-          </div>
-
-          <Image
-            key={i}
-            className="object-cover"
-            src={
-              ImagesArray.length === 1
-                ? ImagesArray[0].url
-                : ImagesArray[key].url
-            }
-            alt={i}
-            fill
-            priority
-          />
-        </Link>
-      );
+    if (imagesArray.length > 4) {
+      base.push({ key: "more", type: "more", url: "" });
     }
-    if (key === 4) {
-      return (
-        <Link
-          key={i}
-          href={{
-            pathname: "/nieruchomosci/[country]/oferta",
-            query: {
-              country: router.query.country,
-              id: propertyId,
-              t: propertyTitle,
-            },
-          }}
-        >
-          <div
-            ref={image}
-            key={key}
-            className="md:h-[270px] sm:h-[300px] h-[220px]  md:w-[370px] w-[92vw] flex items-center justify-center relative object-cover bg-red-500/[0.7] text-3xl text-white font-[700] cursor-pointer"
-          >
-            <p>Więcej zdjęć</p>
-          </div>
-        </Link>
-      );
-    }
-  });
 
-  const img = imgData.filter((i: any) => i !== undefined);
-
-  const [margin, setMargin] = useState<any>(0);
-  const [imgCounter, setImgCounter] = useState(0);
-
-  const handleChangeSiteRight = () => {
-    const ImagesLength: any = img.length - 1;
-    const divPX = image.current.clientWidth;
-    const newMargin = margin + divPX;
-
-    if (imgCounter === 0) {
-      setImgCounter(ImagesLength);
-      imagesContainer.current.style.marginLeft = `${-(ImagesLength * divPX)}px`;
-      setMargin(-(ImagesLength * divPX));
-    } else {
-      setImgCounter(imgCounter - 1);
-      imagesContainer.current.style.marginLeft = `${newMargin}px`;
-      setMargin(margin + divPX);
-    }
-  };
-
-  const handleChangeSiteLeft = () => {
-    const ImagesLength = img.length;
-    const divPX = image.current.clientWidth;
-    const newMargin = margin - divPX;
-
-    if (imgCounter < ImagesLength - 1) {
-      setImgCounter(imgCounter + 1);
-
-      imagesContainer.current.style.marginLeft = `${newMargin}px`;
-      setMargin(margin - divPX);
-    } else {
-      setImgCounter(0);
-      imagesContainer.current.style.marginLeft = `0px`;
-      setMargin(0);
-    }
-  };
-
-  const Touchstart = (e: any) => {
-    setStart(e.changedTouches[0].clientX);
-  };
-
-  const Touchend = (e: any) => {
-    setEnd(e.changedTouches[0].clientX);
-  };
+    return base;
+  }, [imagesArray]);
 
   useEffect(() => {
-    if (start - end > 50) {
-      handleChangeSiteLeft();
-    }
-    if (start - end < -50) {
-      handleChangeSiteRight();
-    }
-  }, [end]);
+    if (index > slides.length - 1) setIndex(0);
+  }, [slides.length, index]);
+
+  const next = () => {
+    if (slides.length <= 1) return;
+    setIndex((prev) => (prev + 1) % slides.length);
+  };
+
+  const prev = () => {
+    if (slides.length <= 1) return;
+    setIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchStartX(e.changedTouches[0].clientX);
+  };
+
+  const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX === null) return;
+    const endX = e.changedTouches[0].clientX;
+    const diff = touchStartX - endX;
+
+    if (diff > 50) next();
+    if (diff < -50) prev();
+
+    setTouchStartX(null);
+  };
 
   return (
-    <div className="h-full w-full relative bg-white">
-      <div className="absolute text-[16px] z-20 bg-white text-orange-400 top-2 px-[12px] font-semibold rounded-r-md ml-[0px] h-[26px] leading-[26px] shadow-sm">
+    <div className="h-full w-full relative bg-white overflow-hidden">
+      <div className="absolute text-[14px] md:text-[16px] z-20 bg-white text-orange-400 top-2 px-[12px] font-semibold rounded-r-md h-[26px] leading-[26px] shadow-sm">
         {market}
       </div>
-      {market !== "Rynek Wtórny" && deliveryDate !== null && (
-        <div className="bg-white absolute z-20 text-[16px] border-yellow-500 text-blue-600 bottom-0 px-[12px] font-normal rounded-r-md h-[24px] leading-[24px] mb-[6px] ml-[0px] ">
-          Data aktualizacji {date.slice(date.lenght, 10)}
+
+      {market === "RYNEK PIERWOTNY" && deliveryDate && (
+        <div className="bg-white absolute z-20 text-[12px] md:text-[14px] text-blue-600 bottom-2 px-[12px] font-normal rounded-r-md h-[24px] leading-[24px]">
+          Data aktualizacji {String(date || "").slice(0, 10)}
         </div>
       )}
-      {imgCounter !== 0 && (
-        <div
-          onClick={handleChangeSiteRight}
-          className="flex items-center z-10 justify-center absolute w-10 h-full left-0 cursor-pointer transition duration-450 hover:ease-in-out"
+
+      {slides.length > 1 && (
+        <button
+          type="button"
+          onClick={prev}
+          className="flex items-center z-20 justify-center absolute w-10 h-full left-0"
         >
-          <div className="w-10 h-10 bg-white rounded-[50%] grid place-items-center -mr-1 ml-1">
+          <div className="w-10 h-10 bg-white rounded-full grid place-items-center ml-1">
             <FaChevronLeft className="w-[20px] h-[20px] text-black" />
           </div>
-        </div>
+        </button>
       )}
+
+      {slides.length > 1 && (
+        <button
+          type="button"
+          onClick={next}
+          className="flex items-center z-20 justify-center absolute w-10 h-full right-0"
+        >
+          <div className="w-10 h-10 bg-white rounded-full grid place-items-center mr-1">
+            <FaChevronRight className="w-[20px] h-[20px] text-black" />
+          </div>
+        </button>
+      )}
+
       <div
-        onClick={handleChangeSiteLeft}
-        className={
-          margin.length !== 0
-            ? "flex items-center z-10 justify-center absolute w-10 h-full right-0 cursor-pointer group transition duration-450 hover:ease-in-out"
-            : "hidden"
-        }
+        ref={viewportRef}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        className="h-full w-full overflow-hidden"
       >
-        <div className="w-10 h-10 bg-white rounded-[50%] grid place-items-center mr-1 -ml-1">
-          <FaChevronRight className="w-[20px] h-[20px] text-black" />
+        <div
+          className="h-full flex transition-transform duration-300"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {slides.map((slide) =>
+            slide.type === "more" ? (
+              <Link
+                key={slide.key}
+                href={{
+                  pathname: `/nieruchomosci/${countrySlug}/${slug}`,
+                  query: { id: propertyId },
+                }}
+                className="min-w-full h-full flex items-center justify-center bg-red-500/70 text-3xl text-white font-[700]"
+              >
+                Więcej zdjęć
+              </Link>
+            ) : (
+              <Link
+                key={slide.key}
+                href={{
+                  pathname: `/nieruchomosci/${countrySlug}/${slug}`,
+                  query: { id: propertyId },
+                }}
+                className="min-w-full h-full relative"
+              >
+                <Image
+                  className="object-cover"
+                  src={slide.url || "/placeholder.jpg"}
+                  alt="Zdjęcie nieruchomości"
+                  fill
+                  priority
+                />
+              </Link>
+            ),
+          )}
         </div>
-      </div>
-      <div
-        ref={imagesContainer}
-        onTouchStart={Touchstart}
-        onTouchEnd={Touchend}
-        className="flex absolute duration-300"
-      >
-        {img}
       </div>
     </div>
   );

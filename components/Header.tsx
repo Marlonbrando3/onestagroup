@@ -68,11 +68,13 @@ export default function Header({ handleConsultationPopUp }: data) {
   };
 
   const handleShowListMenuNieruchomosci = () => {
+    if (!MouseOnProperties.current) return;
     MouseOnProperties.current.style.display = "flex";
     MouseOnProperties.current.style.backgroundColor = "none";
   };
 
   const handleHideListMenuNieruchomosci = () => {
+    if (!MouseOnProperties.current) return;
     MouseOnProperties.current.style.display = "none";
     MouseOnProperties.current.style.backgroundColor = "none";
   };
@@ -207,12 +209,14 @@ export default function Header({ handleConsultationPopUp }: data) {
                   onMouseEnter={handleShowListMenuNieruchomosci}
                   onMouseLeave={handleHideListMenuNieruchomosci}
                 >
-                  Oferty
+                  <Link href="/nieruchomosci/hiszpania">
+                    Nieruchomości w Hiszpanii
+                  </Link>
                   <div
                     className="hidden absolute bg-white flex-col items-center border border-[#C9AC77] -mt-[1px] md:-ml-[80px]"
-                    ref={MouseOnProperties}
+                    // ref={MouseOnProperties}
                   >
-                    <Link
+                    {/* <Link
                       onClick={handleClearData}
                       href={{
                         pathname: "/nieruchomosci/hiszpania",
@@ -225,7 +229,7 @@ export default function Header({ handleConsultationPopUp }: data) {
                     >
                       Nieruchomości w Hiszpanii
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
-                    </Link>
+                    </Link> */}
                     {/* <Link
                       href={{ pathname: "/[country]", query: { country: "chorwacja", page: 1 } }}
                       className="p-1 text-black rounded-2xl w-full text-center"
@@ -301,12 +305,12 @@ export default function Header({ handleConsultationPopUp }: data) {
                     <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                   </Link>
                 </li>
-                <li className="list group">
+                {/* <li className="list group">
                   <Link href="/abc">
                     Wiedza{" "}
                     <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-[2px] bg-yellow-500"></span>
                   </Link>
-                </li>
+                </li> */}
                 <li className="list group">
                   <Link href="/pobytinwestorski">
                     Pobyt inwestorski{" "}

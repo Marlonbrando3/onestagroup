@@ -1,42 +1,37 @@
 import { useRouter } from "next/router";
-import React, { Ref } from "react";
 
-type Function = {
-  handleShowMobileFilters: any;
+type Props = {
+  handleShowMobileFilters: () => void;
   mobileButtonSearchEngine: any;
   searchEngine: any;
+  isOpen: any;
 };
 
 export default function MobileFilters({
   handleShowMobileFilters,
-  searchEngine,
   mobileButtonSearchEngine,
-}: Function) {
+  searchEngine,
+  isOpen,
+}: Props) {
   const router = useRouter();
 
+  const isSearchPage = router.pathname === "/nieruchomosci/[country]";
+  if (!isSearchPage) return null;
+
   return (
-    <div
-      className={
-        router.pathname !== "/nieruchomosci" &&
-        router.pathname !== "/nieruchomosci/[country]/[offers]" &&
-        router.pathname === "/nieruchomosci/[country]"
-          ? "bg-gradient-to-r from-orange-500 to-indigo-400 rounded-b-xl border-blue-900 border-b-2 px-2 py-1 ml-4 mt-[0px] w-44 mr-4 z-0 lg:hidden fixed right-0 visible block"
-          : "none"
-      }
+    <button
+      type="button"
       onClick={handleShowMobileFilters}
+      className={`md:hidden fixed right-4 z-50 bg-gradient-to-r from-orange-500 to-indigo-400 rounded-b-xl border-blue-900 border-b-2 px-3 py-1 w-44 transition-all duration-500 ${
+        isOpen ? "top-[220px]" : "top-[88px]"
+      }`}
     >
-      <p
+      <span
         ref={mobileButtonSearchEngine}
-        className={
-          router.pathname !== "/nieruchomsci" &&
-          router.pathname !== "/nieruchomosci/[country]/[offers]" &&
-          router.pathname === "/nieruchomosci/[country]"
-            ? "visible cursor-pointer text-white text-base flex justify-center font-bold z-50"
-            : "invisible"
-        }
+        className="block text-white text-base font-bold text-center"
       >
         Filtry
-      </p>
-    </div>
+      </span>
+    </button>
   );
 }

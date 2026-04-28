@@ -1,6 +1,7 @@
 import React from "react";
 import SearchComponentsList from "./SearchComponentsList";
 import SearchResults from "../../components/SearchEngine/SearchResults";
+import Pagination from "./Pagination";
 
 type ServerSideProps = {
   properties: any;
@@ -15,6 +16,8 @@ type FunctionProps = {
   searchEngine: any;
   loader: any;
   setLoader: any;
+  isMobileFiltersOpen: any;
+  setIsMobileFiltersOpen: any;
 };
 
 type SearchEngineProps = FunctionProps & ServerSideProps;
@@ -26,19 +29,32 @@ export default function SearchEngine({
   count,
   loader,
   setLoader,
+  isMobileFiltersOpen,
+  setIsMobileFiltersOpen,
   ...restProps
 }: SearchEngineProps) {
   return (
     <>
-      <div className="flex flex-col items-start justify-center w-full pt-4 bg-[#fcf7f4]">
+      <div className="flex flex-col items-start justify-center w-full pt-4">
         <SearchComponentsList
           loader={loader}
           setLoader={setLoader}
           handleShowMobileFilters={handleShowMobileFilters}
           mobileButtonSearchEngine={mobileButtonSearchEngine}
           searchEngine={searchEngine}
+          isMobileFiltersOpen={isMobileFiltersOpen}
+          setIsMobileFiltersOpen={setIsMobileFiltersOpen}
         />
-        <SearchResults {...restProps} count={count} />
+        <SearchResults
+          {...restProps}
+          count={count}
+          loader={loader}
+          setLoader={setLoader}
+        />
+        <Pagination
+          currentPage={restProps.current}
+          totalPages={restProps.totalPages}
+        />
       </div>
     </>
   );

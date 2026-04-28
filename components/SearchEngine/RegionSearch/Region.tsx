@@ -69,16 +69,16 @@ export default function Regions({
   }, [regionTemp]);
 
   return (
-    <div className=" border-yellow-500 relative min-h-[25px] lg:m-auto lg:mx-[4px] rounded-[2px] w-[90vw] md:w-auto mx-auto m-[4px]">
-      <p className="text-[12px] ml-[5px]">Regiony</p>
+    <div className=" border-yellow-500 relative min-h-[25px] lg:mx-0 rounded-[2px] w-[90vw] md:w-auto mx-auto m-[4px]">
+      {/* <p className="text-[12px] ">Regiony</p> */}
       {
         <div className="">
           <select
             value={regionTemp}
             onChange={(e) => setNewRegion(e)}
-            className="lg:w-[180px] w-[90vw] bg-transparent outline-none shadow-none rounded-[3px] h-[35px] border-yellow-600 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
+            className="lg:max-w-[200px] w-[90vw] bg-transparent outline-none shadow-none rounded-[3px] h-[35px] border-yellow-600 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
           >
-            <option value="All">Wszystkie</option>
+            <option value="All">Wszystkie regiony</option>
             {DataCountry.map((c) => {
               if (c.country === country) {
                 return c.region.map((r, index) => (

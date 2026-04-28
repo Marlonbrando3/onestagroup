@@ -69,9 +69,7 @@ export default function CountrySearch({
               className="listToChoose"
               name={region}
               onClick={handleChooseThisRegion}
-            >
-              dupa
-            </li>
+            ></li>
           ))}
         </div>
       )}

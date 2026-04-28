@@ -18,10 +18,10 @@ export default function WhatsAppButton() {
           >
             <IoMdClose className="w-full h-full" />
           </div> */}
-          <p className="mr-[9px] leading-6 hover:text-white duration-200">
+          {/* <p className="mr-[9px] leading-6 hover:text-white duration-200">
             Porozmawiajmy na <br></br>
             <b className="text-[18px] leading-2">Whats App</b>
-          </p>
+          </p> */}
           <RiWhatsappFill className="w-[40px] h-[40px] text-green-500" />
         </Link>
       </div>

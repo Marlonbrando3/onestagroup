@@ -47,10 +47,10 @@ export default function Types({
       <select
         value={typeTemp}
         onChange={(e) => setNewType(e)}
-        className="lg:w-[240px] w-[90vw] h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
+        className="lg:max-w-[220px] w-[90vw] h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
       >
         <option value="All" data-name="wszystkie">
-          Wszystkie
+          Wszystkie rodzaje
         </option>
         <option value="apartment" data-name="apartment">
           Apartament
@@ -69,8 +69,8 @@ export default function Types({
   );
 
   return (
-    <div className=" border-gray-900/[0.4] min-h-[25px] relative rounded-[7px] lg:m-auto lg:mx-[4px] lg:w-auto w-[90vw] mx-auto ">
-      <p className="text-[12px] ml-[5px]">Typy Nieruchomości</p>
+    <div className=" border-gray-900/[0.4] min-h-[25px] relative rounded-[7px] lg:m-auto lg:w-auto w-[90vw] mx-auto">
+      {/* <p className="text-[12px] ml-[5px]">Typy Nieruchomości</p> */}
       {TypesSearchInput}
     </div>
   );

@@ -99,7 +99,7 @@ export default async function handler(
     // 🔹 kasowanie starych rekordów
     await supabase.from("properties").delete().eq("source", "METAINMO");
 
-    const chunkSize = 300;
+    const chunkSize = 200;
 
     // 🔹 wysyłka do Supabase
     for (let i = 0; i < uniqueByComplex.length; i += chunkSize) {

@@ -1,11 +1,4 @@
-import React from "react";
-import {
-  Red_Hat_DisplayFont,
-  MontserratSans,
-  GwendolynSans,
-} from "../fonts/fonts";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
-
+import { Red_Hat_DisplayFont, MontserratSans } from "../fonts/fonts";
 import Image from "next/image";
 
 export default function HomeViewAlt() {
@@ -24,13 +17,13 @@ export default function HomeViewAlt() {
             </span>{" "}
             <br></br>
             <br></br>
-            <p
+            <span
               className={`${MontserratSans.className} text-[18px] md:text-[28px] leading-[20px] md:leading-[28px] text-[#275278] font-[400]`}
             >
               Poszukujesz{" "}
               <span className="font-[800]">bezpiecznego i mądrego</span>{" "}
               <br></br>proces poszukiwań i zakupu?
-            </p>
+            </span>
           </p>
           <p
             className={`${MontserratSans.className} md:pl-[40px] md:mr-[50px] ml-[10px] text-[14px]`}

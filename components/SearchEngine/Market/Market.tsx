@@ -63,10 +63,10 @@ export default function Types({
       <select
         value={marketTemp}
         onChange={(e) => setNewMarket(e)}
-        className="lg:w-[200px] w-[90vw] h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
+        className="lg:max-w-[200px] w-[90vw] h-[35px] rounded-[3px] outline-none border-orange-500 border-[0.8px] cursor-pointer pl-[10px] md:text-[17px] text-[15px]"
       >
         <option value="All" data-name="all">
-          Pierwotny i wtórny
+          Pietworny i wtórny
         </option>
         <option value="true" data-name="true">
           Pierwotny
