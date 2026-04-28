@@ -4,6 +4,7 @@ import { GetServerSideProps } from "next";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
 import locationsData from "@/data/locations.json";
+// import { COAST_TO_PROVINCES } from "@/lib/regionMap";
 import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
 import HeaderListings from "../../../components/HeaderListings";
 import SearchEngine from "../../../components/SearchEngine/SearchEngine";

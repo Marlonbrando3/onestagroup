@@ -146,8 +146,7 @@ export default function ResultsSlider({
                   src={slide.url || "/placeholder.jpg"}
                   alt="Zdjęcie nieruchomości"
                   fill
-                  priority={index === 0}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority={isAboveTheFold && index === 0}
                 />
               </Link>
             ),

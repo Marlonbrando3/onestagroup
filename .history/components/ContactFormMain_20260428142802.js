@@ -58,7 +58,7 @@ export default function ContactFormMain() {
   return (
     <div
       id="contact"
-      className={`${MontserratSans.className} relative flex flex-col w-full h-1/2 bg-center bg-cover bg-[url("/contactformbg.webp")] rounded-xl`}
+      className={`${MontserratSans.className} relative flex flex-col w-full h-1/2 bg-center bg-cover bg-[url("/contactformbg.png")] rounded-xl`}
     >
       <div className="absolute w-full h-full bg-gray-900/[0]"></div>
       <div className="h-11/12 lg:w-[1200px] w-full flex flex-col-reverse lg:flex-row lg:flex py-10 lg:mx-auto">
