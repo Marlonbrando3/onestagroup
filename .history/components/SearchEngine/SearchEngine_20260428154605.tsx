@@ -32,8 +32,10 @@ export default function SearchEngine({
   setLoader,
   isMobileFiltersOpen,
   setIsMobileFiltersOpen,
+  totalCount,
   ...restProps
 }: SearchEngineProps) {
+  console.log(totalCount);
   return (
     <>
       <div className="flex flex-col items-start justify-center w-full pt-4">

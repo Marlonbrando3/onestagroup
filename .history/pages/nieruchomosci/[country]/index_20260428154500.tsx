@@ -124,7 +124,7 @@ export default function ListingsPage(props: PageProps) {
       <MiniHomeView />
       <SearchEngine
         loader={loader}
-        totalCount={props.totalCount}
+        totalCount={totalCount}
         setLoader={setLoader}
         handleShowMobileFilters={handleShowMobileFilters}
         searchEngine={searchEngine}

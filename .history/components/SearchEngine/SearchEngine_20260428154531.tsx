@@ -18,7 +18,6 @@ type FunctionProps = {
   setLoader: any;
   isMobileFiltersOpen: any;
   setIsMobileFiltersOpen: any;
-  totalCount: any;
 };
 
 type SearchEngineProps = FunctionProps & ServerSideProps;

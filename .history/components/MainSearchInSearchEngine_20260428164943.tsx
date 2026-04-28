@@ -48,17 +48,6 @@ const TYPE_DB_TO_LABEL: Record<string, string> = {
   villa: "Dom",
 };
 
-function Tag({ label, onRemove }: { label: string; onRemove: () => void }) {
-  return (
-    <div className="flex items-center gap-2 bg-gray-100 px-2 py-[2px] rounded-full h-[30px] text-[12px] font-[400]">
-      {label}
-      <button type="button" onClick={onRemove}>
-        <IoIosCloseCircleOutline className="w-[20px] h-[20px] text-gray-500" />
-      </button>
-    </div>
-  );
-}
-
 export default function Home({
   mobileButtonSearchEngine,
   searchEngine,
@@ -79,6 +68,17 @@ export default function Home({
   const isPriceDirty =
     filters.price.min !== DEFAULT_PRICE.min ||
     filters.price.max !== DEFAULT_PRICE.max;
+
+  function Tag({ label, onRemove }: { label: string; onRemove: () => void }) {
+    return (
+      <div className="flex items-center gap-2 bg-gray-100 px-2 py-[2px] rounded-full h-[30px] text-[12px] font-[400]">
+        {label}
+        <button type="button" onClick={onRemove}>
+          <IoIosCloseCircleOutline className="w-[20px] h-[20px] text-gray-500" />
+        </button>
+      </div>
+    );
+  }
 
   function slugify(title: string): string {
     return title

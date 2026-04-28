@@ -10,6 +10,12 @@ export default function SearchResults(props: any) {
   const router = useRouter();
 
   const { properties, loader, setLoader, count } = props;
+  console.log("www");
+  useEffect(() => {
+    setLoader(false);
+  }, [count]);
+
+  console.log(count);
 
   return (
     <div className={`${Red_Hat_DisplayFont.className} mx-auto`}>

@@ -95,6 +95,37 @@ export default function ListingsPage(props: PageProps) {
     setLoader(false);
   }, [router.asPath]);
 
+  // useEffect(() => {
+  //   if (pageState === 1) return;
+
+  //   const fetchMore = async () => {
+  //     setLoadingMore(true);
+
+  //     const params = new URLSearchParams({
+  //       ...Object.fromEntries(
+  //         Object.entries(router.query).map(([k, v]) => [
+  //           k,
+  //           Array.isArray(v) ? v.join(",") : String(v ?? ""),
+  //         ]),
+  //       ),
+  //       page: String(pageState),
+  //     });
+
+  //     try {
+  //       const res = await fetch(`/api/properties?${params.toString()}`);
+  //       if (!res.ok) return;
+
+  //       const data: Property[] = await res.json();
+  //       if (data.length < props.perPage) setHasMore(false);
+  //       setPropertiesState((prev) => [...prev, ...data]);
+  //     } finally {
+  //       setLoadingMore(false);
+  //     }
+  //   };
+
+  //   fetchMore();
+  // }, [pageState]);
+
   if (!country || typeof country !== "string") return null;
 
   const handleShowMobileFilters = () => {
@@ -124,7 +155,7 @@ export default function ListingsPage(props: PageProps) {
       <MiniHomeView />
       <SearchEngine
         loader={loader}
-        totalCount={props.totalCount}
+        totalCount={totalCount}
         setLoader={setLoader}
         handleShowMobileFilters={handleShowMobileFilters}
         searchEngine={searchEngine}

@@ -11,6 +11,10 @@ export default function SearchResults(props: any) {
 
   const { properties, loader, setLoader, count } = props;
 
+  // useEffect(() => {
+  //   setLoader(false);
+  // }, [properties, setLoader]);
+
   return (
     <div className={`${Red_Hat_DisplayFont.className} mx-auto`}>
       <div className="font-[600] mb-[20px] text-[16px]">

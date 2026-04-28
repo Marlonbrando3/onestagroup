@@ -34,6 +34,7 @@ export default function SearchEngine({
   setIsMobileFiltersOpen,
   ...restProps
 }: SearchEngineProps) {
+  console.log(count);
   return (
     <>
       <div className="flex flex-col items-start justify-center w-full pt-4">

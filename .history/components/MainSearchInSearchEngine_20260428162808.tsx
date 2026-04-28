@@ -48,17 +48,6 @@ const TYPE_DB_TO_LABEL: Record<string, string> = {
   villa: "Dom",
 };
 
-function Tag({ label, onRemove }: { label: string; onRemove: () => void }) {
-  return (
-    <div className="flex items-center gap-2 bg-gray-100 px-2 py-[2px] rounded-full h-[30px] text-[12px] font-[400]">
-      {label}
-      <button type="button" onClick={onRemove}>
-        <IoIosCloseCircleOutline className="w-[20px] h-[20px] text-gray-500" />
-      </button>
-    </div>
-  );
-}
-
 export default function Home({
   mobileButtonSearchEngine,
   searchEngine,
@@ -79,6 +68,17 @@ export default function Home({
   const isPriceDirty =
     filters.price.min !== DEFAULT_PRICE.min ||
     filters.price.max !== DEFAULT_PRICE.max;
+
+  function Tag({ label, onRemove }: { label: string; onRemove: () => void }) {
+    return (
+      <div className="flex items-center gap-2 bg-gray-100 px-2 py-[2px] rounded-full h-[30px] text-[12px] font-[400]">
+        {label}
+        <button onClick={onRemove}>
+          <IoIosCloseCircleOutline className="w-[20px] h-[20px] text-gray-500" />
+        </button>
+      </div>
+    );
+  }
 
   function slugify(title: string): string {
     return title
@@ -167,13 +167,18 @@ export default function Home({
   };
 
   const updateFilter = (key: keyof FiltersState, value: any) => {
-    const next = { ...filters, [key]: value };
-    setFilters(next);
-    pushFiltersToQuery(next);
+    setFilters((prev) => {
+      const next = { ...prev, [key]: value };
+      pushFiltersToQuery(next);
+      return next;
+    });
   };
 
+  const forceRemoveRef = useRef<keyof FiltersState | null>(null);
+
   const removeFilter = (key: keyof FiltersState) => {
-    console.log("work");
+    forceRemoveRef.current = key; // 🔥 zapamiętaj co usuwasz
+
     const next: FiltersState = {
       ...filters,
       locations: key === "locations" ? [] : filters.locations,
@@ -182,12 +187,12 @@ export default function Home({
       bathrooms: key === "bathrooms" ? [] : filters.bathrooms,
       price: key === "price" ? DEFAULT_PRICE : filters.price,
     };
-    setFilters(next);
-    pushFiltersToQuery(next);
+
+    setFilters(next); // 🔥 NATYCHMIAST znika TAG
+    pushFiltersToQuery(next); // URL sobie ogarnie później
   };
 
   useEffect(() => {
-    console.log("effec");
     if (!router.isReady) return;
 
     const typeFromUrl = parseCsv(router.query.type).map(
@@ -197,7 +202,8 @@ export default function Home({
     const bedsFromList = parseCsv(router.query.beds);
     const bedsMin = parseNum(router.query.bedsMin);
     const bedsMax = parseNum(router.query.bedsMax);
-    const bedrooms =
+
+    let bedrooms =
       bedsFromList.length > 0
         ? bedsFromList
         : bedsMin !== null && bedsMax !== null && bedsMin === bedsMax
@@ -207,7 +213,8 @@ export default function Home({
     const bathsFromList = parseCsv(router.query.baths);
     const bathsMin = parseNum(router.query.bathsMin);
     const bathsMax = parseNum(router.query.bathsMax);
-    const bathrooms =
+
+    let bathrooms =
       bathsFromList.length > 0
         ? bathsFromList
         : bathsMin !== null && bathsMax !== null && bathsMin === bathsMax
@@ -217,13 +224,23 @@ export default function Home({
     const priceMin = parseNum(router.query.priceMin) ?? DEFAULT_PRICE.min;
     const priceMax = parseNum(router.query.priceMax) ?? DEFAULT_PRICE.max;
 
+    // 🔥 KLUCZ — NIE PRZYWRACAJ TEGO CO USUNIĘTE
+    if (forceRemoveRef.current === "bedrooms") bedrooms = [];
+    if (forceRemoveRef.current === "bathrooms") bathrooms = [];
+    if (forceRemoveRef.current === "type") typeFromUrl.length = 0;
+
     setFilters((prev) => ({
       ...prev,
       type: typeFromUrl,
       bedrooms,
       bathrooms,
-      price: { min: priceMin, max: priceMax },
+      price:
+        forceRemoveRef.current === "price"
+          ? DEFAULT_PRICE
+          : { min: priceMin, max: priceMax },
     }));
+
+    forceRemoveRef.current = null; // reset
   }, [
     router.isReady,
     router.query.type,

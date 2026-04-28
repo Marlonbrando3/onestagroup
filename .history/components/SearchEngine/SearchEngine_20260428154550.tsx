@@ -32,6 +32,7 @@ export default function SearchEngine({
   setLoader,
   isMobileFiltersOpen,
   setIsMobileFiltersOpen,
+  totalCount,
   ...restProps
 }: SearchEngineProps) {
   return (

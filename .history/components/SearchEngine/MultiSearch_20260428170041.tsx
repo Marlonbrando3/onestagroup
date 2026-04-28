@@ -15,9 +15,9 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    setOpen(false);
-  }, [router.asPath]);
+  // useEffect(() => {
+  //   setOpen(false);
+  // }, [router.asPath]);
 
   console.log("data");
 

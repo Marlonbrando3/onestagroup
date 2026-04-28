@@ -48,17 +48,6 @@ const TYPE_DB_TO_LABEL: Record<string, string> = {
   villa: "Dom",
 };
 
-function Tag({ label, onRemove }: { label: string; onRemove: () => void }) {
-  return (
-    <div className="flex items-center gap-2 bg-gray-100 px-2 py-[2px] rounded-full h-[30px] text-[12px] font-[400]">
-      {label}
-      <button type="button" onClick={onRemove}>
-        <IoIosCloseCircleOutline className="w-[20px] h-[20px] text-gray-500" />
-      </button>
-    </div>
-  );
-}
-
 export default function Home({
   mobileButtonSearchEngine,
   searchEngine,
@@ -79,6 +68,17 @@ export default function Home({
   const isPriceDirty =
     filters.price.min !== DEFAULT_PRICE.min ||
     filters.price.max !== DEFAULT_PRICE.max;
+
+  function Tag({ label, onRemove }: { label: string; onRemove: () => void }) {
+    return (
+      <div className="flex items-center gap-2 bg-gray-100 px-2 py-[2px] rounded-full h-[30px] text-[12px] font-[400]">
+        {label}
+        <button onClick={onRemove}>
+          <IoIosCloseCircleOutline className="w-[20px] h-[20px] text-gray-500" />
+        </button>
+      </div>
+    );
+  }
 
   function slugify(title: string): string {
     return title
@@ -167,13 +167,16 @@ export default function Home({
   };
 
   const updateFilter = (key: keyof FiltersState, value: any) => {
-    const next = { ...filters, [key]: value };
-    setFilters(next);
-    pushFiltersToQuery(next);
+    setFilters((prev) => {
+      const next = { ...prev, [key]: value };
+      pushFiltersToQuery(next);
+      return next;
+    });
   };
 
   const removeFilter = (key: keyof FiltersState) => {
-    console.log("work");
+    forceRemoveRef.current = key; // 🔥 zapamiętaj co usuwasz
+
     const next: FiltersState = {
       ...filters,
       locations: key === "locations" ? [] : filters.locations,
@@ -182,8 +185,9 @@ export default function Home({
       bathrooms: key === "bathrooms" ? [] : filters.bathrooms,
       price: key === "price" ? DEFAULT_PRICE : filters.price,
     };
-    setFilters(next);
-    pushFiltersToQuery(next);
+
+    setFilters(next); // 🔥 NATYCHMIAST znika TAG
+    pushFiltersToQuery(next); // URL sobie ogarnie później
   };
 
   useEffect(() => {

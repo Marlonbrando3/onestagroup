@@ -13,7 +13,7 @@ export default function SearchResults(props: any) {
 
   return (
     <div className={`${Red_Hat_DisplayFont.className} mx-auto`}>
-      <div className="font-[600] mb-[20px] text-[16px]">
+      <div className="font-[600] mb-[20px]  text-[16px]">
         Znaleziono {count} ogłoszeń{" "}
       </div>
       <div className="w-[90vw] max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

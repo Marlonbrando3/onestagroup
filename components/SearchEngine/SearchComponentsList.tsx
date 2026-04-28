@@ -39,7 +39,7 @@ export default function SearchInput({
   relative md:static
   `}
     >
-      <form className="rounded-[7px] flex flex-col lg:flex-row justify-center items-stretch lg:items-center w-full h-auto relative lg:bg-transparent px-3 md:px-4 lg:px-0">
+      <form onSubmit={(e) => e.preventDefault()} className="rounded-[7px] flex flex-col lg:flex-row justify-center items-stretch lg:items-center w-full h-auto relative lg:bg-transparent px-3 md:px-4 lg:px-0">
         <div className="h-auto flex items-center w-full mx-auto">
           <MainSearchInSearchEngine
             loader={loader}
