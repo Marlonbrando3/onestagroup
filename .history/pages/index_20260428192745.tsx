@@ -64,6 +64,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         />
       </Head>
       <div className="main-index bg-white">
+        <FullscreenLoader data-ref={mainLoader} className="hidden" />
         <WhatsAppButton />
         <Consultation
           handleConsultationPopUp={handleConsultationPopUp}

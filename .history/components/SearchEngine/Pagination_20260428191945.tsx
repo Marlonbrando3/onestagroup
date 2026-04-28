@@ -3,10 +3,10 @@ import { useRouter } from "next/router";
 
 type Props = {
   totalPages: number | string | undefined;
-  currentPage: any;
+  currentPages: amu;
 };
 
-export default function Pagination({ totalPages, currentPage }: Props) {
+export default function Pagination({ totalPages }: Props) {
   const router = useRouter();
 
   const total = Number(totalPages);

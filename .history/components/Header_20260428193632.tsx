@@ -212,10 +212,7 @@ export default function Header({ handleConsultationPopUp }: data) {
                   onMouseEnter={handleShowListMenuNieruchomosci}
                   onMouseLeave={handleHideListMenuNieruchomosci}
                 >
-                  <Link
-                    href="/nieruchomosci/hiszpania"
-                    onClick={() => setLoadlLoader(true)}
-                  >
+                  <Link href="/nieruchomosci/hiszpania" onClick={loadLoader}>
                     Nieruchomości w Hiszpanii
                   </Link>
                   <div

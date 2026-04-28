@@ -6,7 +6,7 @@ type Props = {
   currentPage: any;
 };
 
-export default function Pagination({ totalPages, currentPage }: Props) {
+export default function Pagination({ totalPages }: Props) {
   const router = useRouter();
 
   const total = Number(totalPages);

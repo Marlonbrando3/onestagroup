@@ -20,7 +20,6 @@ import FullscreenLoader from "./loader";
 
 type data = {
   handleConsultationPopUp: any;
-  loadLoader: any;
 };
 
 export default function Header({ handleConsultationPopUp }: data) {
@@ -41,23 +40,12 @@ export default function Header({ handleConsultationPopUp }: data) {
 
   const mobileClosedMenu = useRef<any>();
   const mobileOpenedMenu = useRef<any>();
-
-  const [loadLoader, setLoadlLoader] = useState(false);
+  const[loadLoader, setLoadLoader] = useState(false)
 
   const menu = useRef<any>();
 
   const handleBackToMainPage = () => {
     window.localStorage.clear();
-    // setSearchShow(false);
-  };
-
-  // const handleShowingConsultationPopUp = () => {
-  //   Consultations.current.style.display = "block";
-  // };
-
-  // const handleHidingConsultationPopUp = () => {
-  //   Consultations.current.style.display = "none";
-  // };
 
   const handlingShowingMobileMenu = () => {
     if (menu.current.style.right === "-100vw") {
@@ -97,6 +85,8 @@ export default function Header({ handleConsultationPopUp }: data) {
     }
     cleardata();
   };
+
+  const loadLoader = () => (mainLoader.current.displty = "block");
 
   const [consultationName, setConsultationName] = useState();
   const [consultationPhone, setConsultationPhone] = useState();
@@ -212,10 +202,7 @@ export default function Header({ handleConsultationPopUp }: data) {
                   onMouseEnter={handleShowListMenuNieruchomosci}
                   onMouseLeave={handleHideListMenuNieruchomosci}
                 >
-                  <Link
-                    href="/nieruchomosci/hiszpania"
-                    onClick={() => setLoadlLoader(true)}
-                  >
+                  <Link href="/nieruchomosci/hiszpania" onClick={loadLoader}>
                     Nieruchomości w Hiszpanii
                   </Link>
                   <div

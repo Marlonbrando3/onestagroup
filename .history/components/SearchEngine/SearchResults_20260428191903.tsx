@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Red_Hat_DisplayFont } from "@/fonts/fonts";
 import Properties from "../../public/properties.json";
 import { useRouter } from "next/router";
-import PropertyCardSkeleton from "../../components/SearchEngine/propertycardsceleton";
+import PropertyCardSkeleton from "/components/SearchEngine/propertycardsceleton";
 
 export default function SearchResults(props: any) {
   const router = useRouter();

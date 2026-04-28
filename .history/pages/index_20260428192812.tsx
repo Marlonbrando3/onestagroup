@@ -31,10 +31,6 @@ export default function FirstView({ cookiesWindow }: AppProps) {
 
   const [ConsultationsShowe, setConsultationsShowed] = useState(false);
 
-  const handleConsultationPopUp = () => {
-    setConsultationsShowed(!ConsultationsShowe);
-  };
-
   const loadLoader = () => (mainLoader.current.displty = "block");
 
   Hotjar.init(siteId, hotjarVersion);
@@ -64,6 +60,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         />
       </Head>
       <div className="main-index bg-white">
+        <FullscreenLoader />
         <WhatsAppButton />
         <Consultation
           handleConsultationPopUp={handleConsultationPopUp}

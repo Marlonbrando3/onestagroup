@@ -16,14 +16,13 @@ import { HiOutlineMenu } from "react-icons/hi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { IoIosClose } from "react-icons/io";
 import Consultation from "./consulatation/consultation";
-import FullscreenLoader from "./loader";
 
 type data = {
   handleConsultationPopUp: any;
   loadLoader: any;
 };
 
-export default function Header({ handleConsultationPopUp }: data) {
+export default function Header({ handleConsultationPopUp, loadLoader }: data) {
   const router = useRouter();
 
   const logo: any = useRef();
@@ -41,8 +40,6 @@ export default function Header({ handleConsultationPopUp }: data) {
 
   const mobileClosedMenu = useRef<any>();
   const mobileOpenedMenu = useRef<any>();
-
-  const [loadLoader, setLoadlLoader] = useState(false);
 
   const menu = useRef<any>();
 
@@ -98,6 +95,10 @@ export default function Header({ handleConsultationPopUp }: data) {
     cleardata();
   };
 
+  const handleConsultationPopUp = () => {
+    setConsultationsShowed(!ConsultationsShowe);
+  };
+
   const [consultationName, setConsultationName] = useState();
   const [consultationPhone, setConsultationPhone] = useState();
 
@@ -148,7 +149,6 @@ export default function Header({ handleConsultationPopUp }: data) {
         ref={header}
         className={`${MontserratSans.className} transition-all bg-white duration-700 w-full font-[300] shadow-md h-[100px] lg:h-[90px] h-[80px] top-0 left-0 text-gray-900 z-40 fixed border-gray-900 tracking-[1.4px]`}
       >
-        {loadLoader && <FullscreenLoader />}
         <div
           ref={headerDesktop}
           className={`flex lg:flex-col justify-between flex-1 h-full w-full
@@ -212,10 +212,7 @@ export default function Header({ handleConsultationPopUp }: data) {
                   onMouseEnter={handleShowListMenuNieruchomosci}
                   onMouseLeave={handleHideListMenuNieruchomosci}
                 >
-                  <Link
-                    href="/nieruchomosci/hiszpania"
-                    onClick={() => setLoadlLoader(true)}
-                  >
+                  <Link href="/nieruchomosci/hiszpania" onClick={loadLoader}>
                     Nieruchomości w Hiszpanii
                   </Link>
                   <div

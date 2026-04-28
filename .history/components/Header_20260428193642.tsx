@@ -214,7 +214,7 @@ export default function Header({ handleConsultationPopUp }: data) {
                 >
                   <Link
                     href="/nieruchomosci/hiszpania"
-                    onClick={() => setLoadlLoader(true)}
+                    onClick={setLoadlLoader(true)}
                   >
                     Nieruchomości w Hiszpanii
                   </Link>
