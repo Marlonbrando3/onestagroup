@@ -1,48 +1,27 @@
-export default function (req: any, res: any) {
-  let nodemailer = require("nodemailer");
+import type { NextApiRequest, NextApiResponse } from "next";
+import { sendMail, RECIPIENT } from "@/lib/email";
 
-  const endEmail = "marek.marszalek@onesta.com.pl";
-  const fromEmail = process.env.FROM_EMAIL;
-  const pass = process.env.EMAIL_PASS;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") return res.status(405).end();
 
-  const transporter = nodemailer.createTransport({
-    port: 465,
-    host: "mail-serwer141299.lh.pl",
-    secure: true,
-    tls: {
-      ciphers: "SSLv3",
-    },
-    auth: {
-      // type: "OAuth2",
-      user: fromEmail,
-      pass: pass,
-    },
-  });
+  const { Name, Phone } = req.body ?? {};
 
-  const mailData = {
-    from: fromEmail,
-    to: "marek.marszalek@onesta.com.pl",
-    subject: `Wiadomość ze strony od: ${req.body.Name}`,
-    text: "Hello. This email is for your email verification.",
-    html:
-      `Szybki kontakt z "O Nas"` +
-      `<br>` +
-      `Imię i nazwisko ${req.body.Name}` +
-      `<br>` +
-      `Telefon : ${req.body.Phone}` +
-      `<br>`,
-  };
+  if (!Name || !Phone) {
+    return res.status(400).json({ ok: false, error: "MISSING_FIELDS" });
+  }
 
-  new Promise((resolve, reject) => {
-    transporter.sendMail(mailData, (err: any, info: any) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-        res.json({ status: 400 });
-      } else {
-        resolve(info);
-        res.json({ status: 200 });
-      }
+  try {
+    await sendMail({
+      to: RECIPIENT,
+      subject: `Szybki kontakt ze strony od: ${Name}`,
+      html: `
+        Szybki kontakt z "O Nas"<br>
+        Imię i nazwisko: ${Name}<br>
+        Telefon: ${Phone}
+      `,
     });
-  });
+    return res.status(200).json({ ok: true });
+  } catch {
+    return res.status(500).json({ ok: false, error: "MAIL_SEND_FAILED" });
+  }
 }

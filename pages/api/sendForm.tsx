@@ -1,70 +1,36 @@
-export default function (req: any, res: any) {
-  let nodemailer = require("nodemailer");
+import type { NextApiRequest, NextApiResponse } from "next";
+import { sendMail, RECIPIENT } from "@/lib/email";
 
-  const endEmail = "marek.marszalek@onesta.com.pl";
-  const fromEmail = process.env.FROM_EMAIL;
-  const pass = process.env.EMAIL_PASS;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") return res.status(405).end();
 
-  if (!req.body || !req.body.name || !req.body.email || !req.body.phone) {
-    return res.status(400).json({ message: "Invalid data" });
+  const { name, email, phone, region, type, date, exclusive, price, country } =
+    req.body ?? {};
+
+  if (!name || !email || !phone) {
+    return res.status(400).json({ ok: false, error: "MISSING_FIELDS" });
   }
 
-  const transporter = nodemailer.createTransport({
-    port: 465,
-    host: "mail-serwer141299.lh.pl",
-    secure: true,
-    tls: {
-      ciphers: "SSLv3",
-    },
-    auth: {
-      // type: "OAuth2",
-      user: fromEmail,
-      pass: pass,
-    },
-  });
-
-  const mailData = {
-    from: fromEmail,
-    to: endEmail,
-    subject: `Kampania UK - EN: ${req.body.name}`,
-    text: "Hello. This email is for your email verification.",
-    html:
-      `Ankieta:` +
-      `<br><br>` +
-      `Region: ${req.body.region}` +
-      `<br>` +
-      `Typ nieruchomości: ${req.body.type}` +
-      `<br>` +
-      `Planowana data zakupy: ${req.body.date}` +
-      `<br>` +
-      `Czy wchodzi w grę wyłączność?: ${req.body.exclusive}` +
-      `<br>` +
-      `Cena:${req.body.price}` +
-      `<br><br>` +
-      `Dane personalne` +
-      `<br><br>` +
-      `Imię i nazwisko: ${req.body.name}` +
-      `<br>` +
-      `Telefon: ${req.body.phone}` +
-      `<br>` +
-      `Email kontaktowy: ${req.body.email}` +
-      `<br>` +
-      `Telefon kontaktowy: ${req.body.phone}` +
-      `<br><br>` +
-      `Kraj: ${req.body.phone}` +
-      `<br><br>`,
-  };
-
-  new Promise((resolve, reject) => {
-    transporter.sendMail(mailData, (err: any, info: any) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-        res.json({ status: 400 });
-      } else {
-        resolve(info);
-        res.json({ status: 200 });
-      }
+  try {
+    await sendMail({
+      to: RECIPIENT,
+      subject: `Ankieta od: ${name}`,
+      html: `
+        Ankieta:<br><br>
+        Region: ${region ?? "-"}<br>
+        Typ nieruchomości: ${type ?? "-"}<br>
+        Planowana data zakupu: ${date ?? "-"}<br>
+        Wyłączność: ${exclusive ?? "-"}<br>
+        Cena: ${price ?? "-"}<br><br>
+        Dane personalne:<br><br>
+        Imię i nazwisko: ${name}<br>
+        Telefon: ${phone}<br>
+        Email: ${email}<br>
+        Kraj: ${country ?? "-"}
+      `,
     });
-  });
+    return res.status(200).json({ ok: true });
+  } catch {
+    return res.status(500).json({ ok: false, error: "MAIL_SEND_FAILED" });
+  }
 }

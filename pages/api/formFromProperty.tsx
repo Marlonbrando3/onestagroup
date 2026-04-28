@@ -1,51 +1,29 @@
-export default function (req: any, res: any) {
-  let nodemailer = require("nodemailer");
+import type { NextApiRequest, NextApiResponse } from "next";
+import { sendMail, RECIPIENT } from "@/lib/email";
 
-  const endEmail = "marek.marszalek@onesta.com.pl";
-  const fromEmail = process.env.FROM_EMAIL;
-  const pass = process.env.EMAIL_PASS;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") return res.status(405).end();
 
-  const transporter = nodemailer.createTransport({
-    port: 465,
-    host: "mail-serwer141299.lh.pl",
-    secure: true,
-    tls: {
-      ciphers: "SSLv3",
-    },
-    auth: {
-      // type: "OAuth2",
-      user: fromEmail,
-      pass: pass,
-    },
-  });
+  const { name, phone, mail, massege, ref, id } = req.body ?? {};
 
-  const mailData = {
-    from: fromEmail,
-    to: endEmail,
-    subject: `Jestem zainteresowany nieruchomością ${req.body.id}`,
-    text: "Hello. This email is for your email verification.",
-    html:
-      `Imię : ${req.body.name}` +
-      `<br>` +
-      `Telefon kontaktowy: ${req.body.phone}` +
-      `<br><br>` +
-      `E-mail: ${req.body.mail}` +
-      `<br><br>` +
-      `Wiadomość: ${req.body.massege}` +
-      `<br><br>` +
-      `Ogłoszenie nr. ${req.body.ref} `,
-  };
-
-  async function send() {
-    await transporter.sendMail(mailData, function (err: any, info: any) {
-      if (err) {
-        console.log(err);
-        res.json({ msg: err, status: 400 }).status(400);
-      } else {
-        res.json({ msg: "sended", status: 200 }).status(200);
-      }
-    });
+  if (!name || !phone) {
+    return res.status(400).json({ ok: false, error: "MISSING_FIELDS" });
   }
 
-  send();
+  try {
+    await sendMail({
+      to: RECIPIENT,
+      subject: `Zainteresowanie nieruchomością: ${id ?? ref ?? "-"}`,
+      html: `
+        Imię: ${name}<br>
+        Telefon: ${phone}<br>
+        Email: ${mail ?? "-"}<br><br>
+        Wiadomość: ${massege ?? "-"}<br><br>
+        Ogłoszenie nr: ${ref ?? id ?? "-"}
+      `,
+    });
+    return res.status(200).json({ ok: true });
+  } catch {
+    return res.status(500).json({ ok: false, error: "MAIL_SEND_FAILED" });
+  }
 }

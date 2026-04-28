@@ -1,47 +1,28 @@
-export default async function (req: any, res: any) {
-  let nodemailer = require("nodemailer");
+import type { NextApiRequest, NextApiResponse } from "next";
+import { sendMail, RECIPIENT } from "@/lib/email";
 
-  const endEmail = "marek.marszalek@onesta.com.pl";
-  const fromEmail = process.env.FROM_EMAIL;
-  const pass = process.env.EMAIL_PASS;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") return res.status(405).end();
 
-  const transporter = nodemailer.createTransport({
-    port: 465,
-    host: "mail-serwer141299.lh.pl",
-    secure: true,
-    tls: {
-      ciphers: "SSLv3",
-    },
-    auth: {
-      // type: "OAuth2",
-      user: fromEmail,
-      pass: pass,
-    },
-  });
+  const { dataForm, Ref } = req.body ?? {};
 
-  const mailData = {
-    from: fromEmail,
-    to: endEmail,
-    subject: `Wiadomość ze strony od: ${req.body.dataForm.Name}`,
-    text: "Hello. This email is for your email verification.",
-    html:
-      `Dotyczy: ${req.body.Ref}` +
-      `<br>` +
-      `Email kontaktowy: ${req.body.dataForm.Email}` +
-      `<br>` +
-      `Telefon kontaktowy: ${req.body.dataForm.Phone}` +
-      `<br><br>` +
-      `Wiadomość ${req.body.dataForm.Message}` +
-      `<br>`,
-  };
+  if (!dataForm?.Name || !dataForm?.Email) {
+    return res.status(400).json({ ok: false, error: "MISSING_FIELDS" });
+  }
 
   try {
-    const info = await transporter.sendMail(mailData);
-
+    await sendMail({
+      to: RECIPIENT,
+      subject: `Wiadomość ze strony od: ${dataForm.Name}`,
+      html: `
+        Dotyczy: ${Ref ?? "-"}<br>
+        Email: ${dataForm.Email}<br>
+        Telefon: ${dataForm.Phone ?? "-"}<br><br>
+        Wiadomość: ${dataForm.Message ?? "-"}
+      `,
+    });
     return res.status(200).json({ ok: true });
-  } catch (err) {
-    console.error("Błąd wysyłki maila:", err);
-
+  } catch {
     return res.status(500).json({ ok: false, error: "MAIL_SEND_FAILED" });
   }
 }

@@ -1,100 +1,58 @@
-export default function (req: any, res: any) {
-  let nodemailer = require("nodemailer");
+import type { NextApiRequest, NextApiResponse } from "next";
+import { sendMail, LEADS_RECIPIENT } from "@/lib/email";
 
-  const endEmail = "leady@onesta.com.pl";
-  const fromEmail = process.env.FROM_EMAIL;
-  const pass = process.env.EMAIL_PASS;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") return res.status(405).end();
 
-  const transporter = nodemailer.createTransport({
-    port: 465,
-    host: "mail-serwer141299.lh.pl",
-    secure: true,
-    tls: {
-      ciphers: "SSLv3",
-    },
-    auth: {
-      // type: "OAuth2",
-      user: fromEmail,
-      pass: pass,
-    },
-  });
+  const { name, email, phone, msg, offer, region, type, time, price } =
+    req.body ?? {};
 
-  const clientMailData = {
-    from: "Onesta Group <websitemailing@onesta.com.pl>",
-    to: req.body.email,
-    subject: `Onesta Group || Nieruchomości w Hiszpanii`,
-    text: "Hello. This email is for your email verification.",
-    html:
-      `Dzień dobry,` +
-      `<br><br>` +
-      `Dziękujemy za zainteresowanie naszymi ofertami nieruchomości.<br>
-      Przesyłamy Państwu link do wybranej wcześniej inwestycji, niemniej dostępne są tam również inne TOP-owe i rekomendowane inwestycje o podobnym charakterze.
-      <br><br>
-      <a href=https://onesta.com.pl/choosedoffers?offer=${req.body.offer}&id=Galeria>Kliknij tutaj aby przejść do szczegółów nt. wybranej nieruchomości</a><br><br> 
-      Mamy nadzieję, że kilka z nich przypadnie Państwu do gustu. <br> 
-      Jeśli jednak potrzebujecie Państwo więcej ogłoszeń, zapraszamy na naszą stronę internetową <a href=https://onesta.com.pl/hiszpania?page=1>(klikając tutaj)</a> na której jest ich blisko 200.
-      <br><br>
-      Zapraszamy również do kontaktu telefonicznego lub mailowego
-      <br>
-      Marek  <a href=tel:+48576652525>+48 576 65 25 25</a><br>
-      Karolina <a href=tel:+48505055846>+48 505 055 846</a>
-      <br><br>
-      Pozdrawiamy!<br>
-      Zespół Onesta Group || Nieruchomości w Hiszpanii
-      `,
-  };
+  if (!name || !phone) {
+    return res.status(400).json({ ok: false, error: "MISSING_FIELDS" });
+  }
 
-  const mailData = {
-    from: fromEmail,
-    to: endEmail,
-    subject: `Formularz FB - WWW po ankiecie ${req.body.name}`,
-    text: "Hello. This email is for your email verification.",
-    html: `<strong>Zainteresowany ofertą nr: </strong> ${req.body.offer}:
-      <br><br>
-      <strong>Dane personalne: </strong>
-      <br><br>
-      Imię i nazwisko: ${req.body.name}
-      <br>
-      Email kontaktowy: ${req.body.email}
-      <br>
-      Telefon kontaktowy: ${req.body.phone}
-      <br><br>
-      Wiadomość: ${req.body.msg}
-      <br><br>
-      <strong>PREFERENCJE: </strong>
-      <br>
-      <strong>Region: </strong>${req.body.region},
-      <br>
-      <strong>Typy nieruchomości: </strong>${req.body.type},
-      <br>
-      <strong>Planowa Data zakupu: </strong>${req.body.time}
-      <br>
-      <strong>Zakładany budżet: </strong>${req.body.price}`,
-  };
+  try {
+    await Promise.all([
+      sendMail({
+        to: LEADS_RECIPIENT,
+        subject: `Formularz FB - WWW po ankiecie: ${name}`,
+        html: `
+          <strong>Zainteresowany ofertą nr:</strong> ${offer ?? "-"}<br><br>
+          <strong>Dane personalne:</strong><br><br>
+          Imię i nazwisko: ${name}<br>
+          Email: ${email ?? "-"}<br>
+          Telefon: ${phone}<br><br>
+          Wiadomość: ${msg ?? "-"}<br><br>
+          <strong>Preferencje:</strong><br>
+          Region: ${region ?? "-"}<br>
+          Typ nieruchomości: ${type ?? "-"}<br>
+          Planowana data zakupu: ${time ?? "-"}<br>
+          Budżet: ${price ?? "-"}
+        `,
+      }),
+      email
+        ? sendMail({
+            to: email,
+            subject: "Onesta Group || Nieruchomości w Hiszpanii",
+            html: `
+              Dzień dobry,<br><br>
+              Dziękujemy za zainteresowanie naszymi ofertami nieruchomości.<br>
+              Przesyłamy link do wybranej inwestycji oraz innych rekomendowanych nieruchomości.<br><br>
+              <a href="https://onesta.com.pl/choosedoffers?offer=${offer ?? ""}&id=Galeria">
+                Kliknij tutaj aby przejść do szczegółów wybranej nieruchomości
+              </a><br><br>
+              Zapraszamy również do kontaktu:<br>
+              Marek <a href="tel:+48576652525">+48 576 65 25 25</a><br>
+              Karolina <a href="tel:+48505055846">+48 505 055 846</a><br><br>
+              Pozdrawiamy!<br>
+              Zespół Onesta Group
+            `,
+          })
+        : Promise.resolve(),
+    ]);
 
-  new Promise((resolve, reject) => {
-    transporter.sendMail(mailData, (err: any, info: any) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-        res.json({ status: 400 });
-      } else {
-        resolve(info);
-        res.json({ status: 200 });
-      }
-    });
-  });
-
-  new Promise((resolve, reject) => {
-    transporter.sendMail(clientMailData, (err: any, info: any) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-        res.json({ status: 400 });
-      } else {
-        resolve(info);
-        res.json({ status: 200 });
-      }
-    });
-  });
+    return res.status(200).json({ ok: true });
+  } catch {
+    return res.status(500).json({ ok: false, error: "MAIL_SEND_FAILED" });
+  }
 }

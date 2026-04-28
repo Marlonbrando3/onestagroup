@@ -1,64 +1,28 @@
-export default function (req: any, res: any) {
-  let nodemailer = require("nodemailer");
+import type { NextApiRequest, NextApiResponse } from "next";
+import { sendMail, RECIPIENT } from "@/lib/email";
 
-  const endEmail = "marek.marszalek@onesta.com.pl";
-  const fromEmail = process.env.FROM_EMAIL;
-  const pass = process.env.EMAIL_PASS;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") return res.status(405).end();
 
-  const transporter = nodemailer.createTransport({
-    port: 465,
-    host: "mail-serwer141299.lh.pl",
-    secure: true,
-    tls: {
-      ciphers: "SSLv3",
-    },
-    auth: {
-      // type: "OAuth2",
-      user: fromEmail,
-      pass: pass,
-    },
-  });
+  const { name, phone, email, msg } = req.body ?? {};
 
-  const mailData = {
-    from: fromEmail,
-    to: endEmail,
-    subject: `Zamówienie konsultacji`,
-    text: "Hello. This email is for your email verification.",
-    html:
-      `Imię : ${req.body.name}` +
-      `<br><br>` +
-      `<br>` +
-      `Telefon kontaktowy: ${req.body.phone}` +
-      `<br>` +
-      `Mail: ${req.body.email}` +
-      `<br>` +
-      `Wiadomość: ${req.body.msg}` +
-      `<br><br>`,
-  };
-
-  async function send() {
-    await transporter.sendMail(mailData, function (err: any, info: any) {
-      if (err) {
-        console.log(err);
-        res.json({ msg: err, status: 400 }).status(400);
-      } else {
-        res.json({ msg: "sended", status: 200 }).status(200);
-      }
-    });
+  if (!name || !phone) {
+    return res.status(400).json({ ok: false, error: "MISSING_FIELDS" });
   }
 
-  new Promise((resolve, reject) => {
-    transporter.sendMail(mailData, (err: any, info: any) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-        res.json({ msg: err, status: 400 }).status(400);
-      } else {
-        resolve(info);
-        res.json({ msg: "sended", status: 200 }).status(200);
-      }
+  try {
+    await sendMail({
+      to: RECIPIENT,
+      subject: "Zamówienie konsultacji",
+      html: `
+        Imię: ${name}<br>
+        Telefon: ${phone}<br>
+        Email: ${email ?? "-"}<br>
+        Wiadomość: ${msg ?? "-"}
+      `,
     });
-  });
-
-  // send();
+    return res.status(200).json({ ok: true });
+  } catch {
+    return res.status(500).json({ ok: false, error: "MAIL_SEND_FAILED" });
+  }
 }
