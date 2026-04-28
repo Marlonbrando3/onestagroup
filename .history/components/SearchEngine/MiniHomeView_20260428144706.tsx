@@ -19,7 +19,7 @@ export default function MiniHomeView() {
     <div
       className={`${Red_Hat_DisplayFont.className} w-full md:h-[230px] h-auto mx-auto md:text-[18px] -mt-[100px] `}
     >
-      <div className="w-full md:h-[140px] h-[100px] bg-red-900 bg-[url('/bg_mini.png')] bg-cover"></div>
+      <div className="w-full md:h-[140px] h-[100px] bg-[url('/bg_mini.png')] bg-cover"></div>
       <div className="w-full h-full bg-[center_320px] bg-cover relative ">
         <div className="pt-[20px] w-[90vw] max-w-[1300px] mx-auto z-30 relative flex items-center">
           <Link href="#">Strona startowa</Link>
