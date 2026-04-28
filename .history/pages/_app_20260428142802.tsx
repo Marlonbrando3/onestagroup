@@ -1,22 +1,24 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
 import { useRef } from "react";
 import { MyContextProvider } from "@/components/context/myContext";
 import AnalitycsTools from "@/analitycs/analitycsTools";
 
 export default function App({ Component, pageProps }: AppProps) {
   const cookiesWindow = useRef<any>();
-  const router = useRouter();
 
-  useEffect(() => {
-    // To blokuje automatyczny scroll Next.js przy przycisku "Wstecz"
-    router.beforePopState((state) => {
-      state.options.scroll = false;
-      return true;
-    });
-  }, [router]);
+  const checkCookiesOnLoad = async () => {
+    let res = await fetch("https://onesta.com.pl/api/setClientCookie");
+    const results = await res.json();
+    const status = results.status;
+
+    if (status !== 200) {
+      setTimeout(() => {
+        cookiesWindow.current.style.display = "block";
+      }, 4000);
+    }
+  };
+  // checkCookiesOnLoad();
 
   return (
     <>

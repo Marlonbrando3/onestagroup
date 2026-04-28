@@ -45,6 +45,8 @@ export default function ListingsPage(props: PageProps) {
   const router = useRouter();
   const { country } = router.query;
 
+  window.history.scrollRestoration = "manual";
+
   const searchEngine = useRef<HTMLDivElement>(null);
   const mobileButtonSearchEngine = useRef<HTMLButtonElement>(null);
 
@@ -91,9 +93,11 @@ export default function ListingsPage(props: PageProps) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   setLoader(false);
-  // }, [router.asPath]);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    window.history.scrollRestoration = "manual";
+  }, []);
 
   if (!country || typeof country !== "string") return null;
 

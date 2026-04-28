@@ -91,9 +91,9 @@ export default function ListingsPage(props: PageProps) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   setLoader(false);
-  // }, [router.asPath]);
+  useEffect(() => {
+    setLoader(false);
+  }, [router.asPath]);
 
   if (!country || typeof country !== "string") return null;
 

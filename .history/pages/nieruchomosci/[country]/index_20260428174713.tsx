@@ -151,6 +151,27 @@ export default function ListingsPage(props: PageProps) {
   );
 }
 
+useEffect(() => {
+  if (typeof window === "undefined") return;
+
+  // wyłącz automatyczne przywracanie przeglądarki (ważne na prod)
+  if ("scrollRestoration" in window.history) {
+    window.history.scrollRestoration = "manual";
+  }
+
+  const saved = sessionStorage.getItem("listingScroll");
+  if (saved) {
+    const y = Number(saved);
+
+    // przywróć ASAP i jeszcze raz po layoutcie (eliminuje „mignięcie”)
+    window.scrollTo(0, y);
+    requestAnimationFrame(() => window.scrollTo(0, y));
+    setTimeout(() => window.scrollTo(0, y), 0);
+
+    sessionStorage.removeItem("listingScroll");
+  }
+}, []);
+
 function getAllDescendants(id: string): string[] {
   const children = locationsData.filter((l) => l.parentId === id);
   return [id, ...children.flatMap((child) => getAllDescendants(child.id))];

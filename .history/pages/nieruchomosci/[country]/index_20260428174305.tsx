@@ -95,7 +95,7 @@ export default function ListingsPage(props: PageProps) {
   //   setLoader(false);
   // }, [router.asPath]);
 
-  if (!country || typeof country !== "string") return null;
+  const safeCountry = typeof country === "string" ? country : props.country;
 
   const handleShowMobileFilters = () => {
     if (!searchEngine.current || !mobileButtonSearchEngine.current) return;

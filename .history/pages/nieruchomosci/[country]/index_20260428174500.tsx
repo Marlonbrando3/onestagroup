@@ -135,7 +135,7 @@ export default function ListingsPage(props: PageProps) {
         setIsMobileFiltersOpen={setIsMobileFiltersOpen}
       />
 
-      <div ref={lastElementRef} style={{ height: 50 }} />
+      {/* <div ref={lastElementRef} style={{ height: 50 }} /> */}
 
       {loadingMore && (
         <div className="flex items-center justify-center gap-2 mb-[50px]">

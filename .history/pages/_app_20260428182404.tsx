@@ -8,7 +8,6 @@ import AnalitycsTools from "@/analitycs/analitycsTools";
 
 export default function App({ Component, pageProps }: AppProps) {
   const cookiesWindow = useRef<any>();
-  const router = useRouter();
 
   useEffect(() => {
     // To blokuje automatyczny scroll Next.js przy przycisku "Wstecz"

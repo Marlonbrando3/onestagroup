@@ -75,8 +75,13 @@ export default function ListingsPage(props: PageProps) {
     if (node) observer.current.observe(node);
   };
 
+  // 🔥 FIX PĘTLI
   useEffect(() => {
-    setPropertiesState(props.properties ?? []);
+    const incoming = props.properties ?? [];
+
+    if (incoming.length === propertiesState.length) return;
+
+    setPropertiesState(incoming);
     setPageState(1);
     setHasMore(true);
   }, [props.properties]);
@@ -91,9 +96,41 @@ export default function ListingsPage(props: PageProps) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   setLoader(false);
-  // }, [router.asPath]);
+  // 🔥 ZAPIS SCROLLA PRZY WYJŚCIU
+  useEffect(() => {
+    const saveScroll = () => {
+      sessionStorage.setItem("scrollY", String(window.scrollY));
+    };
+
+    window.addEventListener("pagehide", saveScroll);
+
+    return () => {
+      window.removeEventListener("pagehide", saveScroll);
+    };
+  }, []);
+
+  // 🔥 PRZYWRACANIE SCROLLA
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const saved = sessionStorage.getItem("scrollY");
+
+    document.body.style.overflow = "hidden";
+
+    if (saved) {
+      const y = Number(saved);
+
+      window.scrollTo(0, y);
+
+      requestAnimationFrame(() => {
+        window.scrollTo(0, y);
+      });
+    }
+
+    setTimeout(() => {
+      document.body.style.overflow = "";
+    }, 50);
+  }, []);
 
   if (!country || typeof country !== "string") return null;
 
@@ -115,6 +152,7 @@ export default function ListingsPage(props: PageProps) {
       <Head>
         <title>{title}</title>
       </Head>
+
       <WhatsAppButton />
       <Consultation
         handleConsultationPopUp={handleConsultationPopUp}
@@ -122,6 +160,7 @@ export default function ListingsPage(props: PageProps) {
       />
       <HeaderListings handleConsultationPopUp={handleConsultationPopUp} />
       <MiniHomeView />
+
       <SearchEngine
         loader={loader}
         setLoader={setLoader}

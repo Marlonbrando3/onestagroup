@@ -149,6 +149,22 @@ export default function ListingsPage(props: PageProps) {
       <Footer />
     </>
   );
+
+  Runtime TypeError
+
+
+
+Cannot read properties of null (reading 'useEffect')
+pages/nieruchomosci/[country]/index.tsx (177:10) @ <unknown>
+
+
+  175 | }
+  176 |
+> 177 | useEffect(() => {
+      |          ^
+  178 |   if (typeof window === "undefined") return;
+  179 |
+  180 |   // zapamiętany scroll (jeśli był)
 }
 
 function getAllDescendants(id: string): string[] {
@@ -173,6 +189,33 @@ function parseNumList(val: unknown): number[] {
     .map((v) => Number(v.trim()))
     .filter((n) => Number.isFinite(n));
 }
+
+useEffect(() => {
+  if (typeof window === "undefined") return;
+
+  // zapamiętany scroll (jeśli był)
+  const saved = sessionStorage.getItem("scrollY");
+
+  // 🔥 zablokuj scroll (żeby nie skoczył do góry)
+  document.body.style.overflow = "hidden";
+
+  if (saved) {
+    const y = Number(saved);
+
+    // przywróć scroll
+    window.scrollTo(0, y);
+
+    // jeszcze raz po layoutcie (eliminuje mignięcie)
+    requestAnimationFrame(() => {
+      window.scrollTo(0, y);
+    });
+  }
+
+  // 🔓 odblokuj scroll po chwili
+  setTimeout(() => {
+    document.body.style.overflow = "";
+  }, 50);
+}, []);
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async (
   context,

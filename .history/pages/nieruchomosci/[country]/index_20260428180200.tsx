@@ -45,6 +45,8 @@ export default function ListingsPage(props: PageProps) {
   const router = useRouter();
   const { country } = router.query;
 
+  window.history.scrollRestoration = "manual";
+
   const searchEngine = useRef<HTMLDivElement>(null);
   const mobileButtonSearchEngine = useRef<HTMLButtonElement>(null);
 

@@ -91,9 +91,9 @@ export default function ListingsPage(props: PageProps) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   setLoader(false);
-  // }, [router.asPath]);
+  useEffect(() => {
+    setLoader(false);
+  }, [router.asPath]);
 
   if (!country || typeof country !== "string") return null;
 
@@ -124,6 +124,7 @@ export default function ListingsPage(props: PageProps) {
       <MiniHomeView />
       <SearchEngine
         loader={loader}
+        totalCount={props.totalCount}
         setLoader={setLoader}
         handleShowMobileFilters={handleShowMobileFilters}
         searchEngine={searchEngine}
