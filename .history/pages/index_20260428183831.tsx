@@ -1,11 +1,10 @@
 import React from "react";
 import Head from "next/head";
-import Script from "next/script";
 import Header from "../components/Header";
 import WhatsAppButton from "../components/whatsapp/whatsappButton";
 import Footer from "../components/Footer";
 import Hotjar from "@hotjar/browser";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import HomeViewAlt from "@/components/HomeViewAlt";
 import MiddlePageOne from "@/components/MiddlePageOne";
 import WhatWeDoMainPage from "@/components/WhatWeDoMainPage";
@@ -42,6 +41,11 @@ export default function FirstView({ cookiesWindow }: AppProps) {
           content="image"
         />
         <title>Nieruchomości w Hiszpanii, nieruchomości Hiszpania.</title>
+        <link rel="shortcut icon" href="/logotype.png" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;500;600&display=swap"
+          rel="stylesheet"
+        ></link>
         <meta
           name="Keywords"
           content="Nieruchomości Hiszpania, nieruchomości w Hiszpanii, apartamenty w Hiszpanii, polska agencja nieruchomości w Hiszpanii, nieruchomości Portugalia, nieruchomości w Portugali, apartamenty w Portugalii, polska agencja nieruchomości w Portugalii, nieruchomości na Dominikanie, apartamenty Dominikana, apartamenty na Dominikanie"
