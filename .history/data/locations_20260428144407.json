@@ -1,0 +1,672 @@
+[
+  {
+    "id": "costa_blanca",
+    "name": "Costa Blanca",
+    "type": "coast",
+    "parentId": null
+  },
+  {
+    "id": "costa_calida",
+    "name": "Costa Calida",
+    "type": "coast",
+    "parentId": null
+  },
+  {
+    "id": "costa_del_sol",
+    "name": "Costa del Sol",
+    "type": "coast",
+    "parentId": null
+  },
+  {
+    "id": "costa_de_almeria",
+    "name": "Costa de Almeria",
+    "type": "coast",
+    "parentId": null
+  },
+
+  {
+    "id": "aguilas",
+    "name": "Águilas",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "alfaz_del_pi",
+    "name": "Alfaz del Pi",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "algorfa",
+    "name": "Algorfa",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "alhama_de_murcia",
+    "name": "Alhama de Murcia",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "alhaurin_de_la_torre",
+    "name": "Alhaurín de la Torre",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "alicante",
+    "name": "Alicante",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "almayate_bajo",
+    "name": "Almayate Bajo",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "altea",
+    "name": "Altea",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "amoros",
+    "name": "Amoros",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  { "id": "aspe", "name": "Aspe", "type": "town", "parentId": "costa_blanca" },
+  {
+    "id": "avileses",
+    "name": "Avileses",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "balsicas",
+    "name": "Balsicas",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "benahavis",
+    "name": "Benahavís",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "benalmadena",
+    "name": "Benalmádena",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "benferri",
+    "name": "Benferri",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "benidorm",
+    "name": "Benidorm",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "benijofar",
+    "name": "Benijofar",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "benissa",
+    "name": "Benissa",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "benitachell",
+    "name": "Benitachell",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "bigastro",
+    "name": "Bigastro",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "busot",
+    "name": "Busot",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "calasparra",
+    "name": "Calasparra",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "caleta_de_velez",
+    "name": "Caleta de Velez",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "callosa_de_segura",
+    "name": "Callosa de Segura",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "calpe",
+    "name": "Calpe",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "campoverde_spring",
+    "name": "Campoverde Spring",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "canceled",
+    "name": "Canceled",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "cartagena",
+    "name": "Cartagena",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "casares",
+    "name": "Casares",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "catral",
+    "name": "Catral",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "ciudad_quesada",
+    "name": "Ciudad Quesada",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "cuevas_del_almanzora",
+    "name": "Cuevas del Almanzora",
+    "type": "town",
+    "parentId": "costa_de_almeria"
+  },
+  {
+    "id": "daya_nueva",
+    "name": "Daya Nueva",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "denia",
+    "name": "Denia",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "dolores",
+    "name": "Dolores",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "el_campello",
+    "name": "El Campello",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "el_verger",
+    "name": "El Verger",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "estepona",
+    "name": "Estepona",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "finestrat",
+    "name": "Finestrat",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "fortuna",
+    "name": "Fortuna",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "fuengirola",
+    "name": "Fuengirola",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "fuente_alamo",
+    "name": "Fuente Álamo",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "fuente_alamo_2",
+    "name": "Fuente-Álamo",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "gran_alacant",
+    "name": "Gran Alacant",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "guardamar_del_segura",
+    "name": "Guardamar del Segura",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "heredades",
+    "name": "Heredades",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "hondon_de_las_nieves",
+    "name": "Hondón de las Nieves",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "istanbul",
+    "name": "Istanbul",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "jacarilla",
+    "name": "Jacarilla",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "javea_xabia",
+    "name": "Jávea/Xàbia",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "la_cala_de_mijas",
+    "name": "La Cala de Mijas",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "la_manga_del_mar_menor",
+    "name": "La Manga del Mar Menor",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "la_nucia",
+    "name": "La Nucia",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "la_romana",
+    "name": "La Romana",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "la_villajoyosa_vila_joiosa",
+    "name": "La Villajoyosa / Vila Joiosa",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "lagos",
+    "name": "Lagos",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "lliber",
+    "name": "Llíber",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "los_alcazares",
+    "name": "Los Alcázares",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "los_montesinos",
+    "name": "Los Montesinos",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "los_nietos",
+    "name": "Los Nietos",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "malaga",
+    "name": "Málaga",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "manilva",
+    "name": "Manilva",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "marbella",
+    "name": "Marbella",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "mazarron",
+    "name": "Mazarrón",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "mijas",
+    "name": "Mijas",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "mojacar",
+    "name": "Mojácar",
+    "type": "town",
+    "parentId": "costa_de_almeria"
+  },
+  {
+    "id": "molina_de_segura",
+    "name": "Molina de Segura",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "monda",
+    "name": "Monda",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "monforte_del_cid",
+    "name": "Monforte del Cid",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "moraira",
+    "name": "Moraira",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "moratalla",
+    "name": "Moratalla",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "murcia",
+    "name": "Murcia",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "mutxamel",
+    "name": "Mutxamel",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "nerja",
+    "name": "Nerja",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  { "id": "ojen", "name": "Ojén", "type": "town", "parentId": "costa_del_sol" },
+  {
+    "id": "orihuela",
+    "name": "Orihuela",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "penaguila",
+    "name": "Penaguila",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "pilar_de_la_horadada",
+    "name": "Pilar de la Horadada",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "pinoso",
+    "name": "Pinoso",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "polop",
+    "name": "Polop",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "pulpi",
+    "name": "Pulpi",
+    "type": "town",
+    "parentId": "costa_de_almeria"
+  },
+  {
+    "id": "rafal",
+    "name": "Rafal",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "redovan",
+    "name": "Redovan",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "relleu",
+    "name": "Relleu",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "rincon_de_la_victoria",
+    "name": "Rincón de la Victoria",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "rojales",
+    "name": "Rojales",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "roldan",
+    "name": "Roldán",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "san_fulgencio",
+    "name": "San Fulgencio",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "san_javier",
+    "name": "San Javier",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "san_juan_de_alicante",
+    "name": "San Juan de Alicante",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "san_juan_de_los_terreros",
+    "name": "San Juan de los Terreros",
+    "type": "town",
+    "parentId": "costa_de_almeria"
+  },
+  {
+    "id": "san_miguel_de_salinas",
+    "name": "San Miguel de Salinas",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "san_pedro_del_pinatar",
+    "name": "San Pedro del Pinatar",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "santa_pola",
+    "name": "Santa Pola",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "santiago_de_la_ribera",
+    "name": "Santiago De La Ribera",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "starfish",
+    "name": "Starfish",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "sucina",
+    "name": "Sucina",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "the_marina",
+    "name": "The Marina",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "the_mijas_lagoons",
+    "name": "The Mijas Lagoons",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "the_paradise",
+    "name": "The Paradise",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "torre_pacheco",
+    "name": "Torre-Pacheco",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "torremolinos",
+    "name": "Torremolinos",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "torrevieja",
+    "name": "Torrevieja",
+    "type": "town",
+    "parentId": "costa_blanca"
+  },
+  {
+    "id": "torrox",
+    "name": "Torrox",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "tower_of_the_sea",
+    "name": "Tower of the Sea",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "velez_malaga",
+    "name": "Vélez-Málaga",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  {
+    "id": "vera",
+    "name": "Vera",
+    "type": "town",
+    "parentId": "costa_de_almeria"
+  },
+  {
+    "id": "villanueva_del_rio_segura",
+    "name": "Villanueva del Rio Segura",
+    "type": "town",
+    "parentId": "costa_calida"
+  },
+  {
+    "id": "vinuela",
+    "name": "Viñuela",
+    "type": "town",
+    "parentId": "costa_del_sol"
+  },
+  { "id": "yecla", "name": "Yecla", "type": "town", "parentId": "costa_calida" }
+]
