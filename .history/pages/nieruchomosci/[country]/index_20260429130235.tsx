@@ -11,6 +11,7 @@ import Footer from "../../../components/Footer";
 import ContactFormMain from "../../../components/ContactFormMain";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Consultation from "@/components/consulatation/consultation";
+import AnalitycsTools from "@/analitycs/analitycsTools";
 
 interface Property {
   external_id: string | number;

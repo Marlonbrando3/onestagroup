@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import WhatsAppButton from "../components/whatsapp/whatsappButton";
 import Footer from "../components/Footer";
 import Hotjar from "@hotjar/browser";
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import HomeViewAlt from "@/components/HomeViewAlt";
 import MiddlePageOne from "@/components/MiddlePageOne";
 import WhatWeDoMainPage from "@/components/WhatWeDoMainPage";
