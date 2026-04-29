@@ -1,11 +1,14 @@
 import React from "react";
 import { useState } from "react";
+import Image from "next/image";
 import Head from "next/head";
+import Script from "next/script";
 import HeaderAboutUs from "../components/HeaderAboutUs";
 import MiniHomeViewAboutUs from "../components/SearchEngine/MiniHomeViewAboutUs";
 import MissionVission from "../pages/aboutus/missionVision";
 import ContactFormMain from "../components/ContactFormMain";
 import Footer from "../components/Footer";
+import AnalitycsTools from "@/analitycs/analitycsTools";
 import Ourteammain from "@/components/ourteammain/ourteammain";
 
 export default function Aboutus() {

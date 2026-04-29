@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import Image from "next/image";
 import Head from "next/head";
 import HeaderAboutUs from "../components/HeaderAboutUs";
 import MiniHomeViewAboutUs from "../components/SearchEngine/MiniHomeViewAboutUs";
