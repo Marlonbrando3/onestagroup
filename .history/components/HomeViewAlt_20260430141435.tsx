@@ -27,12 +27,13 @@ export default function HomeViewAlt() {
 
   return (
     <div className="w-screen md:h-screen h-auto flex relative overflow-hidden">
+      setShowDeferredSections
       <img
         src="/coast_2.webp"
         alt=""
         fetchPriority="high"
         decoding="async"
-        className="absolute inset-0 -z-10 h-full w-full object-cover z-10"
+        className="absolute inset-0 -z-10 h-full w-full object-cover"
       />
       <div className=" md:w-[50%] w-[98vw] mx-auto">
         <div className="md:mt-[100px] mt-[70px]">
