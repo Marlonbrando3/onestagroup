@@ -17,6 +17,8 @@ export default function Index() {
   const siteId = 3555670;
   const hotjarVersion = 6;
 
+  Hotjar.init(siteId, hotjarVersion);
+
   const [PageNumber, setPageNumber] = useState<number>(1);
 
   const [name, setName] = useState("");

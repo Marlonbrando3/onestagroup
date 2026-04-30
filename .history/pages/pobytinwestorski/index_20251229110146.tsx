@@ -16,6 +16,8 @@ export default function Home() {
   const siteId = 3555670;
   const hotjarVersion = 6;
 
+  Hotjar.init(siteId, hotjarVersion);
+
   return (
     <main className={`${WorkSans.className} w-full`}>
       <Header />
