@@ -40,10 +40,10 @@ export default function AnalitycsTools() {
       {/* GTM */}
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=AW-11239400043"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
       />
 
-      <Script id="gtag-init" strategy="lazyOnload">
+      <Script id="gtag-init" strategy="afterInteractive">
         {`
           (function () {
             var run = function () {

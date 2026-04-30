@@ -65,73 +65,6 @@ body {
 }
 
 /* From Uiverse.io by Shoh2008 */
-.loaderImage {
-  width: 64px;
-  height: 64px;
-  position: relative;
-  background: #fff;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.loaderImage:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 40px;
-  height: 40px;
-  transform: rotate(45deg) translate(30%, 40%);
-  background: #ff9371;
-  box-shadow: 32px -34px 0 5px #ff3d00;
-  animation: slide 1s infinite ease-in-out alternate;
-}
-
-.loaderImage:after {
-  content: "";
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #ff3d00;
-  transform: rotate(0deg);
-  transform-origin: 35px 145px;
-  animation: rotate 1s infinite ease-in-out;
-}
-
-@keyframes slide {
-  0%,
-  100% {
-    bottom: -35px;
-  }
-
-  25%,
-  75% {
-    bottom: -2px;
-  }
-
-  20%,
-  80% {
-    bottom: 2px;
-  }
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(-15deg);
-  }
-
-  25%,
-  75% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(25deg);
-  }
-}
 
 .main-index {
   /* position: fixed; */
@@ -141,12 +74,6 @@ body {
   place-items: center;
 }
 
-.IconsByChoosing {
-  padding: 0.7%;
-  margin-left: 5px;
-  /* margin-right:2px; */
-  color: rgb(78, 72, 72);
-}
 
 .loader {
   position: absolute;
@@ -230,82 +157,6 @@ div.InputsStyleContainer p {
   color: rgb(44, 43, 43);
 }
 
-.sitesArrow {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: aliceblue;
-  margin: 4px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.ActiveSite {
-  background-color: red;
-  color: white;
-}
-
-.main-view {
-  position: relative;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  margin-top: -12vh;
-  transition: 0.7s;
-}
-
-.main-view-scrolled {
-  overflow: hidden;
-  width: 100vw;
-  height: 15vh;
-  transition: 0.7s;
-}
-.main-video {
-  width: 100%;
-  margin: auto;
-  height: 116%;
-}
-.property-card-price {
-  font-weight: 700;
-  color: white;
-}
-.property-data-specyfication-box {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-content: flex-start;
-  /* background-color:rgb(213, 209, 209); */
-  margin: 0 auto;
-  width: 90%;
-  height: 85%;
-}
-
-.property-card-data-gallery-container {
-  position: relative;
-  display: flex;
-  height: 80px;
-}
-
-.property-card-data-gallery {
-  display: flex;
-  flex-wrap: nowrap;
-  /* width:500%; */
-}
-
-.property-card-data-gallery-arrow-right {
-  position: absolute;
-  width: 30px;
-  right: 0;
-  z-index: 2;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  cursor: pointer;
-  /* border:2px solid black; */
-  /* background-color:white; */
-}
 
 select {
   -webkit-appearance: none;
@@ -320,54 +171,6 @@ select {
   padding-right: 20px; /* Dopasuj to, aby zmieściła się strzałka */
 }
 
-.clickedSlideLeftGallery {
-  margin-left: -105px;
-  transition: 0.4s;
-}
-
-.clickedSlideRightGallery {
-  margin-left: -160px;
-  transition: 0.4s;
-}
-
-.company-base {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 50%;
-  width: 40%;
-}
-
-.descrytpion-container {
-  padding: 2%;
-  width: 83%;
-  border-radius: 10px;
-  margin: 0px auto;
-  background-color: white;
-}
-
-.features-container {
-  display: flex;
-  border-radius: 10px;
-  width: 83%;
-  background-color: white;
-  margin: 10px auto;
-}
-
-.contact-form-container {
-  padding: 2%;
-  width: 83%;
-  background-color: white;
-  border-radius: 10px;
-  margin: 10px auto;
-}
-
-.contact-form-in-property-card {
-  display: flex;
-  flex-direction: column;
-  border-radius: 10px;
-  margin: 10px auto;
-}
 
 .cf-input-property-card {
   /* border: 1px solid black; */
