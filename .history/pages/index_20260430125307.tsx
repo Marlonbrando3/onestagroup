@@ -33,6 +33,7 @@ export default function FirstView({ cookiesWindow }: AppProps) {
 
   const loadLoader = () => (mainLoader.current.displty = "block");
 
+  Hotjar.init(siteId, hotjarVersion);
   return (
     <>
       <Head>
