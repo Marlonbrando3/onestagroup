@@ -197,7 +197,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     location,
   } = context.query;
 
-  const provinces = region;
+  const provinces;
 
   const bathsFrom = bathsMin ? Number(bathsMin) : 0;
   const bathsTo = bathsMax ? Number(bathsMax) : 99;
