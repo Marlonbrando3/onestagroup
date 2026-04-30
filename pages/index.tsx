@@ -1,34 +1,55 @@
 import React from "react";
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import Header from "../components/Header";
 import WhatsAppButton from "../components/whatsapp/whatsappButton";
-import Footer from "../components/Footer";
 import { useState, useRef } from "react";
 import HomeViewAlt from "@/components/HomeViewAlt";
 import MiddlePageOne from "@/components/MiddlePageOne";
 import WhatWeDoMainPage from "@/components/WhatWeDoMainPage";
-import RegionsMainPage from "@/components/RegionsMainPage";
-import ProcessSteps from "@/components/ProcesDescriptionsMainSite/ProcessSteps";
-import MiddlePageOneSecond from "@/components/MiddlePageOneSecond";
-import ContactFormMiddleMail from "@/components/ContactFormMiddleMail";
-import BlogComponent from "@/components/BlogMainSite/BlogComponent";
-import ContactFormMain from "@/components/ContactFormMain";
 import Consultation from "@/components/consulatation/consultation";
 
 type AppProps = {
   cookiesWindow: any;
 };
 
+const RegionsMainPage = dynamic(() => import("@/components/RegionsMainPage"));
+const ProcessSteps = dynamic(
+  () => import("@/components/ProcesDescriptionsMainSite/ProcessSteps")
+);
+const MiddlePageOneSecond = dynamic(
+  () => import("@/components/MiddlePageOneSecond")
+);
+const ContactFormMiddleMail = dynamic(
+  () => import("@/components/ContactFormMiddleMail")
+);
+const BlogComponent = dynamic(
+  () => import("@/components/BlogMainSite/BlogComponent")
+);
+const ContactFormMain = dynamic(() => import("@/components/ContactFormMain"));
+const Footer = dynamic(() => import("../components/Footer"));
+
 export default function FirstView({ cookiesWindow }: AppProps) {
   const mainLoader = useRef<any>();
 
   const [ConsultationsShowe, setConsultationsShowed] = useState(false);
+  const [showDeferredSections, setShowDeferredSections] = useState(false);
 
   const handleConsultationPopUp = () => {
     setConsultationsShowed(!ConsultationsShowe);
   };
 
   const loadLoader = () => (mainLoader.current.displty = "block");
+
+  React.useEffect(() => {
+    const show = () => setShowDeferredSections(true);
+    if ("requestIdleCallback" in window) {
+      const id = (window as any).requestIdleCallback(show, { timeout: 1200 });
+      return () => (window as any).cancelIdleCallback?.(id);
+    }
+    const timeout = window.setTimeout(show, 700);
+    return () => window.clearTimeout(timeout);
+  }, []);
 
   return (
     <>
@@ -67,16 +88,20 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         />
         <HomeViewAlt />
         <MiddlePageOne />
-        <WhatWeDoMainPage />
-        <RegionsMainPage />
-        <MiddlePageOneSecond />
-        <ContactFormMiddleMail
-          handleConsultationPopUp={handleConsultationPopUp}
-        />
-        <ProcessSteps handleConsultationPopUp={handleConsultationPopUp} />
-        <BlogComponent />
-        <ContactFormMain />
-        <Footer />
+        {showDeferredSections && (
+          <>
+            <WhatWeDoMainPage />
+            <RegionsMainPage />
+            <MiddlePageOneSecond />
+            <ContactFormMiddleMail
+              handleConsultationPopUp={handleConsultationPopUp}
+            />
+            <ProcessSteps handleConsultationPopUp={handleConsultationPopUp} />
+            <BlogComponent />
+            <ContactFormMain />
+            <Footer />
+          </>
+        )}
       </div>
     </>
   );
