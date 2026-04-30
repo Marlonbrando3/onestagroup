@@ -8,6 +8,8 @@ type ServerSideProps = {
   query: any;
   country: any;
   count: any;
+  current?: any;
+  totalPages?: any;
 };
 
 type FunctionProps = {
