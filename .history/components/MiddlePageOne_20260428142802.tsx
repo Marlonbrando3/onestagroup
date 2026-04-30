@@ -13,7 +13,7 @@ export default function MiddlePageOne() {
         Twoje marzenia, <br></br>nasze cele.
       </p>
       <Image
-        src="/MiddleOne.webp"
+        src="/MiddleOne.png"
         fill
         // objectFit="cover"
         className="object-cover md:object-[60%_65%] object-[0%_300%] rounded-[30px] right-0 pb-[50px] md:pb-0"

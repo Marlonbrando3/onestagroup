@@ -41,7 +41,7 @@ export default function RegionsMainPage() {
             country="Hiszpania"
             d="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500"
             number="40"
-            img="costadelsol.webp"
+            img="costadelsol.png"
           />
           {/* <RegionsMainPageElement
             icon={

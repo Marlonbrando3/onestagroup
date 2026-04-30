@@ -81,7 +81,7 @@ export default function HomeViewAlt() {
 
               <div className="h-[100px] w-[100px] mr-[15px] relative rounded-md overflow-hidden">
                 <Image
-                  src="/Karolina.png"
+                  src="/Karolina.webp"
                   fill
                   objectFit="cover"
                   objectPosition="top"
@@ -92,7 +92,7 @@ export default function HomeViewAlt() {
                 <div className="h-[100px] w-[100px] mr-[15px] relative rounded-md overflow-hidden">
                   {" "}
                   <Image
-                    src="/Przemek.webp"
+                    src="/Przemek.png"
                     fill
                     objectFit="cover"
                     objectPosition="top"
@@ -128,7 +128,7 @@ export default function HomeViewAlt() {
           </div> */}
           <div className="w-[90%] lg:h-[560px] h-[800px] clear-both relative overflow-hidden rounded-[10px] border">
             <Image
-              src="/main_img_video.webp"
+              src="/bg_main_site_2.png"
               fill
               sizes="50vw"
               className="object-cover"
@@ -146,7 +146,7 @@ export default function HomeViewAlt() {
                 loop
                 playsInline
                 preload="none"
-                poster="/main_img_video.webp"
+                poster="/bg_main_site_2.png"
                 className="absolute inset-0 h-full w-full object-cover"
               ></video>
             )}

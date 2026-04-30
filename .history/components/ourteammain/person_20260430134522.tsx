@@ -37,9 +37,9 @@ export default function Person({ data }: Person) {
           objectPosition="top"
           alt={data.name}
           className={`${
-            (data.photo === "Marek.webp" && "scale-[140%]") ||
-            (data.photo === "Przemek.webp" && "scale-[100%]") ||
-            (data.photo === "Michał.webp" && "scale-[100%]")
+            (data.photo === "Marek.png" && "scale-[140%]") ||
+            (data.photo === "Przemek.png" && "scale-[100%]") ||
+            (data.photo === "Michał.png" && "scale-[100%]")
           } transform origin-top`}
         ></Image>
       </div>

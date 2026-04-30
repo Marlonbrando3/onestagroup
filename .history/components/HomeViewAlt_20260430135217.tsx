@@ -128,7 +128,7 @@ export default function HomeViewAlt() {
           </div> */}
           <div className="w-[90%] lg:h-[560px] h-[800px] clear-both relative overflow-hidden rounded-[10px] border">
             <Image
-              src="/main_img_video.webp"
+              src="/mini_bg_about_us.webp"
               fill
               sizes="50vw"
               className="object-cover"
