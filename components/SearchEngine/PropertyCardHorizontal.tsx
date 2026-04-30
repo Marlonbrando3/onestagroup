@@ -38,6 +38,7 @@ export default function PropertyCard({ property }: Property) {
   }
 
   const slug = slugify(property.headerAdvertisement, property.id);
+  const countrySlug = property.country?.name?.toLowerCase()?.replace(/\s+/g, "-") || "hiszpania";
 
   const region = () => {
     const country = property.country.name.toLowerCase();
@@ -61,8 +62,9 @@ export default function PropertyCard({ property }: Property) {
     <div className="flex  bg-gray-500 w-[1100px] mb-4 mx-2 rounded-t-md shadow-md overflow-hidden">
       <div className="w-full h-[220px] overflow-hidden mx-auto rounded-t-md flex items-center justify-center text-4xl relative">
         <ResultsSlider
+          date={property?.updated_at}
           region={region()}
-          country={property.country.name}
+          countrySlug={countrySlug}
           slug={slug}
           images={property.images}
           propertyId={property.id}
