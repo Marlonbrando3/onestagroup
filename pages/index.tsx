@@ -2,12 +2,10 @@ import React from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import Header from "../components/Header";
-import WhatsAppButton from "../components/whatsapp/whatsappButton";
 import { useState, useRef } from "react";
 import HomeViewAlt from "@/components/HomeViewAlt";
 import MiddlePageOne from "@/components/MiddlePageOne";
 import WhatWeDoMainPage from "@/components/WhatWeDoMainPage";
-import Consultation from "@/components/consulatation/consultation";
 
 type AppProps = {
   cookiesWindow: any;
@@ -28,12 +26,21 @@ const BlogComponent = dynamic(
 );
 const ContactFormMain = dynamic(() => import("@/components/ContactFormMain"));
 const Footer = dynamic(() => import("../components/Footer"));
+const WhatsAppButton = dynamic(
+  () => import("../components/whatsapp/whatsappButton"),
+  { ssr: false }
+);
+const Consultation = dynamic(
+  () => import("@/components/consulatation/consultation"),
+  { ssr: false }
+);
 
 export default function FirstView({ cookiesWindow }: AppProps) {
   const mainLoader = useRef<any>();
 
   const [ConsultationsShowe, setConsultationsShowed] = useState(false);
   const [showDeferredSections, setShowDeferredSections] = useState(false);
+  const [showEnhancements, setShowEnhancements] = useState(false);
 
   const handleConsultationPopUp = () => {
     setConsultationsShowed(!ConsultationsShowe);
@@ -48,6 +55,16 @@ export default function FirstView({ cookiesWindow }: AppProps) {
       return () => (window as any).cancelIdleCallback?.(id);
     }
     const timeout = window.setTimeout(show, 700);
+    return () => window.clearTimeout(timeout);
+  }, []);
+
+  React.useEffect(() => {
+    const show = () => setShowEnhancements(true);
+    if ("requestIdleCallback" in window) {
+      const id = (window as any).requestIdleCallback(show, { timeout: 1800 });
+      return () => (window as any).cancelIdleCallback?.(id);
+    }
+    const timeout = window.setTimeout(show, 1000);
     return () => window.clearTimeout(timeout);
   }, []);
 
@@ -77,11 +94,13 @@ export default function FirstView({ cookiesWindow }: AppProps) {
         />
       </Head>
       <div className="main-index bg-white">
-        <WhatsAppButton />
-        <Consultation
-          handleConsultationPopUp={handleConsultationPopUp}
-          ConsultationsShowed={ConsultationsShowe}
-        />
+        {showEnhancements && <WhatsAppButton />}
+        {showEnhancements && (
+          <Consultation
+            handleConsultationPopUp={handleConsultationPopUp}
+            ConsultationsShowed={ConsultationsShowe}
+          />
+        )}
         <Header
           handleConsultationPopUp={handleConsultationPopUp}
           loadLoader={loadLoader}

@@ -32,7 +32,7 @@ export default function HomeViewAlt() {
         alt=""
         fetchPriority="high"
         decoding="async"
-        className="absolute inset-0 h-full w-full object-cover z-10"
+        className="absolute inset-0 -z-10 h-full w-full object-cover z-10"
       />
       <div className=" md:w-[50%] w-[98vw] mx-auto">
         <div className="md:mt-[100px] mt-[70px]">
