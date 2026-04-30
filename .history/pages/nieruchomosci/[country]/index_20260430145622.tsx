@@ -242,7 +242,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   } else if (typeList.length > 1) {
     query = query.or(typeList.map((t) => `type.ilike.${t}`).join(","));
   }
-  //asas
+
   if (bathsExact.length > 0) {
     query = query.in("baths", bathsExact);
   } else {
