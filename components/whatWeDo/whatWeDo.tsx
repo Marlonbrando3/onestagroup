@@ -15,7 +15,8 @@ export default function WhatWeDo({ icon, img, t, d }: data) {
         <Image
           src={`/${img}.png`}
           fill
-          objectFit="contain"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-contain"
           alt="etapts"
         ></Image>
       </div>

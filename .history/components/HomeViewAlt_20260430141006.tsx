@@ -26,7 +26,7 @@ export default function HomeViewAlt() {
   }, []);
 
   return (
-    <div className="w-screen md:h-screen h-auto flex bg-[url('/coast_2.webp')] bg-cover ">
+    <div className="w-screen md:h-screen h-auto flex bg-[url('/coast_2.svg')] bg-cover ">
       <div className=" md:w-[50%] w-[98vw] mx-auto">
         <div className="md:mt-[100px] mt-[70px]">
           <div className="md:pl-[40px] md:mr-[50px] ml-[10px] text-[34px] md:leading-[34px] leading-[24px] mb-[30px]">
