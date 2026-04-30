@@ -32,7 +32,7 @@ export default function ResultsSlider({
   const imagesArray = Array.isArray(images) ? images : images ? [images] : [];
 
   const slides = useMemo(() => {
-    const base = imagesArray.slice(0, 4).map((img: any, i: number) => ({
+    const base: Array<{ key: string; type: "image" | "more"; url: string }> = imagesArray.slice(0, 4).map((img: any, i: number) => ({
       key: `img-${i}`,
       type: "image" as const,
       url: typeof img === "string" ? img : img?.url,
