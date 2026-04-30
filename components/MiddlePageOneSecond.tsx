@@ -15,7 +15,6 @@ export default function MiddlePageOneSecond() {
       <Image
         src="/differentppl.webp"
         fill
-        objectFit="cover"
         className="lg:pr-[500px] object-[40%_20%]"
         alt="spain"
       ></Image>

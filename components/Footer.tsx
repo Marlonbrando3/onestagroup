@@ -32,10 +32,9 @@ export default function Footer() {
           <div className="border-black w-[300px] h-[200px]">
             <Image
               src={LogoType}
-              objectFit="contian"
               className="w-[200px] h-[100px]"
               alt="logo_onesta"
-              layout="intrinsic"
+              style={{ objectFit: "contain" }}
             />
             <p className="uppercase text-black mt-[30px] tracking-[1px]">
               Obserwuj nas na social media
