@@ -22,7 +22,6 @@ export default function RegionsMainPageElement({
   return (
     <Link
       href={`/nieruchomosci/${country.toLowerCase()}?region=${query}`}
-      reloadDocument
       className={`lg:w-[45%] w-[70%] lg:h-[70%] h-[49.5%] bg-[#275278] relative ovrflow-hidden border md:mt-[${parseInt(
         number,
       )}px] rounded-md overflow-hidden group cursor-pointer`}
