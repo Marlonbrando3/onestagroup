@@ -1,19 +1,35 @@
-import React from "react";
-import {
-  Red_Hat_DisplayFont,
-  MontserratSans,
-  GwendolynSans,
-} from "../fonts/fonts";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import React, { useEffect, useState } from "react";
+import { Red_Hat_DisplayFont, MontserratSans } from "../fonts/fonts";
 
 import Image from "next/image";
 
 export default function HomeViewAlt() {
+  const [showHeroVideo, setShowHeroVideo] = useState(false);
+
+  useEffect(() => {
+    const connection = (navigator as Navigator & { connection?: any })
+      .connection;
+
+    if (connection?.saveData) {
+      return;
+    }
+
+    const showVideo = () => setShowHeroVideo(true);
+
+    if (document.readyState === "complete") {
+      const timeout = window.setTimeout(showVideo, 600);
+      return () => window.clearTimeout(timeout);
+    }
+
+    window.addEventListener("load", showVideo, { once: true });
+    return () => window.removeEventListener("load", showVideo);
+  }, []);
+
   return (
     <div className="w-screen md:h-screen h-auto flex bg-[url('/coast_2.svg')] bg-cover ">
       <div className=" md:w-[50%] w-[98vw] mx-auto">
         <div className="md:mt-[100px] mt-[70px]">
-          <p className="md:pl-[40px] md:mr-[50px] ml-[10px] text-[34px] md:leading-[34px] leading-[24px] mb-[30px]">
+          <div className="md:pl-[40px] md:mr-[50px] ml-[10px] text-[34px] md:leading-[34px] leading-[24px] mb-[30px]">
             {/* <span className="font-bold">Onesta Group</span> */}
             <br></br>
             <span
@@ -31,7 +47,7 @@ export default function HomeViewAlt() {
               <span className="font-[800]">bezpiecznego i mądrego</span>{" "}
               <br></br>proces poszukiwań i zakupu?
             </p>
-          </p>
+          </div>
           <p
             className={`${MontserratSans.className} md:pl-[40px] md:mr-[50px] ml-[10px] text-[14px]`}
           >
@@ -110,20 +126,31 @@ export default function HomeViewAlt() {
               Hiszpania, Cypr, Dominikana, Dubaj
             </span>
           </div> */}
-          <video
-            //   onLoad={handleShowingVideo}
-            width="90%"
-            height="110%"
-            src="/Timeline2.mp4"
-            title="YouTube video player"
-            autoPlay
-            muted
-            loop
-            // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            // referrerpolicy="strict-origin-when-cross-origin"
-            // allowfullscreen
-            className="w-[90%] lg:h-[560px] h-[800px] clear-both object-cover rounded-[10px] border"
-          ></video>{" "}
+          <div className="w-[90%] lg:h-[560px] h-[800px] clear-both relative overflow-hidden rounded-[10px] border">
+            <Image
+              src="/bg_main_site_2.png"
+              fill
+              sizes="50vw"
+              className="object-cover"
+              alt=""
+              priority
+            />
+            {showHeroVideo && (
+              <video
+                width="90%"
+                height="110%"
+                src="/Timeline2.mp4"
+                title="Onesta Group"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="none"
+                poster="/bg_main_site_2.png"
+                className="absolute inset-0 h-full w-full object-cover"
+              ></video>
+            )}
+          </div>{" "}
         </div>
       </div>
     </div>

@@ -98,7 +98,7 @@ export default function Consultation({
           <p className="text-[18px] text-center font-[800] px-[10px]">
             Dziękujemy!<br></br>Wkrótce się z Tobą skontaktujemy.
             <br></br>
-            <p>Do usłyszenia!</p>
+            <span className="block">Do usłyszenia!</span>
           </p>
           <div
             className="mt-[150px] cursor-pointer"
