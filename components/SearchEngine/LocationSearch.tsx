@@ -209,7 +209,7 @@ export default function LocationSearch({ value, onChange, className }: Props) {
             >
               <span>{item.name}</span>
               <span className="text-[14px] text-gray-600">
-                {item.type === "town" && "Miasto"}
+                {item.type === "city" && "Miasto"}
                 {item.type === "province" && "Region"}
                 {item.type === "coast" && "Wybrzeże"}
               </span>
