@@ -59,8 +59,8 @@ export default function FirstView({ cookiesWindow }: AppProps) {
       const id = (window as any).requestIdleCallback(show, { timeout: 1200 });
       return () => (window as any).cancelIdleCallback?.(id);
     }
-    const timeout = window.setTimeout(show, 700);
-    return () => window.clearTimeout(timeout);
+    const timeout = (window as any).setTimeout(show, 700);
+    return () => (window as any).clearTimeout(timeout);
   }, []);
 
   React.useEffect(() => {
@@ -69,8 +69,8 @@ export default function FirstView({ cookiesWindow }: AppProps) {
       const id = (window as any).requestIdleCallback(show, { timeout: 1800 });
       return () => (window as any).cancelIdleCallback?.(id);
     }
-    const timeout = window.setTimeout(show, 1000);
-    return () => window.clearTimeout(timeout);
+    const timeout = (window as any).setTimeout(show, 1000);
+    return () => (window as any).clearTimeout(timeout);
   }, []);
 
   return (
