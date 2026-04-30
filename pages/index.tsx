@@ -20,8 +20,6 @@ type AppProps = {
 };
 
 export default function FirstView({ cookiesWindow }: AppProps) {
-  const siteId = 3555670;
-  const hotjarVersion = 6;
   const mainLoader = useRef<any>();
 
   const [ConsultationsShowe, setConsultationsShowed] = useState(false);
