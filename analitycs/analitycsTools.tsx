@@ -5,15 +5,15 @@ import Script from "next/script";
 export default function AnalitycsTools() {
   return (
     <>
-      {/* Cookie consent */}
+      {/* Cookie consent - defer to avoid render blocking */}
       <Script
         id="cookieyes"
         src="https://cdn-cookieyes.com/client_data/2e3a14035f8a1b4efce3a26bdd1288d1/script.js"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
       />
 
       {/* Facebook Pixel */}
-      <Script id="facebook-pixel" strategy="lazyOnload">
+      <Script id="facebook-pixel" strategy="afterInteractive">
         {`
           (function () {
             var run = function () {
@@ -61,7 +61,7 @@ export default function AnalitycsTools() {
         `}
       </Script>
 
-      {/* Hotjar */}
+      {/* Hotjar - least critical, load last */}
       <Script id="hotjar" strategy="lazyOnload">
         {`
           (function () {

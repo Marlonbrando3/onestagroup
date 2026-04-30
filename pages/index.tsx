@@ -1,11 +1,16 @@
 import React from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import Header from "../components/Header";
 import { useState, useRef } from "react";
 import HomeViewAlt from "@/components/HomeViewAlt";
-import MiddlePageOne from "@/components/MiddlePageOne";
 import WhatWeDoMainPage from "@/components/WhatWeDoMainPage";
+
+const Header = dynamic(() => import("../components/Header"), {
+  loading: () => <div style={{ height: "80px" }} />,
+});
+const MiddlePageOne = dynamic(() => import("@/components/MiddlePageOne"), {
+  loading: () => <div style={{ height: "340px", maxHeight: "300px" }} />,
+});
 
 type AppProps = {
   cookiesWindow: any;
