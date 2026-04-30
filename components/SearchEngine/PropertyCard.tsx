@@ -110,8 +110,8 @@ export default function PropertyCard({ property }: PropertyProps) {
 
             <div className="w-full md:h-28 lg:leading-6 md:pl-8 md:pt-8 pr-12 lg:text-[18px] text-[20px] leading-[24px] pl-8 py-[1px] font-semibold">
               <p>
-                {property?.type && typeDictionary[property.type]
-                  ? typeDictionary[property.type]
+                {property?.type && property.type in typeDictionary
+                  ? typeDictionary[property.type as keyof typeof typeDictionary]
                   : "Nieruchomość"}
                 &nbsp;w {property?.town}
               </p>
