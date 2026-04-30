@@ -68,7 +68,7 @@ function HomeView() {
           onLoad={handleShowingVideo}
           width="100%"
           height="110%"
-          src="/Timeline2.mp4"
+          src="/Timeline2.webm"
           // src="https://www.youtube.com/embed/QSKrrqmxpaw?si=g_hflB_vSSZLszs5&autoplay=1&mute=1&showinfo=0&controls=0&vq=hd1080&loop=1&playlist=QSKrrqmxpaw"
           title="YouTube video player"
           autoPlay
