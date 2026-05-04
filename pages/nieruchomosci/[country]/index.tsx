@@ -195,6 +195,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     priceMin,
     priceMax,
     location,
+    sort,
   } = context.query;
 
   const provinces = region;
@@ -226,6 +227,14 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     .filter((l) => l?.type === "province")
     .map((l) => l!.name);
 
+  let orderColumn = "price";
+  let orderAscending = true;
+
+  if (sort === "price_desc") {
+    orderColumn = "price";
+    orderAscending = false;
+  }
+
   let query = supabaseServer
     .from("properties")
     .select("*", { count: "exact" })
@@ -234,7 +243,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     .not("images", "is", null)
     .neq("images", "[]")
     .in("new_build", marketType !== null ? [marketType] : [true, false])
-    .order("external_id", { ascending: false })
+    .order(orderColumn, { ascending: orderAscending })
     .range(from, to);
 
   if (typeList.length === 1) {

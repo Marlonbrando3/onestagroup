@@ -4,13 +4,12 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   swcMinify: true,
   images: {
-    formats: ["image/avif", "image/webp"],
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "es-metainmo.ams3.cdn.digitaloceanspaces.com",
+        protocol: 'https',
+        hostname: 'es-metainmo.ams3.cdn.digitaloceanspaces.com',
       },
-    ],
   },
 };
 

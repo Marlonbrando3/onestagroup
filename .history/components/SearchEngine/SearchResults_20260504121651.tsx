@@ -45,7 +45,7 @@ export default function SearchResults(props: any) {
         <select
           value={sort}
           onChange={handleSortChange}
-          className="pr-5 pl-2 py-2 border border-gray-300 rounded-md text-[14px] bg-white cursor-pointer left"
+          className="px-5 py-2 border border-gray-300 rounded-md text-[14px] bg-white cursor-pointer left"
         >
           <option value="price_asc">Od najniższej ceny</option>
           <option value="price_desc">Od najwyższej ceny</option>

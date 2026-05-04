@@ -307,7 +307,7 @@ export default function Home({
         </div>
 
         {/* TAGS */}
-        <div className="flex gap-2 flex-wrap my-[1px] min-h-[30px] h-auto">
+        <div className="flex gap-2 flex-wrap my-[15px] min-h-[30px] h-auto">
           {filters.locations.length > 0 && (
             <Tag
               label={`Lokalizacja: ${filters.locations.map((l) => l.name).join(", ")}`}

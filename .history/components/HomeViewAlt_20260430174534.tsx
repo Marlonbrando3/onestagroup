@@ -108,18 +108,24 @@ export default function HomeViewAlt() {
                 </div>
               </div>
             </div>
-            <div className="flex h-auto  mt-[60px] text-[22px]">
-              {/* <div className="hidden md:block cursor-pointer border-[#275278] font-[400] text-left w-[280px] py-[1px]  duration-200 leading-[20px] relative pl-[40px]">
-                Przewijaj stronę dalej <br></br> aby dowiedzieć się więcej
-                <div className="scroll-downs text-black">
-                  <div className="mousey">
-                    <div className="scroller"></div>
-                  </div>
+            <div>
+            <div className="hidden md:block cursor-pointer border-[#275278] text-[18px] font-[400] mt-[60px] text-left w-[280px] py-[1px]  duration-200 leading-[20px] relative pl-[40px] border">
+              Przewijaj stronę dalej <br></br> aby dowiedzieć się więcej
+              <div className="scroll-downs text-black">
+                <div className="mousey">
+                  <div className="scroller"></div>
                 </div>
-              </div> */}
-              <div className="my-1 bg-[#275278] text-white rounded-md place-items-center grid px-6 py-1">
-                Wyszukaj oferty
-              </div>
+              </div>git init
+
+git add .
+
+git commit -m "first commit"
+
+git branch -M main
+
+git remote add origin https://github.com/Marlonbrando3/onestagroup.git
+
+git push -u origin main
             </div>
           </div>
         </div>{" "}

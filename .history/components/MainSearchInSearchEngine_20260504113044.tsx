@@ -254,7 +254,7 @@ export default function Home({
   return (
     <div
       id="search-wrapper"
-      className={`${OutfitSans.className} flex flex-col mx-auto tracking-[1.2px] w-[90vw] max-w-[1300px] px-0 md:sticky md:top-[80px] lg:top-[100px] md:z-30`}
+      className={`${OutfitSans.className} flex flex-col mx-auto tracking-[1.2px] w-[90vw] max-w-[1300px] md:pt-[20px] px-0 md:sticky md:top-[80px] lg:top-[100px] md:z-30`}
     >
       <div className="flex flex-col justify-end w-full">
         <div
@@ -307,7 +307,7 @@ export default function Home({
         </div>
 
         {/* TAGS */}
-        <div className="flex gap-2 flex-wrap my-[1px] min-h-[30px] h-auto">
+        <div className="flex gap-2 flex-wrap my-[15px] min-h-[30px] h-auto">
           {filters.locations.length > 0 && (
             <Tag
               label={`Lokalizacja: ${filters.locations.map((l) => l.name).join(", ")}`}

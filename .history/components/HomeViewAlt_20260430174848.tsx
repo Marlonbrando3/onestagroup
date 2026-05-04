@@ -108,16 +108,16 @@ export default function HomeViewAlt() {
                 </div>
               </div>
             </div>
-            <div className="flex h-auto  mt-[60px] text-[22px]">
-              {/* <div className="hidden md:block cursor-pointer border-[#275278] font-[400] text-left w-[280px] py-[1px]  duration-200 leading-[20px] relative pl-[40px]">
+            <div className="flex h-auto border mt-[60px] text-[18px]">
+              <div className="hidden md:block cursor-pointer border-[#275278] font-[400] text-left w-[280px] py-[1px]  duration-200 leading-[20px] relative pl-[40px] border">
                 Przewijaj stronę dalej <br></br> aby dowiedzieć się więcej
                 <div className="scroll-downs text-black">
                   <div className="mousey">
                     <div className="scroller"></div>
                   </div>
                 </div>
-              </div> */}
-              <div className="my-1 bg-[#275278] text-white rounded-md place-items-center grid px-6 py-1">
+              </div>
+              <div className="mx-4 my-1 bg-blue-600 px-[14px] text-white rounded-md place-items-center grid">
                 Wyszukaj oferty
               </div>
             </div>
