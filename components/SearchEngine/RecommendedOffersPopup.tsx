@@ -6,6 +6,7 @@ type PopupStep = "initial" | "form";
 interface FormData {
   budgetMax: string;
   email: string;
+  rodoConsent: boolean;
 }
 
 interface Props {
@@ -18,6 +19,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
   const [formData, setFormData] = useState<FormData>({
     budgetMax: "",
     email: "",
+    rodoConsent: false,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,10 +35,10 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -52,6 +54,9 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
     }
     if (isNaN(Number(formData.budgetMax)) || Number(formData.budgetMax) <= 0) {
       return "Podaj prawidłową kwotę";
+    }
+    if (!formData.rodoConsent) {
+      return "Musisz zaakceptować politykę prywatności";
     }
     return null;
   };
@@ -88,7 +93,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
       setTimeout(() => {
         onClose();
         setStep("initial");
-        setFormData({ budgetMax: "", email: "" });
+        setFormData({ budgetMax: "", email: "", rodoConsent: false });
         setSuccess(false);
       }, 2000);
     } catch (err) {
@@ -183,6 +188,30 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none"
                 />
+              </div>
+
+              <div className="flex items-start gap-2 mt-4">
+                <input
+                  type="checkbox"
+                  name="rodoConsent"
+                  id="rodoConsent"
+                  checked={formData.rodoConsent}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1 w-4 h-4 accent-yellow-500"
+                />
+                <label htmlFor="rodoConsent" className="text-sm text-gray-700">
+                  Akceptuję{" "}
+                  <a
+                    href="https://onesta.com.pl/polityka-prywatnosci"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-yellow-500 hover:text-yellow-600 underline"
+                  >
+                    politykę prywatności
+                  </a>{" "}
+                  <span className="text-red-500">*</span>
+                </label>
               </div>
 
               <button

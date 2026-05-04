@@ -71,15 +71,6 @@ export default function Header({
               />
             </div>
           </Link>
-          {/* MOBILE TOP 10 BUTTON */}
-          {handleShowOffersPopup && (
-            <button
-              onClick={handleShowOffersPopup}
-              className="lg:hidden px-3 py-2 bg-yellow-500 text-white font-semibold rounded-md text-xs hover:bg-yellow-600 whitespace-nowrap"
-            >
-              Zamów top 10
-            </button>
-          )}
 
           {/* DESKTOP MENU */}
           <ul className="hidden lg:flex items-center gap-6 font-[600]">

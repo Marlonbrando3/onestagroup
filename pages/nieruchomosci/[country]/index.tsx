@@ -60,6 +60,7 @@ export default function ListingsPage(props: PageProps) {
   const [showOffersPopup, setShowOffersPopup] = useState(false);
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasShownPopupRef = useRef(false);
+  const hasScrolledToMiddleRef = useRef(false);
 
   const handleConsultationPopUp = () => setConsultationOpen((prev) => !prev);
 
@@ -68,15 +69,6 @@ export default function ListingsPage(props: PageProps) {
       setShowOffersPopup(true);
       hasShownPopupRef.current = true;
     }
-  };
-
-  const resetInactivityTimer = () => {
-    if (inactivityTimerRef.current) {
-      clearTimeout(inactivityTimerRef.current);
-    }
-    inactivityTimerRef.current = setTimeout(() => {
-      showPopup();
-    }, 5000);
   };
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -111,25 +103,50 @@ export default function ListingsPage(props: PageProps) {
   }, []);
 
   useEffect(() => {
-    // Start inactivity timer on mount
-    resetInactivityTimer();
-
-    const handleActivity = () => {
-      resetInactivityTimer();
+    const resetTimer = () => {
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+      // Only start timer if user has scrolled to middle
+      if (hasScrolledToMiddleRef.current) {
+        inactivityTimerRef.current = setTimeout(() => {
+          showPopup();
+        }, 5000);
+      }
     };
 
+    const handleActivity = () => {
+      // Only reset timer if user has scrolled to middle
+      if (hasScrolledToMiddleRef.current) {
+        resetTimer();
+      }
+    };
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const windowHeight = window.innerHeight;
+      const scrollPercentage = scrollTop / (docHeight - windowHeight);
+
+      // User scrolled to middle - NOW start the timer
+      if (scrollPercentage >= 0.5 && !hasScrolledToMiddleRef.current) {
+        hasScrolledToMiddleRef.current = true;
+        resetTimer();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
     window.addEventListener("mousemove", handleActivity);
     window.addEventListener("keydown", handleActivity);
     window.addEventListener("click", handleActivity);
     window.addEventListener("touchstart", handleActivity);
-    window.addEventListener("scroll", handleActivity);
 
     return () => {
+      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleActivity);
       window.removeEventListener("keydown", handleActivity);
       window.removeEventListener("click", handleActivity);
       window.removeEventListener("touchstart", handleActivity);
-      window.removeEventListener("scroll", handleActivity);
       if (inactivityTimerRef.current) {
         clearTimeout(inactivityTimerRef.current);
       }
@@ -165,7 +182,13 @@ export default function ListingsPage(props: PageProps) {
         handleConsultationPopUp={handleConsultationPopUp}
         ConsultationsShowed={consultationOpen}
       />
-      <HeaderListings handleConsultationPopUp={handleConsultationPopUp} />
+      <HeaderListings
+        handleConsultationPopUp={handleConsultationPopUp}
+        handleShowOffersPopup={() => {
+          setShowOffersPopup(true);
+          hasShownPopupRef.current = false;
+        }}
+      />
       <MiniHomeView />
       <RecommendedOffersPopup
         isOpen={showOffersPopup}
