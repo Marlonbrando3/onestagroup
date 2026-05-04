@@ -11,6 +11,7 @@ import Footer from "../../../components/Footer";
 import ContactFormMain from "../../../components/ContactFormMain";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Consultation from "@/components/consulatation/consultation";
+import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
 
 interface Property {
   external_id: string | number;
@@ -56,8 +57,27 @@ export default function ListingsPage(props: PageProps) {
   const [hasMore, setHasMore] = useState(true);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [consultationOpen, setConsultationOpen] = useState(false);
+  const [showOffersPopup, setShowOffersPopup] = useState(false);
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hasShownPopupRef = useRef(false);
 
   const handleConsultationPopUp = () => setConsultationOpen((prev) => !prev);
+
+  const showPopup = () => {
+    if (!hasShownPopupRef.current) {
+      setShowOffersPopup(true);
+      hasShownPopupRef.current = true;
+    }
+  };
+
+  const resetInactivityTimer = () => {
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current);
+    }
+    inactivityTimerRef.current = setTimeout(() => {
+      showPopup();
+    }, 5000);
+  };
 
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -91,6 +111,32 @@ export default function ListingsPage(props: PageProps) {
   }, []);
 
   useEffect(() => {
+    // Start inactivity timer on mount
+    resetInactivityTimer();
+
+    const handleActivity = () => {
+      resetInactivityTimer();
+    };
+
+    window.addEventListener("mousemove", handleActivity);
+    window.addEventListener("keydown", handleActivity);
+    window.addEventListener("click", handleActivity);
+    window.addEventListener("touchstart", handleActivity);
+    window.addEventListener("scroll", handleActivity);
+
+    return () => {
+      window.removeEventListener("mousemove", handleActivity);
+      window.removeEventListener("keydown", handleActivity);
+      window.removeEventListener("click", handleActivity);
+      window.removeEventListener("touchstart", handleActivity);
+      window.removeEventListener("scroll", handleActivity);
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     setLoader(false);
   }, [router.asPath]);
 
@@ -121,6 +167,10 @@ export default function ListingsPage(props: PageProps) {
       />
       <HeaderListings handleConsultationPopUp={handleConsultationPopUp} />
       <MiniHomeView />
+      <RecommendedOffersPopup
+        isOpen={showOffersPopup}
+        onClose={() => setShowOffersPopup(false)}
+      />
       <SearchEngine
         loader={loader}
         setLoader={setLoader}
