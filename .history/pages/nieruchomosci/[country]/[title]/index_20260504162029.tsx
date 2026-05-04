@@ -51,7 +51,7 @@ export default function Property({ propertyFromSupabase }: any) {
       return (
         <div
           key={i["@_id"]}
-          className="lg:w-[170px] lg:h-[176px] md:w-[121px] md:h-[122px] w-[15vw] h-[10vw] relative cursor-pointer hover:brightness-125 duration-100"
+          className="lg:w-[170px] lg:h-[175px] md:w-[121px] md:h-[122px] w-[15vw] h-[10vw] relative cursor-pointer hover:brightness-125 duration-100"
           onClick={() => handleShowingGallery(i["@_id"])}
         >
           <Image

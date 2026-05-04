@@ -18,6 +18,7 @@ export default function Gallery({
   images,
   showSlider,
   setShowSlider,
+  choosedImage,
   setChoosedImage,
 }: props) {
   console.log(images);

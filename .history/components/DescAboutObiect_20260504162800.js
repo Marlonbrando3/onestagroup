@@ -22,7 +22,7 @@ export default function DescAboutObiect({
   const desc = { html: description };
   const { type, town, price, beds, bath, country } = propertyData;
 
-  console.log(JSON.stringify(description));
+  console.log(description);
 
   const translator = {
     Sauna: "Sauna",
@@ -71,23 +71,7 @@ export default function DescAboutObiect({
       );
   });
 
-  const formattedDescription = description
-    ?.split("\n")
-    .map((line) => {
-      const trimmed = line.trim();
-
-      // puste linie → odstęp
-      if (!trimmed) return "<br>";
-
-      // krótkie linie → nagłówek
-      if (trimmed.length < 40 && trimmed.length > 3) {
-        return `<br><strong>${trimmed}</strong><br>`;
-      }
-
-      // normalny tekst
-      return `${trimmed}<br>`;
-    })
-    .join("");
+  // console.log(localization);
 
   return (
     <div className="rounded-md lg:w-auto lg:mr-2 bg-white flex-1 text-[18px] tracking-[1.1px] font-[300] mx-[10px]">
@@ -152,7 +136,7 @@ export default function DescAboutObiect({
         OPIS PROJEKTU
       </p>
       <div
-        dangerouslySetInnerHTML={{ __html: formattedDescription }}
+        dangerouslySetInnerHTML={{ __html: description }}
         className="prose whitespace-normal md:text-[18px] text-[15px] md:leading-[30px] leading-[22px] font-[300] tracking-[1.1px] mb-[20px]"
       ></div>
       <p className="font-[600] md:text-[18px] text-[15px] my-4"> LOKALIZACJA</p>

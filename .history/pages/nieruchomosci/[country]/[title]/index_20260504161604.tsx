@@ -5,23 +5,41 @@ import Head from "next/head";
 import HeaderOffer from "../../../../components/HeaderOffer";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import MiniHomeViewOffer from "../../../../components/SearchEngine/MiniHomeViewOffer";
+import ImagesInPropetyCard from "@/components/ImagesInPropetyCard";
+import { useState, useEffect } from "react";
+import React from "react";
 import Descryption from "../../../../components/Descryption";
+import Properties from "../../../../public/properties.json";
 import Footer from "@/components/Footer";
 import { OutfitSans, TenorsSans } from "../../../../fonts/fonts";
+import { CiParking1 } from "react-icons/ci";
 import Form from "@/components/SearchEngine/IntresetedPopUp/form";
 import { IoClose } from "react-icons/io5";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
+import Loan from "@/components/loanCalc/loan";
+import Link from "next/link";
+import AnalitycsTools from "@/analitycs/analitycsTools";
+import { REGION_MAP, COUNTRY_MAP } from "@/lib/regionMap";
 import Slider from "@/components/SliderInOfferPage/slider";
 import Gallery from "@/components/SliderInOfferPage/gallery";
 import ContactInFooterMobile from "@/components/SearchEngine/ContactInFooterMobile";
 
 export default function Property({ propertyFromSupabase }: any) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [propertyData, setPropertyData] = useState<any[]>([]);
   // const [PropertyImages, setPropertyImages] = useState<any[]>([]);
 
+  const moreInfoLink = useRef<any>();
+  const headerTitle = useRef<any>();
+  const priceTitle = useRef<any>();
+  const buttonLeft = useRef<any>();
+  const buttonRight = useRef<any>();
+  const photosContainer = useRef<any>();
+  const photosContainerMain = useRef<any>();
+  const photosRow = useRef<any>();
   const intrestedPopUp: any = useRef();
 
   const [images, setImages] = useState<any[]>();
@@ -51,7 +69,7 @@ export default function Property({ propertyFromSupabase }: any) {
       return (
         <div
           key={i["@_id"]}
-          className="lg:w-[170px] lg:h-[176px] md:w-[121px] md:h-[122px] w-[15vw] h-[10vw] relative cursor-pointer hover:brightness-125 duration-100"
+          className="lg:w-[170px] lg:h-[170px] md:w-[121px] md:h-[122px] w-[15vw] h-[10vw] relative cursor-pointer hover:brightness-125 duration-100"
           onClick={() => handleShowingGallery(i["@_id"])}
         >
           <Image
@@ -65,6 +83,18 @@ export default function Property({ propertyFromSupabase }: any) {
         </div>
       );
     });
+
+  // const Touchstart = (e: any) => {
+  //   setStart(e.changedTouches[0].clientX);
+  // };
+
+  // const Touchend = (e: any) => {
+  //   setEnd(e.changedTouches[0].clientX);
+  // };
+
+  const handleIntrestedPopUp = () => {
+    intrestedPopUp.current.style.display = "flex";
+  };
 
   const handleClosingIntresetedPopUp = () => {
     intrestedPopUp.current.style.display = "none";
@@ -147,7 +177,7 @@ export default function Property({ propertyFromSupabase }: any) {
               </div>
             </div>
             {/* mini-gallery */}
-            <div className="flex md:justify-start justify-between items-start lg:w-[570px] md:w-[400px] w-[95vw] lg:flex-none  flex-wrap lg:gap-2 md:gap-3 gap-0  mt-[5px] md:mt-auto">
+            <div className="flex md:justify-start justify-between items-start lg:w-[570px] md:w-[400px] w-[95vw] lg:flex-none  flex-wrap lg:gap-5 md:gap-3 gap-0  mt-[5px] md:mt-auto">
               {imagesMiniData}
             </div>
           </div>

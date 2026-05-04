@@ -71,23 +71,27 @@ export default function DescAboutObiect({
       );
   });
 
-  const formattedDescription = description
-    ?.split("\n")
-    .map((line) => {
-      const trimmed = line.trim();
+  export const formatDescriptionAdvanced = (text) => {
+    if (!text) return "";
 
-      // puste linie → odstęp
-      if (!trimmed) return "<br>";
+    return text
+      .split("\n")
+      .map((line) => {
+        const trimmed = line.trim();
 
-      // krótkie linie → nagłówek
-      if (trimmed.length < 40 && trimmed.length > 3) {
-        return `<br><strong>${trimmed}</strong><br>`;
-      }
+        // pomijamy puste linie → dają odstęp
+        if (!trimmed) return "<br>";
 
-      // normalny tekst
-      return `${trimmed}<br>`;
-    })
-    .join("");
+        // jeśli krótki tekst → nagłówek
+        if (trimmed.length < 30) {
+          return `<br><strong>${trimmed}</strong><br>`;
+        }
+
+        // normalny tekst
+        return `${trimmed}<br>`;
+      })
+      .join("");
+  };
 
   return (
     <div className="rounded-md lg:w-auto lg:mr-2 bg-white flex-1 text-[18px] tracking-[1.1px] font-[300] mx-[10px]">

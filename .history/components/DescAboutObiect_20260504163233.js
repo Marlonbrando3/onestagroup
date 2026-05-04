@@ -80,7 +80,7 @@ export default function DescAboutObiect({
       if (!trimmed) return "<br>";
 
       // krótkie linie → nagłówek
-      if (trimmed.length < 40 && trimmed.length > 3) {
+      if (trimmed.length < 30 && trimmed.length > 3) {
         return `<br><strong>${trimmed}</strong><br>`;
       }
 
