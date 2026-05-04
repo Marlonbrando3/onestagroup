@@ -197,11 +197,11 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                     checked={formData.rodoConsent}
                     onChange={handleInputChange}
                     required
-                    className="mt-1 w-4 h-4 accent-yellow-500 min-w-[20px] min-h-[20px]"
+                    className="mt-1 w-4 h-4 accent-yellow-500"
                   />
                   <label
                     htmlFor="rodoConsent"
-                    className="text-sm text-gray-700 mt-[5px]"
+                    className="text-sm text-gray-700"
                   >
                     Akceptuję{" "}
                     <a
@@ -223,11 +223,11 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                     id="marketingConsent"
                     checked={formData.marketingConsent}
                     onChange={handleInputChange}
-                    className="mt-1 w-4 h-4 accent-yellow-500 min-w-[20px] min-h-[20px]"
+                    className="mt-1 w-4 h-4 accent-yellow-500"
                   />
                   <label
                     htmlFor="marketingConsent"
-                    className="text-sm text-gray-700 mt-[5px]"
+                    className="text-sm text-gray-700"
                   >
                     Wyrażam zgodę na przetwarzanie moich danych osobowych przez
                     Onesta Group Sp. z o.o. w celach marketingowych, w tym na

@@ -16,7 +16,7 @@ export default function ContactAgentInOffer() {
     <div className="w-full h-auto p-[10px] flex bg-gray-100 lg:flex hidden">
       <div className="w-[100px] h-[120px] relative overflow-hidden">
         <Image
-          src="/Marek.webp"
+          src="/Marek.png"
           fill
           alt="alt"
           objectFit="cover"

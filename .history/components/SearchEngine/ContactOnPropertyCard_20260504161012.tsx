@@ -75,14 +75,14 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
 
   return (
     <div className={`${OutfitSans.className} h-auto grow`}>
-      <div className="bg-white rounded-md p-4 h-[550px] hidden lg:block z-40 bg-yellow-300/[0.2]">
+      <div className="bg-white rounded-md p-4 h-[480px] hidden lg:block z-40 bg-yellow-300/[0.2]">
         <p className="font-[500] pb-4 text-[20px]"> Jestem zainteresowany</p>
         <p className="font-[300] pb-4 text-[16px] leading-[18px]">
           Skontaktuj się z nami wypełniając formularz kontaktowy
         </p>
 
         <form
-          className="w-full flex flex-col h-[450px] justify-between mt-[10px]"
+          className="w-full flex flex-col h-[340px] justify-between mt-[10px]"
           onSubmit={handleSendingProperty}
         >
           <input
@@ -127,7 +127,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
                 type="checkbox"
                 checked={rodoConsent}
                 onChange={(e) => setRodoConsent(e.target.checked)}
-                className="min-w-[18px] min-h-[18px] mt-[2px]"
+                className="w-[18px] h-[18px] mt-[2px]"
                 required
               />
               <p>
@@ -148,7 +148,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
                 type="checkbox"
                 checked={marketingConsent}
                 onChange={(e) => setMarketingConsent(e.target.checked)}
-                className="min-w-[18px] min-h-[18px] mt-[2px]"
+                className="w-[18px] h-[18px] mt-[2px]"
               />
               <p className="leading-[14px]">
                 Wyrażam zgodę na przetwarzanie moich danych osobowych przez

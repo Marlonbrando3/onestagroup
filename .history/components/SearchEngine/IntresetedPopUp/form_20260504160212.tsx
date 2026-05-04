@@ -1,14 +1,15 @@
 import React, { useRef, useState } from "react";
-import { useRouter } from "next/router";
 
-export default function FormPoUpIntrested() {
-  const router = useRouter();
-  const { offer } = router.query;
+type Ref = {
+  intrestedPopUp: any;
+  OfferNumber: any;
+};
 
+export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
   const [name, setName] = useState();
   const [phone, setPhone] = useState();
   const [email, setEMail] = useState();
-  const [msg, setMsg] = useState("");
+  const [msg, setMsg] = useState();
   const sendButton: any = useRef();
 
   const handleChangingValue = (e: any) => {
@@ -30,13 +31,13 @@ export default function FormPoUpIntrested() {
     e.preventDefault();
 
     try {
-      let res = await fetch("/api/sendFormIntresetedThisOneOffer", {
+      let res = await fetch("/api/sendFormItresetedOffers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          offer,
+          OfferNumber,
           name,
           phone,
           email,
@@ -51,18 +52,20 @@ export default function FormPoUpIntrested() {
         // router.push("https://onesta.com.pl/form/thankyoupageform");
         // setPageNumber(2);
 
-        // setTimeout(() => {
-        //   intrestedPopUp.current.style.display = "none";
-        // }, 2000);
+        setTimeout(() => {
+          intrestedPopUp.current.style.display = "none";
+        }, 2000);
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
-    <div className="z-30 md:w-[800px] w-full h-[500px] bg-[url('/bg-form.png')] bg-[length:400px_auto] md:bg-cover overflow-hidden rounded-xl flex md:justify-end relative mx-auto">
+    <div className="md:w-[800px] w-full h-[500px] bg-[url('/bg-form.png')] bg-[length:400px_auto] md:bg-cover overflow-hidden rounded-xl flex md:justify-end relative">
       <form
         onSubmit={handleSendingForm}
-        className="flex flex-col md:w-[500px] h-full items-center justify-evenly bg-white p-[20px]"
+        className="flex flex-col border md:w-[500px] h-full items-center justify-evenly bg-white p-[20px] rounded-xl shadow-[10px_25px_60px_20px_rgba(0,0,0,0.3)]"
       >
         <p className="text-[20px]">
           Jakich informacji odnośnie nieruchomości potrzebujesz?
@@ -100,17 +103,9 @@ export default function FormPoUpIntrested() {
             className="border border-gray-60 w-[20px] h-[20px] cursor-pointer"
             required
           ></input>
-          <p className="flex-1">
-            Zapoznałem się i akceptuję{" "}
-            <a
-              href="/polityka-prywatnosci"
-              className="underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              politykę prywatności
-            </a>
-            . (wymagane)
+          <p className="flex-1 ml-[5px]">
+            Potwierdzam, że zapoznałem się i akceptuję regulamin i politykę
+            prywatności (wymagane)
           </p>
         </div>
         <div className="w-full  h-auto text-[12px] flex">

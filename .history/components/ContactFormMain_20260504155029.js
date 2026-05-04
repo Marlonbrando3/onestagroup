@@ -169,10 +169,8 @@ export default function ContactFormMain() {
                   }
                 />
                 <span>
-                  Wyrażam zgodę na przetwarzanie moich danych osobowych przez
-                  Onesta Group Sp. z o.o. w celach marketingowych, w tym na
-                  kontakt telefoniczny oraz mailowy w celu przedstawienia ofert
-                  nieruchomości.
+                  Wyrażam zgodę na kontakt telefoniczny oraz mailowy w celu
+                  przedstawienia ofert nieruchomości.
                 </span>
               </label>
             </div>

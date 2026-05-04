@@ -69,26 +69,7 @@ export default function ContactFormMain() {
     >
       <div className="absolute w-full h-full bg-gray-900/[0]"></div>
 
-      <div className="h-11/12 lg:w-[1200px] w-full flex flex-col-reverse lg:flex-row lg:flex py-10 lg:mx-auto">
-        {/* MOBILE DANE FIRMY */}
-        <div className="flex lg:flex-col items-center z-10 lg:w-8/12 w-full justify-center lg:pt-0 pt-24 visible lg:hidden">
-          <div className="text-xs sm:text-lg flex flex-col justify-center items-start lg:items-center h-1/2 w-5/12 text-white">
-            <p className="font-bold">Siedziba firmy:</p>
-            <p>Onesta Group sp. z o.o.</p>
-            <p>53-148 Wrocław</p>
-            <p>ul. Wolbromska 18/1b</p>
-            <p>NIP: 899 292 23 78</p>
-          </div>
-          <div className="text-xs sm:text-lg flex flex-col md:justify-center items-start lg:items-center h-1/2 w-5/12 text-white">
-            <p className="font-bold">Biuro dla klientów:</p>
-            <p>45-865 Opole</p>
-            <p>ul. Niemodlińska 58a</p>
-            <div className="w-32 h-4"></div>
-            <p>mail: biuro@onesta.com.pl</p>
-            <p>tel.: +48 576 65 25 25</p>
-          </div>
-        </div>
-
+      <div className="h-11/12 lg:w-[1200px] w-full flex flex-col-reverse lg:flex-row py-10 lg:mx-auto">
         {/* FORM */}
         <div className="w-full lg:w-7/12">
           <form
@@ -142,6 +123,7 @@ export default function ContactFormMain() {
 
             {/* CHECKBOXY */}
             <div className="mt-4 space-y-3 text-sm text-white">
+              {/* PRIVACY */}
               <label className="flex items-start gap-2">
                 <input
                   type="checkbox"
@@ -152,14 +134,15 @@ export default function ContactFormMain() {
                   }
                 />
                 <span>
-                  Akceptuję{" "}
+                  Zapoznałem się z{" "}
                   <Link href="/polityka-prywatnosci" className="underline">
-                    politykę prywatności
-                  </Link>
-                  .
+                    polityką prywatności
+                  </Link>{" "}
+                  i akceptuję jej treść.
                 </span>
               </label>
 
+              {/* MARKETING */}
               <label className="flex items-start gap-2">
                 <input
                   type="checkbox"
@@ -169,10 +152,8 @@ export default function ContactFormMain() {
                   }
                 />
                 <span>
-                  Wyrażam zgodę na przetwarzanie moich danych osobowych przez
-                  Onesta Group Sp. z o.o. w celach marketingowych, w tym na
-                  kontakt telefoniczny oraz mailowy w celu przedstawienia ofert
-                  nieruchomości.
+                  Wyrażam zgodę na kontakt telefoniczny oraz mailowy w celu
+                  przedstawienia ofert nieruchomości.
                 </span>
               </label>
             </div>
@@ -185,25 +166,6 @@ export default function ContactFormMain() {
               Wyślij
             </button>
           </form>
-        </div>
-
-        {/* DESKTOP DANE FIRMY */}
-        <div className="lg:flex lg:flex-col items-start z-10 lg:w-6/12 w-full justify-center lg:pt-0 pt-24 hidden">
-          <div className="text-xs lg:text-lg flex flex-col justify-center items-start h-1/2 text-white px-[5px]">
-            <p className="font-bold">Siedziba firmy:</p>
-            <p>Onesta Group sp. z o.o.</p>
-            <p>53-148 Wrocław</p>
-            <p>ul. Wolbromska 18/1b</p>
-            <p>NIP: 899 292 23 78</p>
-          </div>
-          <div className="text-xs lg:text-lg flex flex-col justify-center items-start h-1/2 text-white px-[5px]">
-            <p className="font-bold">Biuro dla klientów:</p>
-            <p>45-865 Opole</p>
-            <p>ul. Niemodlińska 58a</p>
-            <div className="w-32 h-4"></div>
-            <p>mail: biuro@onesta.com.pl</p>
-            <p>tel.: +48 576 75 25 25</p>
-          </div>
         </div>
       </div>
     </div>

@@ -120,9 +120,7 @@ export default function FormPoUpIntrested() {
             required
           ></input>
           <p className="flex-1 ml-[5px]">
-            Wyrażam zgodę na przetwarzanie moich danych osobowych przez Onesta
-            Group Sp. z o.o. w celach marketingowych, w tym na kontakt mailowy w
-            celu przedstawienia ofert nieruchomości.
+            Wrażam zgodę na otrzymywanie ofert w postaci mailowego newslettera.
           </p>
         </div>
         <button className="bg-green-500 place-content-center grid w-[180px] h-[40px] text-[20px] rounded-md text-white">

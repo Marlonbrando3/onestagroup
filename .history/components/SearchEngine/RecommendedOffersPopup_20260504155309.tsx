@@ -7,7 +7,6 @@ interface FormData {
   budgetMax: string;
   email: string;
   rodoConsent: boolean;
-  marketingConsent: boolean; // ⬅️ DODANE
 }
 
 interface Props {
@@ -21,7 +20,6 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
     budgetMax: "",
     email: "",
     rodoConsent: false,
-    marketingConsent: false, // ⬅️ DODANE
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,13 +43,21 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
   };
 
   const validateForm = (): string | null => {
-    if (!formData.email.trim()) return "Email jest wymagany";
-    if (!formData.email.includes("@")) return "Podaj prawidłowy adres email";
-    if (!formData.budgetMax.trim()) return "Budżet jest wymagany";
-    if (isNaN(Number(formData.budgetMax)) || Number(formData.budgetMax) <= 0)
+    if (!formData.email.trim()) {
+      return "Email jest wymagany";
+    }
+    if (!formData.email.includes("@")) {
+      return "Podaj prawidłowy adres email";
+    }
+    if (!formData.budgetMax.trim()) {
+      return "Budżet jest wymagany";
+    }
+    if (isNaN(Number(formData.budgetMax)) || Number(formData.budgetMax) <= 0) {
       return "Podaj prawidłową kwotę";
-    if (!formData.rodoConsent)
+    }
+    if (!formData.rodoConsent) {
       return "Musisz zaakceptować politykę prywatności";
+    }
     return null;
   };
 
@@ -87,12 +93,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
       setTimeout(() => {
         onClose();
         setStep("initial");
-        setFormData({
-          budgetMax: "",
-          email: "",
-          rodoConsent: false,
-          marketingConsent: false, // ⬅️ RESET
-        });
+        setFormData({ budgetMax: "", email: "", rodoConsent: false });
         setSuccess(false);
       }, 2000);
     } catch (err) {
@@ -118,7 +119,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
         {step === "initial" && (
           <div className="p-8 text-center">
             <h2 className="text-[30px] font-semibold mb-8 text-gray-800">
-              Nie wiesz co wybrać?
+              Nie wiesz co wybrać?{" "}
               <p className="text-[16px]">
                 Zamów zestaw TOP 10 ofert w Twoim bużecie.
               </p>
@@ -168,8 +169,9 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                   name="budgetMax"
                   value={formData.budgetMax}
                   onChange={handleInputChange}
+                  placeholder="np. 500000"
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none"
                 />
               </div>
 
@@ -182,64 +184,56 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  placeholder="twoj@email.com"
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none"
                 />
               </div>
 
-              {/* ✔ POPRAWIONE CHECKBOXY */}
-              <div className="mt-4 space-y-3">
-                <div className="flex items-start gap-2">
-                  <input
-                    type="checkbox"
-                    name="rodoConsent"
-                    id="rodoConsent"
-                    checked={formData.rodoConsent}
-                    onChange={handleInputChange}
-                    required
-                    className="mt-1 w-4 h-4 accent-yellow-500 min-w-[20px] min-h-[20px]"
-                  />
-                  <label
-                    htmlFor="rodoConsent"
-                    className="text-sm text-gray-700 mt-[5px]"
+              <div className="flex items-start gap-2 mt-4">
+                <input
+                  type="checkbox"
+                  name="rodoConsent"
+                  id="rodoConsent"
+                  checked={formData.rodoConsent}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1 w-4 h-4 accent-yellow-500"
+                />
+                <label htmlFor="rodoConsent" className="text-sm text-gray-700">
+                  Akceptuję{" "}
+                  <a
+                    href="https://onesta.com.pl/polityka-prywatnosci"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-yellow-500 hover:text-yellow-600 underline"
                   >
-                    Akceptuję{" "}
-                    <a
-                      href="https://onesta.com.pl/polityka-prywatnosci"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-yellow-500 underline"
-                    >
-                      politykę prywatności
-                    </a>
-                    <span className="text-red-500">*</span>
-                  </label>
-                </div>
-
-                <div className="flex items-start gap-2">
-                  <input
-                    type="checkbox"
-                    name="marketingConsent"
-                    id="marketingConsent"
-                    checked={formData.marketingConsent}
-                    onChange={handleInputChange}
-                    className="mt-1 w-4 h-4 accent-yellow-500 min-w-[20px] min-h-[20px]"
-                  />
-                  <label
-                    htmlFor="marketingConsent"
-                    className="text-sm text-gray-700 mt-[5px]"
-                  >
-                    Wyrażam zgodę na przetwarzanie moich danych osobowych przez
-                    Onesta Group Sp. z o.o. w celach marketingowych, w tym na
-                    kontakt mailowy w celu przedstawienia ofert nieruchomości.
-                  </label>
-                </div>
+                    politykę prywatności
+                  </a>{" "}
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="checkbox"
+                  name="marketingConsent"
+                  id="marketingConsent"
+                  checked={formData.marketingConsent}
+                  onChange={handleInputChange}
+                  className="mt-1 w-4 h-4 accent-yellow-500"
+                />
+                <label
+                  htmlFor="marketingConsent"
+                  className="text-sm text-gray-700"
+                >
+                  Wyrażam zgodę na przetwarzanie moich danych osobowych przez
+                  Onesta Group Sp. z o.o. w celach marketingowych, w tym na
+                  kontakt mailowy w celu przedstawienia ofert nieruchomości.
+                </label>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full px-4 py-3 bg-yellow-500 text-white font-semibold rounded-md mt-6"
+                className="w-full px-4 py-3 bg-yellow-500 text-white font-semibold rounded-md hover:bg-yellow-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors mt-6"
               >
                 {loading ? "Wysyłanie..." : "Wyślij"}
               </button>

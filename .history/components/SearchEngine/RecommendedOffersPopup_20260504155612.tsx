@@ -201,7 +201,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                   />
                   <label
                     htmlFor="rodoConsent"
-                    className="text-sm text-gray-700 mt-[5px]"
+                    className="text-sm text-gray-700"
                   >
                     Akceptuję{" "}
                     <a
@@ -227,7 +227,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                   />
                   <label
                     htmlFor="marketingConsent"
-                    className="text-sm text-gray-700 mt-[5px]"
+                    className="text-sm text-gray-700"
                   >
                     Wyrażam zgodę na przetwarzanie moich danych osobowych przez
                     Onesta Group Sp. z o.o. w celach marketingowych, w tym na

@@ -79,7 +79,7 @@ export default function Consultation({
     <div
       className={`${MontserratSans.className} ${
         ConsultationsShowed === true ? "block" : "hidden"
-      }  z-50 md:w-[800px] w-[90vw] h-[500px] bg-[url('/consultationsPopUp.png')] bg-[length:[0px_1000px] md:bg-[position:440%_center] md:bg-[length:90%_auto] overflow-hidden rounded-xl fixed flex md:justify-end top-[15vh] left-0 right-0 border-2  border-white mx-auto shadow-xl`}
+      }  z-50 md:w-[800px] w-[90vw] h-[500px] bg-[url('/consultationsPopUp.png')] bg-[length:[0px_1000px] md:bg-[position:440%_center] md:bg-[length:90%_auto] overflow-hidden rounded-xl fixed flex md:justify-end top-[15vh] left-0 right-0 mx-auto border shadow-xl`}
     >
       <IoCloseCircleOutline
         className="absolute mt-[10px] w-[25px] h-[25px] right-[10px] cursor-pointer z-20"
@@ -144,7 +144,7 @@ export default function Consultation({
             className="border border-gray-60 w-[20px] h-[20px] cursor-pointer"
             required
           ></input>
-          <p className="flex-1 pl-[10px]">
+          <p className="flex-1">
             Zapoznałem się i akceptuję{" "}
             <a
               href="/polityka-prywatnosci"
@@ -161,11 +161,10 @@ export default function Consultation({
           <input
             type="checkbox"
             className=" border-gray-60 w-[20px] h-[20px] cursor-pointer"
+            required
           ></input>
-          <p className="flex-1 pl-[10px]">
-            Wyrażam zgodę na przetwarzanie moich danych osobowych przez Onesta
-            Group Sp. z o.o. w celach marketingowych, w tym na kontakt mailowy w
-            celu przedstawienia ofert nieruchomości.
+          <p className="flex-1 ml-[5px] leading-[13px]">
+            Wrażam zgodę na otrzymywanie ofert w postaci mailowego newslettera.
           </p>
         </div>
         <button className="bg-green-500 place-content-center grid w-[180px] h-[40px] text-[16px] font-[600] rounded-md text-white uppercase">

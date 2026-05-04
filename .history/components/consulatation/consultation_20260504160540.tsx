@@ -79,8 +79,9 @@ export default function Consultation({
     <div
       className={`${MontserratSans.className} ${
         ConsultationsShowed === true ? "block" : "hidden"
-      }  z-50 md:w-[800px] w-[90vw] h-[500px] bg-[url('/consultationsPopUp.png')] bg-[length:[0px_1000px] md:bg-[position:440%_center] md:bg-[length:90%_auto] overflow-hidden rounded-xl fixed flex md:justify-end top-[15vh] left-0 right-0 border-2  border-white mx-auto shadow-xl`}
+      }  z-50 md:w-[800px] w-[90vw] h-[500px] bg-[url('/consultationsPopUp.png')] bg-[length:[0px_1000px] md:bg-[position:440%_center] md:bg-[length:90%_auto] overflow-hidden rounded-xl fixed flex md:justify-end top-[15vh] left-0 right-0 mx-auto shadow-xl relative`}
     >
+      <div className="absolute w-screen h-full bg-gray-900"></div>
       <IoCloseCircleOutline
         className="absolute mt-[10px] w-[25px] h-[25px] right-[10px] cursor-pointer z-20"
         onClick={handleConsultationPopUp}

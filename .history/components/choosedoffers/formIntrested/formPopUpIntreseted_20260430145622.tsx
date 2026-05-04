@@ -100,17 +100,9 @@ export default function FormPoUpIntrested() {
             className="border border-gray-60 w-[20px] h-[20px] cursor-pointer"
             required
           ></input>
-          <p className="flex-1">
-            Zapoznałem się i akceptuję{" "}
-            <a
-              href="/polityka-prywatnosci"
-              className="underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              politykę prywatności
-            </a>
-            . (wymagane)
+          <p className="flex-1 ml-[5px]">
+            Potwierdzam, że zapoznałem się i akceptuję regulamin i politykę
+            prywatności (wymagane)
           </p>
         </div>
         <div className="w-full  h-auto text-[12px] flex">
@@ -120,9 +112,7 @@ export default function FormPoUpIntrested() {
             required
           ></input>
           <p className="flex-1 ml-[5px]">
-            Wyrażam zgodę na przetwarzanie moich danych osobowych przez Onesta
-            Group Sp. z o.o. w celach marketingowych, w tym na kontakt mailowy w
-            celu przedstawienia ofert nieruchomości.
+            Wrażam zgodę na otrzymywanie ofert w postaci mailowego newslettera.
           </p>
         </div>
         <button className="bg-green-500 place-content-center grid w-[180px] h-[40px] text-[20px] rounded-md text-white">
