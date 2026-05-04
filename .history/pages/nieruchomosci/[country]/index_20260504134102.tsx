@@ -293,10 +293,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
       query = query.in("province", selectedProvinces);
     }
   } else {
-    query = query.in(
-      "province",
-      provincesParam ?? ["Alicante", "Murcia", "Malaga"],
-    );
+    query = query.in("province", provincesParam ?? ["Alicante", "Murcia", "Malaga"]);
   }
 
   const { data: properties, count, error } = await query;

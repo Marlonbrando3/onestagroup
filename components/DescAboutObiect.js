@@ -54,7 +54,13 @@ export default function DescAboutObiect({
 
   console.log(town);
 
-  const featuresComparision = features.map((i) => {
+  const normalizedFeatures = Array.isArray(features)
+    ? features
+    : typeof features === "string"
+      ? [features]
+      : [];
+
+  const featuresComparision = normalizedFeatures.map((i) => {
     if (translator[i] !== undefined)
       return (
         <div className="pr-[10px] md:text-[18px] text-[15px]">
