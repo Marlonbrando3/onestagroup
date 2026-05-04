@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <main className={`${WorkSans.className} w-full`}>
-      <Header />
+      <Header handleConsultationPopUp={() => {}} loadLoader={() => {}} />
       <Mainview />
       <div className="md:w-[1000px] mx-auto">
         <Whyinvestorstay />
