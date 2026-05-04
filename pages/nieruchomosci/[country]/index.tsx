@@ -198,7 +198,11 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     sort,
   } = context.query;
 
-  const provinces = region;
+  const provincesParam = region
+    ? Array.isArray(region)
+      ? region
+      : [region]
+    : undefined;
 
   const bathsFrom = bathsMin ? Number(bathsMin) : 0;
   const bathsTo = bathsMax ? Number(bathsMax) : 99;
@@ -275,7 +279,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
       query = query.in("province", selectedProvinces);
     }
   } else {
-    query = query.in("province", provinces ?? ["Alicante", "Murcia", "Malaga"]);
+    query = query.in("province", provincesParam ?? ["Alicante", "Murcia", "Malaga"]);
   }
 
   const { data: properties, count, error } = await query;
