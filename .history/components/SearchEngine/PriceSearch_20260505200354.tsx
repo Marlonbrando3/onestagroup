@@ -106,7 +106,7 @@ export default function PriceSelect({ value, onChange }: Props) {
       </div>
 
       {open && (
-        <div className="absolute -top-[250px] left-0 right-0 w-[95vw] mx-auto lg:top-[60px] lg:-left-[340px] lg:right-auto lg:w-[500px] bg-white  shadow-xl p-6 z-[9999] rounded-xl">
+        <div className="absolute -top-[515px] left-0 right-0 w-[95vw] mx-auto lg:top-[600px] lg:-left-[340px] lg:right-auto lg:w-[500px] bg-white  shadow-xl p-6 z-[9999] rounded-xl">
           <div className="flex flex-col gap-6">
             <p className="text-[16px] text-gray-600 tracking-wide">
               Zakres cenowy
