@@ -136,17 +136,10 @@ export default function LocationSearch({ value, onChange, className }: Props) {
       ref={ref}
       className={`relative h-full  flex-1 rounded-[30px] ${className ?? ""}`}
     >
-      <div className="border-yellow-500 bg-white rounded-[30px] h-full flex flex-col justify-center px-3 relative overflow-hidden">
-        <div className="flex justify-between items-center mb-1">
-          <label className="text-xs font-semibold text-gray-600">
-            Lokalizacja
-          </label>
-          {limitMessage && (
-            <p className="text-xs font-semibold text-white bg-red-500 px-1 py-0 rounded whitespace-nowrap">
-              {limitMessage}
-            </p>
-          )}
-        </div>
+      <div className="border-yellow-500 bg-white rounded-[30px] h-full flex flex-col justify-center px-3 relative">
+        <label className="text-xs font-semibold text-gray-600 mb-1">
+          Lokalizacja
+        </label>
         <div className="flex flex-wrap items-center gap-2">
           {value.map((loc) => (
             <div
@@ -181,6 +174,11 @@ export default function LocationSearch({ value, onChange, className }: Props) {
             className="outline-none bg-transparent flex-1 min-w-[150px] text-sm"
           />
         </div>
+        {limitMessage && (
+          <p className="absolute bottom-[-135px] left-0 text-sm font-semibold text-yellow-600">
+            {limitMessage}
+          </p>
+        )}
       </div>
 
       {open && results.length > 0 && (
