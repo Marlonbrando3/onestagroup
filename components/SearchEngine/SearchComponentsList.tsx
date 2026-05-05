@@ -14,7 +14,6 @@ type FunctionProps = {
   loader: any;
   setLoader: any;
   isMobileFiltersOpen: any;
-  x;
   setIsMobileFiltersOpen: any;
 };
 
