@@ -173,7 +173,7 @@ export default function ListingsPage(props: PageProps) {
   const title = `Nieruchomości ${country.toUpperCase()}`;
 
   return (
-    <div className="bg-gray-100/[0.3] w-full overflow-x-hidden">
+    <div className="bg-gray-100/[0.3]">
       <Head>
         <title>{title}</title>
       </Head>
@@ -182,13 +182,13 @@ export default function ListingsPage(props: PageProps) {
         handleConsultationPopUp={handleConsultationPopUp}
         ConsultationsShowed={consultationOpen}
       />
-      <HeaderListings
+      {/* <HeaderListings
         handleConsultationPopUp={handleConsultationPopUp}
         handleShowOffersPopup={() => {
           setShowOffersPopup(true);
           hasShownPopupRef.current = false;
         }}
-      />
+      /> */}
       <MiniHomeView />
       <RecommendedOffersPopup
         isOpen={showOffersPopup}

@@ -190,9 +190,22 @@ export async function getServerSideProps(context: any) {
     console.error(error);
   }
 
+  let normalizedData = data;
+  if (data) {
+    try {
+      let images = data.images;
+      if (typeof images === 'string') {
+        images = JSON.parse(images);
+      }
+      normalizedData.images = Array.isArray(images) ? images : images ? [images] : [];
+    } catch {
+      normalizedData.images = [];
+    }
+  }
+
   return {
     props: {
-      propertyFromSupabase: data ?? null,
+      propertyFromSupabase: normalizedData ?? null,
     },
   };
 }

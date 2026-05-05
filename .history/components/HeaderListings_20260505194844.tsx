@@ -48,7 +48,7 @@ export default function Header({
             : "bg-white text-black shadow-xl h-[80px] lg:h-[80px]"
         }`}
       >
-        <div className="flex justify-between items-center h-full w-full px-[4%] lg:px-[5%] gap-3 shadow-md lg:shadow-none">
+        <div className="flex justify-between items-center h-full w-[90vw] max-w-[1330px] mx-auto px-4 lg:px-[5%] gap-3 shadow-md lg:shadow-none">
           {/* LOGO */}
           <Link
             href="/"
@@ -73,14 +73,12 @@ export default function Header({
           </Link>
           {/* MOBILE TOP 10 BUTTON */}
           {handleShowOffersPopup && (
-            <div className="flex-1">
-              <button
-                onClick={handleShowOffersPopup}
-                className="lg:hidden px-3 py-2 bg-yellow-500 text-white float-right font-semibold rounded-md text-xs hover:bg-yellow-600 whitespace-nowrap"
-              >
-                TOP 10 OFERT
-              </button>
-            </div>
+            <button
+              onClick={handleShowOffersPopup}
+              className="lg:hidden px-3 py-2 bg-yellow-500 text-white float-right font-semibold rounded-md text-xs hover:bg-yellow-600 whitespace-nowrap"
+            >
+              TOP 10 OFERT
+            </button>
           )}
 
           {/* DESKTOP MENU */}

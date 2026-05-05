@@ -37,7 +37,7 @@ export default function SearchResults(props: any) {
   };
 
   return (
-    <div className={`${Red_Hat_DisplayFont.className} mx-auto`}>
+    <div className={`${Red_Hat_DisplayFont.className} w-[90vw] max-w-[1300px] mx-auto`}>
       <div id="summary" className="flex justify-between items-center mb-[20px]">
         <div className="font-[600] text-[16px]">
           Znaleziono {count} ogłoszeń
@@ -51,7 +51,7 @@ export default function SearchResults(props: any) {
           <option value="price_desc">Od najwyższej ceny</option>
         </select>
       </div>
-      <div className="w-[90vw] max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-7">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-7">
         {loader
           ? Array.from({ length: 6 }).map((_, i) => (
               <PropertyCardSkeleton key={`sk-${i}`} />

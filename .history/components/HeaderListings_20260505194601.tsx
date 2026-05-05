@@ -73,14 +73,14 @@ export default function Header({
           </Link>
           {/* MOBILE TOP 10 BUTTON */}
           {handleShowOffersPopup && (
-            <div className="flex-1">
+            // <div className="">
               <button
                 onClick={handleShowOffersPopup}
                 className="lg:hidden px-3 py-2 bg-yellow-500 text-white float-right font-semibold rounded-md text-xs hover:bg-yellow-600 whitespace-nowrap"
               >
                 TOP 10 OFERT
               </button>
-            </div>
+            {/* </div> */}
           )}
 
           {/* DESKTOP MENU */}

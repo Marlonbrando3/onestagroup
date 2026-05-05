@@ -14,7 +14,6 @@ type FunctionProps = {
   loader: any;
   setLoader: any;
   isMobileFiltersOpen: any;
-  x;
   setIsMobileFiltersOpen: any;
 };
 
@@ -64,7 +63,7 @@ export default function SearchInput({
               {country}
             </Link>
           </div>
-          <p className="mx-auto w-[90vw] max-w-[1300px] text-[28px] mt-[10px]">
+          <p className="mx-auto w-[1300px] text-[28px] mt-[10px]">
             Wyjątkowe nieruchomości w Hiszpanii
           </p>
         </div>

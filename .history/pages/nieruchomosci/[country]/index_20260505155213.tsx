@@ -173,7 +173,7 @@ export default function ListingsPage(props: PageProps) {
   const title = `Nieruchomości ${country.toUpperCase()}`;
 
   return (
-    <div className="bg-gray-100/[0.3] w-full overflow-x-hidden">
+    <div className="bg-gray-100/[0.3]">
       <Head>
         <title>{title}</title>
       </Head>

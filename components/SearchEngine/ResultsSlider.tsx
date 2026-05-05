@@ -29,7 +29,17 @@ export default function ResultsSlider({
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
-  const imagesArray = Array.isArray(images) ? images : images ? [images] : [];
+  const imagesArray = (() => {
+    try {
+      if (typeof images === 'string') {
+        const parsed = JSON.parse(images);
+        return Array.isArray(parsed) ? parsed : [parsed];
+      }
+      return Array.isArray(images) ? images : images ? [images] : [];
+    } catch {
+      return [];
+    }
+  })();
 
   const slides = useMemo(() => {
     const base: Array<{ key: string; type: "image" | "more"; url: string }> =
