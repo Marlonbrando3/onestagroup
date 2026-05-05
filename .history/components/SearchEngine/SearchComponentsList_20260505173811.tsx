@@ -63,7 +63,7 @@ export default function SearchInput({
               {country}
             </Link>
           </div>
-          <p className="mx-auto w-[1300px] text-[28px] mt-[10px]">
+          <p className="mx-auto w-[1300px] text-[28px] mnt-[10px]">
             Wyjątkowe nieruchomości w Hiszpanii
           </p>
         </div>

@@ -317,7 +317,7 @@ export default function Home({
           </button>
         </div>
       </div>
-
+      dds
       {/* MOBILE MODAL */}
       {mobileModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 lg:hidden">
@@ -332,6 +332,7 @@ export default function Home({
                 ✕
               </button>
             </div>
+
             {/* FILTERS */}
             <div className="p-4 space-y-4">
               {/* LOCATION */}

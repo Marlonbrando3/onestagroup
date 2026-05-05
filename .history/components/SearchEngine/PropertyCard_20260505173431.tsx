@@ -73,7 +73,7 @@ export default function PropertyCard({ property }: PropertyProps) {
 
   return (
     <div
-      className={`${Red_Hat_DisplayFont.className} flex flex-col w-full rounded-xl shadow-lg overflow-hidden border-gray-900`}
+      className={`${Red_Hat_DisplayFont.className} flex flex-col w-full rounded-xl shadow-sm overflow-hidden`}
     >
       <div className="w-full md:aspect-[4/3] aspect-[4/3] overflow-hidden relative ">
         <ResultsSlider
@@ -169,16 +169,16 @@ export default function PropertyCard({ property }: PropertyProps) {
                     {property?.surface_built}
                   </div>
                 </div>
+                <div className="absolute bottom-0 right-0 bg-white/[0.9] md:h-12 h-12 flex items-center text-2xl px-3 font-semibold border-t-yellow-500 rounded-t-md">
+                  <span className="ml-1 sm:text-xl text-2xl md:text-3xl text-right w-full text-yellow-500 font-[800]">
+                    {market === "RYNEK PIERWOTNY" && (
+                      <p className="inline text-[20px] pr-[5px]">od</p>
+                    )}
+                    {Number(property?.price || 0).toLocaleString()} €
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="bottom-0 right-0  md:h-12 h-12 flex items-center text-2xl px-3 font-semibold border-t-yellow-500 rounded-t-md">
-            <span className="ml-1 sm:text-xl text-2xl md:text-3xl text-right w-full text-yellow-600 font-[800] bg-whigrray-100te/[0.9]">
-              {market === "RYNEK PIERWOTNY" && (
-                <p className="inline text-[20px] pr-[5px]">od</p>
-              )}
-              {Number(property?.price || 0).toLocaleString()} €
-            </span>
           </div>
         </Link>
       </div>

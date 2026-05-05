@@ -1,8 +1,7 @@
 import React, { useRef, useState } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import MainSearchInSearchEngine from "../MainSearchInSearchEngine";
-import { MdKeyboardArrowRight } from "react-icons/md";
 import MobileFilters from "../MobileFilters";
 import { Red_Hat_DisplayFont } from "@/fonts/fonts";
 import Properties from "../../public/properties.json";
@@ -28,8 +27,6 @@ export default function SearchInput({
 }: FunctionProps) {
   const router = useRouter();
 
-  const { country } = router.query;
-
   const RefOffers = useRef<any>();
   const [ref, setRef] = useState<string>("");
   const [filteredProperties, setFilteredProperties]: any = useState();
@@ -54,18 +51,7 @@ export default function SearchInput({
             searchEngine={searchEngine}
             mobileButtonSearchEngine={mobileButtonSearchEngine}
           />
-          <div className=" w-[90vw] max-w-[1300px] z-30 relative flex items-center mx-auto -mt-[20px] text-[14px]">
-            <Link href="/">Strona startowa</Link>
-            <MdKeyboardArrowRight className="md:mx-[10px] h-[20px] w-[20px] text-gray-400" />
-            <Link href="#">Nieruchomości</Link>
-            <MdKeyboardArrowRight className="md:mx-[10px] h-[20px] w-[20px] text-gray-400" />{" "}
-            <Link href="/nieruchomosci/hiszpania" className="capitalize">
-              {country}
-            </Link>
-          </div>
-          <p className="mx-auto w-[1300px] text-[28px] mt-[10px]">
-            Wyjątkowe nieruchomości w Hiszpanii
-          </p>
+          <p className="mx-auto w-[1400px]">Wyjątkowe ogłoszenia w Hiszpanii</p>
         </div>
       </form>
 

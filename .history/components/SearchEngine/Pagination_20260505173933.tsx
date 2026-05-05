@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { MdKeyboardArrowLeft } from "react-icons/md";
 
 type Props = {
   totalPages: number | string | undefined;
@@ -52,11 +51,11 @@ export default function Pagination({ totalPages, currentPage }: Props) {
       <Link
         href={buildHref(Math.max(1, safeCurrent - 1))}
         shallow={false}
-        className={`px-3 py-2 border rounded ${
+        className={`px-3 py-1 border rounded ${
           safeCurrent === 1 ? "pointer-events-none opacity-50" : "bg-white"
         }`}
       >
-        <MdKeyboardArrowLeft />
+        Poprzednia
       </Link>
 
       {items.map((item, idx) =>
@@ -69,7 +68,7 @@ export default function Pagination({ totalPages, currentPage }: Props) {
             key={item}
             href={buildHref(item)}
             shallow={false}
-            className={`px-3 py-1 border rounded-md ${
+            className={`px-3 py-1 border rounded ${
               item === safeCurrent
                 ? "bg-black text-white border-black"
                 : "bg-white"
@@ -83,7 +82,7 @@ export default function Pagination({ totalPages, currentPage }: Props) {
       <Link
         href={buildHref(Math.min(safeTotal, safeCurrent + 1))}
         shallow={false}
-        className={`px-3 py-2 border rounded ${
+        className={`px-3 py-1 border rounded ${
           safeCurrent === safeTotal
             ? "pointer-events-none opacity-50"
             : "bg-white"

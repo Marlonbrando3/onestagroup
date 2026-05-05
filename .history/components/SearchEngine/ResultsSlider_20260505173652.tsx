@@ -93,7 +93,7 @@ export default function ResultsSlider({
           onClick={prev}
           className="flex items-center z-10 justify-center absolute w-10 h-full left-0"
         >
-          <div className="w-[30px] h-[30px] bg-white/[0.6] rounded-full grid place-items-center ml-1">
+          <div className="w-10 h-10 bg-white rounded-full grid place-items-center ml-1">
             <FaChevronLeft className="w-[20px] h-[20px] text-black" />
           </div>
         </button>
@@ -105,7 +105,7 @@ export default function ResultsSlider({
           onClick={next}
           className="flex items-center z-10 justify-center absolute w-10 h-full right-0"
         >
-          <div className="w-[30px] h-[30px] bg-white/[0.6] rounded-full grid place-items-center mr-1">
+          <div className="w-[30px] h-[30px] bg-white rounded-full grid place-items-center mr-1">
             <FaChevronRight className="w-[20px] h-[20px] text-black" />
           </div>
         </button>

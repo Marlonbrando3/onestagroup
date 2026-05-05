@@ -347,7 +347,6 @@ export default function Home({
                   }
                 />
               </div>
-
               {/* ZABUDOWA */}
               <div className="relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -360,7 +359,6 @@ export default function Home({
                   onChange={(val) => updateFilter("type", val)}
                 />
               </div>
-
               {/* SYPIALNIE */}
               <div className="relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -373,7 +371,6 @@ export default function Home({
                   onChange={(val) => updateFilter("bedrooms", val)}
                 />
               </div>
-
               {/* ŁAZIENKI */}
               <div className="relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -386,7 +383,7 @@ export default function Home({
                   onChange={(val) => updateFilter("bathrooms", val)}
                 />
               </div>
-
+              dsdsd
               {/* CENA */}
               <div className="relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -397,7 +394,6 @@ export default function Home({
                   onChange={(val: PriceRange) => updateFilter("price", val)}
                 />
               </div>
-
               {/* SEARCH BUTTON */}
               <button
                 onClick={() => {

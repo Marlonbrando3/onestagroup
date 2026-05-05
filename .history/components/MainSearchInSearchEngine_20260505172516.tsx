@@ -245,6 +245,7 @@ export default function Home({
         </svg>
         <span className="text-left">Wyszukaj</span>
       </button>
+
       {/* DESKTOP SEARCH BAR */}
       <div className="hidden lg:flex bg-white rounded-full shadow-lg flex-col lg:flex-row gap-0 lg:h-20">
         {/* LOCATION */}
@@ -332,6 +333,7 @@ export default function Home({
                 ✕
               </button>
             </div>
+
             {/* FILTERS */}
             <div className="p-4 space-y-4">
               {/* LOCATION */}

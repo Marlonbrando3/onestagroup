@@ -52,7 +52,7 @@ export default function Pagination({ totalPages, currentPage }: Props) {
       <Link
         href={buildHref(Math.max(1, safeCurrent - 1))}
         shallow={false}
-        className={`px-3 py-2 border rounded ${
+        className={`px-3 py-1 border rounded ${
           safeCurrent === 1 ? "pointer-events-none opacity-50" : "bg-white"
         }`}
       >

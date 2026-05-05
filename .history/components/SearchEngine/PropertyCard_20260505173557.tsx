@@ -73,7 +73,7 @@ export default function PropertyCard({ property }: PropertyProps) {
 
   return (
     <div
-      className={`${Red_Hat_DisplayFont.className} flex flex-col w-full rounded-xl shadow-lg overflow-hidden border-gray-900`}
+      className={`${Red_Hat_DisplayFont.className} flex flex-col w-full rounded-xl shadow-sm overflow-hidden border-[1px] border-gray-900`}
     >
       <div className="w-full md:aspect-[4/3] aspect-[4/3] overflow-hidden relative ">
         <ResultsSlider

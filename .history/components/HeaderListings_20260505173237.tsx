@@ -86,7 +86,7 @@ export default function Header({
           {/* DESKTOP MENU */}
           <ul className="hidden lg:flex items-center gap-6 font-[500]">
             <li className="flex items-center h-[40px]">
-              <Link href="/nieruchomosci/hiszpania">Strona główna</Link>
+              <Link href="/nieruchomosci/hiszpania">Strona głowna</Link>
             </li>
 
             <li className="flex items-center h-[40px]">

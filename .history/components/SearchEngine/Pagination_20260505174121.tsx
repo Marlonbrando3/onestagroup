@@ -69,7 +69,7 @@ export default function Pagination({ totalPages, currentPage }: Props) {
             key={item}
             href={buildHref(item)}
             shallow={false}
-            className={`px-3 py-1 border rounded-md ${
+            className={`px-3 py- border rounded-md ${
               item === safeCurrent
                 ? "bg-black text-white border-black"
                 : "bg-white"
