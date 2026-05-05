@@ -28,13 +28,13 @@ export default function HomeViewAlt() {
 
   return (
     <div className="w-screen md:h-screen h-auto flex relative overflow-hidden">
-      {/* <img
+      <img
         src="/coast_2.webp"
         alt=""
         fetchPriority="high"
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover z-10"
-      /> */}
+      />
       <div className=" md:w-[50%] w-[98vw] mx-auto">
         <div className="md:mt-[100px] mt-[70px]">
           <div className="md:pl-[40px] md:mr-[50px] ml-[10px] text-[34px] md:leading-[34px] leading-[24px] mb-[30px]">
@@ -120,7 +120,7 @@ export default function HomeViewAlt() {
               </div> */}
               <Link
                 href="/nieruchomosci/hiszpania"
-                className="my-1 bg-[#ef4444] text-white rounded-md place-items-center grid px-6 py-1"
+                className="my-1 bg-[#275278] text-white rounded-md place-items-center grid px-6 py-1"
               >
                 Wyszukaj oferty
               </Link>

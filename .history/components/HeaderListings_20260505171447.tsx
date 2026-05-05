@@ -45,7 +45,7 @@ export default function Header({
         ${
           scrolled
             ? "bg-white text-black shadow-[0_4px_20px_rgba(0,0,0,0.08)] h-[60px] lg:h-[80px]"
-            : "bg-white text-black shadow-xl h-[80px] lg:h-[80px]"
+            : "bg-white text-white shadow-none h-[80px] lg:h-[100px]"
         }`}
       >
         <div className="flex justify-between items-center h-full w-full px-[4%] lg:px-[5%] gap-3 shadow-md lg:shadow-none">
@@ -84,7 +84,7 @@ export default function Header({
           )}
 
           {/* DESKTOP MENU */}
-          <ul className="hidden lg:flex items-center gap-6 font-[500]">
+          <ul className="hidden lg:flex items-center gap-6 font-[600]">
             <li className="flex items-center h-[40px]">
               <Link href="/nieruchomosci/hiszpania">
                 Nieruchomości w Hiszpanii
@@ -114,7 +114,7 @@ export default function Header({
 
             <li
               onClick={handleConsultationPopUp}
-              className="flex items-center justify-center h-[40px] px-[15px] border border-[#EF4444] bg-[#EF4444] text-white hover:text-black hover:bg-white duration-200 rounded-[4px] cursor-pointer"
+              className="flex items-center justify-center h-[40px] px-[15px] border border-[#275278] bg-[#275278] text-white hover:bg-[#C9AC77] duration-100 rounded-[4px] cursor-pointer"
             >
               Bezpłatna konsultacja
             </li>

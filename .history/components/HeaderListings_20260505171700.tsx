@@ -45,7 +45,7 @@ export default function Header({
         ${
           scrolled
             ? "bg-white text-black shadow-[0_4px_20px_rgba(0,0,0,0.08)] h-[60px] lg:h-[80px]"
-            : "bg-white text-black shadow-xl h-[80px] lg:h-[80px]"
+            : "bg-white text-black shadow-none h-[80px] lg:h-[80px]"
         }`}
       >
         <div className="flex justify-between items-center h-full w-full px-[4%] lg:px-[5%] gap-3 shadow-md lg:shadow-none">
@@ -114,12 +114,12 @@ export default function Header({
 
             <li
               onClick={handleConsultationPopUp}
-              className="flex items-center justify-center h-[40px] px-[15px] border border-[#EF4444] bg-[#EF4444] text-white hover:text-black hover:bg-white duration-200 rounded-[4px] cursor-pointer"
+              className="flex items-center justify-center h-[40px] px-[15px] border border-[#275278] bg-[#275278] text-white hover:bg-[#C9AC77] duration-100 rounded-[4px] cursor-pointer"
             >
               Bezpłatna konsultacja
             </li>
 
-            <li className="flex items-center justify-center h-[40px] px-[15px] bg-[#C9AC77] text-white hover:bg-white hover:text-black border border-[#C9AC77] rounded-[4px]">
+            <li className="flex items-center justify-center h-[40px] px-[15px] bg-[#EF4444] text-white hover:bg-white hover:text-black border border-[#C9AC77] rounded-[4px]">
               <Link href="#contact" scroll={false}>
                 Kontakt
               </Link>

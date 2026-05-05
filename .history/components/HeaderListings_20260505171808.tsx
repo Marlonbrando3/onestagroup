@@ -45,7 +45,7 @@ export default function Header({
         ${
           scrolled
             ? "bg-white text-black shadow-[0_4px_20px_rgba(0,0,0,0.08)] h-[60px] lg:h-[80px]"
-            : "bg-white text-black shadow-xl h-[80px] lg:h-[80px]"
+            : "bg-white text-black shadow-none h-[80px] lg:h-[80px]"
         }`}
       >
         <div className="flex justify-between items-center h-full w-full px-[4%] lg:px-[5%] gap-3 shadow-md lg:shadow-none">

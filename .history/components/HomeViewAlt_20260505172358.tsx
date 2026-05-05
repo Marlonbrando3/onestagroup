@@ -120,7 +120,7 @@ export default function HomeViewAlt() {
               </div> */}
               <Link
                 href="/nieruchomosci/hiszpania"
-                className="my-1 bg-[#ef4444] text-white rounded-md place-items-center grid px-6 py-1"
+                className="my-1 bg-[ef4444] text-white rounded-md place-items-center grid px-6 py-1"
               >
                 Wyszukaj oferty
               </Link>
