@@ -182,13 +182,13 @@ export default function ListingsPage(props: PageProps) {
         handleConsultationPopUp={handleConsultationPopUp}
         ConsultationsShowed={consultationOpen}
       />
-      {/* <HeaderListings
+      <HeaderListings
         handleConsultationPopUp={handleConsultationPopUp}
         handleShowOffersPopup={() => {
           setShowOffersPopup(true);
           hasShownPopupRef.current = false;
         }}
-      /> */}
+      />
       <MiniHomeView />
       <RecommendedOffersPopup
         isOpen={showOffersPopup}

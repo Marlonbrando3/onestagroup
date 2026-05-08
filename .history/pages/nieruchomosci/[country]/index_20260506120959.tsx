@@ -98,7 +98,7 @@ export default function ListingsPage(props: PageProps) {
       window.innerWidth < 768 &&
       searchEngine.current
     ) {
-      searchEngine.current.style.top = "-120vh";
+      searchEngine.current.style.transform = "translateY(-120vh)";
     }
   }, []);
 
@@ -166,7 +166,7 @@ export default function ListingsPage(props: PageProps) {
     const next = !isMobileFiltersOpen;
     setIsMobileFiltersOpen(next);
 
-    searchEngine.current.style.top = next ? "0px" : "-120vh";
+    searchEngine.current.style.transform = next ? "translateY(0)" : "translateY(-120vh)";
     mobileButtonSearchEngine.current.innerHTML = next ? "Zamknij" : "Filtry";
   };
 
@@ -182,13 +182,13 @@ export default function ListingsPage(props: PageProps) {
         handleConsultationPopUp={handleConsultationPopUp}
         ConsultationsShowed={consultationOpen}
       />
-      {/* <HeaderListings
+      <HeaderListings
         handleConsultationPopUp={handleConsultationPopUp}
         handleShowOffersPopup={() => {
           setShowOffersPopup(true);
           hasShownPopupRef.current = false;
         }}
-      /> */}
+      />
       <MiniHomeView />
       <RecommendedOffersPopup
         isOpen={showOffersPopup}

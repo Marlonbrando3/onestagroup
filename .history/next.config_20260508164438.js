@@ -19,10 +19,6 @@ const nextConfig = {
         protocol: "https",
         hostname: "fotos15.apinmo.com",
       },
-      {
-        protocol: "https",
-        hostname: "www.viviendanet.com",
-      },
     ],
   },
 };
