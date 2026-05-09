@@ -13,24 +13,6 @@ export default function SearchResults(props: any) {
   const { properties, loader, setLoader, count } = props;
   const [sort, setSort] = useState<string>("price_asc");
 
-  const handleShareResults = async () => {
-    try {
-      const encoded = btoa(encodeURIComponent(JSON.stringify(router.query)))
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
-
-      const shortUrl = `${window.location.origin}/s/${encoded}`;
-
-      await navigator.clipboard.writeText(shortUrl);
-
-      alert("Link skopiowany");
-    } catch (err) {
-      console.error(err);
-      alert("Błąd kopiowania linku");
-    }
-  };
-
   useEffect(() => {
     if (router.isReady) {
       const sortParam = (router.query.sort as string) || "price_asc";
@@ -63,22 +45,15 @@ export default function SearchResults(props: any) {
         <div className="font-[600] text-[16px]">
           Znaleziono {count} ogłoszeń
         </div>
-
-        <div className="flex items-center">
-          {" "}
-          <MdOutlineIosShare
-            className="mr-[10px] w-[19px] h-[20px] cursor-pointer"
-            onClick={handleShareResults}
-          />
-          <select
-            value={sort}
-            onChange={handleSortChange}
-            className="pr-5 pl-2 py-2 border border-gray-300 rounded-md text-[14px] bg-white cursor-pointer left"
-          >
-            <option value="price_asc">Od najniższej ceny</option>
-            <option value="price_desc">Od najwyższej ceny</option>
-          </select>
-        </div>
+        <MdOutlineIosShare></MdOutlineIosShare>
+        <select
+          value={sort}
+          onChange={handleSortChange}
+          className="pr-5 pl-2 py-2 border border-gray-300 rounded-md text-[14px] bg-white cursor-pointer left"
+        >
+          <option value="price_asc">Od najniższej ceny</option>
+          <option value="price_desc">Od najwyższej ceny</option>
+        </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-7">
         {loader

@@ -15,10 +15,9 @@ export default function SearchResults(props: any) {
 
   const handleShareResults = async () => {
     try {
-      const encoded = btoa(encodeURIComponent(JSON.stringify(router.query)))
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
+      const encoded = Buffer.from(JSON.stringify(router.query)).toString(
+        "base64url",
+      );
 
       const shortUrl = `${window.location.origin}/s/${encoded}`;
 

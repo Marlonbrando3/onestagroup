@@ -13,24 +13,6 @@ export default function SearchResults(props: any) {
   const { properties, loader, setLoader, count } = props;
   const [sort, setSort] = useState<string>("price_asc");
 
-  const handleShareResults = async () => {
-    try {
-      const encoded = btoa(encodeURIComponent(JSON.stringify(router.query)))
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
-
-      const shortUrl = `${window.location.origin}/s/${encoded}`;
-
-      await navigator.clipboard.writeText(shortUrl);
-
-      alert("Link skopiowany");
-    } catch (err) {
-      console.error(err);
-      alert("Błąd kopiowania linku");
-    }
-  };
-
   useEffect(() => {
     if (router.isReady) {
       const sortParam = (router.query.sort as string) || "price_asc";
@@ -64,12 +46,9 @@ export default function SearchResults(props: any) {
           Znaleziono {count} ogłoszeń
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center mr-[50px]">
           {" "}
-          <MdOutlineIosShare
-            className="mr-[10px] w-[19px] h-[20px] cursor-pointer"
-            onClick={handleShareResults}
-          />
+          <MdOutlineIosShare></MdOutlineIosShare>
           <select
             value={sort}
             onChange={handleSortChange}

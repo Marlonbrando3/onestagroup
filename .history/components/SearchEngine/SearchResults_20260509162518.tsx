@@ -15,10 +15,9 @@ export default function SearchResults(props: any) {
 
   const handleShareResults = async () => {
     try {
-      const encoded = btoa(encodeURIComponent(JSON.stringify(router.query)))
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
+      const encoded = Buffer.from(JSON.stringify(router.query)).toString(
+        "base64url",
+      );
 
       const shortUrl = `${window.location.origin}/s/${encoded}`;
 
@@ -66,10 +65,7 @@ export default function SearchResults(props: any) {
 
         <div className="flex items-center">
           {" "}
-          <MdOutlineIosShare
-            className="mr-[10px] w-[19px] h-[20px] cursor-pointer"
-            onClick={handleShareResults}
-          />
+          <MdOutlineIosShare className="mr-[10px] w-[19px] h-[20px] cursor-pointer" />
           <select
             value={sort}
             onChange={handleSortChange}
