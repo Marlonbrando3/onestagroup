@@ -178,7 +178,7 @@ export default function LocationSearch({ value, onChange, className }: Props) {
             }}
             onKeyDown={handleKeyDown}
             placeholder="np. Alicante, Malaga..."
-            className="outline-none bg-transparent flex-1 min-w-[150px] text-sm"
+            className="outline-none bg-transparent flex-1 min-w-[150px] text-base md:text-sm"
           />
         </div>
       </div>
