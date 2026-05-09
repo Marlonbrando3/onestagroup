@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { OutfitSans } from "@/fonts/fonts";
 import { MultiSelect } from "./SearchEngine/MultiSearch";
 import LocationSearch from "./SearchEngine/LocationSearch";
@@ -56,11 +56,6 @@ export default function Home({
 }: Props) {
   const router = useRouter();
   const [mobileModalOpen, setMobileModalOpen] = useState(false);
-  const [isMobilePinned, setIsMobilePinned] = useState(false);
-  const [mobileButtonHeight, setMobileButtonHeight] = useState(0);
-  const mobileTriggerStartYRef = useRef<number | null>(null);
-  const mobileTriggerAnchorRef = useRef<HTMLDivElement | null>(null);
-  const mobileTriggerButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const [filters, setFilters] = useState<FiltersState>({
     locations: [],
@@ -223,70 +218,17 @@ export default function Home({
     router.query.location,
   ]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const TOP_OFFSET = 10;
-
-    const measure = () => {
-      if (mobileTriggerButtonRef.current) {
-        setMobileButtonHeight(mobileTriggerButtonRef.current.offsetHeight);
-      }
-      if (mobileTriggerAnchorRef.current) {
-        mobileTriggerStartYRef.current =
-          mobileTriggerAnchorRef.current.getBoundingClientRect().top +
-          window.scrollY;
-      }
-    };
-
-    const onScroll = () => {
-      if (window.innerWidth >= 1024) {
-        setIsMobilePinned(false);
-        return;
-      }
-      if (mobileTriggerStartYRef.current === null) {
-        measure();
-      }
-      const startY = mobileTriggerStartYRef.current;
-      if (startY === null) return;
-      setIsMobilePinned(window.scrollY >= startY - TOP_OFFSET);
-    };
-
-    const onResize = () => {
-      mobileTriggerStartYRef.current = null;
-      measure();
-      onScroll();
-    };
-
-    measure();
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-
   const types = ["Apartament", "Bungalow", "Szeregówka", "Dom"];
 
   return (
     <>
       {/* MOBILE SEARCH TRIGGER */}
       <div
-        ref={mobileTriggerAnchorRef}
-        className={`${OutfitSans.className} lg:hidden w-[90vw] max-w-[1330px] mx-auto mt-[10px] mb-[12px]`}
-        style={{ height: isMobilePinned ? mobileButtonHeight : "auto" }}
+        className={`${OutfitSans.className} lg:hidden w-[90vw] max-w-[1330px] mx-auto mt-[10px] mb-[12px] h-[72px]`}
       >
         <button
-          ref={mobileTriggerButtonRef}
           onClick={() => setMobileModalOpen(true)}
-          className={`bg-white rounded-full shadow-lg p-4 flex items-center gap-3 text-gray-500 border border-yellow-600 hover:shadow-xl transition-shadow ${
-            isMobilePinned
-              ? "fixed top-[10px] left-1/2 -translate-x-1/2 z-[9999] w-[90vw] max-w-[1330px]"
-              : "w-full relative"
-          }`}
+          className="fixed top-[10px] left-1/2 -translate-x-1/2 z-[9999] w-[90vw] max-w-[1330px] bg-white rounded-full shadow-lg p-4 flex items-center gap-3 text-gray-500 hover:shadow-xl transition-shadow mt-[70px] border border-yellow-600"
         >
           <svg
             className="w-5 h-5"

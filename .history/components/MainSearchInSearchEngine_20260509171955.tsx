@@ -282,7 +282,7 @@ export default function Home({
         <button
           ref={mobileTriggerButtonRef}
           onClick={() => setMobileModalOpen(true)}
-          className={`bg-white rounded-full shadow-lg p-4 flex items-center gap-3 text-gray-500 border border-yellow-600 hover:shadow-xl transition-shadow ${
+          className={`bg-white rounded-full shadow-lg p-4 flex items-center gap-3 text-gray-500 border border-yellow-900 hover:shadow-xl transition-shadow ${
             isMobilePinned
               ? "fixed top-[10px] left-1/2 -translate-x-1/2 z-[9999] w-[90vw] max-w-[1330px]"
               : "w-full relative"
