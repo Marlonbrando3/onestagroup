@@ -151,8 +151,18 @@ export default function AsariCrm() {
     setOneOfferId(e.target.value);
   };
 
-  const handleMetaInmo = () => {
-    const req = fetch("/api/metainmoToSupabase");
+  const handleMetaInmo = async () => {
+    try {
+      const req = await fetch("/api/metainmoToSupabase", { method: "POST" });
+      const data = await req.json();
+      if (!req.ok) {
+        console.log("Metainmo update error:", data);
+        return;
+      }
+      console.log("Metainmo update OK:", data);
+    } catch (err) {
+      console.log("Metainmo update failed:", err);
+    }
   };
 
   return (

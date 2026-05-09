@@ -1,17 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createClient } from "@supabase/supabase-js";
 import { XMLParser } from "fast-xml-parser";
+import { supabaseServer } from "@/lib/supabaseClient";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-);
+export const config = {
+  maxDuration: 120,
+};
 
 export default async function handler(
-  req: NextApiRequest,
+  _req: NextApiRequest,
   res: NextApiResponse,
 ) {
   try {
+    if (!supabaseServer) {
+      return res.status(500).json({
+        error: "Brak SUPABASE_SERVICE_ROLE_KEY dla endpointu serwerowego",
+      });
+    }
+
     const response = await fetch(process.env.METAINMO_XML_URL!);
 
     if (!response.ok) {
@@ -96,18 +101,47 @@ export default async function handler(
 
     console.log(uniqueByComplex.length);
 
-    // 🔹 kasowanie starych rekordów
-    await supabase.from("properties").delete().eq("source", "METAINMO");
+    // 🔹 kasowanie starych rekordów w batches
+    const deleteChunkSize = 200;
+    let hasMore = true;
 
-    const chunkSize = 300;
+    while (hasMore) {
+      const { data: toDelete, error: selectDeleteError } = await supabaseServer
+        .from("properties")
+        .select("id")
+        .eq("source", "METAINMO")
+        .range(0, deleteChunkSize - 1);
+
+      if (selectDeleteError) {
+        console.error(selectDeleteError);
+        return res.status(500).json({ error: selectDeleteError });
+      }
+
+      if (!toDelete || toDelete.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      const ids = toDelete.map((row: any) => row.id);
+      const { error: deleteError } = await supabaseServer
+        .from("properties")
+        .delete()
+        .in("id", ids);
+      if (deleteError) {
+        console.error(deleteError);
+        return res.status(500).json({ error: deleteError });
+      }
+    }
+
+    const chunkSize = 100;
 
     // 🔹 wysyłka do Supabase
     for (let i = 0; i < uniqueByComplex.length; i += chunkSize) {
       const chunk = uniqueByComplex.slice(i, i + chunkSize);
 
-      const { error } = await supabase
+      const { error } = await supabaseServer
         .from("properties")
-        .upsert(chunk, { onConflict: "external_id" });
+        .upsert(chunk, { onConflict: "external_id", ignoreDuplicates: false });
 
       if (error) {
         console.error(error);
