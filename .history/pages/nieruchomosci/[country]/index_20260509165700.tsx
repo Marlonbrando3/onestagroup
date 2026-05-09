@@ -333,11 +333,11 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   let query = supabaseServer
     .from("properties")
     .select("*", { count: "exact" })
-    .gte("price", priceFrom)
-    .lte("price", priceTo)
-    .not("images", "is", null)
-    .neq("images", "[]")
-    .in("new_build", marketType !== null ? [marketType] : [true, false])
+    // .gte("price", priceFrom)
+    // .lte("price", priceTo)
+    // .not("images", "is", null)
+    // .neq("images", "[]")
+    // .in("new_build", marketType !== null ? [marketType] : [true, false])
     .order(orderColumn, { ascending: orderAscending })
     .range(from, to);
 

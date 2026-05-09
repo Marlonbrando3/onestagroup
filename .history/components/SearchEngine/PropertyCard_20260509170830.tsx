@@ -179,7 +179,7 @@ export default function PropertyCard({ property }: PropertyProps) {
               )}
               {property?.price !== 0
                 ? `${Number(property?.price || 0).toLocaleString()} €`
-                : "konsultacja"}
+                : "Skonsultuj"}
             </span>
           </div>
         </Link>

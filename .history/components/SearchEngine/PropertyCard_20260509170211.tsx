@@ -174,12 +174,10 @@ export default function PropertyCard({ property }: PropertyProps) {
           </div>
           <div className="bottom-0 right-0  md:h-12 h-12 flex items-center text-2xl px-3 font-semibold border-t-yellow-500 rounded-t-md">
             <span className="ml-1 sm:text-xl text-2xl md:text-3xl text-right w-full text-yellow-600 font-[800] bg-whigrray-100te/[0.9]">
-              {market === "RYNEK PIERWOTNY" && property?.price !== 0 && (
-                <p className="inline text-[20px] pr-[5px]">od</p>
-              )}
-              {property?.price !== 0
-                ? `${Number(property?.price || 0).toLocaleString()} €`
-                : "konsultacja"}
+              {market === "RYNEK PIERWOTNY" &&
+                property?.price &&
+                < 0 (<p className="inline text-[20px] pr-[5px]">od</p>)}
+              {Number(property?.price || 0).toLocaleString()} €
             </span>
           </div>
         </Link>

@@ -177,9 +177,7 @@ export default function PropertyCard({ property }: PropertyProps) {
               {market === "RYNEK PIERWOTNY" && property?.price !== 0 && (
                 <p className="inline text-[20px] pr-[5px]">od</p>
               )}
-              {property?.price !== 0
-                ? `${Number(property?.price || 0).toLocaleString()} €`
-                : "konsultacja"}
+              {property?.price !== 0 && ({Number(property?.price || 0).toLocaleString()} €
             </span>
           </div>
         </Link>

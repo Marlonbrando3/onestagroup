@@ -288,10 +288,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   const typeList = parseCsvParam(type);
   const bathsExact = parseNumList(baths);
   const bedsExact = parseNumList(beds);
-  const hasBathsFilter =
-    baths !== undefined || bathsMin !== undefined || bathsMax !== undefined;
-  const hasBedsFilter =
-    beds !== undefined || bedsMin !== undefined || bedsMax !== undefined;
 
   const locationParam = location ? String(location).split(",") : [];
   const expandedIds = [
@@ -337,7 +333,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     .lte("price", priceTo)
     .not("images", "is", null)
     .neq("images", "[]")
-    .in("new_build", marketType !== null ? [marketType] : [true, false])
+    // .in("new_build", marketType !== null ? [marketType] : [true, false])
     .order(orderColumn, { ascending: orderAscending })
     .range(from, to);
 
@@ -347,20 +343,16 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     query = query.or(typeList.map((t) => `type.ilike.${t}`).join(","));
   }
   //asas
-  if (hasBathsFilter) {
-    if (bathsExact.length > 0) {
-      query = query.in("baths", bathsExact);
-    } else {
-      query = query.gte("baths", bathsFrom).lte("baths", bathsTo);
-    }
+  if (bathsExact.length > 0) {
+    query = query.in("baths", bathsExact);
+  } else {
+    query = query.gte("baths", bathsFrom).lte("baths", bathsTo);
   }
 
-  if (hasBedsFilter) {
-    if (bedsExact.length > 0) {
-      query = query.in("beds", bedsExact);
-    } else {
-      query = query.gte("beds", bedsFrom).lte("beds", bedsTo);
-    }
+  if (bedsExact.length > 0) {
+    query = query.in("beds", bedsExact);
+  } else {
+    query = query.gte("beds", bedsFrom).lte("beds", bedsTo);
   }
 
   if (locationParam.length > 0) {
@@ -373,8 +365,11 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     } else if (selectedProvinces.length > 0) {
       query = query.in("province", selectedProvinces);
     }
-  } else if (provincesParam?.length) {
-    query = query.in("province", provincesParam);
+  } else {
+    query = query.in(
+      "province",
+      provincesParam ?? ["Alicante", "Murcia", "Malaga", "Almería"],
+    );
   }
 
   const { data: properties, count, error } = await query;
