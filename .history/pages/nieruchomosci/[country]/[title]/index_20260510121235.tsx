@@ -70,6 +70,8 @@ export default function Property({ propertyFromSupabase }: any) {
     intrestedPopUp.current.style.display = "none";
   };
 
+  console.log(propertyFromSupabase.price);
+
   return (
     <>
       <Head>

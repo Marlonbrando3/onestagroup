@@ -70,6 +70,8 @@ export default function Property({ propertyFromSupabase }: any) {
     intrestedPopUp.current.style.display = "none";
   };
 
+  console.log(propertyFromSupabase.price);
+
   return (
     <>
       <Head>
@@ -192,14 +194,10 @@ export async function getServerSideProps(context: any) {
   if (data) {
     try {
       let images = data.images;
-      if (typeof images === "string") {
+      if (typeof images === 'string') {
         images = JSON.parse(images);
       }
-      normalizedData.images = Array.isArray(images)
-        ? images
-        : images
-          ? [images]
-          : [];
+      normalizedData.images = Array.isArray(images) ? images : images ? [images] : [];
     } catch {
       normalizedData.images = [];
     }

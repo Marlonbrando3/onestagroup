@@ -54,8 +54,7 @@ export default function Gallery({
   return (
     <>
       <div
-        className={`${showGallery === true ? "opacity-100" : "opacity-0 pointer-events-none"} inset-0 w-full h-[100dvh] z-[100] fixed top-[0px] bottom-0 my-auto flex flex-wrap justify-center items-start transition-opacity mx-auto bg-white gap-8 overflow-x-hidden shadow-[0_0px_10px_0_rgba(0,0,0,0.3)]`}
-        onClick={handleClosingGallery}
+        className={`${showGallery === true ? "opacity-100" : "opacity-0 pointer-events-none"} inset-0 w-full h-[100dvh] z-[100] fixed top-[0px] bottom-0 my-auto flex flex-wrap justify-center items-start transition-opacity mx-auto bg-white gap-8 overflow-x-hidden shadow-[0_0px_10px_0_rgba(0,0,0,0.3)]`} {handleClosingGallery}
       >
         <div
           id="galler-container"
@@ -65,7 +64,7 @@ export default function Gallery({
             <FaArrowLeft />
             <p
               className="ml-[10px] cursor-pointer"
-              onClick={handleClosingGallery}
+              onClick=
             >
               powrót do ogłoszenia
             </p>

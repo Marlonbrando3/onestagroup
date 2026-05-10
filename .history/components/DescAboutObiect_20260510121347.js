@@ -119,9 +119,7 @@ export default function DescAboutObiect({
         {/* PRICE AND MAIN FEATURES */}
         <div className="flex flex-1 min-w-[300px] flex-col mb-[20px] text-[29px] font-[400]  xl:text-right lg:text-left min-h-[100px] md:pl-[20px]">
           <p className="font-[700] text-[42px] text-yellow-500">
-            {price !== 0
-              ? `${propertyPrice.toLocaleString().replaceAll(",", " ")} €`
-              : "konsutacja"}
+            {price !== 0 && {propertyPrice.toLocaleString().replaceAll(",", " ")} €
           </p>
           <div className="flex xl:justify-end lg:justify-start mt-[20px] flex-wrap">
             <div className="text-[18px] flex  items-center">
