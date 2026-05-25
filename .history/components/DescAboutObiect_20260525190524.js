@@ -94,9 +94,6 @@ export default function DescAboutObiect({
 
   const formattedDescriptionEN = formatDescription(descriptionEN);
   const formattedDescription = formatDescription(description);
-  const hasPolishDescription = Boolean(
-    description && String(description).trim(),
-  );
 
   const finalFormattedDescription =
     formattedDescription && formattedDescription.trim()
@@ -144,18 +141,6 @@ export default function DescAboutObiect({
       : descriptionView === "english"
         ? formattedDescriptionEN || finalFormattedDescription
         : finalFormattedDescription;
-
-  const hasCoordinates =
-    localization?.lat !== null &&
-    localization?.lat !== undefined &&
-    localization?.lng !== null &&
-    localization?.lng !== undefined &&
-    localization?.lat !== "" &&
-    localization?.lng !== "";
-
-  const mapQuery = hasCoordinates
-    ? `${localization.lat},${localization.lng}`
-    : `${town || ""}, ${country || "Hiszpania"}`;
 
   return (
     <div className="rounded-md lg:w-auto lg:mr-2 bg-white flex-1 text-[18px] tracking-[1.1px] font-[300] mx-[10px]">
@@ -214,27 +199,25 @@ export default function DescAboutObiect({
       <div className="my-4 flex items-center justify-between gap-3">
         <p className="font-[600] md:text-[18px] text-[15px]">OPIS PROJEKTU</p>
         <div className="flex items-center gap-2">
-          {!hasPolishDescription && (
-            <button
-              type="button"
-              onClick={handleTranslateToPolish}
-              disabled={translating || !rawDescriptionToTranslate}
-              className={`text-[13px] md:text-[14px] px-3 py-1 rounded-md bg-green-800 text-white font-bold inline-flex items-center gap-2 border ${
-                translating || !rawDescriptionToTranslate
-                  ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-                  : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-200 hover:text-gray-800"
-              }`}
+          <button
+            type="button"
+            onClick={handleTranslateToPolish}
+            disabled={translating || !rawDescriptionToTranslate}
+            className={`text-[13px] md:text-[14px] px-3 py-1 rounded-md bg-green-800 text-white font-bold inline-flex items-center gap-2 border ${
+              translating || !rawDescriptionToTranslate
+                ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-200 hover:text-gray-800"
+            }`}
+          >
+            {translating ? "Tłumaczenie..." : "Język Polski"}
+            <span
+              aria-hidden="true"
+              className="inline-block w-[18px] h-[12px] border border-gray-300 overflow-hidden rounded-[1px]"
             >
-              {translating ? "Tłumaczenie..." : "Język Polski"}
-              <span
-                aria-hidden="true"
-                className="inline-block w-[18px] h-[12px] border border-gray-300 overflow-hidden rounded-[1px]"
-              >
-                <span className="block w-full h-1/2 bg-white" />
-                <span className="block w-full h-1/2 bg-red-600" />
-              </span>
-            </button>
-          )}
+              <span className="block w-full h-1/2 bg-white" />
+              <span className="block w-full h-1/2 bg-red-600" />
+            </span>
+          </button>
           <button
             type="button"
             onClick={handleShowEnglish}
@@ -262,7 +245,7 @@ export default function DescAboutObiect({
       <div className="w-full border-b-[1px] border-gray-300"></div>
       <div className="w-full h-[240px] relative">
         <iframe
-          src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed&z=11`}
+          src={`https://www.google.com/maps?q=${localization.lat},${localization.lng}&output=embed&z=11`}
           // width="408"
           // height="200"
           loading="lazy"

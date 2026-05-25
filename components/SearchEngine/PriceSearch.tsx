@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/router";
 
 type Props = {
   value: { min: number; max: number };
@@ -7,7 +6,6 @@ type Props = {
 };
 
 export default function PriceSelect({ value, onChange }: Props) {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [local, setLocal] = useState(value);
 
@@ -72,6 +70,12 @@ export default function PriceSelect({ value, onChange }: Props) {
       max: value.max >= 5000000 ? 1500000 : value.max,
     });
   }, [value]);
+
+  useEffect(() => {
+    const mappedMax = local.max >= maxLimit ? 5000000 : local.max;
+    if (value.min === local.min && value.max === mappedMax) return;
+    onChange({ min: local.min, max: mappedMax });
+  }, [local, onChange, value.min, value.max]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -174,26 +178,10 @@ export default function PriceSelect({ value, onChange }: Props) {
                 Reset
               </button>
               <button
-                onClick={() => {
-                  const mappedMax = local.max >= maxLimit ? 5000000 : local.max;
-                  onChange({ min: local.min, max: mappedMax });
-                  router.push(
-                    {
-                      pathname: router.pathname,
-                      query: {
-                        ...router.query,
-                        priceMin: local.min,
-                        priceMax: mappedMax,
-                      },
-                    },
-                    undefined,
-                    { shallow: false },
-                  );
-                  setOpen(false);
-                }}
+                onClick={() => setOpen(false)}
                 className="bg-yellow-600 text-white py-2 flex-1"
               >
-                Zastosuj
+                Zamknij
               </button>
             </div>
           </div>
