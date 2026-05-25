@@ -196,7 +196,7 @@ export default function LocationSearch({ value, onChange, className }: Props) {
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute mt-2 w-full bg-white border rounded shadow z-50 max-h-60 top-[75px] ">
+        <div className="absolute mt-2 w-full bg-white border rounded shadow z-50 max-h-60 overflow-y-auto top-[75px]">
           {results.map((item, idx) => (
             <div
               key={item.id}
