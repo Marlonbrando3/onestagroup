@@ -400,7 +400,6 @@ export default function Home({
     "Dom",
     "Dom szeregowy",
     "Posiadłość",
-    "Nieruchomość",
   ];
 
   return (
