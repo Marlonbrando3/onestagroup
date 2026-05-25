@@ -14,6 +14,7 @@ type Images = {
   propertyId: string | number;
   propertyTitle: string;
   slug: string;
+  onAllImagesFailed?: () => void;
 };
 
 export default function ResultsSlider({
@@ -24,6 +25,7 @@ export default function ResultsSlider({
   deliveryDate,
   date,
   slug,
+  onAllImagesFailed: _onAllImagesFailed,
 }: Images) {
   const [index, setIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
