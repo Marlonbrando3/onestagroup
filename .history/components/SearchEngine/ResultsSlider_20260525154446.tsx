@@ -1,0 +1,231 @@
+// ResultsSlider.tsx
+import { useState, useRef, useMemo, useEffect } from "react";
+import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
+import Image from "next/image";
+import Link from "next/link";
+
+type Images = {
+  date: string | null;
+  images: any;
+  market: string;
+  countrySlug: string;
+  deliveryDate: any;
+  region: any;
+  propertyId: string | number;
+  propertyTitle: string;
+  slug: string;
+  onAllImagesFailed?: () => void;
+};
+
+export default function ResultsSlider({
+  propertyId,
+  images,
+  market,
+  countrySlug,
+  deliveryDate,
+  date,
+  slug,
+  onAllImagesFailed,
+}: Images) {
+  const [index, setIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [failedKeys, setFailedKeys] = useState<Record<string, true>>({});
+  const [loadedKeys, setLoadedKeys] = useState<Record<string, true>>({});
+  const viewportRef = useRef<HTMLDivElement>(null);
+
+  const imagesArray = (() => {
+    try {
+      if (typeof images === "string") {
+        const parsed = JSON.parse(images);
+        return Array.isArray(parsed) ? parsed : [parsed];
+      }
+      return Array.isArray(images) ? images : images ? [images] : [];
+    } catch {
+      return [];
+    }
+  })();
+
+  const slides = useMemo(() => {
+    const base: Array<{ key: string; type: "image" | "more"; url: string }> =
+      imagesArray.slice(0, 3).map((img: any, i: number) => ({
+        key: `img-${i}`,
+        type: "image" as const,
+        url: typeof img === "string" ? img : img?.url,
+      }));
+
+    if (imagesArray.length > 3) {
+      base.push({ key: "more", type: "more", url: "" });
+    }
+
+    return base;
+  }, [imagesArray]);
+
+  const imageSlides = useMemo(
+    () => slides.filter((s) => s.type === "image"),
+    [slides],
+  );
+
+  useEffect(() => {
+    setFailedKeys({});
+    setLoadedKeys({});
+  }, [propertyId, images]);
+
+  useEffect(() => {
+    if (!imageSlides.length) {
+      onAllImagesFailed?.();
+      return;
+    }
+
+    const allFailed = imageSlides.every((slide) => failedKeys[slide.key]);
+    if (!allFailed) return;
+
+    const timeout = setTimeout(() => {
+      const stillAllFailed = imageSlides.every(
+        (slide) => failedKeys[slide.key],
+      );
+      if (stillAllFailed) {
+        onAllImagesFailed?.();
+      }
+    }, 1200);
+
+    return () => clearTimeout(timeout);
+  }, [imageSlides, failedKeys, onAllImagesFailed]);
+
+  useEffect(() => {
+    if (index > slides.length - 1) setIndex(0);
+  }, [slides.length, index]);
+
+  const next = () => {
+    if (slides.length <= 1) return;
+    setIndex((prev) => (prev + 1) % slides.length);
+  };
+
+  const prev = () => {
+    if (slides.length <= 1) return;
+    setIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchStartX(e.changedTouches[0].clientX);
+  };
+
+  const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX === null) return;
+    const endX = e.changedTouches[0].clientX;
+    const diff = touchStartX - endX;
+
+    if (diff > 50) next();
+    if (diff < -50) prev();
+
+    setTouchStartX(null);
+  };
+
+  return (
+    <div className="h-full w-full relative bg-white overflow-hidden">
+      {!loadedKeys[slides[index]?.key] && (
+        <div className={`${index === 3 absolute inset-0 z-[2] bg-yellow-100/[0.5] flex items-center justify-center">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-bounce [animation-delay:-0.2s]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-bounce [animation-delay:-0.1s]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-300 animate-bounce" />
+          </div>
+        </div>
+      )}
+
+      <div className="absolute text-[14px] md:text-[16px] z-10 bg-white text-orange-400 top-2 px-[12px] font-semibold rounded-r-md h-[26px] leading-[26px] shadow-sm">
+        {market}
+      </div>
+
+      {market === "RYNEK PIERWOTNY" && deliveryDate && (
+        <div className="bg-white absolute z-10 text-[12px] md:text-[14px] text-blue-600 bottom-2 px-[12px] font-normal rounded-r-md h-[24px] leading-[24px]">
+          Data aktualizacji {String(date || "").slice(0, 10)}
+        </div>
+      )}
+
+      {slides.length > 1 && (
+        <button
+          type="button"
+          onClick={prev}
+          className="flex items-center z-10 justify-center absolute w-10 h-full left-0"
+        >
+          <div
+            className={`${index === 0 && "hidden"} w-[30px] h-[30px] bg-white/[0.6] rounded-full grid place-items-center ml-1 `}
+          >
+            <FaChevronLeft className="w-[20px] h-[20px] text-black" />
+          </div>
+        </button>
+      )}
+
+      {slides.length > 1 && (
+        <button
+          type="button"
+          onClick={next}
+          className="flex items-center z-10 justify-center absolute w-10 h-full right-0"
+        >
+          <div className="w-[30px] h-[30px] bg-white/[0.6] rounded-full grid place-items-center mr-1">
+            <FaChevronRight className="w-[20px] h-[20px] text-black" />
+          </div>
+        </button>
+      )}
+
+      <div
+        ref={viewportRef}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        className="h-full w-full overflow-hidden"
+      >
+        <div
+          className="h-full flex transition-transform duration-300"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {slides.map((slide) =>
+            slide.type === "more" ? (
+              <Link
+                key={slide.key}
+                href={{
+                  pathname: `/nieruchomosci/${countrySlug}/${slug}`,
+                  query: { id: propertyId },
+                }}
+                className="min-w-full h-full flex items-center justify-center bg-red-500/70 text-3xl text-white font-[700] z-[9999]"
+              >
+                Więcej zdjęć
+              </Link>
+            ) : (
+              <Link
+                key={slide.key}
+                href={{
+                  pathname: `/nieruchomosci/${countrySlug}/${slug}`,
+                  query: { id: propertyId },
+                }}
+                className="min-w-full h-full relative"
+              >
+                <Image
+                  className="object-cover"
+                  src={
+                    failedKeys[slide.key]
+                      ? "/placeholder.jpg"
+                      : slide.url || "/placeholder.jpg"
+                  }
+                  alt="Zdjęcie nieruchomości"
+                  fill
+                  priority={index === 0}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  onLoad={() =>
+                    setLoadedKeys((prev) =>
+                      prev[slide.key] ? prev : { ...prev, [slide.key]: true },
+                    )
+                  }
+                  onError={() =>
+                    setFailedKeys((prev) =>
+                      prev[slide.key] ? prev : { ...prev, [slide.key]: true },
+                    )
+                  }
+                />
+              </Link>
+            ),
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
