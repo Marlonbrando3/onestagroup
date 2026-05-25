@@ -165,6 +165,65 @@ export default function AsariCrm() {
     }
   };
 
+  const handleSecondaryMls = async () => {
+    try {
+      const req = await fetch("/api/secondaryToSupabase", { method: "POST" });
+      const raw = await req.text();
+      let data: any = {};
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        data = { error: raw || "non-json response" };
+      }
+      if (!req.ok) {
+        alert(
+          `Secondary XML error: ${data?.error || "unknown error"}${data?.stage ? ` (stage: ${data.stage})` : ""}`,
+        );
+        console.log("Secondary MLS update error:", data);
+        return;
+      }
+      alert(
+        `Secondary MLS OK\nPobrane z XML: ${data?.total_xml ?? 0}\nZmapowane rekordy: ${data?.total_mapped ?? 0}\nKolizje ID: ${data?.duplicate_id_rows ?? 0}\nUsunięte stare SEC: ${data?.total_deleted_sec ?? 0}\nZapisane do properties: ${data?.total_saved ?? 0}`,
+      );
+      console.log("Secondary MLS update OK:", data);
+    } catch (err: any) {
+      alert(`Secondary XML error: ${err?.message || "request failed"}`);
+      console.log("Secondary MLS update failed:", err);
+    }
+  };
+
+  const handleSecondaryXmlTest = async () => {
+    try {
+      const req = await fetch("/api/secondaryXmlTest", { method: "POST" });
+      const raw = await req.text();
+      let data: any = {};
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        data = { error: raw || "non-json response" };
+      }
+
+      if (!req.ok) {
+        alert(`Secondary XML TEST error: ${data?.error || "unknown error"}`);
+        console.log("Secondary XML TEST error:", data);
+        return;
+      }
+
+      const topPaths = (data?.potential_paths ?? [])
+        .slice(0, 5)
+        .map((p: any) => `${p.path} (${p.count})`)
+        .join("\n");
+
+      alert(
+        `Secondary XML TEST OK\nWykryte rekordy: ${data?.detected_records ?? 0}\nTop potencjalne ścieżki:\n${topPaths || "-"}`,
+      );
+      console.log("Secondary XML TEST OK:", data);
+    } catch (err: any) {
+      alert(`Secondary XML TEST error: ${err?.message || "request failed"}`);
+      console.log("Secondary XML TEST failed:", err);
+    }
+  };
+
   return (
     <div>
       <div
@@ -188,6 +247,18 @@ export default function AsariCrm() {
         className="bg-orange-600 text-white w-[200px] text-center cursor-pointer mt-[40px]"
       >
         Aktualizj Metainmo
+      </div>
+      <div
+        onClick={handleSecondaryMls}
+        className="bg-purple-600 text-white w-[200px] text-center cursor-pointer mt-[10px]"
+      >
+        Aktualizuj Secondary MLS
+      </div>
+      <div
+        onClick={handleSecondaryXmlTest}
+        className="bg-gray-700 text-white w-[200px] text-center cursor-pointer mt-[10px]"
+      >
+        Test Secondary XML
       </div>
       <div
         ref={spinner}

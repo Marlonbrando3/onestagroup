@@ -8,6 +8,7 @@ type Props = {
 export default function PriceSelect({ value, onChange }: Props) {
   const [open, setOpen] = useState(false);
   const [local, setLocal] = useState(value);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const ref = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -65,17 +66,25 @@ export default function PriceSelect({ value, onChange }: Props) {
   };
 
   useEffect(() => {
+    if (open) return;
     setLocal({
       min: value.min,
       max: value.max >= 5000000 ? 1500000 : value.max,
     });
-  }, [value]);
+  }, [value, open]);
 
   useEffect(() => {
-    const mappedMax = local.max >= maxLimit ? 5000000 : local.max;
-    if (value.min === local.min && value.max === mappedMax) return;
-    onChange({ min: local.min, max: mappedMax });
-  }, [local, onChange, value.min, value.max]);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const mappedMax = local.max >= maxLimit ? 5000000 : local.max;
+      if (value.min === local.min && value.max === mappedMax) return;
+      onChange({ min: local.min, max: mappedMax });
+    }, 180);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [local, onChange, value.min, value.max, maxLimit]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

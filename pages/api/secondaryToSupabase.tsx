@@ -56,6 +56,51 @@ function normalizeUrlValue<T>(value: T): T {
   return value;
 }
 
+function splitFeatureTokens(input: string): string[] {
+  return input
+    .split(/[,;|]/)
+    .map((v) => v.trim())
+    .filter(Boolean);
+}
+
+function extractFeatures(property: any): string[] {
+  const candidates: any[] = [
+    property?.features?.feature,
+    property?.features,
+    property?.feature,
+    property?.characteristics?.characteristic,
+    property?.characteristics,
+    property?.extras?.extra,
+    property?.extras,
+    property?.amenities?.amenity,
+    property?.amenities,
+    property?.equipment?.item,
+    property?.equipment,
+  ];
+
+  const all = candidates.flatMap((c) => toArray(c));
+
+  const normalized = all.flatMap((item) => {
+    if (!item) return [];
+    if (typeof item === "string") return splitFeatureTokens(item);
+    if (typeof item === "object") {
+      const textCandidate =
+        item?.name ??
+        item?.value ??
+        item?.label ??
+        item?.title ??
+        item?.["#text"] ??
+        item?.text;
+      if (typeof textCandidate === "string") {
+        return splitFeatureTokens(textCandidate);
+      }
+    }
+    return [];
+  });
+
+  return Array.from(new Set(normalized));
+}
+
 const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -75,7 +120,13 @@ export default async function handler(
       });
     }
 
-    stage = "download_xml";
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+      processEntities: false,
+      htmlEntities: false,
+    });
+
+    stage = "download_parse_xml";
     let xmlData = "";
     let lastFetchError: any = null;
     const maxAttempts = 5;
@@ -89,7 +140,6 @@ export default async function handler(
           throw new Error(`HTTP ${response.status}`);
         }
 
-        // this is where remote often throws "terminated"
         xmlData = await response.text();
 
         if (!xmlData || xmlData.length < 100) {
@@ -115,12 +165,6 @@ export default async function handler(
       });
     }
 
-    stage = "parse_xml";
-    const parser = new XMLParser({
-      ignoreAttributes: false,
-      processEntities: false,
-      htmlEntities: false,
-    });
     const parsed = parser.parse(xmlData);
     const properties = detectProperties(parsed);
 
@@ -131,6 +175,9 @@ export default async function handler(
     }
 
     stage = "map_records";
+    const idCollisions: Record<string, number> = {};
+    let duplicateIdRows = 0;
+
     const mapped = properties.map((property: any, index: number) => {
       const rawId =
         property?.id ??
@@ -139,10 +186,18 @@ export default async function handler(
         property?.listing_id ??
         property?.listingId ??
         index + 1;
+      const baseExternalId = `SEC-${String(rawId)}`;
+      idCollisions[baseExternalId] = (idCollisions[baseExternalId] ?? 0) + 1;
+      const occurrence = idCollisions[baseExternalId];
+      if (occurrence > 1) duplicateIdRows += 1;
+      const externalId =
+        occurrence === 1 ? baseExternalId : `${baseExternalId}-${occurrence}`;
+
+      const features = extractFeatures(property);
 
       return {
         source: "SECONDARY_XML",
-        external_id: `SEC-${String(rawId)}`,
+        external_id: externalId,
         ref: String(rawId),
         price: Number(property?.price ?? 0) || 0,
         currency: property?.currency ?? null,
@@ -153,6 +208,7 @@ export default async function handler(
         new_build: false,
         beds: property?.beds ?? null,
         baths: property?.baths ?? null,
+        features,
         images: normalizeUrlValue(
           toArray(property?.images?.image ?? property?.images ?? []),
         ),
@@ -162,55 +218,36 @@ export default async function handler(
       };
     });
 
-    const uniqueByExternalId = Object.values(
-      mapped.reduce((acc: Record<string, any>, row: any) => {
-        acc[row.external_id] = row;
-        return acc;
-      }, {}),
-    );
-
     stage = "delete_old_sec_rows";
-    // delete only previous secondary-import rows (SEC-*)
-    const deleteChunkSize = 200;
-    let hasMore = true;
-    while (hasMore) {
-      const { data: toDelete, error: selectDeleteError } = await supabaseServer
-        .from(SECONDARY_TABLE)
-        .select("id")
-        .like("external_id", "SEC-%")
-        .range(0, deleteChunkSize - 1);
+    const { count: deletedRows, error: countError } = await supabaseServer
+      .from(SECONDARY_TABLE)
+      .select("id", { count: "exact", head: true })
+      .like("external_id", "SEC-%");
 
-      if (selectDeleteError) {
-        return res.status(500).json({
-          error: "Błąd odczytu rekordów SEC-* z properties",
-          details: selectDeleteError.message,
-        });
-      }
+    if (countError) {
+      return res.status(500).json({
+        error: "Błąd liczenia rekordów SEC-* w properties",
+        details: countError.message,
+      });
+    }
 
-      if (!toDelete?.length) {
-        hasMore = false;
-        break;
-      }
+    const { error: deleteError } = await supabaseServer
+      .from(SECONDARY_TABLE)
+      .delete()
+      .like("external_id", "SEC-%");
 
-      const ids = toDelete.map((r: any) => r.id);
-      const { error: deleteError } = await supabaseServer
-        .from(SECONDARY_TABLE)
-        .delete()
-        .in("id", ids);
-
-      if (deleteError) {
-        return res.status(500).json({
-          error: "Błąd usuwania rekordów SEC-* z properties",
-          details: deleteError.message,
-        });
-      }
+    if (deleteError) {
+      return res.status(500).json({
+        error: "Błąd usuwania rekordów SEC-* z properties",
+        details: deleteError.message,
+      });
     }
 
     stage = "insert_rows";
     const chunkSize = 100;
     let insertedRows = 0;
-    for (let i = 0; i < uniqueByExternalId.length; i += chunkSize) {
-      const chunk = uniqueByExternalId.slice(i, i + chunkSize);
+    for (let i = 0; i < mapped.length; i += chunkSize) {
+      const chunk = mapped.slice(i, i + chunkSize);
       const { error } = await supabaseServer
         .from(SECONDARY_TABLE)
         .insert(chunk);
@@ -230,7 +267,10 @@ export default async function handler(
     return res.status(200).json({
       message: "Export secondary XML do properties zakończony",
       total_xml: properties.length,
+      total_mapped: mapped.length,
       total_saved: insertedRows,
+      total_deleted_sec: deletedRows ?? 0,
+      duplicate_id_rows: duplicateIdRows,
       xml_url: SECONDARY_XML_URL,
       table: SECONDARY_TABLE,
       stage,

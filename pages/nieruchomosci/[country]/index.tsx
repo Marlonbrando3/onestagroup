@@ -246,6 +246,10 @@ function parseNumList(val: unknown): number[] {
     .filter((n) => Number.isFinite(n));
 }
 
+function escapeLikeValue(value: string): string {
+  return String(value).replace(/[%_,]/g, "").trim();
+}
+
 export const getServerSideProps: GetServerSideProps<PageProps> = async (
   context,
 ) => {
@@ -300,7 +304,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 
   const selectedTowns = expandedIds
     .map((id) => locationsData.find((l) => l.id === id))
-    .filter((l) => l?.type === "town")
+    .filter((l) => l?.type === "town" || l?.type === "city")
     .map((l) => l!.name);
 
   const selectedProvinces = expandedIds
@@ -364,12 +368,16 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   }
 
   if (locationParam.length > 0) {
+    const townLikeClauses = selectedTowns
+      .map((t) => escapeLikeValue(t))
+      .filter(Boolean)
+      .map((t) => `town.ilike.%${t}%`);
+
     if (selectedTowns.length > 0 && selectedProvinces.length > 0) {
-      query = query.or(
-        `town.in.(${selectedTowns.map((t) => `"${t}"`).join(",")}),province.in.(${selectedProvinces.map((p) => `"${p}"`).join(",")})`,
-      );
+      const provinceClause = `province.in.(${selectedProvinces.map((p) => `"${p}"`).join(",")})`;
+      query = query.or([...townLikeClauses, provinceClause].join(","));
     } else if (selectedTowns.length > 0) {
-      query = query.in("town", selectedTowns);
+      query = query.or(townLikeClauses.join(","));
     } else if (selectedProvinces.length > 0) {
       query = query.in("province", selectedProvinces);
     }

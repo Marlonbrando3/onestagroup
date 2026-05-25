@@ -219,7 +219,7 @@ export default function DescAboutObiect({
               type="button"
               onClick={handleTranslateToPolish}
               disabled={translating || !rawDescriptionToTranslate}
-              className={`text-[13px] md:text-[14px] px-3 py-1 rounded-md bg-green-800 text-gray-600 font-bold inline-flex items-center gap-2 border ${
+              className={`text-[13px] md:text-[14px] px-3 py-1 rounded-md bg-green-800 text-white font-bold inline-flex items-center gap-2 border ${
                 translating || !rawDescriptionToTranslate
                   ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                   : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-200 hover:text-gray-800"

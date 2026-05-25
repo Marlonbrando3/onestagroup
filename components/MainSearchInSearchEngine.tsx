@@ -183,6 +183,12 @@ export default function Home({
 
   const toCsv = (arr: string[]) => arr.join(",");
 
+  const serializeQuery = (queryObj: Record<string, string>) =>
+    Object.entries(queryObj)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}=${v}`)
+      .join("&");
+
   const buildQueryFromFilters = (next: FiltersState) => {
     const q: Record<string, string> = {};
 
@@ -233,6 +239,24 @@ export default function Home({
   const pushFiltersToQuery = (next: FiltersState) => {
     const country = slugify((router.query.country as string) || "hiszpania");
     const query = buildQueryFromFilters(next);
+    const nextSerialized = serializeQuery(query);
+    const currentComparableQuery: Record<string, string> = {};
+
+    Object.entries(router.query).forEach(([k, v]) => {
+      if (k === "country") return;
+      if (Array.isArray(v)) {
+        if (v.length) currentComparableQuery[k] = v.join(",");
+      } else if (v !== undefined && v !== null && String(v).length) {
+        currentComparableQuery[k] = String(v);
+      }
+    });
+
+    const currentSerialized = serializeQuery(currentComparableQuery);
+
+    if (currentSerialized === nextSerialized) {
+      setLoader(false);
+      return;
+    }
 
     router.push(
       {
