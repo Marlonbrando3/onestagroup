@@ -35,7 +35,6 @@ export default function AboutUsInspired({
               src="/team_c.png"
               fill
               className="xl:block lg:hidden block"
-              alt="agent"
             />
             <Image
               src="/team.jpeg"
