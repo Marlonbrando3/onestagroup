@@ -76,7 +76,7 @@ export default function HomeViewAlt() {
             className={`${Red_Hat_DisplayFont.className} font-bold md:h-[50px] w-[80%] md:pl-[45px] mx-auto md:mx-0`}
           >
             <div className="w-auto h-auto border-gray-900 flex">
-              <div className="md:h-[150px] md:w-[150px] w-[100px] mr-[15px] relative rounded-md overflow-hidden">
+              <div className="md:h-[150px] md:w-[150px] w-[100px]  mr-[15px] relative rounded-md overflow-hidden">
                 {" "}
                 <Image
                   src="/Marek.webp"

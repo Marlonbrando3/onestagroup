@@ -76,7 +76,7 @@ export default function HomeViewAlt() {
             className={`${Red_Hat_DisplayFont.className} font-bold md:h-[50px] w-[80%] md:pl-[45px] mx-auto md:mx-0`}
           >
             <div className="w-auto h-auto border-gray-900 flex">
-              <div className="md:h-[150px] md:w-[150px] w-[100px] mr-[15px] relative rounded-md overflow-hidden">
+              <div className="h-[150px] w-[150px] mr-[15px] relative rounded-md overflow-hidden">
                 {" "}
                 <Image
                   src="/Marek.webp"
@@ -85,9 +85,9 @@ export default function HomeViewAlt() {
                   objectPosition="center -25px"
                   alt="onesta_Marek"
                 ></Image>
-                <div className="absolute bottom-0 right-0 w-[70px] h-[70px] border-r-[6px] border-b-[6px] border-[#E9B75F] rounded-md"></div>
+                <div className="absolute bottom-0 right- w-[70px] h-[70px] border-r-[6px] border-b-[6px] border-black rounded-md"></div>
               </div>
-              <div className="md:h-[150px] md:w-[150px] w-[100px]  mr-[15px] relative rounded-md overflow-hidden">
+              <div className="h-[150px] w-[150px] mr-[15px] relative rounded-md overflow-hidden">
                 <Image
                   src="/Karolina.webp"
                   fill
@@ -95,18 +95,18 @@ export default function HomeViewAlt() {
                   objectPosition="center -24px"
                   alt="onesta_Karolina"
                 ></Image>
-                <div className="absolute bottom-0 right-0 w-[70px] h-[70px] border-r-[6px] border-b-[6px] border-[#E9B75F] rounded-md"></div>
               </div>
-              <div className="md:h-[150px] md:w-[150px] w-[100px] h-[100px] mr-[15px] relative rounded-md overflow-hidden">
-                {" "}
-                <Image
-                  src="/Przemek.webp"
-                  fill
-                  objectFit="cover"
-                  objectPosition="center -32px"
-                  alt="onesta_Przemek"
-                ></Image>
-                <div className="absolute bottom-0 right-0 w-[70px] h-[70px] border-r-[6px] border-b-[6px] border-[#E9B75F] rounded-md"></div>
+              <div className="shadow-md h-[100px] w-[100px] ">
+                <div className="h-[150px] w-[150px] mr-[15px] relative rounded-md overflow-hidden">
+                  {" "}
+                  <Image
+                    src="/Przemek.webp"
+                    fill
+                    objectFit="cover"
+                    objectPosition="center -32px"
+                    alt="onesta_Przemek"
+                  ></Image>
+                </div>
               </div>
             </div>
             <div className="flex h-auto  mt-[60px] text-[22px]">
