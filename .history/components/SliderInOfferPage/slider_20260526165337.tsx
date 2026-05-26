@@ -109,9 +109,9 @@ export default function Slider({
         </div> */}
         <div className="flex w-full w-justify-between md:items-center items-start px-[20px]">
           <div
-            className="md:w-[75%] w-full md:h-[90vh] h-[400px] mx-auto relative overflow-hidden"
-            // onMouseMove={handleMouseMove}
-            // onClick={handleZoom}
+            className="md:w-[75%] w-full md:h-[90vh] h-[400px] mx-auto relative flex cursor-zoom-in overflow-hidden"
+            onMouseMove={handleMouseMove}
+            onClick={handleZoom}
           >
             {" "}
             <div className="my-auto">
