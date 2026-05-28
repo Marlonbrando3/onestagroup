@@ -35,21 +35,14 @@ export default async function (req: any, res: any) {
       `<br>`,
   };
 
-  try {
-    await new Promise((resolve, reject) => {
-      transporter.sendMail(mailData, (err: any, info: any) => {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          resolve(info);
-        }
-      });
+  await new Promise((resolve, reject) => {
+    transporter.sendMail(mailData, (err: any, info: any) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+      } else {
+        resolve(info);
+      }
     });
-
-    return res.status(200).json({ ok: true });
-  } catch (err) {
-    console.error("Błąd wysyłki maila:", err);
-    return res.status(500).json({ ok: false, error: "MAIL_SEND_FAILED" });
-  }
+  });
 }
