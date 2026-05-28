@@ -469,14 +469,18 @@ function scrollToDesignForm() {
     ?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function trackFacebookSubmitApplication() {
+function trackFacebookDesignLead() {
   if (typeof window === "undefined") return;
 
   const pixelWindow = window as Window & {
     fbq?: (...args: unknown[]) => void;
   };
 
-  const track = () => pixelWindow.fbq?.("track", "SubmitApplication");
+  const track = () =>
+    pixelWindow.fbq?.("track", "Lead", {
+      value: 30,
+      currency: "PLN",
+    });
 
   if (typeof pixelWindow.fbq === "function") {
     track();
@@ -563,7 +567,7 @@ function OfferInquiryForm({
       });
 
       if (!response.ok) throw new Error("Send failed");
-      trackFacebookSubmitApplication();
+      trackFacebookDesignLead();
       setStatus("sent");
     } catch {
       setStatus("error");
@@ -807,7 +811,7 @@ function DesignContactForm() {
         }\nZgoda marketingowa: ${marketing ? "tak" : "nie"}`,
         "Design - ankieta i dane kontaktowe",
       );
-      trackFacebookSubmitApplication();
+      trackFacebookDesignLead();
       setContactStatus("sent");
     } catch {
       setContactStatus("error");
