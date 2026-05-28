@@ -2,27 +2,16 @@ export default async function (req: any, res: any) {
   let nodemailer = require("nodemailer");
 
   const endEmail = "marek.marszalek@onesta.com.pl";
-  const fromEmail = process.env.FROM_EMAIL || process.env.END_EMAIL_LEADY;
-  const pass = process.env.EMAIL_PASS || process.env.END_EMAIL_LEADY_PASS;
-
-  if (!fromEmail || !pass) {
-    console.error("Contact API missing email env", {
-      hasFromEmail: Boolean(process.env.FROM_EMAIL),
-      hasEmailPass: Boolean(process.env.EMAIL_PASS),
-      hasFallbackEmail: Boolean(process.env.END_EMAIL_LEADY),
-      hasFallbackPass: Boolean(process.env.END_EMAIL_LEADY_PASS),
-    });
-
-    return res.status(500).json({
-      ok: false,
-      error: "MAIL_CONFIG_MISSING",
-    });
-  }
+  const fromEmail = process.env.FROM_EMAIL;
+  const pass = process.env.EMAIL_PASS;
 
   const transporter = nodemailer.createTransport({
     port: 465,
     host: "mail-serwer141299.lh.pl",
     secure: true,
+    tls: {
+      ciphers: "SSLv3",
+    },
     auth: {
       // type: "OAuth2",
       user: fromEmail,
@@ -47,27 +36,11 @@ export default async function (req: any, res: any) {
   };
 
   try {
-    const info = await new Promise((resolve, reject) => {
-      transporter.sendMail(mailData, (err: any, info: any) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        resolve(info);
-      });
-    });
+    const info = await transporter.sendMail(mailData);
 
     return res.status(200).json({ ok: true });
   } catch (err) {
-    const error = err as any;
-    console.error("Błąd wysyłki maila:", {
-      message: error?.message,
-      code: error?.code,
-      command: error?.command,
-      responseCode: error?.responseCode,
-      response: error?.response,
-    });
+    console.error("Błąd wysyłki maila:", err);
 
     return res.status(500).json({ ok: false, error: "MAIL_SEND_FAILED" });
   }
