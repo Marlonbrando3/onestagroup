@@ -778,10 +778,11 @@ function DesignContactForm() {
 
     if (!response.ok) {
       const errorBody = await response.text().catch(() => "");
-      console.warn("Design contact form returned non-OK status:", {
+      console.error("Design contact form send failed:", {
         status: response.status,
         body: errorBody,
       });
+      throw new Error("Send failed");
     }
   };
 
