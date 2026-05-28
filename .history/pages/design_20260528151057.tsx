@@ -1135,7 +1135,7 @@ export default function DesignPage({ offers }: DesignPageProps) {
                     priority
                   />
                 </div>
-                <div className="absolute right-[12px] top-[54px] h-[188px] w-[188px] overflow-hidden rounded-[30px] lg:border-[4px] border-[2px] border-[#32384B] bg-white shadow-sm lg:right-[34px] lg:top-[302px] md:top-[250px] lg:h-[340px] lg:w-[340px] md:h-[250px] md:w-[250px] lg:rounded-[26px] lg:border-[4px]">
+                <div className="absolute right-[12px] top-[54px] h-[188px] w-[188px] overflow-hidden rounded-[30px] lg:border-[8px] border-[2px] border-[#32384B] bg-white shadow-sm lg:right-[34px] lg:top-[302px] md:top-[250px] lg:h-[340px] lg:w-[340px] md:h-[250px] md:w-[250px] lg:rounded-[26px] lg:border-[4px]">
                   <Image
                     src="/Karolina.webp"
                     alt=""

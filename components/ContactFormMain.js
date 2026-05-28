@@ -28,8 +28,11 @@ export default function ContactFormMain() {
       return;
     }
 
-    submitButton.current.innerHTML = "Wysyłam...";
-    submitButton.current.style.backgroundColor = "yellow";
+    if (submitButton.current) {
+      submitButton.current.innerHTML = "Wysyłam...";
+      submitButton.current.style.backgroundColor = "yellow";
+      submitButton.current.disabled = true;
+    }
 
     try {
       const res = await fetch("/api/contact", {
@@ -46,19 +49,29 @@ export default function ContactFormMain() {
         }),
       });
 
-      if (res.status === 200) {
+      if (!res.ok) {
+        throw new Error(`Contact form failed with status ${res.status}`);
+      }
+
+      try {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
           event: "form_main_site",
         });
+      } catch (analyticsError) {
+        console.error("Form sent, analytics failed:", analyticsError);
+      }
 
+      if (submitButton.current) {
         submitButton.current.style.backgroundColor = "green";
         submitButton.current.innerHTML = "Wiadomość wysłana!";
-      } else {
-        submitButton.current.innerHTML = "Błąd, spróbuj ponownie";
       }
     } catch (err) {
-      submitButton.current.innerHTML = "Błąd, spróbuj ponownie";
+      console.error("Main contact form failed:", err);
+      if (submitButton.current) {
+        submitButton.current.innerHTML = "Błąd, spróbuj ponownie";
+        submitButton.current.disabled = false;
+      }
     }
   };
 
