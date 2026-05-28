@@ -9,9 +9,9 @@ export default async function (req: any, res: any) {
     port: 465,
     host: "mail-serwer141299.lh.pl",
     secure: true,
-    // tls: {
-    //   ciphers: "SSLv3",
-    // },
+    tls: {
+      ciphers: "SSLv3",
+    },
     auth: {
       // type: "OAuth2",
       user: fromEmail,
