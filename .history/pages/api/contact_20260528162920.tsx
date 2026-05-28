@@ -35,14 +35,17 @@ export default async function (req: any, res: any) {
       `<br>`,
   };
 
-  await new Promise((resolve, reject) => {
-    transporter.sendMail(mailData, (err, info) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-      } else {
-        resolve(info);
-      }
-    });
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    tls: {
+      ciphers: "SSLv3",
+    },
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.MAIL_SENDER,
+      pass: process.env.MAIL_PASS,
+    },
   });
 }
