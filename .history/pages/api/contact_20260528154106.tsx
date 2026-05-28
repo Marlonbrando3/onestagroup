@@ -2,15 +2,13 @@ export default async function (req: any, res: any) {
   let nodemailer = require("nodemailer");
 
   const endEmail = "marek.marszalek@onesta.com.pl";
-  const fromEmail = process.env.FROM_EMAIL || process.env.END_EMAIL_LEADY;
-  const pass = process.env.EMAIL_PASS || process.env.END_EMAIL_LEADY_PASS;
+  const fromEmail = process.env.FROM_EMAIL;
+  const pass = process.env.EMAIL_PASS;
 
   if (!fromEmail || !pass) {
     console.error("Contact API missing email env", {
-      hasFromEmail: Boolean(process.env.FROM_EMAIL),
-      hasEmailPass: Boolean(process.env.EMAIL_PASS),
-      hasFallbackEmail: Boolean(process.env.END_EMAIL_LEADY),
-      hasFallbackPass: Boolean(process.env.END_EMAIL_LEADY_PASS),
+      hasFromEmail: Boolean(fromEmail),
+      hasEmailPass: Boolean(pass),
     });
 
     return res.status(500).json({
