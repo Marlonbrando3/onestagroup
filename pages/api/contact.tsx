@@ -5,6 +5,18 @@ export default async function (req: any, res: any) {
   const fromEmail = process.env.FROM_EMAIL;
   const pass = process.env.EMAIL_PASS;
 
+  if (!fromEmail || !pass) {
+    console.error("Contact API missing email env", {
+      hasFromEmail: Boolean(fromEmail),
+      hasEmailPass: Boolean(pass),
+    });
+
+    return res.status(500).json({
+      ok: false,
+      error: "MAIL_CONFIG_MISSING",
+    });
+  }
+
   const transporter = nodemailer.createTransport({
     port: 465,
     host: "mail-serwer141299.lh.pl",
@@ -40,7 +52,14 @@ export default async function (req: any, res: any) {
 
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error("Błąd wysyłki maila:", err);
+    const error = err as any;
+    console.error("Błąd wysyłki maila:", {
+      message: error?.message,
+      code: error?.code,
+      command: error?.command,
+      responseCode: error?.responseCode,
+      response: error?.response,
+    });
 
     return res.status(500).json({ ok: false, error: "MAIL_SEND_FAILED" });
   }

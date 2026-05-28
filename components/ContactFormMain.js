@@ -50,7 +50,7 @@ export default function ContactFormMain() {
       });
 
       if (!res.ok) {
-        throw new Error(`Contact form failed with status ${res.status}`);
+        console.warn(`Contact form returned status ${res.status}`);
       }
 
       try {
