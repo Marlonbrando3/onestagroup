@@ -35,8 +35,8 @@ export default async function (req: any, res: any) {
       `<br>`,
   };
 
-  await new Promise((resolve, reject) => {
-    transporter.sendMail(mailData, (err: any, info: any) => {
+await new Promise((resolve, reject) => {
+    transporter.sendMail(mailData, (err, info) => {
       if (err) {
         console.error(err);
         reject(err);
@@ -45,4 +45,3 @@ export default async function (req: any, res: any) {
       }
     });
   });
-}

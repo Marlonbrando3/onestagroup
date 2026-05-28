@@ -36,7 +36,7 @@ export default async function (req: any, res: any) {
   };
 
   await new Promise((resolve, reject) => {
-    transporter.sendMail(mailData, (err: any, info: any) => {
+    transporter.sendMail(mailData, (err: any, info) => {
       if (err) {
         console.error(err);
         reject(err);
