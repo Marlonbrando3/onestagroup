@@ -11,6 +11,7 @@ import {
   FaConciergeBell,
   FaHandshake,
   FaKey,
+  FaTools,
 } from "react-icons/fa";
 import { IoSparklesOutline } from "react-icons/io5";
 import {
@@ -26,7 +27,7 @@ import {
   MdOutlineVerified,
 } from "react-icons/md";
 import locationsData from "@/data/locations.json";
-import { MontserratSans } from "@/fonts/fonts";
+import { MontserratSans, Mulish_Font } from "@/fonts/fonts";
 import { supabase, supabaseServer } from "@/lib/supabaseClient";
 
 type DesignProperty = {
@@ -73,6 +74,7 @@ const budgetOptions = [
 const stepCards = [
   {
     number: "1",
+    claim: "Szerokie portfolio ofert",
     text: (
       <>
         Współpracujemy ze <strong>wszystkimi deweloperami</strong> na wybrzeżach{" "}
@@ -84,6 +86,7 @@ const stepCards = [
   },
   {
     number: "2",
+    claim: "Kompletny proces",
     text: (
       <>
         Prowadzimy <strong>proces zakupu nieruchomości</strong> począwszy od{" "}
@@ -96,6 +99,7 @@ const stepCards = [
   },
   {
     number: "3",
+    claim: "Projektowanie wnętrz",
     text: (
       <>
         Na życzenie <strong>projektujemy wnętrza</strong> i{" "}
@@ -107,6 +111,7 @@ const stepCards = [
   },
   {
     number: "4",
+    claim: "Zarządzanie najmem",
     text: (
       <>
         W ramach <strong>zarządzania najmem</strong> korzystamy z{" "}
@@ -139,12 +144,20 @@ const rentServices = [
     Icon: MdOutlineAssignment,
   },
   {
-    text: "Dbałość o jakość doświadczenia gości i budowanie",
+    text: "Dbałość o jakość doświadczenia gości i budowanie pozytywnych opinii",
     Icon: IoSparklesOutline,
   },
   {
     text: "Usługę rezydenta oraz pakiet powitalny dla gości",
     Icon: FaConciergeBell,
+  },
+  {
+    text: "Regularna kontrola stanu technicznego i wizualnego apartamentu",
+    Icon: MdOutlineVerified,
+  },
+  {
+    text: "Organizacja ewentualnych napraw i serwisów",
+    Icon: FaTools,
   },
 ];
 
@@ -179,7 +192,7 @@ const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
     text: (
       <>
         <strong>BRAK PROWIZJI</strong>
-        <br></br> od strony kupującej nieruchomość.
+        <br></br> ze strony kupującej nieruchomość.
       </>
     ),
     Icon: FaHandshake,
@@ -204,7 +217,7 @@ const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
   {
     text: (
       <>
-        Selekcję ofert, ich prezentacje,{" "}
+        Preselekcję ofert, ich prezentacje na miejscu,{" "}
         <strong>kompletny proces zakupu</strong>.
       </>
     ),
@@ -222,7 +235,7 @@ const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
   {
     text: (
       <>
-        <strong>Zaplecze prawne</strong> w procesie zakupu.
+        <strong>Zaplecze prawne</strong> i bezpieczeństwo transkacji.
       </>
     ),
     Icon: MdFactCheck,
@@ -288,9 +301,9 @@ function AccentHeading({
   className?: string;
 }) {
   return (
-    <div className={`flex items-start gap-[12px] ${className}`}>
-      <span className="mt-[5px] h-[43px] w-[5px] shrink-0 bg-[#f15b2a] lg:h-[80px] lg:w-[7px]" />
-      <h2 className="text-[25px] font-[700] leading-[1.12] tracking-[-0.3px] lg:text-[40px]">
+    <div className={`flex items-start gap-[12px] uppercase${className}`}>
+      {/* <span className="mt-[5px] h-[43px] w-[5px] shrink-0 bg-[#f15b2a] lg:h-[80px] lg:w-[7px]" /> */}
+      <h2 className="text-[25px] font-[700] leading-[1.12] tracking-[0.8px] lg:text-[30px]">
         {children}
       </h2>
     </div>
@@ -318,11 +331,11 @@ function YellowPill({
 
 function RentServiceCard({ text, Icon }: { text: string; Icon: IconType }) {
   return (
-    <div className="flex min-h-[108px] items-center rounded-[22px] bg-[#ffc329] p-[16px] text-left shadow-[0_2px_0_rgba(0,0,0,0.08)] lg:aspect-square lg:min-h-0 lg:flex-col lg:justify-center lg:rounded-[30px] lg:p-[28px] lg:text-center">
-      <span className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full bg-white/75 text-[#f15b2a] lg:h-[78px] lg:w-[78px]">
+    <div className="flex min-h-[108px] items-center rounded-[22px] p-[16px] text-left lg:min-h-0 lg:flex-row lg:justify-center lg:rounded-[30px] lg:p-[28px] lg:text-left ">
+      <span className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full bg-[#FFC32A] text-white lg:h-[78px] lg:w-[78px] mr-[20px]">
         <Icon className="text-[34px] lg:text-[42px]" />
       </span>
-      <p className="ml-[16px] text-[17px] font-[700] leading-[1.25] lg:ml-0 lg:mt-[22px] xl:text-[20px] min-[1024px]:text-[16px]">
+      <p className="ml-[16px] text-[17px] font-[400] leading-[1.25] lg:ml-0  xl:text-[20px] min-[1024px]:text-[16px]">
         {text}
       </p>
     </div>
@@ -337,11 +350,11 @@ function OfferBenefitCard({
   Icon: IconType;
 }) {
   return (
-    <div className="flex min-h-[108px] items-center rounded-[22px] bg-[#ffc329] p-[16px] text-left shadow-[0_2px_0_rgba(0,0,0,0.08)] lg:aspect-square lg:min-h-0 lg:flex-col lg:justify-center lg:rounded-[30px] lg:p-[28px] lg:text-center">
-      <span className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full bg-white/75 text-[#f15b2a] lg:h-[78px] lg:w-[78px]">
-        <Icon className="text-[34px] lg:text-[42px]" />
+    <div className="flex min-h-[108px] items-center p-[16px] text-left lg:min-h-0 lg:flex-row lg:justify-center lg:px-[28px] lg:text-left  border-[#FFC32A] bg-white rounded-[20px]">
+      <span className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full bg-yellow-500 text-[#f15b2a] lg:h-[78px] lg:w-[78px] mr-[20px]">
+        <Icon className="text-[34px] lg:text-[42px] text-white" />
       </span>
-      <p className="ml-[16px] text-[17px] font-[400] leading-[1.25] lg:ml-0 lg:mt-[22px] xl:text-[20px] min-[1024px]:text-[16px]">
+      <p className="ml-[16px] text-[17px] font-[400] leading-[1.25] lg:ml-0 xl:text-[20px] min-[1024px]:text-[16px]">
         {text}
       </p>
     </div>
@@ -441,10 +454,49 @@ function getOfferImages(images: DesignProperty["images"]) {
     .filter(Boolean);
 }
 
+function isExcludedDesignOfferType(type?: string | null) {
+  const normalizedType = normalizeText(type || "");
+  if (!normalizedType) return false;
+
+  return ["villa", "house"].some((blockedType) =>
+    normalizedType.includes(blockedType),
+  );
+}
+
 function scrollToDesignForm() {
   document
     .getElementById("design-contact-form")
     ?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function trackFacebookSubmitApplication() {
+  if (typeof window === "undefined") return;
+
+  const pixelWindow = window as Window & {
+    fbq?: (...args: unknown[]) => void;
+  };
+
+  const track = () => pixelWindow.fbq?.("track", "SubmitApplication");
+
+  if (typeof pixelWindow.fbq === "function") {
+    track();
+    return;
+  }
+
+  let attempts = 0;
+  const interval = window.setInterval(() => {
+    attempts += 1;
+
+    if (typeof pixelWindow.fbq === "function") {
+      track();
+      window.clearInterval(interval);
+      return;
+    }
+
+    if (attempts >= 20) {
+      window.clearInterval(interval);
+    }
+  }, 250);
 }
 
 function OfferInquiryForm({
@@ -511,6 +563,7 @@ function OfferInquiryForm({
       });
 
       if (!response.ok) throw new Error("Send failed");
+      trackFacebookSubmitApplication();
       setStatus("sent");
     } catch {
       setStatus("error");
@@ -671,7 +724,7 @@ function SurveySelect({
       required
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className="min-h-[64px] w-full whitespace-normal rounded-[13px] border border-black/10 bg-white px-[14px] py-[8px] text-[12px] font-[600] leading-[1.25] outline-none lg:min-h-[72px] lg:rounded-[18px] lg:px-[18px] lg:text-[15px]"
+      className="min-h-[64px] w-full whitespace-normal rounded-[13px] border border-black/10 bg-white px-[14px] py-[8px] text-[12px] font-[600] leading-[1.25] outline-none focus:ring-2 focus:ring-black/15 lg:min-h-[72px] lg:rounded-[18px] lg:px-[18px] lg:text-[15px]"
     >
       <option value="" disabled>
         {title}
@@ -686,7 +739,6 @@ function SurveySelect({
 }
 
 function DesignContactForm() {
-  const [step, setStep] = useState<"contact" | "survey">("contact");
   const [dataForm, setDataForm] = useState<DesignMainFormData>({
     Name: "",
     Email: "",
@@ -699,9 +751,6 @@ function DesignContactForm() {
   const [privacy, setPrivacy] = useState(false);
   const [marketing, setMarketing] = useState(false);
   const [contactStatus, setContactStatus] = useState<
-    "idle" | "sending" | "sent" | "error"
-  >("idle");
-  const [surveyStatus, setSurveyStatus] = useState<
     "idle" | "sending" | "sent" | "error"
   >("idle");
 
@@ -744,107 +793,56 @@ function DesignContactForm() {
 
     try {
       await sendDesignLead(
-        `${dataForm.Message}\n\nPierwszy krok formularza. Zgoda marketingowa: ${
-          marketing ? "tak" : "nie"
-        }`,
-        "Design - dane kontaktowe",
+        `${dataForm.Message}\n\nCzy planuje zakup w tym roku: ${
+          dataForm.purchaseThisYear
+        }\nRegion: ${dataForm.region}\nBudżet: ${
+          dataForm.budget
+        }\nZgoda marketingowa: ${marketing ? "tak" : "nie"}`,
+        "Design - ankieta i dane kontaktowe",
       );
+      trackFacebookSubmitApplication();
       setContactStatus("sent");
-      setStep("survey");
     } catch {
       setContactStatus("error");
     }
   };
 
-  const handleSurveySubmit = async (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault();
-    setSurveyStatus("sending");
-
-    try {
-      await sendDesignLead(
-        `${dataForm.Message}\n\nCzy planuje zakup w tym roku: ${
-          dataForm.purchaseThisYear || "brak odpowiedzi"
-        }\nRegion: ${dataForm.region || "brak odpowiedzi"}\nBudżet: ${
-          dataForm.budget || "brak odpowiedzi"
-        }\nZgoda marketingowa: ${marketing ? "tak" : "nie"}`,
-        "Design - ankieta",
-      );
-      setSurveyStatus("sent");
-    } catch {
-      setSurveyStatus("error");
-    }
-  };
-
-  if (step === "survey") {
-    return (
-      <form
-        onSubmit={handleSurveySubmit}
-        className="flex flex-col gap-[14px] lg:gap-[18px]"
-      >
-        <div className="rounded-[22px] bg-[#ffc329]/55 p-[14px] lg:p-[22px]">
-          <p className="mb-[14px] text-[16px] font-[900] lg:text-[22px]">
-            Krótka ankieta
-          </p>
-          <div className="grid grid-cols-1 gap-[12px]">
-            <SurveySelect
-              title="Czy planujesz zakup nieruchomości w tym roku?"
-              options={purchaseTimingOptions}
-              value={dataForm.purchaseThisYear}
-              onChange={(value) => updateField("purchaseThisYear", value)}
-            />
-            <SurveySelect
-              title="W jakim regionie szukasz nieruchomości?"
-              options={regionOptions}
-              value={dataForm.region}
-              onChange={(value) => updateField("region", value)}
-            />
-            <SurveySelect
-              title="Jaki budżet maksymalny planujesz przeznaczyć na zakup?"
-              options={budgetOptions}
-              value={dataForm.budget}
-              onChange={(value) => updateField("budget", value)}
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-[10px]">
-          <button
-            type="button"
-            onClick={() => setStep("contact")}
-            className="h-[45px] rounded-full bg-white px-[20px] text-[13px] font-[700] uppercase tracking-[0.4px] text-black lg:h-[62px] lg:px-[30px] lg:text-[16px]"
-          >
-            Wróć
-          </button>
-          <button
-            type="submit"
-            disabled={surveyStatus === "sending" || surveyStatus === "sent"}
-            className="h-[45px] flex-1 rounded-full bg-black text-[13px] font-[700] uppercase tracking-[0.4px] text-white disabled:opacity-70 lg:h-[62px] lg:text-[16px]"
-          >
-            {surveyStatus === "sending"
-              ? "Wysyłam..."
-              : surveyStatus === "sent"
-                ? "Wysłano"
-                : surveyStatus === "error"
-                  ? "Spróbuj ponownie"
-                  : "Wyślij"}
-          </button>
-        </div>
-      </form>
-    );
-  }
-
   return (
     <form
       onSubmit={handleContactSubmit}
-      className="flex flex-col gap-[12px] lg:gap-[16px]"
+      className="flex flex-col gap-[12px] rounded-[22px] bg-[#FFC32A] p-[14px] lg:gap-[16px] lg:p-[22px]"
     >
+      <div>
+        <p className="m-[14px] text-[16px] font-[900] lg:text-[22px]">
+          Uzupełnij formularz kontaktowy
+        </p>
+        <div className="grid grid-cols-1 gap-[12px]">
+          <SurveySelect
+            title="Czy planujesz zakup nieruchomości w tym roku?"
+            options={purchaseTimingOptions}
+            value={dataForm.purchaseThisYear}
+            onChange={(value) => updateField("purchaseThisYear", value)}
+          />
+          <SurveySelect
+            title="W jakim regionie szukasz nieruchomości?"
+            options={regionOptions}
+            value={dataForm.region}
+            onChange={(value) => updateField("region", value)}
+          />
+          <SurveySelect
+            title="Jaki budżet maksymalny planujesz przeznaczyć na zakup?"
+            options={budgetOptions}
+            value={dataForm.budget}
+            onChange={(value) => updateField("budget", value)}
+          />
+        </div>
+      </div>
+
       <input
         required
         value={dataForm.Name}
         onChange={(event) => updateField("Name", event.target.value)}
-        className="h-[44px] rounded-[13px] border border-black/10 bg-white px-[14px] text-[13px] outline-none lg:h-[54px] lg:rounded-[18px] lg:px-[18px] lg:text-[16px]"
+        className="min-h-[64px] rounded-[13px] border border-black/10 bg-white px-[14px] text-[12px] font-[600] outline-none focus:ring-2 focus:ring-black/15 lg:min-h-[72px] lg:rounded-[18px] lg:px-[18px] lg:text-[15px]"
         placeholder="Imię i nazwisko *"
       />
       <input
@@ -852,7 +850,7 @@ function DesignContactForm() {
         type="email"
         value={dataForm.Email}
         onChange={(event) => updateField("Email", event.target.value)}
-        className="h-[44px] rounded-[13px] border border-black/10 bg-white px-[14px] text-[13px] outline-none lg:h-[54px] lg:rounded-[18px] lg:px-[18px] lg:text-[16px]"
+        className="min-h-[64px] rounded-[13px] border border-black/10 bg-white px-[14px] text-[12px] font-[600] outline-none focus:ring-2 focus:ring-black/15 lg:min-h-[72px] lg:rounded-[18px] lg:px-[18px] lg:text-[15px]"
         placeholder="Adres e-mail *"
       />
       <input
@@ -860,16 +858,9 @@ function DesignContactForm() {
         type="tel"
         value={dataForm.Phone}
         onChange={(event) => updateField("Phone", event.target.value)}
-        className="h-[44px] rounded-[13px] border border-black/10 bg-white px-[14px] text-[13px] outline-none lg:h-[54px] lg:rounded-[18px] lg:px-[18px] lg:text-[16px]"
+        className="min-h-[64px] rounded-[13px] border border-black/10 bg-white px-[14px] text-[12px] font-[600] outline-none focus:ring-2 focus:ring-black/15 lg:min-h-[72px] lg:rounded-[18px] lg:px-[18px] lg:text-[15px]"
         placeholder="Numer telefonu *"
       />
-      <textarea
-        value={dataForm.Message}
-        onChange={(event) => updateField("Message", event.target.value)}
-        className="h-[120px] resize-none rounded-[13px] border border-black/10 bg-white px-[14px] py-[13px] text-[13px] outline-none lg:h-[100px] lg:rounded-[18px] lg:px-[18px] lg:py-[16px] lg:text-[16px]"
-        placeholder="Wiadomość"
-      />
-
       <div className="flex flex-col gap-[10px] text-[12px] font-[600] leading-[1.35] text-black/70 lg:text-[13px]">
         <label className="flex items-start gap-[9px]">
           <input
@@ -877,7 +868,7 @@ function DesignContactForm() {
             type="checkbox"
             checked={privacy}
             onChange={(event) => setPrivacy(event.target.checked)}
-            className="mt-[2px] h-[16px] w-[16px] shrink-0"
+            className="mt-[2px] h-[16px] w-[16px] shrink-0 accent-black"
           />
           <span>
             Oświadczam, że zapoznałem/am się z{" "}
@@ -892,7 +883,7 @@ function DesignContactForm() {
             type="checkbox"
             checked={marketing}
             onChange={(event) => setMarketing(event.target.checked)}
-            className="mt-[2px] h-[16px] w-[16px] shrink-0"
+            className="mt-[2px] h-[16px] w-[16px] shrink-0 accent-black"
           />
           <span>Wyrażam zgodę na kontakt marketingowy.</span>
         </label>
@@ -905,9 +896,11 @@ function DesignContactForm() {
       >
         {contactStatus === "sending"
           ? "Wysyłam..."
-          : contactStatus === "error"
-            ? "Spróbuj ponownie"
-            : "Dalej"}
+          : contactStatus === "sent"
+            ? "Wysłano"
+            : contactStatus === "error"
+              ? "Spróbuj ponownie"
+              : "Wyślij"}
       </button>
     </form>
   );
@@ -1069,13 +1062,13 @@ export default function DesignPage({ offers }: DesignPageProps) {
         <meta name="robots" content="noindex" />
       </Head>
       <main
-        className={`${MontserratSans.className} min-h-screen bg-white text-[#171717]`}
+        className={`${Mulish_Font.className} min-h-screen bg-white text-gray-800`}
       >
-        <div className="min-h-screen w-full overflow-hidden bg-[#ffc329]">
-          <section className="relative min-h-[620px] bg-[#ffc329] px-[24px] lg:min-h-[760px] lg:px-[70px] lg:pb-[46px]">
-            <div className="absolute right-0 top-0 h-full w-[42%] bg-[#f3e8df] [clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)]" />
+        <div className="min-h-screen w-full overflow-hidden bg-[#ebebeb]">
+          <section className="relative min-h-[620px] bg-[#FFC32A] px-[24px] lg:min-h-[760px] lg:px-[70px] lg:pb-[46px]">
+            <div className="absolute right-0 top-0 h-full w-[42%] bg-white [clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)]" />
 
-            <div className="relative z-10 mx-auto grid h-full max-w-[1200px] grid-cols-1 gap-[26px] lg:grid-cols-[56%_44%]">
+            <div className="relative z-10 mx-auto grid h-full max-w-[1200px] md:grid-cols-2 gap-[26px] lg:grid-cols-[56%_44%]">
               <div>
                 <div className="flex h-[46px] w-[158px] items-center rounded-b-[20px] bg-white px-[16px] shadow-sm lg:h-[62px] lg:w-[220px] lg:px-[24px]">
                   <Image
@@ -1088,11 +1081,11 @@ export default function DesignPage({ offers }: DesignPageProps) {
                   />
                 </div>
 
-                <div className="mt-[72px] max-w-[710px] border-l-[6px] border-[#f15b2a] pl-[18px] lg:mt-[86px] lg:border-l-[9px] lg:pl-[34px]">
+                <div className="mt-[72px] max-w-[710px] border-[#f15b2a] pl-[18px] lg:mt-[86px] lg:pl-[34px">
                   <p className="text-[20px] font-[700] leading-none lg:text-[30px]">
                     Od 8 lat
                   </p>
-                  <h1 className="mt-[16px] text-[34px] font-[800] leading-[1.04] tracking-[-1px] lg:mt-[28px] lg:text-[60px] lg:tracking-[-2.4px]">
+                  <h1 className="mt-[16px] text-[34px] font-[700] leading-[1.04] tracking-[-1px] lg:mt-[28px] lg:text-[60px] lg:tracking-[-2.4px]">
                     Pomagamy Polakom w poszukiwaniach i zakupie drugiego domu w
                     Hiszpanii
                   </h1>
@@ -1107,35 +1100,41 @@ export default function DesignPage({ offers }: DesignPageProps) {
                         target.getBoundingClientRect().top + window.scrollY + 0;
                       window.scrollTo({ top, behavior: "smooth" });
                     }}
-                    className="mt-[26px] rounded-md bg-black px-[25px] py-[13px] text-[11px] font-[700] uppercase tracking-[0.5px] text-white lg:mt-[40px] lg:px-[42px] lg:py-[20px] lg:text-[16px]"
+                    className="mt-[26px] rounded-md bg-gray-800 border border-gray-600 text-white px-[25px] py-[13px] text-[11px] font-[700] uppercase tracking-[0.5px] lg:mt-[40px] lg:px-[42px] lg:py-[20px] lg:text-[16px]"
                   >
                     Sprawdź jak możemy Ci pomóc
                   </button>
-                  <p className="mt-[13px] text-[10px] font-[500] uppercase tracking-[0.1px] lg:mt-[20px] lg:text-[14px]">
+                  <p className="mt-[13px] text-[12px] font-[500] uppercase tracking-[0.1px] lg:mt-[20px] lg:text-[18px]">
                     lub od razu zostaw kontakt{" "}
-                    <span className="font-[800] underline">klikając tutaj</span>
+                    <button
+                      type="button"
+                      onClick={scrollToDesignForm}
+                      className="font-[800] underline"
+                    >
+                      TUTAJ
+                    </button>
                   </p>
                 </div>
               </div>
 
               <div className="relative min-h-[270px] lg:min-h-[650px]">
-                <div className="absolute right-[96px] top-[4px] h-[178px] w-[178px] overflow-hidden rounded-[30px] border-[8px] border-[#ffc329] bg-white shadow-sm lg:right-[220px] lg:top-[56px] lg:h-[310px] lg:w-[310px] lg:rounded-[16px] lg:border-[8px]">
+                <div className="absolute md:right-[96px] top-[4px] h-[178px] w-[178px] overflow-hidden rounded-[30px] lg:border-[8px] border-[2px] border-[#32384B] bg-white shadow-sm lg:right-[180px] lg:top-[56px] lg:h-[310px] lg:w-[310px] md:top-[56px] md:h-[250px] md:w-[250px] lg:rounded-[16px] lg:border-[4px]">
                   <Image
                     src="/Marek.webp"
                     alt=""
                     fill
                     sizes="(max-width: 1024px) 178px, 310px"
-                    className="object-cover object-[50%_12%]"
+                    className="object-cover object-[50%_12%] object-[center_-30px] md:object-[center_-60px]"
                     priority
                   />
                 </div>
-                <div className="absolute right-[12px] top-[124px] h-[188px] w-[188px] overflow-hidden rounded-[30px] border-[8px] border-[#ffc329] bg-white shadow-sm lg:right-[34px] lg:top-[302px] lg:h-[340px] lg:w-[340px] lg:rounded-[26px] lg:border-[8px]">
+                <div className="absolute right-[12px] top-[54px] h-[188px] w-[188px] overflow-hidden rounded-[30px] lg:border-[8px] border-[2px] border-[#32384B] bg-white shadow-sm lg:right-[34px] lg:top-[302px] md:top-[250px] lg:h-[340px] lg:w-[340px] md:h-[250px] md:w-[250px] lg:rounded-[26px] lg:border-[4px]">
                   <Image
                     src="/Karolina.webp"
                     alt=""
                     fill
                     sizes="(max-width: 1024px) 188px, 340px"
-                    className="object-cover object-[50%_10%]"
+                    className="object-cover object-[50%_10%] object-[center_-30px] md:object-[center_-50px]"
                     priority
                   />
                 </div>
@@ -1143,16 +1142,16 @@ export default function DesignPage({ offers }: DesignPageProps) {
             </div>
           </section>
 
-          <section className="bg-[#f3e8df] px-[24px] pb-[62px] pt-[8px] lg:px-[70px] lg:pb-[98px]">
+          <section className="bg-white px-[24px] pb-[62px] pt-[8px] lg:px-[70px] lg:pb-[98px] border ">
             <div className="mx-auto max-w-[1240px]">
               {/* <AccentHeading>
                 Dlaczego <br />
                 <p className="text-[#ffc329]">my?</p>
               </AccentHeading> */}
-              <div className="mt-[30px] grid grid-cols-1 gap-[24px] lg:mt-[52px] md:grid-cols-[330px_1fr] lg:gap-[48px]">
+              <div className="mt-[30px] grid grid-cols-1 gap-[24px] lg:my-[102px] md:grid-cols-[330px_1fr] lg:gap-[48px]">
                 <div
                   id="design-help-section"
-                  className="relative overflow-hidden w-[300px] rounded-[24px] bg-[#ffc329] h-[430px] lg:rounded-[34px] border-[10px] border-[#ffc329] mx-auto"
+                  className="relative overflow-hidden w-[300px] rounded-[24px] bg-[#ffc329] h-[430px] lg:rounded-[20px] border-[3px] border-[#32384B] mx-auto"
                 >
                   <Image
                     src="/Marek.webp"
@@ -1162,11 +1161,11 @@ export default function DesignPage({ offers }: DesignPageProps) {
                     className="object-cover object-[50%_12%]"
                   />
                 </div>
-                <blockquote className="relative rounded-[26px] bg-white/55 px-[28px] py-[28px] shadow-sm lg:px-[42px] lg:py-[38px]">
-                  <span className="absolute left-[18px] top-[8px] text-[70px] font-[900] leading-none text-[#ffc329] lg:text-[96px]">
+                <blockquote className="relative rounded-[26px] bg-white/55 px-[28px] py-[28px] lg:px-[42px] lg:py-[38px] place-items-center grid">
+                  <span className="absolute left-[18px] md:top-[42px] top-[10px] text-[70px] font-[900] leading-none text-[#ffc329] lg:text-[96px]">
                     “
                   </span>
-                  <p className="relative z-10 border-[#f15b2a] pl-[18px] text-[15px] italic leading-[1.65] text-black/80 lg:text-[22px] lg:leading-[1.7] font-[500]">
+                  <p className="relative z-10 border-[#f15b2a] pl-[18px] text-[15px] italic leading-[1.65] text-black/80 lg:text-[18px] lg:leading-[1.7] font-[500]">
                     Rozumiemy, że zakup nieruchomości za granicą może wiązać się
                     ze stresem co do bezpieczeństwa całego procesu, trafności
                     wyboru samej nieruchomości, lokalizacji, a nierzadko brakiem
@@ -1177,16 +1176,18 @@ export default function DesignPage({ offers }: DesignPageProps) {
                     <br />
                     <br />
                     To na czym nam zależy to pełna swoboda i otwartości w
-                    komunikacji z klientami budowana na wzajemnym zaufaniu.
+                    komunikacji z klientami budowana na wzajemnym zaufaniu,
+                    która pozwala poczuć się bezepiczenie i równie bezpiecznie
+                    przeprowadzić proces wyboru zakupu Twojej niruchomości.
                   </p>
                 </blockquote>
               </div>
 
-              <AccentHeading className="mt-[42px] lg:mt-[76px]">
-                Dlatego chcemy{" "}
-                <p className="text-[#ffc329]">zaoferować Państwu:</p>
+              <AccentHeading className="mt-[42px] lg:mt-[76px] uppercase">
+                Oferujemy Państwu
+                {/* <p className="text-[#ffc329]">zaoferować Państwu:</p> */}
               </AccentHeading>
-              <div className="mt-[28px] grid grid-cols-1 gap-[14px] lg:mt-[46px] lg:grid-cols-4 lg:gap-[36px]">
+              <div className="mt-[28px] grid grid-cols-1 gap-[14px] lg:mt-[46px] lg:grid-cols-3 lg:gap-[36px]">
                 {whyUs.map((item, index) => (
                   <OfferBenefitCard
                     key={index}
@@ -1201,7 +1202,7 @@ export default function DesignPage({ offers }: DesignPageProps) {
           <section className="bg-[#ffc329] px-[24px] pb-[62px] pt-[50px] lg:px-[70px] lg:pb-[100px] lg:pt-[84px]">
             <div className="mx-auto max-w-[1200px]">
               <AccentHeading>
-                9 przykładowych <p className="text-white">ofert</p>
+                6 przykładowych <p className="text-white">ofert</p>
               </AccentHeading>
               <div className="mt-[32px] grid grid-cols-1 gap-[18px] lg:mt-[54px] lg:grid-cols-3 sm:grid-cols-2 lg:gap-[26px]">
                 {offers.map((offer) => (
@@ -1211,13 +1212,12 @@ export default function DesignPage({ offers }: DesignPageProps) {
             </div>
           </section>
 
-          <section className="bg-[#f3e8df] px-[24px] pb-[54px] pt-[48px] lg:px-[70px] lg:pb-[92px] lg:pt-[86px]">
-            <div className="mx-auto max-w-[1200px]">
+          <section className="bg-white px-[24px] pb-[54px] pt-[48px] lg:px-[70px] lg:pb-[92px] lg:pt-[86px]">
+            <div className="mx-auto max-w-[1200px] ">
               <AccentHeading>
                 <span>
-                  <span className="text-[#ffc329]">KAŻDY</span> etap zakupu w{" "}
-                  <br />
-                  <span className="text-[#ffc329]">JEDNYM</span> miejscu
+                  <span className="font-[700]">KAŻDY</span> etap zakupu w{" "}
+                  <span className="font-[700]">JEDNYM</span> miejscu
                 </span>
               </AccentHeading>
 
@@ -1225,14 +1225,20 @@ export default function DesignPage({ offers }: DesignPageProps) {
                 {stepCards.map((card) => (
                   <article
                     key={card.number}
-                    className="relative flex min-h-[170px] overflow-hidden rounded-[28px] bg-[#ffc329] px-[22px] py-[22px] lg:min-h-[200px] lg:rounded-[38px] lg:px-[34px] lg:py-[60px]"
+                    className="relative flex min-h-[170px] overflow-hidden rounded-[28px] px-[22px] py-[22px] lg:min-h-[200px] lg:rounded-[38px] lg:px-[34px] lg:py-[10px]"
                   >
-                    <div className="mr-[18px] shrink-0 text-[96px] font-[800] leading-[0.85] text-white/65 lg:mr-[28px] lg:text-[100px]">
+                    <div className="mr-[18px] text-[#ffc329] shrink-0 text-[96px] font-[800] leading-[0.85] lg:mr-[28px] lg:text-[100px]">
                       {card.number}
                     </div>
-                    <p className="relative z-10 self-top text-[14px] font-[400] leading-[1.45] lg:text-[18px]">
-                      {card.text}
-                    </p>
+                    <div className="flex flex-col border-l-[5px] border-[#ffc329] pl-[15px]">
+                      <p className="font-[700] text-[26px] mb-[10px]">
+                        {" "}
+                        {card.claim}
+                      </p>
+                      <p className="relative z-10 self-top text-[14px] font-[400] leading-[1.45] lg:text-[18px]">
+                        {card.text}
+                      </p>
+                    </div>
                   </article>
                 ))}
               </div>
@@ -1258,13 +1264,12 @@ export default function DesignPage({ offers }: DesignPageProps) {
             </div>
           </section>
 
-          <section className="bg-[#f3e8df] px-[24px] py-[52px] lg:px-[70px] lg:py-[88px]">
+          <section className="bg-white px-[24px] py-[52px] lg:px-[70px] lg:py-[88px]">
             <div className="mx-auto max-w-[1240px]">
               <AccentHeading>
-                Usługa zarządzania najmem{" "}
-                <p className="text-[#ffc329]">obejmuje m.in:</p>
+                Usługa zarządzania najmem obejmuje m.in:
               </AccentHeading>
-              <div className="mt-[28px] grid grid-cols-1 gap-[14px] lg:mt-[46px] lg:grid-cols-4 lg:gap-[35px]">
+              <div className="mt-[28px] grid grid-cols-1 gap-[14px] lg:mt-[46px] lg:grid-cols-3 lg:gap-[15px]">
                 {rentServices.map((item) => (
                   <RentServiceCard
                     key={item.text}
@@ -1276,7 +1281,7 @@ export default function DesignPage({ offers }: DesignPageProps) {
             </div>
           </section>
 
-          <section className="relative overflow-hidden bg-[#ffc329] px-[24px] pb-[78px] pt-[12px] lg:px-[70px] lg:pb-[120px]">
+          <section className="relative overflow-hidden bg-[#ffc329]">
             <svg
               aria-hidden="true"
               className="pointer-events-none absolute bottom-[-18px] left-1/2 h-[430px] w-[1040px] max-w-none -translate-x-1/2 text-[#6f6258]/20 lg:bottom-[-34px] lg:h-[620px] lg:w-[1540px]"
@@ -1409,23 +1414,80 @@ export default function DesignPage({ offers }: DesignPageProps) {
             </svg>
             <div
               id="design-contact-form"
-              className="relative z-10 mx-auto grid max-w-[1120px] items-center gap-[28px] md:grid-cols-[0.95fr_1.05fr] lg:gap-[58px] lg:mt-[40px]"
+              className="flex flex-col md:flex-row relative z-10 mx-auto w-full items-center gap-[28px] md:grid-cols-[0.95fr_1.05fr] lg:gap-[58px]"
             >
-              <div className="mx-auto max-w-[430px] md:mx-0">
-                <AccentHeading className="[&_h2]:text-[23px] lg:[&_h2]:text-[40px] [&_span]:h-[45px] lg:[&_span]:h-[45px]">
-                  Twoja kolej :)
+              <div className="mx-auto md:w-1/2 w-[90vw] md:mx-0 lg:pl-[150px] md:pl-[50px] mt-[30px] md:mt-0">
+                <AccentHeading className="[&_h2]:text-[23px] lg:[&_h2]:text-[40px] [&_span]:h-[45px] lg:[&_span]:h-[45px] font-[700]">
+                  Koleny krok
                 </AccentHeading>
-                <p className="mt-[12px] text-[15px] font-[600] leading-[1.5] text-black/75 lg:text-[18px]">
-                  Potrzebujemy kilku informacji aby przygotować dla Ciebie
-                  spersonalizowaną paczkę ofert, przekazać wiedzę, odpowiedzieć
-                  na pytania i w efekcie przesłać dedykowane oferty.
-                </p>
+                <ol className="mt-[24px] flex flex-col gap-[16px] text-[15px] font-[500] leading-[1.45] lg:text-[18px]">
+                  <li className="flex items-center gap-[14px] rounded-[22px] bg-white p-[14px]">
+                    <span className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-[#FFC32A] text-[17px] font-[900] text-white shadow-[0_8px_22px_rgba(0,0,0,0.12)]">
+                      1
+                    </span>
+                    <p className="pt-[4px] text-black">
+                      Uzupełnij ankietę dzięki której{" "}
+                      <strong>przygotujemy się do rozmowy</strong>.
+                    </p>
+                  </li>
+                  <li className="flex items-center gap-[14px] rounded-[22px] bg-white p-[14px]">
+                    <span className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-[#FFC32A] text-[17px] font-[900] text-white shadow-[0_8px_22px_rgba(0,0,0,0.12)]">
+                      2
+                    </span>
+                    <p className="pt-[4px] text-black">
+                      Zadzwonimy do Ciebie, przedstawimy możliwości rynkowe,
+                      <strong> zrozumiemy głębiej Twoje potrzeby</strong>.
+                    </p>
+                  </li>
+                  <li className="flex items-center gap-[14px] rounded-[22px] bg-white p-[14px]">
+                    <span className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-[#FFC32A] text-[17px] font-[900] text-white shadow-[0_8px_22px_rgba(0,0,0,0.12)]">
+                      3
+                    </span>
+                    <p className="pt-[4px] text-black">
+                      <strong>Przygotujemy dedykowaną paczkę ofert</strong>,
+                      której zadaniem będzie spełnić Twoje cele.
+                    </p>
+                  </li>
+                </ol>
               </div>
-              <div className="mx-auto w-full max-w-[590px] rounded-[30px] bg-[#f3e8df] px-[28px] py-[30px] shadow-[0_18px_50px_rgba(0,0,0,0.12)] md:mx-0 md:justify-self-end lg:rounded-[46px] lg:px-[45px] lg:py-[54px]">
-                <DesignContactForm />
+              <div className="bg-white md:w-1/2 w-full flex py-[20px] md:py-0">
+                <div className="mx-auto w-full max-w-[590px] bg-white px-[28px] md:mx-0 md:justify-self-end lg:px-[45px] lg:py-[54px]">
+                  <DesignContactForm />
+                </div>
               </div>
             </div>
           </section>
+
+          <footer className="flex min-h-[200px] items-center bg-[#32384B] px-[24px] py-[34px] text-white md:min-h-[170px] lg:px-[70px]">
+            <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[22px] md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="flex h-[46px] w-[164px] items-center rounded-[14px] bg-white px-[14px]">
+                  <Image
+                    src="/logotype_full_new.png"
+                    alt="Onesta"
+                    width={220}
+                    height={70}
+                    className="h-auto w-full object-contain"
+                  />
+                </div>
+                <p className="mt-[14px] max-w-[430px] text-[13px] font-[500] leading-[1.55] text-white/72 md:text-[14px]">
+                  Pomagamy bezpiecznie przejść przez zakup, wykończenie i
+                  zarządzanie nieruchomością w Hiszpanii.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-[6px] text-[13px] font-[600] text-white/78 md:text-right md:text-[14px]">
+                <p>Onesta Group</p>
+                <p>Hiszpania • Polska</p>
+                <Link
+                  href="/polityka-prywatnosci"
+                  className="text-[#FFC32A] underline-offset-4 hover:underline"
+                >
+                  Polityka prywatności
+                </Link>
+              </div>
+            </div>
+          </footer>
         </div>
       </main>
     </>
@@ -1433,10 +1495,10 @@ export default function DesignPage({ offers }: DesignPageProps) {
 }
 
 const offerRanges = [
-  { min: 270_000, max: 340_000, limit: 3, includeMax: false },
-  { min: 240_000, max: 270_000, limit: 2, includeMax: false },
+  { min: 270_000, max: 340_000, limit: 2, includeMax: false },
+  { min: 240_000, max: 270_000, limit: 1, includeMax: false },
   { min: 340_000, max: 390_000, limit: 2, includeMax: false },
-  { min: 390_000, max: 500_000, limit: 2, includeMax: true },
+  { min: 390_000, max: 500_000, limit: 1, includeMax: true },
 ];
 
 export const getServerSideProps: GetServerSideProps<
@@ -1455,7 +1517,7 @@ export const getServerSideProps: GetServerSideProps<
       .not("images", "is", null)
       .neq("images", "[]")
       .order("price", { ascending: true })
-      .limit(range.limit + 4);
+      .limit(range.limit + 24);
 
     query = range.includeMax
       ? query.lte("price", range.max)
@@ -1469,6 +1531,8 @@ export const getServerSideProps: GetServerSideProps<
     }
 
     for (const offer of data ?? []) {
+      if (isExcludedDesignOfferType(offer.type)) continue;
+
       const externalId = String(offer.external_id);
       if (usedExternalIds.has(externalId)) continue;
       usedExternalIds.add(externalId);
