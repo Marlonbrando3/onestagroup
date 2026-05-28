@@ -8,7 +8,7 @@ export default async function (req: any, res: any) {
   const transporter = nodemailer.createTransport({
     port: 465,
     host: "mail-serwer141299.lh.pl",
-    secure: false,
+    secure: true,
     tls: {
       ciphers: "SSLv3",
     },
