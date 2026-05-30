@@ -37,6 +37,7 @@ export default function AnalitycsTools() {
         `}
       </Script>
 
+      {/* GTM */}
       {/* Google Tag Manager */}
       <Script id="gtm" strategy="afterInteractive">
         {`

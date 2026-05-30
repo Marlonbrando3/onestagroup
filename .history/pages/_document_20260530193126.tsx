@@ -5,14 +5,6 @@ export default function Document() {
     <Html lang="en">
       <Head></Head>
       <body className="antialiased">
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-NKPS7M7Z"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
         <Main />
         <NextScript />
       </body>
