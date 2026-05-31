@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import type { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { IconType } from "react-icons";
 import {
   FaBed,
@@ -13,7 +13,7 @@ import {
   FaKey,
   FaTools,
 } from "react-icons/fa";
-import { IoClose, IoSparklesOutline } from "react-icons/io5";
+import { IoSparklesOutline } from "react-icons/io5";
 import {
   MdCleaningServices,
   MdFactCheck,
@@ -331,7 +331,7 @@ function YellowPill({
 
 function RentServiceCard({ text, Icon }: { text: string; Icon: IconType }) {
   return (
-    <div className="flex min-h-[108px] items-center rounded-[22px] p-[16px] text-left lg:min-h-0 lg:flex-row lg:justify-center lg:rounded-[30px] lg:p-[28px] lg:text-left border border-yellow-500">
+    <div className="flex min-h-[108px] items-center rounded-[22px] p-[16px] text-left lg:min-h-0 lg:flex-row lg:justify-center lg:rounded-[30px] lg:p-[28px] lg:text-left ">
       <span className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full bg-[#FFC32A] text-white lg:h-[78px] lg:w-[78px] mr-[20px]">
         <Icon className="text-[34px] lg:text-[42px]" />
       </span>
@@ -717,24 +717,18 @@ function SurveySelect({
   options,
   value,
   onChange,
-  compact = false,
 }: {
   title: string;
   options: string[];
   value: string;
   onChange: (value: string) => void;
-  compact?: boolean;
 }) {
   return (
     <select
       required
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className={`w-full whitespace-normal border border-black/10 bg-white font-[600] leading-[1.25] outline-none focus:ring-2 focus:ring-black/15 ${
-        compact
-          ? "h-[48px] rounded-[12px] px-[14px] text-[14px] lg:text-[15px]"
-          : "min-h-[64px] rounded-[13px] px-[14px] py-[8px] text-[12px] lg:min-h-[72px] lg:rounded-[18px] lg:px-[18px] lg:text-[15px]"
-      }`}
+      className="min-h-[64px] w-full whitespace-normal rounded-[13px] border border-black/10 bg-white px-[14px] py-[8px] text-[12px] font-[600] leading-[1.25] outline-none focus:ring-2 focus:ring-black/15 lg:min-h-[72px] lg:rounded-[18px] lg:px-[18px] lg:text-[15px]"
     >
       <option value="" disabled>
         {title}
@@ -923,176 +917,6 @@ function DesignContactForm() {
   );
 }
 
-function CompactDesignContactForm() {
-  const [dataForm, setDataForm] = useState<DesignMainFormData>({
-    Name: "",
-    Email: "",
-    Phone: "",
-    Message: "",
-    purchaseThisYear: "",
-    region: "",
-    budget: "",
-  });
-  const [privacy, setPrivacy] = useState(false);
-  const [marketing, setMarketing] = useState(false);
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
-    "idle",
-  );
-
-  const updateField = (field: keyof DesignMainFormData, value: string) => {
-    setDataForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!privacy) {
-      alert("Zaakceptuj politykę prywatności.");
-      return;
-    }
-
-    setStatus("sending");
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          Ref: "Design - kompaktowy formularz przed przykładowymi ofertami",
-          dataForm: {
-            Name: dataForm.Name,
-            Email: dataForm.Email,
-            Phone: dataForm.Phone,
-            Message: `Czy planuje zakup w tym roku: ${
-              dataForm.purchaseThisYear
-            }\nRegion: ${dataForm.region}\nBudżet: ${
-              dataForm.budget
-            }\nZgoda marketingowa: ${marketing ? "tak" : "nie"}`,
-          },
-          consents: { privacy, marketing },
-          source: "/design",
-          timestamp: new Date().toISOString(),
-        }),
-      });
-
-      if (!response.ok) throw new Error("Send failed");
-      trackFacebookDesignLead();
-      setStatus("sent");
-    } catch {
-      setStatus("error");
-    }
-  };
-
-  return (
-    <div className="mb-[40px] mt-[74px] lg:mb-[40px] lg:mt-[92px]">
-      <form
-        onSubmit={handleSubmit}
-        className="mx-auto flex max-w-[1080px] flex-col gap-[14px] rounded-[24px] bg-[#FFC32A] p-[16px] shadow-[0_12px_34px_rgba(0,0,0,0.12)] lg:p-[22px]"
-      >
-        <div>
-          <p className="text-[20px] font-[900] lg:text-[34px]">
-            Jak możemy Ci pomóc?
-          </p>
-          <p className="text-[20px]">Zostaw kilka informacji, oddzwonimy.</p>
-        </div>
-        <div className="flex flex-col gap-[18px] md:flex-row md:items-stretch lg:gap-[24px]">
-          <div className="flex flex-1 flex-col gap-[10px]">
-            <input
-              required
-              value={dataForm.Name}
-              onChange={(event) => updateField("Name", event.target.value)}
-              className="h-[48px] rounded-[12px] border border-black/10 bg-white px-[14px] text-[14px] outline-none focus:ring-2 focus:ring-black/15 lg:text-[15px]"
-              placeholder="Imię i nazwisko *"
-            />
-            <div className="grid grid-cols-1 gap-[10px] lg:grid-cols-2">
-              <input
-                required
-                type="email"
-                value={dataForm.Email}
-                onChange={(event) => updateField("Email", event.target.value)}
-                className="h-[48px] rounded-[12px] border border-black/10 bg-white px-[14px] text-[14px] outline-none focus:ring-2 focus:ring-black/15 lg:text-[15px]"
-                placeholder="Adres e-mail *"
-              />
-              <input
-                required
-                type="tel"
-                value={dataForm.Phone}
-                onChange={(event) => updateField("Phone", event.target.value)}
-                className="h-[48px] rounded-[12px] border border-black/10 bg-white px-[14px] text-[14px] outline-none focus:ring-2 focus:ring-black/15 lg:text-[15px]"
-                placeholder="Numer telefonu *"
-              />
-            </div>
-            <div className="mt-[2px] flex flex-col gap-[8px] text-[12px] font-[600] leading-[1.35] text-black/70 lg:text-[13px]">
-              <label className="flex items-start gap-[7px]">
-                <input
-                  required
-                  type="checkbox"
-                  checked={privacy}
-                  onChange={(event) => setPrivacy(event.target.checked)}
-                  className="mt-[1px] h-[16px] w-[16px] shrink-0 accent-black"
-                />
-                <span>
-                  Zapoznałem/am się z{" "}
-                  <Link href="/polityka-prywatnosci" className="underline">
-                    Polityką Prywatności
-                  </Link>
-                  .
-                </span>
-              </label>
-              <label className="flex items-start gap-[7px]">
-                <input
-                  type="checkbox"
-                  checked={marketing}
-                  onChange={(event) => setMarketing(event.target.checked)}
-                  className="mt-[1px] h-[16px] w-[16px] shrink-0 accent-black"
-                />
-                <span>Wyrażam zgodę na kontakt marketingowy.</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="flex flex-1 flex-col gap-[10px]">
-            <SurveySelect
-              title="Czy planujesz zakup nieruchomości w tym roku?"
-              options={purchaseTimingOptions}
-              value={dataForm.purchaseThisYear}
-              onChange={(value) => updateField("purchaseThisYear", value)}
-              compact
-            />
-            <SurveySelect
-              title="W jakim regionie szukasz nieruchomości?"
-              options={regionOptions}
-              value={dataForm.region}
-              onChange={(value) => updateField("region", value)}
-              compact
-            />
-            <SurveySelect
-              title="Jaki budżet maksymalny planujesz przeznaczyć na zakup?"
-              options={budgetOptions}
-              value={dataForm.budget}
-              onChange={(value) => updateField("budget", value)}
-              compact
-            />
-            <button
-              type="submit"
-              disabled={status === "sending" || status === "sent"}
-              className="mt-auto h-[48px] rounded-full bg-black text-[14px] font-[800] uppercase tracking-[0.4px] text-white disabled:opacity-70 lg:text-[15px]"
-            >
-              {status === "sending"
-                ? "Wysyłam..."
-                : status === "sent"
-                  ? "Wysłano"
-                  : status === "error"
-                    ? "Spróbuj ponownie"
-                    : "Wyślij"}
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  );
-}
-
 function OfferCard({ offer }: { offer: DesignProperty }) {
   const allImages = getOfferImages(offer.images);
   const images = allImages.slice(0, 3);
@@ -1242,28 +1066,6 @@ function OfferCard({ offer }: { offer: DesignProperty }) {
 }
 
 export default function DesignPage({ offers }: DesignPageProps) {
-  const [showTopContactForm, setShowTopContactForm] = useState(false);
-  const [showTopContactButton, setShowTopContactButton] = useState(false);
-
-  useEffect(() => {
-    const offersSection = document.getElementById("design-example-offers");
-    if (!offersSection) return;
-
-    const updateButtonVisibility = () => {
-      if (offersSection.getBoundingClientRect().top <= 0) {
-        setShowTopContactButton(true);
-        window.removeEventListener("scroll", updateButtonVisibility);
-      }
-    };
-
-    updateButtonVisibility();
-    window.addEventListener("scroll", updateButtonVisibility, {
-      passive: true,
-    });
-
-    return () => window.removeEventListener("scroll", updateButtonVisibility);
-  }, []);
-
   return (
     <>
       <Head>
@@ -1274,59 +1076,6 @@ export default function DesignPage({ offers }: DesignPageProps) {
         className={`${Mulish_Font.className} min-h-screen bg-white text-gray-800`}
       >
         <div className="min-h-screen w-full overflow-hidden bg-[#ebebeb]">
-          {showTopContactButton && (
-            <button
-              type="button"
-              onClick={() => setShowTopContactForm(true)}
-              className="design-jiggle fixed right-[14px] top-[16px] z-50 rounded-full bg-red-600 px-[16px] py-[11px] text-[11px] font-[900] uppercase tracking-[0.35px] text-white shadow-[0_8px_22px_rgba(220,38,38,0.35)] transition-colors hover:bg-red-700 md:right-[26px] md:top-[22px] md:px-[22px] md:py-[14px] md:text-[14px]"
-            >
-              Zamów więcej ofert
-            </button>
-          )}
-
-          {showTopContactForm && (
-            <div
-              className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/60 px-[14px] py-[24px] md:items-center md:py-[40px]"
-              onClick={() => setShowTopContactForm(false)}
-            >
-              <div
-                className="relative w-full max-w-[590px] rounded-[24px] bg-white p-[14px] shadow-[0_18px_46px_rgba(0,0,0,0.25)] md:p-[18px]"
-                onClick={(event) => event.stopPropagation()}
-              >
-                <button
-                  type="button"
-                  aria-label="Zamknij formularz"
-                  onClick={() => setShowTopContactForm(false)}
-                  className="absolute right-[20px] top-[20px] z-10 flex h-[34px] w-[34px] items-center justify-center rounded-full bg-white text-[22px] text-black shadow-md"
-                >
-                  <IoClose />
-                </button>
-                <DesignContactForm />
-              </div>
-            </div>
-          )}
-
-          <style jsx global>{`
-            @keyframes design-jiggle {
-              0%,
-              12%,
-              100% {
-                transform: translateX(0);
-              }
-              3%,
-              9% {
-                transform: translateX(-5px) rotate(-1deg);
-              }
-              6% {
-                transform: translateX(5px) rotate(1deg);
-              }
-            }
-
-            .design-jiggle {
-              animation: design-jiggle 3s ease-in-out infinite;
-            }
-          `}</style>
-
           <section className="relative min-h-[620px] bg-[#FFC32A] px-[24px] lg:min-h-[760px] lg:px-[70px] lg:pb-[46px]">
             <div className="absolute right-0 top-0 h-full w-[42%] bg-white [clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)]" />
 
@@ -1424,10 +1173,10 @@ export default function DesignPage({ offers }: DesignPageProps) {
                   />
                 </div> */}
                 <blockquote className="relative rounded-[26px] bg-white/55 md:px-[28px] py-[28px] lg:px-[42px] lg:py-[38px] place-items-center grid">
-                  <span className="absolute md:left-[18px] -left-[5px] md:-top-[90px] -top-[50px] text-[170px] font-[900] leading-none text-[#ffc329] md:text-[250px] lg:text-[306px]">
+                  <span className="absolute md:left-[18px] -left-[5px] md:-top-[170px] top-[10px] text-[70px] font-[900] leading-none text-[#ffc329] lg:text-[496px]">
                     “
                   </span>
-                  <p className="relative z-10 border-[#f15b2a] md:pl-[18px] text-[16px] italic leading-[1.65] text-black/80 lg:text-[20px] lg:leading-[1.7] font-[500] lg:w-[1000px]">
+                  <p className="relative z-10 border-[#f15b2a] md:pl-[18px] text-[15px] italic leading-[1.65] text-black/80 lg:text-[18px] lg:leading-[1.7] font-[500] w-[800px]">
                     Rozumiemy, że zakup nieruchomości za granicą może wiązać się
                     ze stresem co do bezpieczeństwa całego procesu, trafności
                     wyboru samej nieruchomości, lokalizacji, a nierzadko brakiem
@@ -1446,7 +1195,7 @@ export default function DesignPage({ offers }: DesignPageProps) {
               </div>
 
               <AccentHeading className="mt-[42px] lg:mt-[76px] uppercase">
-                Dlatego oferujemy Państwu
+                Oferujemy Państwu
                 {/* <p className="text-[#ffc329]">zaoferować Państwu:</p> */}
               </AccentHeading>
               <div className="mt-[28px] grid grid-cols-1 gap-[14px] lg:mt-[46px] lg:grid-cols-3 lg:gap-[36px]">
@@ -1458,14 +1207,10 @@ export default function DesignPage({ offers }: DesignPageProps) {
                   />
                 ))}
               </div>
-              <CompactDesignContactForm />
             </div>
           </section>
 
-          <section
-            id="design-example-offers"
-            className="bg-[#ffc329] px-[24px] pb-[62px] pt-[50px] lg:px-[70px] lg:pb-[100px] lg:pt-[84px]"
-          >
+          <section className="bg-[#ffc329] px-[24px] pb-[62px] pt-[50px] lg:px-[70px] lg:pb-[100px] lg:pt-[84px]">
             <div className="mx-auto max-w-[1200px]">
               <AccentHeading>
                 6 przykładowych <p className="text-white">ofert</p>

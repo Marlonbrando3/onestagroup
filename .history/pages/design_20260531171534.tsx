@@ -331,7 +331,7 @@ function YellowPill({
 
 function RentServiceCard({ text, Icon }: { text: string; Icon: IconType }) {
   return (
-    <div className="flex min-h-[108px] items-center rounded-[22px] p-[16px] text-left lg:min-h-0 lg:flex-row lg:justify-center lg:rounded-[30px] lg:p-[28px] lg:text-left border border-yellow-500">
+    <div className="flex min-h-[108px] items-center rounded-[22px] p-[16px] text-left lg:min-h-0 lg:flex-row lg:justify-center lg:rounded-[30px] lg:p-[28px] lg:text-left border border-yellow-700">
       <span className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full bg-[#FFC32A] text-white lg:h-[78px] lg:w-[78px] mr-[20px]">
         <Icon className="text-[34px] lg:text-[42px]" />
       </span>

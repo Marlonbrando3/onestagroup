@@ -331,7 +331,7 @@ function YellowPill({
 
 function RentServiceCard({ text, Icon }: { text: string; Icon: IconType }) {
   return (
-    <div className="flex min-h-[108px] items-center rounded-[22px] p-[16px] text-left lg:min-h-0 lg:flex-row lg:justify-center lg:rounded-[30px] lg:p-[28px] lg:text-left border border-yellow-500">
+    <div className="flex min-h-[108px] items-center rounded-[22px] p-[16px] text-left lg:min-h-0 lg:flex-row lg:justify-center lg:rounded-[30px] lg:p-[28px] lg:text-left ">
       <span className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full bg-[#FFC32A] text-white lg:h-[78px] lg:w-[78px] mr-[20px]">
         <Icon className="text-[34px] lg:text-[42px]" />
       </span>
@@ -1427,7 +1427,7 @@ export default function DesignPage({ offers }: DesignPageProps) {
                   <span className="absolute md:left-[18px] -left-[5px] md:-top-[90px] -top-[50px] text-[170px] font-[900] leading-none text-[#ffc329] md:text-[250px] lg:text-[306px]">
                     “
                   </span>
-                  <p className="relative z-10 border-[#f15b2a] md:pl-[18px] text-[16px] italic leading-[1.65] text-black/80 lg:text-[20px] lg:leading-[1.7] font-[500] lg:w-[1000px]">
+                  <p className="relative z-10 border-[#f15b2a] md:pl-[18px] text-[16px] italic leading-[1.65] text-black/80 lg:text-[20px] lg:leading-[1.7] font-[500] md:w-[1000px]">
                     Rozumiemy, że zakup nieruchomości za granicą może wiązać się
                     ze stresem co do bezpieczeństwa całego procesu, trafności
                     wyboru samej nieruchomości, lokalizacji, a nierzadko brakiem
