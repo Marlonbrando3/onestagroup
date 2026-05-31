@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { Dancing, TenorsSans, GreatVibes } from "../../../fonts/fonts";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 type Page = {
   PageNumber: any;
@@ -53,6 +54,7 @@ export default function Thankyoupageafter({
       const data = await res.status;
 
       if (data === 200) {
+        trackGoogleAdsContactConversion();
         handlepPassingToOffer();
       }
     } catch (err) {

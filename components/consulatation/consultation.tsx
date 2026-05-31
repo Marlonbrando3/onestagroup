@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { MontserratSans } from "../../fonts/fonts";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 type data = {
   handleConsultationPopUp: any;
@@ -58,6 +59,7 @@ export default function Consultation({
       const data = await res.status;
 
       if (data === 200) {
+        trackGoogleAdsContactConversion();
         thankyoupopup.current.style.display = "flex";
         setTimeout(() => {
           handleConsultationPopUp();

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 type PopupStep = "initial" | "form";
 
@@ -83,6 +84,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
         return;
       }
 
+      trackGoogleAdsContactConversion();
       setSuccess(true);
       setTimeout(() => {
         onClose();

@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 type Ref = {
   intrestedPopUp: any;
@@ -48,6 +49,7 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
       const data = await res.status;
 
       if (data === 200) {
+        trackGoogleAdsContactConversion();
         sendButton.current.innerHTML = "Wysłano!";
         // router.push("https://onesta.com.pl/form/thankyoupageform");
         // setPageNumber(2);

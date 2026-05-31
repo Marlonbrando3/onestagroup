@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useState, useRef } from "react";
 import { IoCheckmarkDone } from "react-icons/io5";
 import { useRouter } from "next/router";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function Newsletter() {
   const router = useRouter();
@@ -44,6 +45,7 @@ export default function Newsletter() {
     const resultStatus = await results.json();
 
     if (resultStatus.status === 200) {
+      trackGoogleAdsContactConversion();
       newsletterConfirmation.current.style.display = "flex";
     } else {
     }

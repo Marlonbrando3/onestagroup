@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function FormPoUpIntrested() {
   const router = useRouter();
@@ -47,6 +48,7 @@ export default function FormPoUpIntrested() {
       const data = await res.status;
 
       if (data === 200) {
+        trackGoogleAdsContactConversion();
         sendButton.current.innerHTML = "Wysłano!";
         // router.push("https://onesta.com.pl/form/thankyoupageform");
         // setPageNumber(2);

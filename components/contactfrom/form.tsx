@@ -3,6 +3,7 @@ import { QuicksandSans } from "../../fonts/fonts";
 
 import React from "react";
 import { useState } from "react";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function Form() {
   const [name, setName] = useState("");
@@ -34,6 +35,7 @@ export default function Form() {
       });
 
       const data = await res.status;
+      if (data === 200) trackGoogleAdsContactConversion();
     } catch (err) {
       console.log(err);
     }

@@ -9,6 +9,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { Dancing, TenorsSans, GreatVibes } from "../../fonts/fonts";
 import { MdOutlineRecommend } from "react-icons/md";
 import Link from "next/link";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 type Page = {
   PageNumber: any;
@@ -81,6 +82,7 @@ export default function Firstview({
       const data = await res.status;
 
       if (data === 200) {
+        trackGoogleAdsContactConversion();
         router.push({
           pathname: router.pathname,
           query: { offer: offer, id: id, site: "thankyoupage" },

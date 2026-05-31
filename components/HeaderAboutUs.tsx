@@ -15,6 +15,7 @@ import { FaSpotify } from "react-icons/fa";
 import { HiOutlineMenu } from "react-icons/hi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { IoIosClose } from "react-icons/io";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function Header() {
   const router = useRouter();
@@ -100,7 +101,7 @@ export default function Header() {
 
     e.preventDefault();
 
-    let res = await fetch("api/consultation", {
+    let res = await fetch("/api/consultation", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: query,
@@ -109,6 +110,7 @@ export default function Header() {
     const results = await res.json();
 
     if (results.status === 200) {
+      trackGoogleAdsContactConversion();
       submitButton.current.innerHTML = "Wysłano";
       submitButton.current.style.backgroundColor = "green";
       setTimeout(() => {

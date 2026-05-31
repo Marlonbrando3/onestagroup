@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { useState, useRef } from "react";
 import Head from "next/head";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 import { Dancing, TenorsSans, GreatVibes } from "../../fonts/fonts";
 import { useRouter } from "next/router";
 
@@ -93,6 +94,7 @@ export default function Index() {
 
         const data = await res.status;
         if (data === 200) {
+          trackGoogleAdsContactConversion();
           router.push("https://onesta.com.pl/form/thankyoupageform");
         }
       } catch (err) {

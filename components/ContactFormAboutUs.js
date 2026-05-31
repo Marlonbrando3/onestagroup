@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function ContactFormAboutUs({ temat }) {
   const fastContact = useRef();
@@ -26,6 +27,7 @@ export default function ContactFormAboutUs({ temat }) {
       body: JSON.stringify(dataForm),
     }).then((res) => {
       if (res.status === 200) {
+        trackGoogleAdsContactConversion();
         console.log("Response succeeded!");
         fastContact.current.innerHTML = "Wysłano!";
         fastContact.current.style.backgroundColor = "green";

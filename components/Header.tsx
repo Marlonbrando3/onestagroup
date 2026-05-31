@@ -17,6 +17,7 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { IoIosClose } from "react-icons/io";
 import Consultation from "./consulatation/consultation";
 import FullscreenLoader from "./loader";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 type data = {
   handleConsultationPopUp: any;
@@ -109,7 +110,7 @@ export default function Header({ handleConsultationPopUp }: data) {
 
     e.preventDefault();
 
-    let res = await fetch("api/consultation", {
+    let res = await fetch("/api/consultation", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: query,
@@ -118,6 +119,7 @@ export default function Header({ handleConsultationPopUp }: data) {
     const results = await res.json();
 
     if (results.status === 200) {
+      trackGoogleAdsContactConversion();
       submitButton.current.innerHTML = "Wysłano";
       submitButton.current.style.backgroundColor = "green";
       setTimeout(() => {

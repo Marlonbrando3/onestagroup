@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { useState } from "react";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function ContactFormBlogPost({ temat }) {
   const [dataForm, setDataForm] = useState({
@@ -21,10 +22,11 @@ export default function ContactFormBlogPost({ temat }) {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(dataForm),
+      body: JSON.stringify({ Ref: temat, dataForm }),
     }).then((res) => {
       console.log("Response received");
       if (res.status === 200) {
+        trackGoogleAdsContactConversion();
         console.log("Response succeeded!");
 
         setDataForm({
@@ -39,7 +41,7 @@ export default function ContactFormBlogPost({ temat }) {
 
   return (
     <div className="lg:flex w-10/12 lg:w-5/12 mx-auto bg-slate-900/[0.9] px-2 lg:px-10 rounded-md mt-1">
-      <form className="flex flex-col lg:w-full lg:p-7 p-7">
+      <form className="flex flex-col lg:w-full lg:p-7 p-7" onSubmit={handleSubmit}>
         <div className="py-4 font-bold text-2xl text-white">Zadaj nam pytanie:</div>
         <p className="py-2 font-bold text-white hidden">
           Ogłoszenie o nr ref.{" "}

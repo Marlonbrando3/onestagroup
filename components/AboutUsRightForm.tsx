@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { CiPhone } from "react-icons/ci";
 import { MontserratSans } from "@/fonts/fonts";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function AboutUsRightForm() {
   const router = useRouter();
@@ -52,6 +53,7 @@ export default function AboutUsRightForm() {
       });
 
       if (!res.ok) throw new Error("Send failed");
+      trackGoogleAdsContactConversion();
       if (submitButton.current) submitButton.current.innerText = "Wysłano";
     } catch {
       if (submitButton.current) {

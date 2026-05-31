@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { OutfitSans, TenorsSans } from "../../fonts/fonts";
 import { MdOutlineSend } from "react-icons/md";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 type Props = {
   propertyRef: any;
@@ -57,6 +58,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
     const results = await res.json();
 
     if (results.status === 200) {
+      trackGoogleAdsContactConversion();
       submitButton.current.innerHTML = "Wysłano";
       submitButton.current.style.backgroundColor = "green";
     } else {

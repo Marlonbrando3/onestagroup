@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Red_Hat_DisplayFont, MontserratSans } from "../fonts/fonts";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function ContactForm({ propertyId, propertyRef }) {
   const router = useRouter();
@@ -35,7 +36,11 @@ export default function ContactForm({ propertyId, propertyRef }) {
       .then((res) => {
         console.log("Response received");
         if (res.status === 200) {
+          trackGoogleAdsContactConversion();
           console.log("Response succeeded!");
+          router.push({
+            pathname: "https://onesta.com.pl/thankyoupage",
+          });
         } else {
           submitButton.current.innerHTML = "Coś poszło nie tak";
           submitButton.current.style.backgroundColor = "red";
@@ -44,13 +49,7 @@ export default function ContactForm({ propertyId, propertyRef }) {
             submitButton.current.style.backgroundColor = "yellow";
           });
         }
-      })
-      .then(
-        router.push({
-          // pathname: "localhost:3000/thankyoupage",
-          pathname: "https://onesta.com.pl/thankyoupage",
-        })
-      );
+      });
   };
 
   useEffect(() => {

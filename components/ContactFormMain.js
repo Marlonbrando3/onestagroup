@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { Red_Hat_DisplayFont, MontserratSans } from "../fonts/fonts";
+import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function ContactFormMain() {
   const router = useRouter();
@@ -52,6 +53,8 @@ export default function ContactFormMain() {
       if (!res.ok) {
         throw new Error(`Contact form failed with status ${res.status}`);
       }
+
+      trackGoogleAdsContactConversion();
 
       try {
         window.dataLayer = window.dataLayer || [];
