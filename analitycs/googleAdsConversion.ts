@@ -11,13 +11,17 @@ export function trackGoogleAdsContactConversion() {
   const googleWindow = window as GoogleAdsWindow;
   googleWindow.dataLayer = googleWindow.dataLayer || [];
 
-  const gtag =
-    googleWindow.gtag ||
-    ((...args: unknown[]) => {
-      googleWindow.dataLayer?.push(args);
-    });
+  if (typeof googleWindow.gtag !== "function") {
+    googleWindow.gtag = function () {
+      googleWindow.dataLayer?.push(arguments);
+    };
+  }
 
-  gtag("event", "conversion", {
+  googleWindow.dataLayer.push({
+    event: "google_ads_contact_conversion",
+  });
+
+  googleWindow.gtag("event", "conversion", {
     send_to: CONTACT_CONVERSION_ID,
     value: 20.0,
     currency: "PLN",
