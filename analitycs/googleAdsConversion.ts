@@ -5,8 +5,8 @@ type GoogleAdsWindow = Window & {
   gtag?: (...args: unknown[]) => void;
 };
 
-export function trackGoogleAdsContactConversion() {
-  if (typeof window === "undefined") return;
+export function trackGoogleAdsContactConversion(url?: string) {
+  if (typeof window === "undefined") return false;
 
   const googleWindow = window as GoogleAdsWindow;
   googleWindow.dataLayer = googleWindow.dataLayer || [];
@@ -21,9 +21,18 @@ export function trackGoogleAdsContactConversion() {
     event: "google_ads_contact_conversion",
   });
 
+  const callback = () => {
+    if (typeof url !== "undefined") {
+      window.location.href = url;
+    }
+  };
+
   googleWindow.gtag("event", "conversion", {
     send_to: CONTACT_CONVERSION_ID,
     value: 50.0,
     currency: "PLN",
+    event_callback: callback,
   });
+
+  return false;
 }
