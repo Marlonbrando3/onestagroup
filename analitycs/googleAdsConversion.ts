@@ -1,4 +1,4 @@
-const CONTACT_CONVERSION_ID = "AW-11239400043/VzxdCNO0v7YcEOvEru8p";
+const CONTACT_CONVERSION_ID = "AW-11239400043/aO2VCNT92LYcEOvEru8p";
 
 type GoogleAdsWindow = Window & {
   dataLayer?: unknown[];
@@ -23,7 +23,7 @@ export function trackGoogleAdsContactConversion() {
 
   googleWindow.gtag("event", "conversion", {
     send_to: CONTACT_CONVERSION_ID,
-    value: 20.0,
+    value: 50.0,
     currency: "PLN",
   });
 }
