@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useState, useRef } from "react";
 import { useRouter } from "next/router";
-import { MontserratSans } from "../fonts/fonts";
+import { HomeMontserratSans as MontserratSans } from "../fonts/homeFonts";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function ContactFormMain() {

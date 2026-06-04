@@ -107,30 +107,35 @@ export default function PriceSelect({ value, onChange }: Props) {
     <div ref={ref} className="w-full h-full lg:relative">
       <div
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full h-full border-yellow-500 px-3 flex flex-col justify-center cursor-pointer bg-white rounded-md"
+        className="flex h-full w-full cursor-pointer flex-col justify-center bg-white px-3 transition hover:bg-[#fbf8f2]"
       >
-        <label className="text-xs font-semibold text-gray-600 mb-1">
+        <label className="mb-1 text-xs font-semibold text-[#5f6b7a]">
           Zakres cenowy
         </label>
-        <div className="text-sm text-gray-700">
+        <div className="text-sm font-semibold text-[#182334]">
           {format(value.min)} -{" "}
           {value.max >= 1500000 ? `${format(1500000)}+` : format(value.max)}
         </div>
       </div>
 
       {open && (
-        <div className="absolute -top-[250px] left-0 right-0 w-[95vw] mx-auto lg:top-[60px] lg:-left-[340px] lg:right-auto lg:w-[500px] bg-white  shadow-xl p-6 z-[9999] rounded-xl">
+        <div className="absolute -top-[250px] left-0 right-0 z-[9999] mx-auto w-[95vw] border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-2xl lg:top-[60px] lg:-left-[340px] lg:right-auto lg:w-[500px] lg:p-6">
           <div className="flex flex-col gap-6">
-            <p className="text-[16px] text-gray-600 tracking-wide">
-              Zakres cenowy
-            </p>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
+                Zakres cenowy
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[#5f6b7a]">
+                Przesuń zakres, aby zawęzić wyniki do budżetu zakupu.
+              </p>
+            </div>
 
             <div
               ref={sliderRef}
-              className="relative h-[6px] bg-gray-300 rounded"
+              className="relative h-[6px] bg-[#e2d4bd]"
             >
               <div
-                className="absolute h-[6px] bg-yellow-500 rounded"
+                className="absolute h-[6px] bg-[#b8954c]"
                 style={{
                   left: `${percent(local.min)}%`,
                   width: `${percent(local.max) - percent(local.min)}%`,
@@ -139,7 +144,7 @@ export default function PriceSelect({ value, onChange }: Props) {
               <div
                 onMouseDown={startDrag("min")}
                 onTouchStart={startTouchDrag("min")}
-                className="absolute w-4 h-4 bg-yellow-500 rounded-full cursor-pointer -top-[5px] touch-none"
+                className="absolute -top-[7px] h-5 w-5 cursor-pointer border-2 border-white bg-[#182334] shadow-md touch-none"
                 style={{
                   left: `${percent(local.min)}%`,
                   transform: "translateX(-50%)",
@@ -148,7 +153,7 @@ export default function PriceSelect({ value, onChange }: Props) {
               <div
                 onMouseDown={startDrag("max")}
                 onTouchStart={startTouchDrag("max")}
-                className="absolute w-4 h-4 bg-yellow-500 rounded-full cursor-pointer -top-[5px] touch-none"
+                className="absolute -top-[7px] h-5 w-5 cursor-pointer border-2 border-white bg-[#182334] shadow-md touch-none"
                 style={{
                   left: `${percent(local.max)}%`,
                   transform: "translateX(-50%)",
@@ -156,17 +161,21 @@ export default function PriceSelect({ value, onChange }: Props) {
               />
             </div>
 
-            <div className="flex items-center gap-2 ">
-              <div className="flex items-center gap-2 flex-1">
-                <span className="w-8 shrink-0">Min</span>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#7c8796]">
+                  Min
+                </span>
                 <input
                   value={format(local.min)}
                   readOnly
-                  className="border px-3 py-1 md:w-[180px] w-[120px] min-w-0"
+                  className="mt-2 h-11 w-full border border-[#d7c8ad] bg-white px-3 text-sm font-semibold text-[#182334] outline-none"
                 />
               </div>
-              <div className="flex items-center gap-2 flex-1">
-                <span className="w-8 shrink-0">Max</span>
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#7c8796]">
+                  Max
+                </span>
                 <input
                   value={
                     local.max >= maxLimit
@@ -174,7 +183,7 @@ export default function PriceSelect({ value, onChange }: Props) {
                       : format(local.max)
                   }
                   readOnly
-                  className="border px-3 py-1 md:w-[180px] w-[120px] min-w-0"
+                  className="mt-2 h-11 w-full border border-[#d7c8ad] bg-white px-3 text-sm font-semibold text-[#182334] outline-none"
                 />
               </div>
             </div>
@@ -182,13 +191,13 @@ export default function PriceSelect({ value, onChange }: Props) {
             <div className="flex gap-3">
               <button
                 onClick={() => setLocal({ min: 0, max: 1500000 })}
-                className="border px-4 py-2"
+                className="h-11 border border-[#d7c8ad] bg-white px-5 text-xs font-bold uppercase tracking-[0.14em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
               >
                 Reset
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="bg-yellow-600 text-white py-2 flex-1"
+                className="h-11 flex-1 border border-[#b8954c] bg-[#d6b36a] px-5 text-xs font-bold uppercase tracking-[0.14em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
               >
                 Zamknij
               </button>

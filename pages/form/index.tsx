@@ -1,9 +1,9 @@
-import Image from "next/image";
 import React, { useState, useRef } from "react";
 import Head from "next/head";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 import { Dancing, TenorsSans, GreatVibes } from "../../fonts/fonts";
 import { useRouter } from "next/router";
+import Header from "@/components/Header";
 
 export default function Index() {
   const router = useRouter();
@@ -131,8 +131,9 @@ export default function Index() {
         />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
+      <Header />
       <div
-        className={`${GreatVibes.className} bg-[url('/bg_beach.jpg')] h-auto bg-cover bg-fixed pb-[200px]`}
+        className={`${GreatVibes.className} bg-[url('/bg_beach.jpg')] h-auto bg-cover bg-fixed pb-[200px] pt-[74px] xl:pt-[82px]`}
       >
         <div
           ref={emptyFieldPopUp}
@@ -140,17 +141,6 @@ export default function Index() {
           onClick={hidingPopUpWithInfo}
         >
           At least one of the survey fields are empty
-        </div>
-        <div className="h-[80px] w-full">
-          <div id="logo" className="w-full h-full relative bg-white ">
-            <Image
-              src="/logotype_full.png"
-              fill
-              alt="logo"
-              objectFit="contain"
-              className="py-[22px]"
-            ></Image>
-          </div>
         </div>
         <div className="md:w-[700px] md:h-[1600px] w-[90vw] py-[20px] bg-white mx-auto flex flex-col items-center justify-center mt-[100px]">
           <p className="text-[52px] md:w-[500px] w-[90%] text-center leading-[50px]">

@@ -108,19 +108,21 @@ function MarketSelect({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full bg-white rounded-lg text-left text-gray-700 whitespace-nowrap overflow-hidden"
+        className="w-full overflow-hidden whitespace-nowrap bg-white text-left font-semibold text-[#182334]"
       >
         {current}
       </button>
       {open && (
-        <div className="absolute top-[calc(100%+6px)] left-0 w-full bg-white border border-gray-200 shadow-lg rounded-lg z-30 overflow-hidden">
+        <div className="absolute left-0 top-[calc(100%+12px)] z-30 w-full overflow-hidden border border-[#e5dac7] bg-[#f7f3ec] shadow-xl">
           {["Wszystkie", ...MARKET_OPTIONS].map((opt) => (
             <button
               key={opt}
               type="button"
               onClick={() => pick(opt)}
-              className={`w-full py-2 px-3 text-left hover:bg-gray-50 ${
-                current === opt ? "bg-gray-50 font-semibold" : ""
+              className={`w-full px-3 py-2 text-left text-sm transition hover:bg-white ${
+                current === opt
+                  ? "bg-white font-bold text-[#9b7a36]"
+                  : "text-[#334155]"
               }`}
             >
               {opt}
@@ -350,7 +352,7 @@ export default function Home({
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const TOP_OFFSET = 10;
+    const TOP_OFFSET = 88;
 
     const measure = () => {
       if (mobileTriggerButtonRef.current) {
@@ -413,9 +415,9 @@ export default function Home({
         <button
           ref={mobileTriggerButtonRef}
           onClick={() => setMobileModalOpen(true)}
-          className={`bg-white rounded-full shadow-lg p-4 flex items-center gap-3 text-gray-500 border border-yellow-600 hover:shadow-xl transition-shadow ${
+          className={`flex items-center gap-3 border border-[#d7c8ad] bg-white p-4 text-[#5f6b7a] shadow-lg transition hover:border-[#b8954c] hover:shadow-xl ${
             isMobilePinned
-              ? "fixed top-[10px] left-1/2 -translate-x-1/2 z-[9999] w-[90vw] max-w-[1330px]"
+              ? "fixed top-[88px] left-1/2 -translate-x-1/2 z-[35] w-[90vw] max-w-[1330px]"
               : "w-full relative"
           }`}
         >
@@ -441,9 +443,9 @@ export default function Home({
         className={`${OutfitSans.className} mx-auto tracking-[1.2px] w-[90vw] max-w-[1330px] lg:sticky lg:top-[100px] lg:z-30 mb-[30px] mt-0 lg:-mt-[70px]`}
       >
         {/* DESKTOP SEARCH BAR */}
-        <div className="hidden lg:flex bg-white rounded-full shadow-lg flex-col lg:flex-row gap-0 lg:h-20 text-sm">
+        <div className="hidden border border-[#e5dac7] bg-white shadow-xl lg:flex lg:h-20 lg:flex-row lg:gap-0 text-sm">
           {/* LOCATION */}
-          <div className="w-full lg:flex-[4.20] h-full lg:border-r border-gray-200 pl-4">
+          <div className="h-full w-full border-[#e5dac7] pl-4 lg:flex-[4.20] lg:border-r">
             <LocationSearch
               className="w-full h-full"
               value={filters.locations}
@@ -452,7 +454,7 @@ export default function Home({
           </div>
 
           {/* ZABUDOWA */}
-          <div className="w-full lg:flex-1 h-full lg:border-r border-gray-200 px-4">
+          <div className="h-full w-full border-[#e5dac7] px-4 lg:flex-1 lg:border-r">
             <MultiSelect
               options={types}
               label="Zabudowa"
@@ -462,9 +464,9 @@ export default function Home({
           </div>
 
           {/* RYNEK */}
-          <div className="w-full lg:flex-[0.75] min-w-0 h-full lg:border-r border-gray-200 px-4 flex items-center">
+          <div className="flex h-full w-full min-w-0 items-center border-[#e5dac7] px-4 lg:flex-[0.75] lg:border-r">
             <div className="w-full">
-              <label className="block text-xs font-semibold text-gray-600 mb-1">
+              <label className="mb-1 block text-xs font-semibold text-[#5f6b7a]">
                 Rynek
               </label>
               <MarketSelect
@@ -475,7 +477,7 @@ export default function Home({
           </div>
 
           {/* SYPIALNIE */}
-          <div className="w-full lg:flex-[0.75] h-full lg:border-r border-gray-200 px-4">
+          <div className="h-full w-full border-[#e5dac7] px-4 lg:flex-[0.75] lg:border-r">
             <MultiSelect
               options={NUMBER_OPTIONS}
               label="Sypilani"
@@ -485,7 +487,7 @@ export default function Home({
           </div>
 
           {/* ŁAZIENKI */}
-          <div className="w-full lg:flex-[0.75] h-full lg:border-r border-gray-200 px-4">
+          <div className="h-full w-full border-[#e5dac7] px-4 lg:flex-[0.75] lg:border-r">
             <MultiSelect
               options={NUMBER_OPTIONS}
               label="Łazienek"
@@ -495,7 +497,7 @@ export default function Home({
           </div>
 
           {/* CENA */}
-          <div className="w-full lg:flex-[1.25] h-full lg:border-r border-gray-200 px-4">
+          <div className="h-full w-full border-[#e5dac7] px-4 lg:flex-[1.25] lg:border-r">
             <PriceSelect
               value={filters.price}
               onChange={(val: PriceRange) => updateFilter("price", val)}
@@ -503,10 +505,10 @@ export default function Home({
           </div>
 
           {/* SEARCH BUTTON */}
-          <div className="w-full lg:w-auto h-full flex items-center justify-center px-2">
+          <div className="flex h-full w-full items-center justify-center bg-[#fbf8f2] px-3 lg:w-auto">
             <button
               onClick={handleSearch}
-              className="w-12 h-12 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white transition-colors"
+              className="flex h-12 w-12 items-center justify-center border border-[#b8954c] bg-[#d6b36a] text-[#182334] transition-colors hover:border-[#182334] hover:bg-[#182334] hover:text-white"
               aria-label="Search"
             >
               <svg
@@ -528,20 +530,27 @@ export default function Home({
 
         {/* MOBILE MODAL */}
         {mobileModalOpen && (
-          <div className="fixed inset-0 bg-black/50 z-50 lg:hidden">
-            <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[90vh]">
+          <div className="fixed inset-0 z-50 bg-black/50 lg:hidden">
+            <div className="fixed bottom-0 left-0 right-0 max-h-[90vh] overflow-y-auto border-t border-[#e5dac7] bg-[#f7f3ec]">
               {/* HEADER */}
-              <div className="sticky top-0 bg-white border-b border-gray-200 flex items-center justify-between p-4 rounded-t-3xl">
-                <h2 className="text-xl font-semibold">Wyszukaj</h2>
+              <div className="sticky top-0 flex items-center justify-between border-b border-[#e5dac7] bg-[#f7f3ec] p-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#9b7a36]">
+                    Filtry
+                  </p>
+                  <h2 className="text-xl font-semibold text-[#182334]">
+                    Wyszukaj
+                  </h2>
+                </div>
                 <button
                   onClick={() => setMobileModalOpen(false)}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                  className="flex h-10 w-10 items-center justify-center bg-white text-2xl text-[#5f6b7a] hover:text-[#182334]"
                 >
                   ✕
                 </button>
               </div>
               {/* FILTERS */}
-              <div className="p-4 space-y-4">
+              <div className="space-y-4 p-4">
                 {/* LOCATION */}
                 <div className="relative">
                   {/* <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -558,7 +567,7 @@ export default function Home({
 
                 {/* ZABUDOWA */}
                 <div className="relative">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-semibold text-[#182334]">
                     Zabudowa
                   </label>
                   <MultiSelect
@@ -571,7 +580,7 @@ export default function Home({
 
                 {/* RYNEK */}
                 <div className="relative">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-semibold text-[#182334]">
                     Rynek
                   </label>
                   <MarketSelect
@@ -582,7 +591,7 @@ export default function Home({
 
                 {/* SYPIALNIE */}
                 <div className="relative">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-semibold text-[#182334]">
                     Sypialnie
                   </label>
                   <MultiSelect
@@ -595,7 +604,7 @@ export default function Home({
 
                 {/* ŁAZIENKI */}
                 <div className="relative">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-semibold text-[#182334]">
                     Łazienki
                   </label>
                   <MultiSelect
@@ -608,7 +617,7 @@ export default function Home({
 
                 {/* CENA */}
                 <div className="relative">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-semibold text-[#182334]">
                     Cena
                   </label>
                   <PriceSelect
@@ -623,9 +632,9 @@ export default function Home({
                     handleSearch();
                     setMobileModalOpen(false);
                   }}
-                  className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition-colors mt-6"
+                  className="mt-6 w-full border border-[#b8954c] bg-[#d6b36a] py-3 font-semibold uppercase tracking-[0.12em] text-[#182334] transition-colors hover:border-[#182334] hover:bg-[#182334] hover:text-white"
                 >
-                  Search
+                  Szukaj
                 </button>
               </div>
             </div>

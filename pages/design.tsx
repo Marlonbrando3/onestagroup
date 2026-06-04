@@ -27,6 +27,7 @@ import { MdSearch } from "@react-icons/all-files/md/MdSearch";
 import { MdSecurity } from "@react-icons/all-files/md/MdSecurity";
 import { MdStars } from "@react-icons/all-files/md/MdStars";
 import { MdVerifiedUser } from "@react-icons/all-files/md/MdVerifiedUser";
+import Header from "@/components/Header";
 
 type IconType = ComponentType<{ className?: string }>;
 
@@ -1323,13 +1324,14 @@ export default function DesignPage({ offers }: DesignPageProps) {
         <title>Onesta Design</title>
         <meta name="robots" content="noindex" />
       </Head>
-      <main className="min-h-screen bg-white font-sans text-gray-800">
+      <Header />
+      <main className="min-h-screen bg-white pt-[74px] font-sans text-gray-800 xl:pt-[82px]">
         <div className="min-h-screen w-full overflow-hidden bg-[#ebebeb]">
           {showTopContactButton && (
             <button
               type="button"
               onClick={() => setShowTopContactForm(true)}
-              className="design-jiggle fixed right-[14px] top-[16px] z-50 rounded-full bg-red-600 px-[16px] py-[11px] text-[11px] font-[900] uppercase tracking-[0.35px] text-white shadow-[0_8px_22px_rgba(220,38,38,0.35)] transition-colors hover:bg-red-700 md:right-[26px] md:top-[22px] md:px-[22px] md:py-[14px] md:text-[14px]"
+              className="design-jiggle fixed right-[14px] top-[92px] z-50 rounded-full bg-red-600 px-[16px] py-[11px] text-[11px] font-[900] uppercase tracking-[0.35px] text-white shadow-[0_8px_22px_rgba(220,38,38,0.35)] transition-colors hover:bg-red-700 md:right-[26px] md:top-[104px] md:px-[22px] md:py-[14px] md:text-[14px]"
             >
               Zamów więcej ofert
             </button>

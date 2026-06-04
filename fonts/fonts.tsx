@@ -1,100 +1,16 @@
-import {
-  Playfair,
-  DM_Serif_Text,
-  Tenor_Sans,
-  Work_Sans,
-  Quicksand,
-  Dancing_Script,
-  Great_Vibes,
-  Tinos,
-  Red_Hat_Display,
-  Bonheur_Royale,
-  Moon_Dance,
-  Montserrat,
-  Poppins,
-  Gwendolyn,
-  Outfit,
-  Mulish,
-} from "next/font/google";
-
-export const DMSerif = DM_Serif_Text({
-  subsets: ["latin-ext"],
-  weight: "400",
-  display: "swap",
-});
-export const Mulish_Font = Mulish({
-  subsets: ["latin-ext"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
-
-export const PlayfairSans = Playfair({
-  subsets: ["latin-ext"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-  display: "swap",
-});
-export const GwendolynSans = Gwendolyn({
-  subsets: ["latin-ext"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-export const OutfitSans = Outfit({
-  subsets: ["latin-ext"],
-  weight: ["100", "200", "300", "400", "500", "600"],
-  display: "swap",
-});
-export const MontserratSans = Montserrat({
-  subsets: ["latin-ext"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
-export const PoppinsSans = Poppins({
-  subsets: ["latin-ext"],
-  weight: "400",
-  display: "swap",
-});
-export const TenorsSans = Tenor_Sans({
-  subsets: ["latin-ext"],
-  weight: ["400"],
-  display: "swap",
-});
-export const Dancing = Dancing_Script({
-  subsets: ["latin-ext"],
-  weight: "400",
-  display: "swap",
-});
-export const GreatVibes = Great_Vibes({
-  subsets: ["latin-ext"],
-  weight: "400",
-  display: "swap",
-});
-export const TinosFont = Tinos({
-  subsets: ["latin-ext"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-export const MoonDance = Moon_Dance({
-  subsets: ["latin-ext"],
-  weight: "400",
-  display: "swap",
-});
-export const BonheurRoyaleFont = Bonheur_Royale({
-  subsets: ["latin-ext"],
-  weight: "400",
-  display: "swap",
-});
-export const Red_Hat_DisplayFont = Red_Hat_Display({
-  subsets: ["latin-ext"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
-export const QuicksandSans = Quicksand({
-  subsets: ["latin-ext"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
-export const WorkSans = Work_Sans({
-  subsets: ["latin-ext"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  display: "swap",
-});
+export { DMSerif } from "./presets/DMSerif";
+export { Mulish_Font } from "./presets/MulishFont";
+export { PlayfairSans } from "./presets/PlayfairSans";
+export { GwendolynSans } from "./presets/GwendolynSans";
+export { OutfitSans } from "./presets/OutfitSans";
+export { MontserratSans } from "./presets/MontserratSans";
+export { PoppinsSans } from "./presets/PoppinsSans";
+export { TenorsSans } from "./presets/TenorsSans";
+export { Dancing } from "./presets/Dancing";
+export { GreatVibes } from "./presets/GreatVibes";
+export { TinosFont } from "./presets/TinosFont";
+export { MoonDance } from "./presets/MoonDance";
+export { BonheurRoyaleFont } from "./presets/BonheurRoyaleFont";
+export { Red_Hat_DisplayFont } from "./presets/RedHatDisplayFont";
+export { QuicksandSans } from "./presets/QuicksandSans";
+export { WorkSans } from "./presets/WorkSans";

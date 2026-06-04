@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Header from "@/components/choosedoffers/header";
+import Header from "@/components/Header";
 import Menu from "@/components/choosedoffers/menu";
 import ViewsContainer from "@/components/choosedoffers/viewsContainer";
 
@@ -15,7 +15,7 @@ export default function Index() {
 
   const [slideWidth, setSlideWidth]: any = useState();
 
-  const handlePopUpOpen = async (event: any) => {
+  const handlePopUpOpen = async () => {
     await router.push({
       pathname: router.pathname,
       query: { ...remainingQuery, recomended: "true" },
@@ -30,8 +30,8 @@ export default function Index() {
   };
 
   return (
-    <div className="h-[89vh] md:h-screen bg-[url('/bg_calp.jpg')] bg-cover bg-center relative overflow-hidden">
-      <Header handlePopUpOpen={handlePopUpOpen} />
+    <div className="h-[89vh] md:h-screen bg-[url('/bg_calp.jpg')] bg-cover bg-center relative overflow-hidden pt-[74px] xl:pt-[82px]">
+      <Header handleShowOffersPopup={handlePopUpOpen} />
       <Menu />
       <ViewsContainer
         handlePopUpOpen={handlePopUpOpen}

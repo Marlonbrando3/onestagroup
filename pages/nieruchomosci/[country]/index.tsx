@@ -5,7 +5,7 @@ import { supabaseServer } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
 import locationsData from "@/data/locations.json";
 import MiniHomeView from "../../../components/SearchEngine/MiniHomeView";
-import HeaderListings from "../../../components/HeaderListings";
+import Header from "../../../components/Header";
 import SearchEngine from "../../../components/SearchEngine/SearchEngine";
 import Footer from "../../../components/Footer";
 import ContactFormMain from "../../../components/ContactFormMain";
@@ -182,13 +182,14 @@ export default function ListingsPage(props: PageProps) {
         handleConsultationPopUp={handleConsultationPopUp}
         ConsultationsShowed={consultationOpen}
       />
-      <HeaderListings
+      <Header
         handleConsultationPopUp={handleConsultationPopUp}
         handleShowOffersPopup={() => {
           setShowOffersPopup(true);
           hasShownPopupRef.current = false;
         }}
       />
+      <div className="pt-[74px] xl:pt-[82px]" />
       <MiniHomeView />
       <RecommendedOffersPopup
         isOpen={showOffersPopup}

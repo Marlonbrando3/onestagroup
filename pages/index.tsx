@@ -3,16 +3,17 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
+import { FaGlobeEurope } from "@react-icons/all-files/fa/FaGlobeEurope";
+import { FaHandshake } from "@react-icons/all-files/fa/FaHandshake";
+import { FaKey } from "@react-icons/all-files/fa/FaKey";
+import { FaMapMarkedAlt } from "@react-icons/all-files/fa/FaMapMarkedAlt";
+import { FaQuoteRight } from "@react-icons/all-files/fa/FaQuoteRight";
+import { FaShieldAlt } from "@react-icons/all-files/fa/FaShieldAlt";
 import {
-  FaArrowRight,
-  FaGlobeEurope,
-  FaHandshake,
-  FaKey,
-  FaMapMarkedAlt,
-  FaQuoteRight,
-  FaShieldAlt,
-} from "react-icons/fa";
-import { PlayfairSans, WorkSans } from "../fonts/fonts";
+  HomePlayfairSans as PlayfairSans,
+  HomeWorkSans as WorkSans,
+} from "../fonts/homeFonts";
 import Team from "../data/team.json";
 
 const Header = dynamic(() => import("../components/Header"), {
@@ -229,7 +230,6 @@ export default function FirstView() {
                 <Image
                   src="/mini_bg_about_us.webp"
                   fill
-                  priority
                   sizes="(min-width: 1024px) 52vw, 90vw"
                   className="object-cover"
                   alt="Wybrzeże Hiszpanii"

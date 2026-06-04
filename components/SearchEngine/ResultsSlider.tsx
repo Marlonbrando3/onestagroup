@@ -88,13 +88,13 @@ export default function ResultsSlider({
   };
 
   return (
-    <div className="h-full w-full relative bg-white overflow-hidden">
-      <div className="absolute text-[14px] md:text-[16px] z-10 bg-white text-orange-400 top-2 px-[12px] font-semibold rounded-r-md h-[26px] leading-[26px] shadow-sm">
+    <div className="relative h-full w-full overflow-hidden bg-[#e8ddca]">
+      <div className="absolute left-3 top-3 z-10 bg-white/95 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#9b7a36] shadow-sm">
         {market}
       </div>
 
       {market === "RYNEK PIERWOTNY" && deliveryDate && (
-        <div className="bg-white absolute z-10 text-[12px] md:text-[14px] text-blue-600 bottom-2 px-[12px] font-normal rounded-r-md h-[24px] leading-[24px]">
+        <div className="absolute bottom-3 left-3 z-10 bg-white/95 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#334155] shadow-sm">
           Data aktualizacji {String(date || "").slice(0, 10)}
         </div>
       )}
@@ -103,10 +103,10 @@ export default function ResultsSlider({
         <button
           type="button"
           onClick={prev}
-          className="flex items-center z-10 justify-center absolute w-10 h-full left-0"
+          className="absolute left-0 z-10 flex h-full w-12 items-center justify-center opacity-100 transition md:opacity-0 md:group-hover:opacity-100"
         >
-          <div className="w-[30px] h-[30px] bg-white/[0.6] rounded-full grid place-items-center ml-1">
-            <FaChevronLeft className="w-[20px] h-[20px] text-black" />
+          <div className="grid h-9 w-9 place-items-center bg-white/90 shadow-sm">
+            <FaChevronLeft className="h-4 w-4 text-[#182334]" />
           </div>
         </button>
       )}
@@ -115,10 +115,10 @@ export default function ResultsSlider({
         <button
           type="button"
           onClick={next}
-          className="flex items-center z-10 justify-center absolute w-10 h-full right-0"
+          className="absolute right-0 z-10 flex h-full w-12 items-center justify-center opacity-100 transition md:opacity-0 md:group-hover:opacity-100"
         >
-          <div className="w-[30px] h-[30px] bg-white/[0.6] rounded-full grid place-items-center mr-1">
-            <FaChevronRight className="w-[20px] h-[20px] text-black" />
+          <div className="grid h-9 w-9 place-items-center bg-white/90 shadow-sm">
+            <FaChevronRight className="h-4 w-4 text-[#182334]" />
           </div>
         </button>
       )}
@@ -130,7 +130,7 @@ export default function ResultsSlider({
         className="h-full w-full overflow-hidden"
       >
         <div
-          className="h-full flex transition-transform duration-300"
+          className="flex h-full transition-transform duration-300"
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
           <div className="absolute flex items-center justify-center p-4 h-full w-full">
@@ -158,12 +158,12 @@ export default function ResultsSlider({
                 className="min-w-full h-full relative"
               >
                 <Image
-                  className="object-cover"
+                className="object-cover"
                   src={slide.url || "/placeholder.jpg"}
                   alt="Zdjęcie nieruchomości"
                   fill
                   priority={index === 0}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 768px) 92vw, (max-width: 1280px) 44vw, 25vw"
                 />
               </Link>
             ),

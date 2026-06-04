@@ -1,92 +1,143 @@
 import React from "react";
 import Image from "next/image";
-import LogoType from "./images/logotype.png";
-import MenuFooter from "./menuFooterElement/menuFooter";
-import MenuData from "../data/menu.json";
 import Link from "next/link";
-import { Red_Hat_DisplayFont } from "../fonts/fonts";
-import { FaRegCopyright } from "react-icons/fa";
-import { FaFacebookSquare } from "react-icons/fa";
-import { FaSquareInstagram } from "react-icons/fa6";
-import { CiPhone } from "react-icons/ci";
-import { CiMail } from "react-icons/ci";
-import { CiMapPin } from "react-icons/ci";
+import LogoType from "../public/logotype_full_new.png";
+import MenuData from "../data/menu.json";
+import { HomeRedHatDisplayFont as Red_Hat_DisplayFont } from "../fonts/homeFonts";
+import { FaFacebookSquare } from "@react-icons/all-files/fa/FaFacebookSquare";
 
-const MenuFotterData = MenuData.menu.map((i, index) => (
-  <Link
-    key={i}
-    href={`${MenuData.links[index]}`}
-    className="place-content-center w-[190px] cursor-pointer"
-  >
-    {i}
-  </Link>
-));
+const menuItems = MenuData.menu.map((label, index) => {
+  const rawHref = MenuData.links[index] || "/";
+  const normalizedHref =
+    rawHref === "hiszpania?page=1"
+      ? "nieruchomosci/hiszpania?page=1"
+      : rawHref;
+  const href = normalizedHref.startsWith("/")
+    ? normalizedHref
+    : `/${normalizedHref}`;
+
+  return {
+    label,
+    href,
+  };
+});
+
+const contactItems = [
+  {
+    label: "Telefon",
+    value: "+48 576 65 25 25",
+    href: "tel:+48576652525",
+  },
+  {
+    label: "Email",
+    value: "biuro@onesta.com.pl",
+    href: "mailto:biuro@onesta.com.pl",
+  },
+  {
+    label: "Adres",
+    value: "53-148 Wrocław, ul. Wolbromska 18/1b",
+  },
+];
 
 export default function Footer() {
   return (
-    <>
-      <div
-        className={`${Red_Hat_DisplayFont.className} w-screen lg:text-sm text-xs flex z-20 items-center  mt-10 justify-between text-white h-auto py-[50px]  bg-cover bg-center relative`}
-      >
-        <div className="lg:w-[95vw] w-full mx-auto flex z-10 lg:flex-row px-[20px] md:px-0 flex-col">
-          <div className="border-black w-[300px] h-[200px]">
+    <footer
+      className={`${Red_Hat_DisplayFont.className} border-t border-[#e5dac7] bg-[#f7f3ec] text-[#182334]`}
+    >
+      <div className="mx-auto grid w-11/12 max-w-7xl gap-10 py-12 lg:grid-cols-[1.1fr_0.8fr_1fr] lg:py-16">
+        <div>
+          <Link
+            href="/"
+            aria-label="Onesta Group - strona główna"
+            className="relative block h-[58px] w-[190px]"
+          >
             <Image
               src={LogoType}
-              className="w-[200px] h-[100px]"
-              alt="logo_onesta"
-              style={{ objectFit: "contain" }}
+              alt="Onesta Group"
+              fill
+              sizes="190px"
+              className="object-contain object-left"
             />
-            <p className="uppercase text-black mt-[30px] tracking-[1px]">
-              Obserwuj nas na social media
-            </p>
-            <div className="flex w-[63px] justify-between mt-[10px]">
-              <Link href="https://www.facebook.com/profile.php?id=100071864003899">
-                <FaFacebookSquare className="text-blue-600 w-[30px] h-[30px]" />
-              </Link>
-              {/* <FaSquareInstagram className="text-[#FF1057] w-[30px] h-[30px]" /> */}
-            </div>
-          </div>
-          <div className="w-full lg:w-[400px] md:flex md:flex-row text-black flex-col ">
-            <div className="border-black h-[200px] w-[50%] w-full p-[10px] ">
-              <p className="text-[24px] uppercase font-semibold">Menu</p>
-              <div className="uppercase md:h-auto lg:w-[400px] flex flex-wrap flex-col mt-[40px] w-[50%] text-[16px] leading-[22px]">
-                {MenuFotterData}
-              </div>
-            </div>
-            <div className=" border-black w-full h-[200px] p-[10px] md:w-[500px]">
-              <p className="text-[24px] uppercase font-semibold">Kontakt</p>
-              <div className="lowercase h-[100px] md:w-[400px] w-full flex flex-col flex-wrap mt-[40px] justify-between">
-                <div className="flex items-center text-[16px]">
-                  <CiPhone className="text-black w-[25px] h-[25px]" />
-                  <Link href="tel:+48576652525" className="pl-[4px]">
-                    +48 576 65 25 25
-                  </Link>
-                </div>
-                <div className="flex items-center text-[16px]">
-                  <CiMail className="text-black w-[25px] h-[25px]" />
-                  <Link href="mailto:biuro@onesta.com.pl" className="pl-[4px]">
-                    biuro@onesta.com.pl
-                  </Link>
-                </div>
-                <div className="flex items-center normal-case text-[16px]">
-                  <CiMapPin className="text-black w-[25px] h-[25px]" />
-                  <p className="pl-[4px]">
-                    53-148 Wrocław, ul. Wolbromska 18/1b
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="bg-[#275278] w-full h-[40px] text-white text-[10px]">
-        <div className="lg:w-[1150px] w-full h-full mx-auto flex items-center">
-          <FaRegCopyright />
-          <p className="pl-[5px]">
-            ONESTA GROUP SP. Z O. O. WSZYSTKIE PRAWA ZASTRZEŻONE
+          </Link>
+
+          <p className="mt-6 max-w-md text-sm leading-7 text-[#5f6b7a]">
+            Pomagamy w bezpiecznym wyborze i zakupie nieruchomości za granicą:
+            od pierwszej selekcji rynku po formalności i przygotowanie do
+            użytkowania.
           </p>
+
+          <div className="mt-7">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
+              Social media
+            </p>
+            <Link
+              href="https://www.facebook.com/profile.php?id=100071864003899"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Onesta Group na Facebooku"
+              className="mt-3 inline-flex h-11 w-11 items-center justify-center border border-[#d7c8ad] bg-white text-[#182334] transition hover:border-[#182334] hover:text-[#9b7a36]"
+            >
+              <FaFacebookSquare className="h-6 w-6" />
+            </Link>
+          </div>
+        </div>
+
+        <nav aria-label="Menu w stopce">
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#9b7a36]">
+            Menu
+          </p>
+          <div className="mt-5 grid gap-3">
+            {menuItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="border-b border-[#e5dac7] pb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#334155] transition hover:text-[#9b7a36]"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
+
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#9b7a36]">
+            Kontakt
+          </p>
+          <div className="mt-5 space-y-4">
+            {contactItems.map((item) => (
+              <div key={item.label} className="border-b border-[#e5dac7] pb-4">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7c8796]">
+                  {item.label}
+                </p>
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    className="mt-1 block text-sm font-semibold text-[#182334] transition hover:text-[#9b7a36]"
+                  >
+                    {item.value}
+                  </Link>
+                ) : (
+                  <p className="mt-1 text-sm font-semibold text-[#182334]">
+                    {item.value}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </>
+
+      <div className="border-t border-[#e5dac7] bg-[#182334] text-white">
+        <div className="mx-auto flex w-11/12 max-w-7xl flex-col gap-3 py-4 text-[11px] uppercase tracking-[0.14em] text-white/75 md:flex-row md:items-center md:justify-between">
+          <p>Onesta Group Sp. z o.o. Wszystkie prawa zastrzeżone.</p>
+          <Link
+            href="/polityka-prywatnosci"
+            className="transition hover:text-[#d6b36a]"
+          >
+            Polityka prywatności
+          </Link>
+        </div>
+      </div>
+    </footer>
   );
 }

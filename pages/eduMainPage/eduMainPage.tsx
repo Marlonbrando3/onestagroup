@@ -7,12 +7,15 @@ import { PiMoneyWavyLight } from "react-icons/pi";
 import { PiOfficeChairLight } from "react-icons/pi";
 import { HiOutlineDocumentChartBar } from "react-icons/hi2";
 import { PiBook } from "react-icons/pi";
+import Header from "@/components/Header";
 
 export default function EduMainPage() {
   return (
-    <div
-      className={`${Red_Hat_DisplayFont.className} lg:w-[1100px] max-w-[94%] flex w-[95vw] mx-auto justify-evenly h-auto my-[130px]`}
-    >
+    <>
+      <Header />
+      <main
+        className={`${Red_Hat_DisplayFont.className} lg:w-[1100px] max-w-[94%] flex w-[95vw] mx-auto justify-evenly h-auto pb-[80px] pt-[130px]`}
+      >
       <div className="border w-1/2 h-[300px] relative hidden md:block">
         <span className="absolute z-10 bottom-[10px] left-[10px] lg:text-[36px] text-[30px] text-white leading-[46px] font-semibold">
           Skorzystaj z najszej<br></br> rynkowej{" "}
@@ -68,6 +71,7 @@ export default function EduMainPage() {
           </p>
         </Link>
       </div>
-    </div>
+      </main>
+    </>
   );
 }

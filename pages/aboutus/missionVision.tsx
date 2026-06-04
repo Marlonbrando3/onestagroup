@@ -1,9 +1,13 @@
 import React from "react";
 import { Red_Hat_DisplayFont } from "../../fonts/fonts";
 import Image from "next/image";
+import Header from "@/components/Header";
 
 export default function MissionVision() {
   return (
+    <>
+    <Header />
+    <main className="pt-[74px] xl:pt-[82px]">
     <div className="lg:w-[1200px] flex w-[95vw] mx-auto justify-evenly h-auto">
       <div className="lg:w-[1100px]">
         <div className="w-full flex items-center flex-col md:flex-row my-[20px]">
@@ -87,5 +91,7 @@ export default function MissionVision() {
         <Image src="/about_us_main_txt.png" fill objectFit="cover" alt="nieruchomości"></Image>
       </div>
     </div>
+    </main>
+    </>
   );
 }

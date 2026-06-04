@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React, { useState, useRef } from "react";
 import Head from "next/head";
 import Script from "next/script";
@@ -10,6 +9,7 @@ import SurveyFourDateBG from "../../components/Survey/SurveyFourDate/surveyFourD
 import Thankyoupageform from "../../components/Survey/thankyoupageform";
 import Thankyoupageafter from "@/components/Survey/SurveyFourDate/thankyoupageafter";
 import Hotjar from "@hotjar/browser";
+import Header from "@/components/Header";
 
 export default function Index() {
   const emptyFieldPopUp: any = useRef();
@@ -53,21 +53,10 @@ export default function Index() {
         />
         {/* <meta property="og:locale" content="en_US" /> */}
       </Head>
+      <Header />
       <div
-        className={`bg-[url('/bg-form.png')] h-auto bg-[length:400px_auto] md:bg-cover bg-fixed pb-[20px]`}
+        className={`bg-[url('/bg-form.png')] h-auto bg-[length:400px_auto] md:bg-cover bg-fixed pb-[20px] pt-[74px] xl:pt-[82px]`}
       >
-        <div className="h-[40px] md:h-[80px] w-full ">
-          <div id="logo" className="w-full h-full relative bg-white ">
-            <Image
-              src="/logotype_full.png"
-              fill
-              alt="logo"
-              objectFit="contain"
-              className="py-[9px] md:py-[22px]"
-            ></Image>
-          </div>
-        </div>
-
         {PageNumber === 1 && (
           <Firstview
             PageNumber={PageNumber}

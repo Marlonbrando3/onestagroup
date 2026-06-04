@@ -19,8 +19,6 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
     setOpen(false);
   }, [router.asPath]);
 
-  console.log("data");
-
   // ✅ breakpoint detection (bez resize spamu)
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1024px)");
@@ -59,12 +57,12 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
       {/* BUTTON */}
       <div
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full h-full border-yellow-500 px-3 flex flex-col justify-center cursor-pointer bg-white duration-200 rounded-md"
+        className="flex h-full w-full cursor-pointer flex-col justify-center bg-white px-3 duration-200 hover:bg-[#fbf8f2]"
       >
-        <label className="text-xs font-semibold text-gray-600 mb-1">
+        <label className="mb-1 text-xs font-semibold text-[#5f6b7a]">
           {label}
         </label>
-        <div className="text-sm text-gray-700">
+        <div className="truncate text-sm font-semibold text-[#182334]">
           {value.length > 0 ? value.join(", ") : "Wybierz"}
         </div>
       </div>
@@ -76,25 +74,27 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
             <div
               className={`absolute top-[calc(100%+5px)] left-0 ${
                 label === "Zabudowa" ? "w-[400px]" : "w-[200px]"
-              } bg-white border shadow-xl p-6 pt-2 z-10 rounded-md`}
+              } z-10 border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-xl`}
             >
-              <p className="text-[16px] text-gray-600 tracking-wide mb-4">
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
                 {label}
               </p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 {options.map((item) => (
                   <div
                     key={item}
                     onClick={() => toggle(item)}
-                    className="flex items-center gap-3 cursor-pointer"
+                    className="flex cursor-pointer items-center gap-3 text-sm font-medium text-[#334155]"
                   >
                     <div
-                      className={`w-5 h-5 border flex items-center justify-center ${
-                        value.includes(item) ? "bg-black" : ""
+                      className={`flex h-5 w-5 items-center justify-center border ${
+                        value.includes(item)
+                          ? "border-[#182334] bg-[#182334]"
+                          : "border-[#d7c8ad] bg-white"
                       }`}
                     >
                       {value.includes(item) && (
-                        <span className="text-white text-xs">✓</span>
+                        <span className="text-xs text-white">✓</span>
                       )}
                     </div>
                     {item}
@@ -108,7 +108,7 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
           {!isDesktop &&
             typeof window !== "undefined" &&
             createPortal(
-              <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-[300px]">
+              <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-[220px]">
                 {/* backdrop */}
                 <div
                   className="absolute inset-0 bg-black/30"
@@ -116,24 +116,26 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
                 />
 
                 {/* content */}
-                <div className="relative w-[90vw] max-w-[400px] bg-white border shadow-xl p-6 pt-2 rounded-xl">
-                  <p className="text-[18px] text-gray-600 tracking-wide mb-4">
+                <div className="relative w-[90vw] max-w-[400px] border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-xl">
+                  <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
                     {label}
                   </p>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     {options.map((item) => (
                       <div
                         key={item}
                         onClick={() => toggle(item)}
-                        className="flex items-center gap-3 cursor-pointer"
+                        className="flex cursor-pointer items-center gap-3 text-sm font-medium text-[#334155]"
                       >
                         <div
-                          className={`w-5 h-5 border flex items-center justify-center ${
-                            value.includes(item) ? "bg-black" : ""
+                          className={`flex h-5 w-5 items-center justify-center border ${
+                            value.includes(item)
+                              ? "border-[#182334] bg-[#182334]"
+                              : "border-[#d7c8ad] bg-white"
                           }`}
                         >
                           {value.includes(item) && (
-                            <span className="text-white text-xs">✓</span>
+                            <span className="text-xs text-white">✓</span>
                           )}
                         </div>
                         {item}

@@ -1,4 +1,3 @@
-// PropertyCard.tsx
 import Link from "next/link";
 import { useState } from "react";
 import { IoMdPin } from "react-icons/io";
@@ -9,12 +8,34 @@ import { BiArea } from "react-icons/bi";
 import { MdIosShare } from "react-icons/md";
 import ResultsSlider from "./ResultsSlider";
 import { typeDictionary } from "../../lib/titlesDictionary";
-import { Red_Hat_DisplayFont } from "@/fonts/fonts";
+import { HomeRedHatDisplayFont as Red_Hat_DisplayFont } from "@/fonts/homeFonts";
 
 type PropertyProps = {
   property: any;
   onBrokenImages?: (externalId: string | number) => void;
 };
+
+function slugify(value: string): string {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ł/g, "l")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+function formatPrice(price: number | string | null | undefined) {
+  const numeric = Number(price || 0);
+  if (!numeric) return "Konsultacja";
+  return `${numeric.toLocaleString("pl-PL")} €`;
+}
+
+function formatValue(value: unknown, fallback = "-") {
+  if (value === null || value === undefined || value === "") return fallback;
+  return String(value);
+}
 
 export default function PropertyCard({
   property,
@@ -30,25 +51,18 @@ export default function PropertyCard({
   };
 
   const market = property?.new_build ? "RYNEK PIERWOTNY" : "RYNEK WTÓRNY";
-
-  function slugify(value: string): string {
-    return String(value || "")
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/ł/g, "l")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-");
-  }
-
   const countryName =
     typeof property?.country === "string"
       ? property.country
       : property?.country?.name || "hiszpania";
 
   const countrySlug = slugify(countryName);
+  const propertyType =
+    property?.type && property.type in typeDictionary
+      ? typeDictionary[property.type as keyof typeof typeDictionary]
+      : "Nieruchomość";
   const slug = `${slugify(property?.type)}-${slugify(property?.town)}`;
+  const locationLabel = regions[property?.province] || property?.province;
 
   const detailHref = {
     pathname: `/nieruchomosci/${countrySlug}/${slug}`,
@@ -64,7 +78,7 @@ export default function PropertyCard({
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "Zobacz tę nieruchomość!",
+          title: "Zobacz tę nieruchomość",
           url: shareUrl,
         });
       } else if (navigator.clipboard) {
@@ -75,11 +89,34 @@ export default function PropertyCard({
     } catch {}
   };
 
+  const stats = [
+    {
+      label: "Sypialnie",
+      value: formatValue(property?.beds),
+      Icon: IoBedOutline,
+    },
+    {
+      label: "Łazienki",
+      value: formatValue(property?.baths),
+      Icon: PiBathtubLight,
+    },
+    {
+      label: "Basen",
+      value: property?.pool === true ? "Tak" : "Nie",
+      Icon: FaSwimmingPool,
+    },
+    {
+      label: "Powierzchnia",
+      value: property?.surface_built ? `${property.surface_built} m²` : "-",
+      Icon: BiArea,
+    },
+  ];
+
   return (
-    <div
-      className={`${Red_Hat_DisplayFont.className} flex flex-col w-full rounded-xl shadow-lg overflow-hidden border-gray-900`}
+    <article
+      className={`${Red_Hat_DisplayFont.className} group flex h-full flex-col overflow-hidden border border-[#e5dac7] bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl`}
     >
-      <div className="w-full md:aspect-[4/3] aspect-[4/3] overflow-hidden relative ">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#e8ddca]">
         <ResultsSlider
           date={property?.updated_at}
           region={property?.province}
@@ -94,100 +131,81 @@ export default function PropertyCard({
         />
       </div>
 
-      <div className="flex relative flex-col w-full text-slate-800 ">
-        <span className="flex justify-center absolute m-1 p-1 rounded-3xl right-0 top-0 cursor-pointer z-10 ">
-          <MdIosShare onClick={share} className="w-[20px] h-[20px]" />
+      <div className="flex flex-1 flex-col">
+        <div className="relative flex-1 p-3">
+          <button
+            type="button"
+            onClick={share}
+            aria-label="Udostępnij nieruchomość"
+            className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center border border-[#e5dac7] bg-[#f7f3ec] text-[#182334] transition hover:border-[#b8954c] hover:text-[#9b7a36]"
+          >
+            <MdIosShare className="h-4 w-4" />
+          </button>
+
           {copiedShowed && (
-            <div className="flex justify-center items-center p-1 right-1 w-32 absolute h-10 bg-red-700">
-              <p className="text-xs text-white text-center">Skopiowano link!</p>
+            <div className="absolute right-3 top-12 z-20 bg-[#182334] px-3 py-2 text-xs font-semibold text-white shadow-lg">
+              Skopiowano link
             </div>
           )}
-        </span>
 
-        <Link href={detailHref}>
-          <div className="">
-            <div className="flex pl-2 w-full h-14 lg:h-14 items-center mt-[1px] ">
-              <IoMdPin className="mr-[2px] w-5 md:w-6 md:h-5 lg:w-6 h-24 lg:h-28 text-yellow-600" />
-              <p className="md:text-[16px] pl-1 text-xs leading-4">
-                <span className="text-[16px] font-semibold">
-                  {regions[property?.province] || property?.province}
+          <Link href={detailHref} className="block pr-9">
+            <div className="flex items-start gap-1.5 text-xs text-[#5f6b7a]">
+              <IoMdPin className="mt-[2px] h-4 w-4 shrink-0 text-[#b8954c]" />
+              <div>
+                <p className="font-semibold text-[#182334]">
+                  {locationLabel || "Wybrzeże"}
+                </p>
+                <p>{property?.town || "Hiszpania"}</p>
+              </div>
+            </div>
+
+            <h2 className="mt-2 line-clamp-2 min-h-[42px] text-[17px] font-bold leading-[1.22] text-[#182334]">
+              {propertyType} w {property?.town || "Hiszpanii"}
+            </h2>
+
+            <div className="mt-2">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7c8796]">
+                ref. {property?.external_id}
+              </span>
+            </div>
+          </Link>
+
+          <div className="mt-3 grid grid-cols-4 gap-1 border-y border-[#e5dac7] py-2">
+            {stats.map(({ label, value, Icon }) => (
+              <div
+                key={label}
+                className="flex min-w-0 items-center justify-center gap-1.5 px-1 text-center"
+                title={label}
+              >
+                <Icon className="h-4 w-4 shrink-0 text-[#9b7a36]" />
+                <span className="truncate text-sm font-bold text-[#182334]">
+                  {value}
                 </span>
-                <br /> {property?.town}
-              </p>
-            </div>
-            <div className="w-full md:h-16 lg:leading-6 md:pl-8 pr-12 lg:text-[18px] text-[20px] leading-[24px] pl-8 py-[1px] font-[800] ">
-              <p>
-                {property?.type && property.type in typeDictionary
-                  ? typeDictionary[property.type as keyof typeof typeDictionary]
-                  : "Nieruchomość"}
-                &nbsp;w {property?.town}
-              </p>
-              <p className="text-[12px] mt-[2px] font-[600]">
-                nr ref. {property?.external_id}
-              </p>
-            </div>
-
-            <div className="flex items-center justify-between w-full pt-[1px]">
-              <div className="flex flex-col items-center justify-center w-[25%] md:p-1 py-2">
-                {/* <p className="w-full text-center hidden md:block text-sm">
-                  Sypialnie
-                </p> */}
-                <div className="flex md:flex-col h-10 lg:flex-row items-center justify-center">
-                  <IoBedOutline className="w-[35px] md:w-5 pr-2 md:pr-0 lg:w-8 md:h-6 h-[70px] md:py-0" />
-                  <div className="flex items-center font-semibold h-14 text-base md:text-sm lg:pl-2">
-                    {property?.beds}
-                  </div>
-                </div>
               </div>
-
-              <div className="flex flex-col items-center justify-center w-[25%] md:p-1 py-2">
-                {/* <p className="w-full text-center hidden md:block text-sm">
-                  Łazienki
-                </p> */}
-                <div className="flex md:flex-col h-10 items-center lg:flex-row justify-center">
-                  <PiBathtubLight className="w-[35px] md:w-5 pr-2 md:pr-0 lg:w-8 md:h-6 h-[70px] md:py-0" />
-                  <div className="flex items-center font-semibold h-14 text-base md:text-sm lg:pl-2">
-                    {property?.baths}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center justify-center w-[24%] md:p-1 py-2">
-                {/* <p className="w-full text-center hidden md:block text-sm">
-                  Basen
-                </p> */}
-                <div className="flex md:flex-col h-10 items-center lg:flex-row justify-center">
-                  <FaSwimmingPool className="w-[35px] md:w-5 pr-2 md:pr-0 lg:w-8 md:h-6 h-[70px] md:py-0" />
-                  <div className="flex items-center font-semibold h-14 text-base md:text-sm lg:pl-2">
-                    {property?.pool === true ? "Tak" : "Nie"}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col items-center justify-center w-[25%] md:p-1 py-2">
-                {/* <p className="w-full text-center hidden md:block text-sm">
-                  Pow. całk.
-                </p> */}
-                <div className="flex items-center h-10 md:flex-col lg:flex-row justify-center">
-                  <BiArea className="w-[35px] md:w-5 lg:w-8 pr-2 md:pr-0 md:h-6 h-[70px] md:py-0" />
-                  <div className="flex items-center font-semibold h-14 text-base md:text-sm lg:pl-2">
-                    {property?.surface_built}
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-          <div className="bottom-0 right-0  md:h-12 h-12 flex items-center text-2xl px-3 font-semibold border-t-yellow-500 rounded-t-md">
-            <span className="ml-1 sm:text-xl text-2xl md:text-3xl text-right w-full text-yellow-600 font-[800] bg-whigrray-100te/[0.9]">
-              {market === "RYNEK PIERWOTNY" && property?.price !== 0 && (
-                <p className="inline text-[20px] pr-[5px]">od</p>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 border-t border-[#e5dac7] bg-[#fbf8f2] px-3 py-3">
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#7c8796]">
+              Cena
+            </p>
+            <p className="text-[20px] font-extrabold leading-tight text-[#9b7a36]">
+              {property?.new_build && Number(property?.price || 0) > 0 && (
+                <span className="mr-1 text-xs font-bold">od</span>
               )}
-              {property?.price !== 0
-                ? `${Number(property?.price || 0).toLocaleString()} €`
-                : "konsultacja"}
-            </span>
+              {formatPrice(property?.price)}
+            </p>
           </div>
-        </Link>
+          <Link
+            href={detailHref}
+            className="shrink-0 border border-[#b8954c] bg-[#d6b36a] px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
+          >
+            Szczegóły
+          </Link>
+        </div>
       </div>
-    </div>
+    </article>
   );
 }

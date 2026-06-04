@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { IoCloseCircleOutline } from "react-icons/io5";
-import { MontserratSans } from "../../fonts/fonts";
-import { FaRegCheckCircle } from "react-icons/fa";
+import { IoCloseCircleOutline } from "@react-icons/all-files/io5/IoCloseCircleOutline";
+import { HomeMontserratSans as MontserratSans } from "../../fonts/homeFonts";
+import { FaRegCheckCircle } from "@react-icons/all-files/fa/FaRegCheckCircle";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 type data = {

@@ -1,7 +1,9 @@
 import Head from "next/head";
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Contactform from "../../components/contactfrom/contactform";
+import Consultation from "@/components/consulatation/consultation";
 import { WorkSans, PlayfairSans } from "../../fonts/fonts";
 import {
   FaArrowRight,
@@ -68,6 +70,9 @@ const reasons = [
 ];
 
 export default function InvestorStayPage() {
+  const [consultationOpen, setConsultationOpen] = useState(false);
+  const handleConsultationPopUp = () => setConsultationOpen((open) => !open);
+
   return (
     <>
       <Head>
@@ -80,7 +85,11 @@ export default function InvestorStayPage() {
       <main
         className={`${WorkSans.className} min-h-screen bg-[#f7f3ec] text-[#182334]`}
       >
-        <Header handleConsultationPopUp={() => {}} loadLoader={() => {}} />
+        <Header handleConsultationPopUp={handleConsultationPopUp} />
+        <Consultation
+          handleConsultationPopUp={handleConsultationPopUp}
+          ConsultationsShowed={consultationOpen}
+        />
 
         <section className="relative min-h-[760px] overflow-hidden bg-[#182334] pt-[112px] text-white">
           <div className="absolute inset-0 bg-[url('/main_bg.png')] bg-cover bg-center opacity-55" />
@@ -101,12 +110,13 @@ export default function InvestorStayPage() {
                 podstawie rynku, a nie samych zdjęć.
               </p>
               <div className="mt-9 flex flex-wrap gap-4">
-                <a
-                  href="#kontakt"
+                <button
+                  type="button"
+                  onClick={handleConsultationPopUp}
                   className="inline-flex h-12 items-center gap-3 rounded-md bg-[#d6b36a] px-6 text-sm font-bold uppercase tracking-wide text-[#111827] transition hover:bg-white"
                 >
                   Umów konsultację <FaArrowRight />
-                </a>
+                </button>
                 <a
                   href="#plan"
                   className="inline-flex h-12 items-center rounded-md border border-white/35 px-6 text-sm font-semibold uppercase tracking-wide text-white transition hover:border-white hover:bg-white/10"

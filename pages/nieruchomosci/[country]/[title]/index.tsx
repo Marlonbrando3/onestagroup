@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Head from "next/head";
-import HeaderOffer from "../../../../components/HeaderOffer";
+import Header from "../../../../components/Header";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -131,9 +131,7 @@ export default function Property({ propertyFromSupabase }: any) {
             />
           </div>
         </div>
-        <div className="w-full bg-white z-[90]">
-          <HeaderOffer />{" "}
-        </div>
+        <Header />
         {/* <MiniHomeViewOffer /> */}
         <div className="lg:w-full md:w-[95vw] w-full pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
           <div
