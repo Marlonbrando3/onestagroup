@@ -9,7 +9,10 @@ export default function AnalitycsTools() {
       <Script id="facebook-pixel" strategy="afterInteractive">
         {`
           (function () {
+            var loaded = false;
             var run = function () {
+              if (loaded) return;
+              loaded = true;
               !function(f,b,e,v,n,t,s)
               {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
               n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -21,11 +24,16 @@ export default function AnalitycsTools() {
               fbq('init', '178665974358939');
               fbq('track', 'PageView');
             };
-            if ('requestIdleCallback' in window) {
-              window.requestIdleCallback(run, { timeout: 2000 });
-            } else {
-              setTimeout(run, 1200);
-            }
+            var events = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'mousemove'];
+            var start = function () {
+              events.forEach(function(eventName) {
+                window.removeEventListener(eventName, start, true);
+              });
+              run();
+            };
+            events.forEach(function(eventName) {
+              window.addEventListener(eventName, start, { once: true, passive: true, capture: true });
+            });
           })();
         `}
       </Script>
@@ -33,10 +41,29 @@ export default function AnalitycsTools() {
       {/* Google Tag Manager */}
       <Script id="gtm" strategy="afterInteractive">
         {`
-          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          (function(w,d,s,l,i){
+            w[l]=w[l]||[];
+            var loaded = false;
+            var run = function () {
+              if (loaded) return;
+              loaded = true;
+              w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+              var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+              j.async=true;
+              j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+              f.parentNode.insertBefore(j,f);
+            };
+            var events = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'mousemove'];
+            var start = function () {
+              events.forEach(function(eventName) {
+                window.removeEventListener(eventName, start, true);
+              });
+              run();
+            };
+            events.forEach(function(eventName) {
+              window.addEventListener(eventName, start, { once: true, passive: true, capture: true });
+            });
           })(window,document,'script','dataLayer','GTM-NKPS7M7Z');
         `}
       </Script>
