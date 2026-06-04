@@ -27,7 +27,7 @@ import { MdSearch } from "@react-icons/all-files/md/MdSearch";
 import { MdSecurity } from "@react-icons/all-files/md/MdSecurity";
 import { MdStars } from "@react-icons/all-files/md/MdStars";
 import { MdVerifiedUser } from "@react-icons/all-files/md/MdVerifiedUser";
-import { MontserratSans, Mulish_Font } from "@/fonts/fonts";
+import { Mulish_Font } from "@/fonts/fonts";
 
 type IconType = ComponentType<{ className?: string }>;
 
