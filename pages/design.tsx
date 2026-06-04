@@ -27,7 +27,6 @@ import { MdSearch } from "@react-icons/all-files/md/MdSearch";
 import { MdSecurity } from "@react-icons/all-files/md/MdSecurity";
 import { MdStars } from "@react-icons/all-files/md/MdStars";
 import { MdVerifiedUser } from "@react-icons/all-files/md/MdVerifiedUser";
-import { Mulish_Font } from "@/fonts/fonts";
 
 type IconType = ComponentType<{ className?: string }>;
 
@@ -1324,9 +1323,7 @@ export default function DesignPage({ offers }: DesignPageProps) {
         <title>Onesta Design</title>
         <meta name="robots" content="noindex" />
       </Head>
-      <main
-        className={`${Mulish_Font.className} min-h-screen bg-white text-gray-800`}
-      >
+      <main className="min-h-screen bg-white font-sans text-gray-800">
         <div className="min-h-screen w-full overflow-hidden bg-[#ebebeb]">
           {showTopContactButton && (
             <button
@@ -1359,27 +1356,6 @@ export default function DesignPage({ offers }: DesignPageProps) {
               </div>
             </div>
           )}
-
-          <style jsx global>{`
-            @keyframes design-jiggle {
-              0%,
-              12%,
-              100% {
-                transform: translateX(0);
-              }
-              3%,
-              9% {
-                transform: translateX(-5px) rotate(-1deg);
-              }
-              6% {
-                transform: translateX(5px) rotate(1deg);
-              }
-            }
-
-            .design-jiggle {
-              animation: design-jiggle 3s ease-in-out infinite;
-            }
-          `}</style>
 
           <section className="relative min-h-[620px] bg-[#FFC32A] px-[24px] lg:min-h-[760px] lg:px-[70px] lg:pb-[46px]">
             <div className="absolute right-0 top-0 h-full w-[42%] bg-white [clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)]" />

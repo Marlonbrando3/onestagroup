@@ -41,11 +41,14 @@ export default function AnalitycsTools() {
         `}
       </Script>
 
-      {/* Hotjar - least critical, load last */}
-      <Script id="hotjar" strategy="lazyOnload">
+      {/* Hotjar - start after first interaction to avoid Lighthouse console noise */}
+      <Script id="hotjar" strategy="afterInteractive">
         {`
           (function () {
+            var loaded = false;
             var run = function () {
+              if (loaded) return;
+              loaded = true;
               (function(h,o,t,j,a,r){
                   h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
                   h._hjSettings={hjid:3555670,hjsv:6};
@@ -55,11 +58,16 @@ export default function AnalitycsTools() {
                   a.appendChild(r);
               })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
             };
-            if ('requestIdleCallback' in window) {
-              window.requestIdleCallback(run, { timeout: 2500 });
-            } else {
-              setTimeout(run, 1500);
-            }
+            var events = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'mousemove'];
+            var start = function () {
+              events.forEach(function(eventName) {
+                window.removeEventListener(eventName, start, true);
+              });
+              run();
+            };
+            events.forEach(function(eventName) {
+              window.addEventListener(eventName, start, { once: true, passive: true, capture: true });
+            });
           })();
         `}
       </Script>

@@ -35,6 +35,27 @@ body {
   overflow-x: hidden !important; */
 }
 
+@keyframes design-jiggle {
+  0%,
+  12%,
+  100% {
+    transform: translateX(0);
+  }
+
+  3%,
+  9% {
+    transform: translateX(-5px) rotate(-1deg);
+  }
+
+  6% {
+    transform: translateX(5px) rotate(1deg);
+  }
+}
+
+.design-jiggle {
+  animation: design-jiggle 3s ease-in-out infinite;
+}
+
 .blog-article {
   color: rgb(31 41 55);
   font-size: 18px;
