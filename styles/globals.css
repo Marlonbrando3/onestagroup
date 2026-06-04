@@ -34,6 +34,78 @@ body {
   /* height: 100%;
   overflow-x: hidden !important; */
 }
+
+.blog-article {
+  color: rgb(31 41 55);
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.blog-article > * + * {
+  margin-top: 1.25rem;
+}
+
+.blog-article h2 {
+  color: rgb(3 7 18);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 2.5rem;
+}
+
+.blog-article h3 {
+  color: rgb(3 7 18);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-top: 2rem;
+}
+
+.blog-article p {
+  margin: 0;
+}
+
+.blog-article a {
+  color: rgb(234 88 12);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.blog-article ul,
+.blog-article ol {
+  padding-left: 1.4rem;
+}
+
+.blog-article ul {
+  list-style: disc;
+}
+
+.blog-article ol {
+  list-style: decimal;
+}
+
+.blog-article li + li {
+  margin-top: 0.5rem;
+}
+
+.blog-article blockquote {
+  border-left: 4px solid rgb(249 115 22);
+  background: rgb(255 247 237);
+  color: rgb(55 65 81);
+  padding: 1rem 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .blog-article {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .blog-article h2 {
+    font-size: 1.45rem;
+  }
+}
 @media (max-width: 768px) {
   .slider_move {
     width: 100px;

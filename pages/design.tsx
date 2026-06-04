@@ -2,33 +2,34 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import type { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
-import type { IconType } from "react-icons";
 import {
-  FaBed,
-  FaChevronLeft,
-  FaChevronRight,
-  FaConciergeBell,
-  FaHandshake,
-  FaKey,
-  FaTools,
-} from "react-icons/fa";
-import { IoClose, IoSparklesOutline } from "react-icons/io5";
-import {
-  MdCleaningServices,
-  MdFactCheck,
-  MdHealthAndSafety,
-  MdOutlineAssignment,
-  MdOutlineBedroomParent,
-  MdOutlineHomeWork,
-  MdOutlineLocalOffer,
-  MdOutlineManageSearch,
-  MdOutlineRealEstateAgent,
-  MdOutlineVerified,
-} from "react-icons/md";
-import locationsData from "@/data/locations.json";
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type ReactNode,
+} from "react";
+import { FaBed } from "@react-icons/all-files/fa/FaBed";
+import { FaChevronLeft } from "@react-icons/all-files/fa/FaChevronLeft";
+import { FaChevronRight } from "@react-icons/all-files/fa/FaChevronRight";
+import { FaConciergeBell } from "@react-icons/all-files/fa/FaConciergeBell";
+import { FaHandshake } from "@react-icons/all-files/fa/FaHandshake";
+import { FaKey } from "@react-icons/all-files/fa/FaKey";
+import { FaTools } from "@react-icons/all-files/fa/FaTools";
+import { IoClose } from "@react-icons/all-files/io5/IoClose";
+import { MdAssignment } from "@react-icons/all-files/md/MdAssignment";
+import { MdAssignmentTurnedIn } from "@react-icons/all-files/md/MdAssignmentTurnedIn";
+import { MdBuild } from "@react-icons/all-files/md/MdBuild";
+import { MdHome } from "@react-icons/all-files/md/MdHome";
+import { MdHotel } from "@react-icons/all-files/md/MdHotel";
+import { MdLocalOffer } from "@react-icons/all-files/md/MdLocalOffer";
+import { MdSearch } from "@react-icons/all-files/md/MdSearch";
+import { MdSecurity } from "@react-icons/all-files/md/MdSecurity";
+import { MdStars } from "@react-icons/all-files/md/MdStars";
+import { MdVerifiedUser } from "@react-icons/all-files/md/MdVerifiedUser";
 import { MontserratSans, Mulish_Font } from "@/fonts/fonts";
-import { supabase, supabaseServer } from "@/lib/supabaseClient";
+
+type IconType = ComponentType<{ className?: string }>;
 
 type DesignProperty = {
   external_id: string | number;
@@ -39,6 +40,7 @@ type DesignProperty = {
   type?: string | null;
   headerAdvertisement?: string | null;
   country?: string | null;
+  coast?: string | null;
 };
 
 type DesignPageProps = {
@@ -53,6 +55,13 @@ type DesignMainFormData = {
   purchaseThisYear: string;
   region: string;
   budget: string;
+};
+
+type LocationEntry = {
+  id: string;
+  name: string;
+  type: string;
+  parentId?: string | null;
 };
 
 const purchaseTimingOptions = ["Tak", "Nie"];
@@ -125,7 +134,7 @@ const stepCards = [
 const rentServices = [
   {
     text: "Profesjonalne sprzątanie po każdej rezerwacji",
-    Icon: MdCleaningServices,
+    Icon: MdBuild,
   },
   {
     text: "Wymiana i przygotowanie pościeli, ręczników oraz",
@@ -133,19 +142,19 @@ const rentServices = [
   },
   {
     text: "Sprawdzenie wyposażenia i czystości przed przyjazdem",
-    Icon: MdFactCheck,
+    Icon: MdAssignmentTurnedIn,
   },
   {
     text: "Standard hotelowy + zestaw środków higienicznych",
-    Icon: MdHealthAndSafety,
+    Icon: MdSecurity,
   },
   {
     text: "Przygotowanie dokumentów do rejestracji gości w Guarda Civil",
-    Icon: MdOutlineAssignment,
+    Icon: MdAssignment,
   },
   {
     text: "Dbałość o jakość doświadczenia gości i budowanie pozytywnych opinii",
-    Icon: IoSparklesOutline,
+    Icon: MdStars,
   },
   {
     text: "Usługę rezydenta oraz pakiet powitalny dla gości",
@@ -153,7 +162,7 @@ const rentServices = [
   },
   {
     text: "Regularna kontrola stanu technicznego i wizualnego apartamentu",
-    Icon: MdOutlineVerified,
+    Icon: MdVerifiedUser,
   },
   {
     text: "Organizacja ewentualnych napraw i serwisów",
@@ -161,14 +170,14 @@ const rentServices = [
   },
 ];
 
-const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
+const whyUs: Array<{ text: ReactNode; Icon: IconType }> = [
   {
     text: (
       <>
         <strong>Ponad 8 lat doświadczenia</strong> na rynku Hiszpańskim.
       </>
     ),
-    Icon: MdOutlineVerified,
+    Icon: MdVerifiedUser,
   },
   {
     text: (
@@ -186,7 +195,7 @@ const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
         <strong>agencji i/lub deweloperów.</strong>
       </>
     ),
-    Icon: MdOutlineRealEstateAgent,
+    Icon: MdHome,
   },
   {
     text: (
@@ -195,7 +204,7 @@ const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
         idealista).
       </>
     ),
-    Icon: MdOutlineManageSearch,
+    Icon: MdSearch,
   },
   {
     text: (
@@ -212,7 +221,7 @@ const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
         <strong>Szeroką bazę ofert</strong>, z rynku pierwotnego i wtórnego.
       </>
     ),
-    Icon: MdOutlineHomeWork,
+    Icon: MdHome,
   },
   {
     text: (
@@ -221,7 +230,7 @@ const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
         <strong>kompletny proces zakupu</strong>.
       </>
     ),
-    Icon: MdOutlineLocalOffer,
+    Icon: MdLocalOffer,
   },
   {
     text: (
@@ -230,7 +239,7 @@ const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
         (opcjonalnie)
       </>
     ),
-    Icon: MdOutlineBedroomParent,
+    Icon: MdHotel,
   },
   {
     text: (
@@ -238,7 +247,7 @@ const whyUs: Array<{ text: React.ReactNode; Icon: IconType }> = [
         <strong>Zaplecze prawne</strong> i bezpieczeństwo transkacji.
       </>
     ),
-    Icon: MdFactCheck,
+    Icon: MdAssignmentTurnedIn,
   },
 ];
 
@@ -297,7 +306,7 @@ function AccentHeading({
   children,
   className = "",
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (
@@ -314,7 +323,7 @@ function YellowPill({
   children,
   Icon,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   Icon?: IconType;
 }) {
   return (
@@ -346,7 +355,7 @@ function OfferBenefitCard({
   text,
   Icon,
 }: {
-  text: React.ReactNode;
+  text: ReactNode;
   Icon: IconType;
 }) {
   return (
@@ -368,23 +377,16 @@ function GalleryImage({
   image: (typeof galleryImages)[number];
   index: number;
 }) {
-  const [src, setSrc] = useState(image.src);
-
   return (
     <div
       className={`relative overflow-hidden rounded-[22px] bg-[#f3e8df] lg:rounded-[34px] ${image.className}`}
     >
       <Image
-        src={src}
+        src={image.src}
         alt={`Przykład umeblowania apartamentu ${index + 1}`}
         fill
         sizes="(max-width: 1024px) 50vw, 430px"
         className="object-cover"
-        onError={() => {
-          if (src !== image.fallback) {
-            setSrc(image.fallback);
-          }
-        }}
       />
     </div>
   );
@@ -399,7 +401,7 @@ function normalizeText(value: string) {
     .trim();
 }
 
-function getCoastLabel(town?: string | null, province?: string | null) {
+function getProvinceCoastLabel(province?: string | null) {
   const provinceCoasts: Record<string, string> = {
     Murcia: "Costa Calida",
     Alicante: "Costa Blanca",
@@ -408,6 +410,14 @@ function getCoastLabel(town?: string | null, province?: string | null) {
     Almería: "Costa de Almeria",
   };
 
+  return province ? provinceCoasts[province] || province : "Hiszpania";
+}
+
+function getServerCoastLabel(
+  town: string | null | undefined,
+  province: string | null | undefined,
+  locationsData: LocationEntry[],
+) {
   if (town) {
     const townLocation = locationsData.find(
       (location) =>
@@ -424,7 +434,11 @@ function getCoastLabel(town?: string | null, province?: string | null) {
     }
   }
 
-  return province ? provinceCoasts[province] || province : "Hiszpania";
+  return getProvinceCoastLabel(province);
+}
+
+function getOfferCoastLabel(offer: DesignProperty) {
+  return offer.coast || getProvinceCoastLabel(offer.province);
 }
 
 function getOfferImages(images: DesignProperty["images"]) {
@@ -503,6 +517,46 @@ function trackFacebookDesignLead() {
   }, 250);
 }
 
+function DeferredRender({
+  render,
+  minHeightClassName,
+}: {
+  render: () => ReactNode;
+  minHeightClassName: string;
+}) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    if (shouldRender) return;
+
+    const target = containerRef.current;
+    if (!target || typeof IntersectionObserver === "undefined") {
+      setShouldRender(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldRender(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "900px 0px" },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [shouldRender]);
+
+  return (
+    <div ref={containerRef}>
+      {shouldRender ? render() : <div className={minHeightClassName} />}
+    </div>
+  );
+}
+
 function OfferInquiryForm({
   offer,
   onBack,
@@ -552,7 +606,7 @@ function OfferInquiryForm({
             ...dataForm,
             Message: `${dataForm.Message}\n\nOferta: ${offer.external_id}\nLokalizacja: ${
               offer.town || ""
-            }, ${getCoastLabel(offer.town, offer.province)}\nCena: ${
+            }, ${getOfferCoastLabel(offer)}\nCena: ${
               offer.price
                 ? `${Number(offer.price).toLocaleString("pl-PL")} EUR`
                 : "brak"
@@ -590,7 +644,7 @@ function OfferInquiryForm({
           </h3>
           <p className="mt-[5px] text-[13px] font-[700] text-black/55">
             {offer.town || "Hiszpania"} ·{" "}
-            {getCoastLabel(offer.town, offer.province)}
+            {getOfferCoastLabel(offer)}
           </p>
         </div>
         <button
@@ -1106,7 +1160,7 @@ function OfferCard({ offer }: { offer: DesignProperty }) {
     type: "image" as const,
     src: "/bg_main_site_2.png",
   };
-  const coast = getCoastLabel(offer.town, offer.province);
+  const coast = getOfferCoastLabel(offer);
 
   const changeImage = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -1339,7 +1393,6 @@ export default function DesignPage({ offers }: DesignPageProps) {
                     width={220}
                     height={70}
                     className="h-auto w-full object-contain"
-                    priority
                   />
                 </div>
 
@@ -1387,7 +1440,6 @@ export default function DesignPage({ offers }: DesignPageProps) {
                     fill
                     sizes="(max-width: 1024px) 178px, 310px"
                     className="object-cover object-[50%_12%] object-[center_-30px] md:object-[center_-60px]"
-                    priority
                   />
                 </div>
                 <div className="absolute right-[12px] top-[54px] h-[188px] w-[188px] overflow-hidden rounded-[30px] lg:border-[4px] border-[2px] border-[#32384B] bg-white shadow-sm lg:right-[34px] lg:top-[302px] md:top-[250px] lg:h-[340px] lg:w-[340px] md:h-[250px] md:w-[250px] lg:rounded-[26px] lg:border-[4px]">
@@ -1395,9 +1447,11 @@ export default function DesignPage({ offers }: DesignPageProps) {
                     src="/Karolina.webp"
                     alt=""
                     fill
+                    unoptimized
                     sizes="(max-width: 1024px) 188px, 340px"
                     className="object-cover object-[50%_10%] object-[center_-30px] md:object-[center_-50px]"
                     priority
+                    fetchPriority="high"
                   />
                 </div>
               </div>
@@ -1462,90 +1516,98 @@ export default function DesignPage({ offers }: DesignPageProps) {
             </div>
           </section>
 
-          <section
-            id="design-example-offers"
-            className="bg-[#ffc329] px-[24px] pb-[62px] pt-[50px] lg:px-[70px] lg:pb-[100px] lg:pt-[84px]"
-          >
-            <div className="mx-auto max-w-[1200px]">
-              <AccentHeading>
-                6 przykładowych <p className="text-white">ofert</p>
-              </AccentHeading>
-              <div className="mt-[32px] grid grid-cols-1 gap-[18px] lg:mt-[54px] lg:grid-cols-3 sm:grid-cols-2 lg:gap-[26px]">
-                {offers.map((offer) => (
-                  <OfferCard key={offer.external_id} offer={offer} />
-                ))}
-              </div>
-            </div>
-          </section>
-
-          <section className="bg-white px-[24px] pb-[54px] pt-[48px] lg:px-[70px] lg:pb-[92px] lg:pt-[86px]">
-            <div className="mx-auto max-w-[1200px] ">
-              <AccentHeading>
-                <span>
-                  <span className="font-[700]">KAŻDY</span> etap zakupu w{" "}
-                  <span className="font-[700]">JEDNYM</span> miejscu
-                </span>
-              </AccentHeading>
-
-              <div className="mt-[32px] grid grid-cols-1 gap-[20px] lg:mt-[58px] lg:grid-cols-2 lg:gap-[40px]">
-                {stepCards.map((card) => (
-                  <article
-                    key={card.number}
-                    className="relative flex min-h-[170px] overflow-hidden rounded-[28px] px-[0px] py-[22px] lg:min-h-[200px] lg:rounded-[38px] lg:px-[34px] lg:py-[10px]"
-                  >
-                    <div className="mr-[18px] text-[#ffc329] shrink-0 text-[96px] font-[800] leading-[0.85] lg:mr-[28px] lg:text-[100px]">
-                      {card.number}
+          <div id="design-example-offers" />
+          <DeferredRender
+            minHeightClassName="min-h-[1200px] bg-[#ffc329]"
+            render={() => (
+              <>
+                <section
+                  id="design-example-offers-content"
+                  className="bg-[#ffc329] px-[24px] pb-[62px] pt-[50px] lg:px-[70px] lg:pb-[100px] lg:pt-[84px]"
+                >
+                  <div className="mx-auto max-w-[1200px]">
+                    <AccentHeading>
+                      6 przykładowych <p className="text-white">ofert</p>
+                    </AccentHeading>
+                    <div className="mt-[32px] grid grid-cols-1 gap-[18px] lg:mt-[54px] lg:grid-cols-3 sm:grid-cols-2 lg:gap-[26px]">
+                      {offers.map((offer) => (
+                        <OfferCard key={offer.external_id} offer={offer} />
+                      ))}
                     </div>
-                    <div className="flex flex-col border-l-[5px] border-[#ffc329] pl-[15px]">
-                      <p className="font-[700] md:text-[26px] text-[20px] mb-[10px]">
-                        {" "}
-                        {card.claim}
-                      </p>
-                      <p className="relative z-10 self-top text-[14px] font-[400] leading-[1.45] lg:text-[18px]">
-                        {card.text}
-                      </p>
+                  </div>
+                </section>
+
+                <section className="bg-white px-[24px] pb-[54px] pt-[48px] lg:px-[70px] lg:pb-[92px] lg:pt-[86px]">
+                  <div className="mx-auto max-w-[1200px] ">
+                    <AccentHeading>
+                      <span>
+                        <span className="font-[700]">KAŻDY</span> etap zakupu w{" "}
+                        <span className="font-[700]">JEDNYM</span> miejscu
+                      </span>
+                    </AccentHeading>
+
+                    <div className="mt-[32px] grid grid-cols-1 gap-[20px] lg:mt-[58px] lg:grid-cols-2 lg:gap-[40px]">
+                      {stepCards.map((card) => (
+                        <article
+                          key={card.number}
+                          className="relative flex min-h-[170px] overflow-hidden rounded-[28px] px-[0px] py-[22px] lg:min-h-[200px] lg:rounded-[38px] lg:px-[34px] lg:py-[10px]"
+                        >
+                          <div className="mr-[18px] text-[#ffc329] shrink-0 text-[96px] font-[800] leading-[0.85] lg:mr-[28px] lg:text-[100px]">
+                            {card.number}
+                          </div>
+                          <div className="flex flex-col border-l-[5px] border-[#ffc329] pl-[15px]">
+                            <p className="font-[700] md:text-[26px] text-[20px] mb-[10px]">
+                              {" "}
+                              {card.claim}
+                            </p>
+                            <p className="relative z-10 self-top text-[14px] font-[400] leading-[1.45] lg:text-[18px]">
+                              {card.text}
+                            </p>
+                          </div>
+                        </article>
+                      ))}
                     </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
+                  </div>
+                </section>
 
-          <section className="bg-[#ffc329] px-[24px] pb-[58px] pt-[50px] lg:px-[70px] lg:pb-[96px] lg:pt-[82px]">
-            <div className="mx-auto max-w-[1200px]">
-              <AccentHeading>
-                Przykłady aranżacji{" "}
-                <p className="text-white">apartamentów na wynajem.</p>
-              </AccentHeading>
+                <section className="bg-[#ffc329] px-[24px] pb-[58px] pt-[50px] lg:px-[70px] lg:pb-[96px] lg:pt-[82px]">
+                  <div className="mx-auto max-w-[1200px]">
+                    <AccentHeading>
+                      Przykłady aranżacji{" "}
+                      <p className="text-white">apartamentów na wynajem.</p>
+                    </AccentHeading>
 
-              <div className="mt-[32px] grid grid-cols-1 gap-[16px] md:grid-cols-2 lg:mt-[54px] lg:grid-flow-dense lg:grid-cols-6 lg:auto-rows-[150px] lg:gap-[24px]">
-                {galleryImages.map((image, index) => (
-                  <GalleryImage
-                    key={`${image.src}-${index}`}
-                    image={image}
-                    index={index}
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
+                    <div className="mt-[32px] grid grid-cols-1 gap-[16px] md:grid-cols-2 lg:mt-[54px] lg:grid-flow-dense lg:grid-cols-6 lg:auto-rows-[150px] lg:gap-[24px]">
+                      {galleryImages.map((image, index) => (
+                        <GalleryImage
+                          key={`${image.src}-${index}`}
+                          image={image}
+                          index={index}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </section>
 
-          <section className="bg-white px-[24px] py-[52px] lg:px-[70px] lg:py-[88px]">
-            <div className="mx-auto max-w-[1240px]">
-              <AccentHeading>
-                Usługa zarządzania najmem obejmuje m.in:
-              </AccentHeading>
-              <div className="mt-[28px] grid grid-cols-1 gap-[14px] lg:mt-[46px] lg:grid-cols-3 lg:gap-[15px]">
-                {rentServices.map((item) => (
-                  <RentServiceCard
-                    key={item.text}
-                    text={item.text}
-                    Icon={item.Icon}
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
+                <section className="bg-white px-[24px] py-[52px] lg:px-[70px] lg:py-[88px]">
+                  <div className="mx-auto max-w-[1240px]">
+                    <AccentHeading>
+                      Usługa zarządzania najmem obejmuje m.in:
+                    </AccentHeading>
+                    <div className="mt-[28px] grid grid-cols-1 gap-[14px] lg:mt-[46px] lg:grid-cols-3 lg:gap-[15px]">
+                      {rentServices.map((item) => (
+                        <RentServiceCard
+                          key={item.text}
+                          text={item.text}
+                          Icon={item.Icon}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              </>
+            )}
+          />
 
           <section className="relative overflow-hidden bg-[#ffc329]">
             <svg
@@ -1769,8 +1831,18 @@ const offerRanges = [
 
 export const getServerSideProps: GetServerSideProps<
   DesignPageProps
-> = async () => {
+> = async ({ res }) => {
+  res.setHeader(
+    "Cache-Control",
+    "public, max-age=0, s-maxage=300, stale-while-revalidate=1800",
+  );
+
+  const { supabase, supabaseServer } = await import("@/lib/supabaseClient");
   const client = supabaseServer ?? supabase;
+  const locationsModule = await import("@/data/locations.json");
+  const designLocations = (
+    "default" in locationsModule ? locationsModule.default : locationsModule
+  ) as LocationEntry[];
   const offers: DesignProperty[] = [];
   const usedExternalIds = new Set<string>();
 
@@ -1802,7 +1874,14 @@ export const getServerSideProps: GetServerSideProps<
       const externalId = String(offer.external_id);
       if (usedExternalIds.has(externalId)) continue;
       usedExternalIds.add(externalId);
-      offers.push(offer as DesignProperty);
+      offers.push({
+        ...(offer as DesignProperty),
+        coast: getServerCoastLabel(
+          offer.town,
+          offer.province,
+          designLocations,
+        ),
+      });
       if (
         offers.filter(
           (item) =>

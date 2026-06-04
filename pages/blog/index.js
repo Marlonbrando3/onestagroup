@@ -1,40 +1,58 @@
 import React from "react";
-import HeaderBlog from "../../components/HeaderBlog";
-import Head from "next/head";
 import Header from "../../components/Header";
-import AnalitycsTools from "@/analitycs/analitycsTools";
 import BlogItems from "../../components/BlogItems";
 import MiniMainViewBlog from "../../components/MiniMainViewBlog";
+import SeoHead from "@/components/SeoHead";
+import { siteConfig } from "@/lib/siteConfig";
 
-export default function Blog() {
+export default function Blog({ posts }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Baza wiedzy Onesta Group",
+    description:
+      "Poradniki o zakupie nieruchomosci w Hiszpanii, Chorwacji i Portugalii.",
+    url: `${siteConfig.url}/blog`,
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: `${siteConfig.url}/logotype_full.png`,
+    },
+  };
+
   return (
     <div>
-      <Head>
-        <title>Baza wiedzy - Onesta Group</title>
-        <link rel="shortcut icon" href="/logotype.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin
-        ></link>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600&display=swap"
-          rel="stylesheet"
-        ></link>
-        <meta
-          name="viewport"
-          content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
-        />
-      </Head>
+      <SeoHead
+        title="Baza wiedzy - nieruchomosci za granica | Onesta Group"
+        description="Praktyczne artykuly o zakupie nieruchomosci w Hiszpanii, Chorwacji i Portugalii. Proces zakupu, regiony, koszty i inwestowanie."
+        canonical="/blog"
+        image="/bg_blog_main.png"
+        keywords={[
+          "nieruchomosci Hiszpania",
+          "apartamenty Hiszpania",
+          "nieruchomosci Chorwacja",
+          "nieruchomosci Portugalia",
+        ]}
+        jsonLd={jsonLd}
+      />
       <div className="main-index">
         <div className="w-full h-16 fixed top-0 bg-white z-20 shadow-xl">
           <Header />
         </div>
       </div>
-      <HeaderBlog />
       <MiniMainViewBlog />
-      <BlogItems />
+      <BlogItems posts={posts} />
     </div>
   );
+}
+
+export async function getStaticProps() {
+  const { getAllBlogPosts } = await import("@/lib/blog");
+
+  return {
+    props: {
+      posts: getAllBlogPosts(),
+    },
+  };
 }

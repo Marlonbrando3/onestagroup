@@ -44,66 +44,77 @@ export default function Form() {
   return (
     <form
       onSubmit={sendForm}
-      className={`${QuicksandSans.className} p-[30px] bg-blue-400 rounded-[7px] mx-auto lg:w-[900px]`}
+      className={`${QuicksandSans.className} w-full border border-white/12 bg-white p-6 shadow-2xl md:p-8`}
     >
-      <div className="text-white lg:text-[32px] text-[28px] mb-[30px] w-full font-bold">
-        Proszę kontakt i więcej informacji
+      <div className="mb-8 w-full">
+        <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#b8954c]">
+          Formularz kontaktowy
+        </p>
+        <h3 className="mt-2 text-2xl font-bold text-[#182334] md:text-3xl">
+          Proszę o kontakt i więcej informacji
+        </h3>
       </div>
-      <div className="flex justify-center flex-col lg:flex-row">
-        <div className="flex lg:w-[420px] w-full flex-wrap h-[430px]">
-          <div className="lg:w-[410px] w-full">
-            <div className="text-white">
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <div className="mb-2 text-sm font-semibold text-[#334155]">
               Proszę o przesłanie przykładowych ofert
             </div>
             <select
               defaultValue="wybierz termin"
-              className="lg:w-[410px] w-full rounded-[5px] h-[35px]"
-              value={phone}
+              className="h-12 w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] px-3 text-[#182334] outline-none transition focus:border-[#b8954c]"
+              value={examples}
               onChange={(e: any) => setExaples(e.target.value)}
             >
               <option value="nie">NIE</option>
               <option value="tak">TAK</option>
             </select>
           </div>
-          <div className="lg:w-[210px] w-full">
-            <div className="text-white">Imię</div>
+          <div>
+            <div className="mb-2 text-sm font-semibold text-[#334155]">Imię</div>
             <input
-              className="lg:w-[200px] w-full rounded-[5px] h-[35px]"
+              className="h-12 w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] px-3 text-[#182334] outline-none transition focus:border-[#b8954c]"
               value={name}
               onChange={(e: any) => setName(e.target.value)}
             ></input>
           </div>
-          <div className="lg:w-[210px] w-full">
-            <div className="text-white">Nazwisko</div>
+          <div>
+            <div className="mb-2 text-sm font-semibold text-[#334155]">
+              Nazwisko
+            </div>
             <input
-              className="lg:w-[200px] w-full rounded-[5px] h-[35px]"
+              className="h-12 w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] px-3 text-[#182334] outline-none transition focus:border-[#b8954c]"
               value={lastName}
               onChange={(e: any) => setLastName(e.target.value)}
             ></input>
           </div>
-          <div className="lg:w-[410px] w-full">
-            <div className="text-white">Adres e-mail</div>
+          <div className="sm:col-span-2">
+            <div className="mb-2 text-sm font-semibold text-[#334155]">
+              Adres e-mail
+            </div>
             <input
-              className="lg:w-[410px] w-full rounded-[5px] h-[35px]"
+              className="h-12 w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] px-3 text-[#182334] outline-none transition focus:border-[#b8954c]"
               value={email}
               onChange={(e: any) => setEmail(e.target.value)}
             ></input>
           </div>
-          <div className="lg:w-[410px] w-full">
-            <div className="text-white">Telefon kontaktowy (same cyfry)</div>
+          <div className="sm:col-span-2">
+            <div className="mb-2 text-sm font-semibold text-[#334155]">
+              Telefon kontaktowy
+            </div>
             <input
-              className="lg:w-[410px] w-full rounded-[5px] h-[35px]"
+              className="h-12 w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] px-3 text-[#182334] outline-none transition focus:border-[#b8954c]"
               value={phone}
               onChange={(e: any) => setPhone(e.target.value)}
             ></input>
           </div>
-          <div className="lg:w-[410px] w-full">
-            <div className="text-white">
+          <div className="sm:col-span-2">
+            <div className="mb-2 text-sm font-semibold text-[#334155]">
               Kiedy (orientacyjnie) planujesz przylot?
             </div>
             <select
-              className="lg:w-[410px] w-full rounded-[5px] h-[35px]"
-              value={phone}
+              className="h-12 w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] px-3 text-[#182334] outline-none transition focus:border-[#b8954c]"
+              value={date}
               onChange={(e: any) => setDate(e.target.value)}
             >
               <option value="do 12 września">do 12 września</option>
@@ -118,28 +129,30 @@ export default function Form() {
           </div>
         </div>
         <div>
-          <div className="lg:w-[410px] w-full mt-[5px] lg:mt-0">
-            <div className="text-white">Twoja wiadomość</div>
+          <div>
+            <div className="mb-2 text-sm font-semibold text-[#334155]">
+              Twoja wiadomość
+            </div>
             <textarea
-              className="lg:w-[410px] w-full rounded-[5px] h-[189px] md:h-[381px] "
+              className="min-h-[280px] w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] px-3 py-3 text-[#182334] outline-none transition focus:border-[#b8954c] lg:min-h-[392px]"
               value={massege}
               onChange={(e: any) => setMassege(e.target.value)}
             ></textarea>
           </div>
-        </div>{" "}
+        </div>
       </div>
-      <div className="flex">
+      <div className="mt-6 flex items-start gap-3">
         <input
           type="checkbox"
-          className="w-[25px] h-[25px] text-orange-500 cursor-pointer"
+          className="mt-1 h-5 w-5 cursor-pointer accent-[#b8954c]"
           required
         ></input>
-        <p className="text-white ml-[4px]">
+        <p className="text-sm leading-6 text-[#475569]">
           Wyrażam zgodę na przetwarzanie moich danych osobowych celem kontaktu
           ze mną oraz w celach marketingowych. Zgodnie z polityką prywatności.
         </p>
       </div>
-      <button className="text-white p-[7px] rounded-[5px] bg-orange-500 w-[150px] mt-[15px] hover:bg-blue-500 duration-200">
+      <button className="mt-6 h-12 w-full rounded-md bg-[#182334] px-6 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#b8954c] md:w-auto">
         Wyślij formularz
       </button>
     </form>

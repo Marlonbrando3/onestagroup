@@ -23,8 +23,9 @@ export const DMSerif = DM_Serif_Text({
   display: "swap",
 });
 export const Mulish_Font = Mulish({
-  subsets: ["latin"],
+  subsets: ["latin-ext"],
   weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const PlayfairSans = Playfair({
