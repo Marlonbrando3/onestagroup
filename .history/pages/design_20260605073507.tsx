@@ -1366,8 +1366,8 @@ export default function DesignPage({ offers }: DesignPageProps) {
                   />
                 </div>
 
-                <div className="mt-[62px] max-w-[710px] lg:mt-[46px]">
-                  <p className="text-[12px] font-[800] uppercase leading-none tracking-[0.32em] text-[#9b7a36] lg:text-[20px]">
+                <div className="mt-[62px] max-w-[710px] lg:mt-[86px]">
+                  <p className="text-[12px] font-[800] uppercase leading-none tracking-[0.32em] text-[#9b7a36] lg:text-[14px]">
                     OD 8 lat
                   </p>
                   <h1 className="mt-[16px] text-[34px] font-[800] leading-[1.04] tracking-[-1px] text-[#182334] lg:mt-[24px] lg:text-[58px] lg:tracking-[-1.5px]">
