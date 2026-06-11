@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRef } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabaseServer } from "@/lib/supabaseClient";
 import Head from "next/head";
 import Header from "../../../../components/Header";
 import { useSearchParams } from "next/navigation";
@@ -191,7 +191,15 @@ export default function Property({ propertyFromSupabase }: any) {
 export async function getServerSideProps(context: any) {
   const id = context.query.id;
 
-  const { data, error } = await supabase
+  if (!supabaseServer) {
+    return {
+      props: {
+        propertyFromSupabase: null,
+      },
+    };
+  }
+
+  const { data, error } = await supabaseServer
     .from("properties")
     .select("*")
     .eq("external_id", String(id))

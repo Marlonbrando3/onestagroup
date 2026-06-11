@@ -1,16 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-);
+import { supabaseServer } from "@/lib/supabaseClient";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   console.log("jestem w asari to supa");
+
+  if (!supabaseServer) {
+    return res.status(500).json({ error: "Brak SUPABASE_SERVICE_ROLE_KEY" });
+  }
 
   const { properties } = req.body;
 
@@ -19,7 +18,7 @@ export default async function handler(
   }
 
   // 🔹 kasowanie starych rekordów
-  await supabase.from("properties").delete().eq("source", "ASARI");
+  await supabaseServer.from("properties").delete().eq("source", "ASARI");
 
   const chunkSize = 300;
 
@@ -27,7 +26,7 @@ export default async function handler(
     for (let i = 0; i < properties.length; i += chunkSize) {
       const chunk = properties.slice(i, i + chunkSize);
 
-      const { error } = await supabase
+      const { error } = await supabaseServer
         .from("properties")
         .upsert(chunk, { onConflict: "external_id" });
 

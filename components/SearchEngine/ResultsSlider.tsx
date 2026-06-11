@@ -44,14 +44,19 @@ export default function ResultsSlider({
   })();
 
   const slides = useMemo(() => {
+    const hasFtpProxyImages = imagesArray.some((img: any) => {
+      const url = typeof img === "string" ? img : img?.url;
+      return typeof url === "string" && url.startsWith("/api/onesari/ftp-image");
+    });
+    const visibleImages = hasFtpProxyImages ? imagesArray.slice(0, 1) : imagesArray.slice(0, 3);
     const base: Array<{ key: string; type: "image" | "more"; url: string }> =
-      imagesArray.slice(0, 3).map((img: any, i: number) => ({
+      visibleImages.map((img: any, i: number) => ({
         key: `img-${i}`,
         type: "image" as const,
         url: typeof img === "string" ? img : img?.url,
       }));
 
-    if (imagesArray.length > 3) {
+    if (!hasFtpProxyImages && imagesArray.length > 3) {
       base.push({ key: "more", type: "more", url: "" });
     }
 
@@ -157,14 +162,24 @@ export default function ResultsSlider({
                 }}
                 className="min-w-full h-full relative"
               >
-                <Image
-                className="object-cover"
-                  src={slide.url || "/placeholder.jpg"}
-                  alt="Zdjęcie nieruchomości"
-                  fill
-                  priority={index === 0}
-                  sizes="(max-width: 768px) 92vw, (max-width: 1280px) 44vw, 25vw"
-                />
+                {slide.url?.startsWith("/api/onesari/ftp-image") ? (
+                  <img
+                    className="h-full w-full object-cover"
+                    src={slide.url}
+                    alt="Zdjęcie nieruchomości"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <Image
+                    className="object-cover"
+                    src={slide.url || "/placeholder.jpg"}
+                    alt="Zdjęcie nieruchomości"
+                    fill
+                    loading="lazy"
+                    sizes="(max-width: 768px) 92vw, (max-width: 1280px) 44vw, 25vw"
+                  />
+                )}
               </Link>
             ),
           )}
