@@ -76,6 +76,7 @@ export default function CRMPipelinePage() {
   const visibleOwner = userIsAdmin ? selectedOwner : currentUserEmail;
   const { contacts, error, updateContact, updateContactStatus, deleteContact, reload } = useCrmContacts(visibleOwner);
   const [activities, setActivities] = useState<CrmActivity[]>([]);
+  const [isActivitiesLoading, setIsActivitiesLoading] = useState(true);
   const [activitiesError, setActivitiesError] = useState("");
   const [openActivityContactId, setOpenActivityContactId] = useState("");
   const [openActivityMode, setOpenActivityMode] = useState<"details" | "add">("details");
@@ -149,10 +150,12 @@ export default function CRMPipelinePage() {
 
     async function loadActivities() {
       setActivitiesError("");
+      setIsActivitiesLoading(true);
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
       if (!token) {
         setActivities([]);
+        setIsActivitiesLoading(false);
         return;
       }
 
@@ -165,9 +168,11 @@ export default function CRMPipelinePage() {
       if (!response.ok) {
         setActivitiesError(result.error || "Nie udalo sie pobrac zadan lejka.");
         setActivities([]);
+        setIsActivitiesLoading(false);
         return;
       }
       setActivities(result.activities || []);
+      setIsActivitiesLoading(false);
     }
 
     loadActivities();
@@ -534,7 +539,11 @@ export default function CRMPipelinePage() {
                           {contact.maxBudget ? crmBudgetFormatter.format(contact.maxBudget) : "Brak kwoty"}
                         </span>
                       </div>
-                      {activity ? (
+                      {isActivitiesLoading ? (
+                        <div className="crmCardActivity">
+                          <span aria-label="Ladowanie zadan" className="crmActivityLoader" />
+                        </div>
+                      ) : activity ? (
                         <div className="crmCardActivity">
                           <button
                             aria-label={`Najstarsze zadanie: ${activity.title}`}
@@ -1266,6 +1275,22 @@ export default function CRMPipelinePage() {
 
         .crmActivityDot.future {
           background: #2f9157;
+        }
+
+        .crmActivityLoader {
+          animation: crmActivityLoaderSpin 0.75s linear infinite;
+          border: 2px solid #d8dee7;
+          border-radius: 999px;
+          border-top-color: #216e63;
+          display: block;
+          height: 18px;
+          width: 18px;
+        }
+
+        @keyframes crmActivityLoaderSpin {
+          to {
+            transform: rotate(360deg);
+          }
         }
 
         .crmMissingTask {
