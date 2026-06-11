@@ -30,6 +30,7 @@ export type CrmContact = {
   bathrooms: string;
   coast: string;
   purchaseTimeline: string;
+  note: string;
   pipelineOwner: string;
   status: CrmStatus;
   source: string;

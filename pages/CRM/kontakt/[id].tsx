@@ -83,6 +83,12 @@ export default function CRMContactCardPage() {
     dueTime: "",
     note: "",
   });
+  const [activePanelTab, setActivePanelTab] = useState<"notes" | "task">("notes");
+  const [contactNote, setContactNote] = useState("");
+  const [isSavingContactNote, setIsSavingContactNote] = useState(false);
+  const [contactNoteMessage, setContactNoteMessage] = useState("");
+  const [contactNoteError, setContactNoteError] = useState("");
+  const [markNewActivityDone, setMarkNewActivityDone] = useState(false);
   const [openActivityMenuId, setOpenActivityMenuId] = useState("");
   const [editingActivityId, setEditingActivityId] = useState("");
   const [isSavingActivityEdit, setIsSavingActivityEdit] = useState(false);
@@ -110,6 +116,9 @@ export default function CRMContactCardPage() {
       purchaseTimeline: contact.purchaseTimeline,
       status: contact.status,
     });
+    setContactNote(contact.note || "");
+    setContactNoteError("");
+    setContactNoteMessage("");
   }, [contact]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -122,9 +131,11 @@ export default function CRMContactCardPage() {
       dueDate: form.dueDate,
       dueTime: form.dueTime,
       note: form.note,
+      status: markNewActivityDone ? "done" : "planned",
     });
     if (!activity) return;
     setForm({ type: form.type, title: form.type, dueDate: today, dueTime: "", note: "" });
+    setMarkNewActivityDone(false);
   }
 
   function changeType(type: CrmActivityType) {
@@ -224,6 +235,27 @@ export default function CRMContactCardPage() {
     setIsSavingContact(false);
     if (!updatedContact) return;
     setIsEditingContact(false);
+  }
+
+  async function handleContactNoteSave(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!contactId) return;
+
+    setContactNoteError("");
+    setContactNoteMessage("");
+    setIsSavingContactNote(true);
+    const updatedContact = await updateContact({
+      id: contactId,
+      note: contactNote,
+    });
+    setIsSavingContactNote(false);
+    if (!updatedContact) {
+      setContactNoteError("Nie udalo sie zapisac notatki.");
+      return;
+    }
+
+    setContactNote(updatedContact.note || "");
+    setContactNoteMessage("Notatka zapisana.");
   }
 
   function cancelContactEdit() {
@@ -431,44 +463,90 @@ export default function CRMContactCardPage() {
             </aside>
 
             <section className="crmActivityPanel">
-              <div className="crmTabs" aria-label="Typ dzialania">
-                {crmActivityTypes.map((type) => (
-                  <button
-                    className={form.type === type ? "active" : ""}
-                    key={type}
-                    type="button"
-                    onClick={() => changeType(type)}
-                  >
-                    {type}
-                  </button>
-                ))}
+              <div className="crmPanelTabs" aria-label="Widok dodawania">
+                <button
+                  className={activePanelTab === "notes" ? "active" : ""}
+                  type="button"
+                  onClick={() => setActivePanelTab("notes")}
+                >
+                  Notatki
+                </button>
+                <button
+                  className={activePanelTab === "task" ? "active" : ""}
+                  type="button"
+                  onClick={() => setActivePanelTab("task")}
+                >
+                  Zadanie
+                </button>
               </div>
 
-              <form className="crmActivityForm" onSubmit={handleSubmit}>
-                <input
-                  placeholder="Tytul dzialania"
-                  value={form.title}
-                  onChange={(event) => setForm({ ...form, title: event.target.value })}
-                />
-                <div className="crmFormRow">
-                  <input
-                    type="date"
-                    value={form.dueDate}
-                    onChange={(event) => setForm({ ...form, dueDate: event.target.value })}
+              {activePanelTab === "notes" ? (
+                <form className="crmContactNoteForm" onSubmit={handleContactNoteSave}>
+                  <textarea
+                    placeholder="Notatka o kliencie, preferencje, ustalenia..."
+                    value={contactNote}
+                    onChange={(event) => {
+                      setContactNote(event.target.value);
+                      setContactNoteMessage("");
+                      setContactNoteError("");
+                    }}
                   />
-                  <input
-                    type="time"
-                    value={form.dueTime}
-                    onChange={(event) => setForm({ ...form, dueTime: event.target.value })}
-                  />
-                </div>
-                <textarea
-                  placeholder="Notatka, opis, ustalenia..."
-                  value={form.note}
-                  onChange={(event) => setForm({ ...form, note: event.target.value })}
-                />
-                <button type="submit">Zapisz dzialanie</button>
-              </form>
+                  {contactNoteError ? <p className="crmError">{contactNoteError}</p> : null}
+                  {contactNoteMessage ? <p className="crmSuccess">{contactNoteMessage}</p> : null}
+                  <button disabled={isSavingContactNote} type="submit">
+                    {isSavingContactNote ? "Zapisywanie..." : "Zapisz notatkę"}
+                  </button>
+                </form>
+              ) : (
+                <>
+                  <div className="crmTabs" aria-label="Typ dzialania">
+                    {crmActivityTypes.map((type) => (
+                      <button
+                        className={form.type === type ? "active" : ""}
+                        key={type}
+                        type="button"
+                        onClick={() => changeType(type)}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+
+                  <form className="crmActivityForm" onSubmit={handleSubmit}>
+                    <input
+                      placeholder="Tytul dzialania"
+                      value={form.title}
+                      onChange={(event) => setForm({ ...form, title: event.target.value })}
+                    />
+                    <div className="crmFormRow">
+                      <input
+                        type="date"
+                        value={form.dueDate}
+                        onChange={(event) => setForm({ ...form, dueDate: event.target.value })}
+                      />
+                      <input
+                        type="time"
+                        value={form.dueTime}
+                        onChange={(event) => setForm({ ...form, dueTime: event.target.value })}
+                      />
+                    </div>
+                    <textarea
+                      placeholder="Notatka, opis, ustalenia..."
+                      value={form.note}
+                      onChange={(event) => setForm({ ...form, note: event.target.value })}
+                    />
+                    <label className="crmCheckboxRow">
+                      <input
+                        checked={markNewActivityDone}
+                        type="checkbox"
+                        onChange={(event) => setMarkNewActivityDone(event.target.checked)}
+                      />
+                      Oznacz zadanie jako wykonane
+                    </label>
+                    <button type="submit">Zapisz dzialanie</button>
+                  </form>
+                </>
+              )}
 
               {overdueActivities.length ? (
                 <section className="crmOverduePanel">
@@ -818,6 +896,27 @@ export default function CRMContactCardPage() {
           gap: 16px;
           padding: 18px;
         }
+        .crmPanelTabs {
+          background: #f4f6f8;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          display: grid;
+          gap: 4px;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          padding: 4px;
+        }
+        .crmPanelTabs button {
+          background: transparent;
+          border: 0;
+          border-radius: 6px;
+          color: #4b5563;
+          font-weight: 900;
+          min-height: 38px;
+        }
+        .crmPanelTabs button.active {
+          background: #216e63;
+          color: #ffffff;
+        }
         .crmTabs {
           display: grid;
           gap: 8px;
@@ -839,6 +938,36 @@ export default function CRMContactCardPage() {
         .crmActivityForm {
           display: grid;
           gap: 10px;
+        }
+        .crmContactNoteForm {
+          display: grid;
+          gap: 10px;
+        }
+        .crmContactNoteForm textarea {
+          background: #f9fafb;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          color: #17202a;
+          font: inherit;
+          min-height: 170px;
+          outline: 0;
+          padding: 12px;
+          resize: vertical;
+          width: 100%;
+        }
+        .crmContactNoteForm button {
+          background: #216e63;
+          border: 0;
+          border-radius: 8px;
+          color: #ffffff;
+          font-weight: 800;
+          justify-self: start;
+          min-height: 44px;
+          padding: 0 16px;
+        }
+        .crmContactNoteForm button:disabled {
+          cursor: not-allowed;
+          opacity: 0.7;
         }
         .crmActivityForm input,
         .crmActivityForm select,
@@ -871,6 +1000,22 @@ export default function CRMContactCardPage() {
           justify-self: start;
           min-height: 44px;
           padding: 0 16px;
+        }
+        .crmCheckboxRow {
+          align-items: center;
+          color: #4b5563;
+          display: flex;
+          font-size: 14px;
+          font-weight: 800;
+          gap: 9px;
+        }
+        .crmActivityForm .crmCheckboxRow input {
+          accent-color: #216e63;
+          flex: 0 0 auto;
+          height: 18px;
+          min-height: 0;
+          padding: 0;
+          width: 18px;
         }
         .crmOverduePanel {
           background: #fff7f6;
@@ -1118,6 +1263,11 @@ export default function CRMContactCardPage() {
         }
         .crmError {
           color: #b42318;
+          margin: 0;
+        }
+        .crmSuccess {
+          color: #216e63;
+          font-weight: 800;
           margin: 0;
         }
         .crmModalBackdrop {

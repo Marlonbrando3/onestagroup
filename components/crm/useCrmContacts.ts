@@ -14,6 +14,7 @@ type NewContactPayload = {
   bathrooms: string;
   coast: string;
   purchaseTimeline: string;
+  note?: string;
   pipelineOwner?: string;
   status: CrmStatus;
 };

@@ -88,6 +88,7 @@ export default function CRMPipelinePage() {
     dueDate: today,
     dueTime: "",
     note: "",
+    completed: false,
   });
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverStatus, setDragOverStatus] = useState<CrmStatus | null>(null);
@@ -299,6 +300,7 @@ export default function CRMPipelinePage() {
       dueDate: today,
       dueTime: "",
       note: "",
+      completed: false,
     });
     setOpenActivityMode("add");
     setOpenActivityContactId((current) => (current === contactId && openActivityMode === "add" ? "" : contactId));
@@ -312,6 +314,7 @@ export default function CRMPipelinePage() {
       dueDate: today,
       dueTime: "",
       note: "",
+      completed: false,
     });
     setOpenActivityMode("add");
     setOpenActivityContactId(contactId);
@@ -344,6 +347,7 @@ export default function CRMPipelinePage() {
         dueDate: activityForm.dueDate,
         dueTime: activityForm.dueTime,
         note: activityForm.note,
+        status: activityForm.completed ? "done" : "planned",
       }),
     });
     const result = await response.json();
@@ -356,7 +360,14 @@ export default function CRMPipelinePage() {
     setActivities((current) => [result.activity, ...current]);
     setOpenActivityContactId("");
     setOpenActivityMode("details");
-    setActivityForm({ type: "Zadzwoń", title: "Zadzwoń", dueDate: today, dueTime: "", note: "" });
+    setActivityForm({
+      type: "Zadzwoń",
+      title: "Zadzwoń",
+      dueDate: today,
+      dueTime: "",
+      note: "",
+      completed: false,
+    });
   }
 
   async function toggleActivityStatus(activity: CrmActivity) {
@@ -398,7 +409,14 @@ export default function CRMPipelinePage() {
         return;
       }
       setActivityFormError("");
-      setActivityForm({ type: "Zadzwoń", title: "Zadzwoń", dueDate: today, dueTime: "", note: "" });
+      setActivityForm({
+        type: "Zadzwoń",
+        title: "Zadzwoń",
+        dueDate: today,
+        dueTime: "",
+        note: "",
+        completed: false,
+      });
       setOpenActivityMode("add");
       setOpenActivityContactId(activity.contactId);
     }
@@ -630,6 +648,16 @@ export default function CRMPipelinePage() {
                                         setActivityForm({ ...activityForm, note: event.target.value })
                                       }
                                     />
+                                    <label className="crmPipelineActivityCheckbox">
+                                      <input
+                                        checked={activityForm.completed}
+                                        type="checkbox"
+                                        onChange={(event) =>
+                                          setActivityForm({ ...activityForm, completed: event.target.checked })
+                                        }
+                                      />
+                                      Oznacz zadanie jako wykonane
+                                    </label>
                                     {activityFormError ? <p>{activityFormError}</p> : null}
                                     <button disabled={isSavingNewActivity} type="submit">
                                       {isSavingNewActivity ? "Zapisywanie..." : "Zapisz zadanie"}
@@ -721,6 +749,16 @@ export default function CRMPipelinePage() {
                                     setActivityForm({ ...activityForm, note: event.target.value })
                                   }
                                 />
+                                <label className="crmPipelineActivityCheckbox">
+                                  <input
+                                    checked={activityForm.completed}
+                                    type="checkbox"
+                                    onChange={(event) =>
+                                      setActivityForm({ ...activityForm, completed: event.target.checked })
+                                    }
+                                  />
+                                  Oznacz zadanie jako wykonane
+                                </label>
                                 {activityFormError ? <p>{activityFormError}</p> : null}
                                 <button disabled={isSavingNewActivity} type="submit">
                                   {isSavingNewActivity ? "Zapisywanie..." : "Zapisz zadanie"}
@@ -1062,7 +1100,7 @@ export default function CRMPipelinePage() {
           gap: 2px;
           min-height: 52px;
           min-width: 0;
-          padding: 7px;
+          padding: 7px 7px 28px;
           position: relative;
           text-align: left;
           transition: border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
@@ -1079,6 +1117,11 @@ export default function CRMPipelinePage() {
           z-index: 35;
         }
 
+        .crmPipelineCard:has(.crmContactInfoTrigger:hover),
+        .crmPipelineCard:has(.crmContactInfoTrigger:focus-within) {
+          z-index: 140;
+        }
+
         .crmPipelineCard:focus-visible {
           border-color: #216e63;
           outline: 2px solid rgba(33, 110, 99, 0.24);
@@ -1093,9 +1136,9 @@ export default function CRMPipelinePage() {
         .crmPipelineCard strong {
           font-size: 12px;
           line-height: 1.2;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          overflow-wrap: normal;
+          white-space: normal;
+          word-break: normal;
         }
 
         .crmCardActivity {
@@ -1166,7 +1209,7 @@ export default function CRMPipelinePage() {
           top: 24px;
           transform: translateY(-4px);
           transition: opacity 0.14s ease, transform 0.14s ease;
-          z-index: 55;
+          z-index: 145;
         }
 
         .crmContactInfoTrigger:hover .crmContactInfoPopup,
@@ -1424,6 +1467,25 @@ export default function CRMPipelinePage() {
           min-height: 82px;
           padding: 10px;
           resize: vertical;
+        }
+
+        .crmPipelineActivityCheckbox {
+          align-items: center;
+          color: #4b5563;
+          display: flex;
+          font-size: 12px;
+          font-weight: 800;
+          gap: 8px;
+          line-height: 1.25;
+        }
+
+        .crmPipelineActivityForm .crmPipelineActivityCheckbox input {
+          accent-color: #216e63;
+          flex: 0 0 auto;
+          height: 16px;
+          min-height: 0;
+          padding: 0;
+          width: 16px;
         }
 
         .crmPipelineActivityForm p {

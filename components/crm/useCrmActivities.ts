@@ -9,6 +9,7 @@ type NewActivityPayload = {
   note: string;
   dueDate: string;
   dueTime: string;
+  status?: CrmActivityStatus;
 };
 
 type UpdateActivityPayload = Partial<NewActivityPayload> & {

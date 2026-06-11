@@ -157,6 +157,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(403).json({ error: "Brak dostepu do tego kontaktu." });
     }
 
+    const status = req.body?.status === "done" ? "done" : "planned";
     const payload = {
       contact_id: contactId,
       type,
@@ -164,8 +165,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       note: String(req.body?.note || "").trim(),
       due_date: req.body?.dueDate || null,
       due_time: req.body?.dueTime || null,
-      status: "planned",
+      status,
       created_by: "CRM",
+      completed_at: status === "done" ? new Date().toISOString() : null,
     };
 
     const { data, error } = await supabaseServer

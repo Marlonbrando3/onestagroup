@@ -21,6 +21,7 @@ alter table public.crm_contacts add column if not exists bedrooms text not null 
 alter table public.crm_contacts add column if not exists bathrooms text not null default '';
 alter table public.crm_contacts add column if not exists coast text not null default '';
 alter table public.crm_contacts add column if not exists purchase_timeline text not null default '';
+alter table public.crm_contacts add column if not exists note text not null default '';
 alter table public.crm_contacts add column if not exists pipeline_owner text not null default 'marek.marszalek@onesta.com.pl';
 
 create index if not exists crm_contacts_pipeline_owner_idx on public.crm_contacts (pipeline_owner);

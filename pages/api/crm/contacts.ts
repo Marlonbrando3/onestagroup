@@ -29,6 +29,7 @@ function mapContact(row: any) {
     bathrooms: row.bathrooms || "",
     coast: row.coast || "",
     purchaseTimeline: row.purchase_timeline || "",
+    note: row.note || "",
     pipelineOwner: row.pipeline_owner || "",
     status: crmStatuses.includes(rawStatus) ? rawStatus : crmLegacyStatusMap[rawStatus] || "Zakwalifikowano",
     source: row.source || "",
@@ -119,6 +120,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       bathrooms: String(req.body?.bathrooms || "").trim(),
       coast: String(req.body?.coast || "").trim(),
       purchase_timeline: String(req.body?.purchaseTimeline || "").trim(),
+      note: String(req.body?.note || "").trim(),
       pipeline_owner: pipelineOwner === "all" ? crmUser.email : pipelineOwner,
       status,
       source: "CRM",
@@ -194,6 +196,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (typeof req.body?.purchaseTimeline !== "undefined") {
       payload.purchase_timeline = String(req.body.purchaseTimeline || "").trim();
+    }
+
+    if (typeof req.body?.note !== "undefined") {
+      payload.note = String(req.body.note || "").trim();
     }
 
     if (typeof req.body?.status !== "undefined") {
