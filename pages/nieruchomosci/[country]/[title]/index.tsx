@@ -39,6 +39,11 @@ export default function Property({ propertyFromSupabase }: any) {
   const typeLabel = propertyFromSupabase?.new_build
     ? typeDictionaryPlural[propertyFromSupabase?.type] || "Nieruchomości"
     : typeDictionarySingular[propertyFromSupabase?.type] || "Nieruchomość";
+  const generatedTitle = `${typeLabel} w ${propertyFromSupabase?.town || "Hiszpanii"}`;
+  const listingTitle =
+    String(propertyFromSupabase?.title || "").trim() ||
+    String(propertyFromSupabase?.headerAdvertisement || "").trim() ||
+    generatedTitle;
 
   if (images !== undefined) {
     images?.filter((img) => {
@@ -81,7 +86,7 @@ export default function Property({ propertyFromSupabase }: any) {
   return (
     <>
       <Head>
-        <title>Nieruchomości w Hiszpanii - Onesta Group</title>
+        <title>{listingTitle} | Onesta Group</title>
         <link rel="shortcut icon" href="/logotype.png" />
         <meta
           name="viewport"
@@ -137,8 +142,7 @@ export default function Property({ propertyFromSupabase }: any) {
           <div
             className={`${PlayfairSans.className} pb-[20px] font-[500] tracking-[0.6px] scale-x-[0.9] scale-y-[1.04] md:-ml-[55px] md:text-[36px] text-[32px] leading-[34px]`}
           >
-            {typeLabel}
-            &nbsp;w {propertyFromSupabase?.town}
+            {listingTitle}
           </div>
           <div className="flex flex-col md:flex-row items-center justify-center">
             {/* MAIN GALLERY IMAGE */}

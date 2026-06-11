@@ -61,7 +61,12 @@ export default function PropertyCard({
     property?.type && property.type in typeDictionary
       ? typeDictionary[property.type as keyof typeof typeDictionary]
       : "Nieruchomość";
-  const slug = `${slugify(property?.type)}-${slugify(property?.town)}`;
+  const generatedTitle = `${propertyType} w ${property?.town || "Hiszpanii"}`;
+  const listingTitle =
+    String(property?.title || "").trim() ||
+    String(property?.headerAdvertisement || "").trim() ||
+    generatedTitle;
+  const slug = slugify(listingTitle);
   const locationLabel = regions[property?.province] || property?.province;
 
   const detailHref = {
@@ -125,7 +130,7 @@ export default function PropertyCard({
           market={market}
           deliveryDate={property?.vacantFromDate}
           propertyId={property?.external_id}
-          propertyTitle={property?.headerAdvertisement}
+          propertyTitle={listingTitle}
           slug={slug}
           onAllImagesFailed={() => onBrokenImages?.(property?.external_id)}
         />
@@ -160,7 +165,7 @@ export default function PropertyCard({
             </div>
 
             <h2 className="mt-2 line-clamp-2 min-h-[42px] text-[17px] font-bold leading-[1.22] text-[#182334]">
-              {propertyType} w {property?.town || "Hiszpanii"}
+              {listingTitle}
             </h2>
 
             <div className="mt-2">

@@ -13,6 +13,7 @@ import {
 import {
   FaBath,
   FaBed,
+  FaChartBar,
   FaCheck,
   FaCloudUploadAlt,
   FaDatabase,
@@ -29,11 +30,11 @@ import {
 import { supabase } from "@/lib/supabaseClient";
 import { isOnesariEnabled } from "@/lib/onesariFeature";
 
-type MainTab = "offers" | "add" | "imports";
+type MainTab = "dashboard" | "offers" | "add" | "imports";
 type AddTab = "data" | "images";
 type Market = "pierwotny" | "wtórny";
 type PropertyType = "apartament" | "bungalow" | "szeregówka" | "penthouse" | "dom";
-type SourceFilter = "all" | "Metainmo XML" | "Secondary XML" | "Onesta FTP" | "Dodane ręcznie";
+type SourceFilter = "all" | "Metainmo XML" | "Secondary XML" | "Onesta Base";
 
 type ListingForm = {
   country: string;
@@ -54,7 +55,7 @@ type ListingForm = {
 type Listing = ListingForm & {
   id: string;
   ref: string;
-  source: "Metainmo XML" | "Secondary XML" | "Onesta FTP" | "Dodane ręcznie";
+  source: "Metainmo XML" | "Secondary XML" | "Onesta Base";
   price: number | null;
   currency: string;
   imageUrl: string;
@@ -69,11 +70,29 @@ type ImageDraft = {
   url: string;
 };
 
+type SourceCounts = {
+  metainmo: number | null;
+  secondary: number | null;
+  onesta: number | null;
+};
+
+type ImportKind = "metainmo" | "secondary";
+type ImportConfirmation = {
+  kind: ImportKind;
+  label: string;
+} | null;
+
 type TextField = Exclude<keyof ListingForm, "features">;
 
 const METAINMO_PAGE_SIZE = 20;
 const SECONDARY_PAGE_SIZE = 20;
 const ONESTA_PAGE_SIZE = 20;
+const ALL_PAGE_SIZE = 20;
+const emptySourceCounts: SourceCounts = {
+  metainmo: null,
+  secondary: null,
+  onesta: null,
+};
 
 const markets: Market[] = ["pierwotny", "wtórny"];
 const propertyTypes: PropertyType[] = [
@@ -235,9 +254,15 @@ function normalizePropertyType(value: unknown): PropertyType {
   return "apartament";
 }
 
+function displaySourceFromProperty(source: unknown): Listing["source"] {
+  if (source === "SECONDARY_XML") return "Secondary XML";
+  if (source === "ONESTA_FTP") return "Onesta Base";
+  return "Metainmo XML";
+}
+
 function mapPropertyToListing(
   property: any,
-  source: "Metainmo XML" | "Secondary XML" | "Onesta FTP" = "Metainmo XML",
+  source: "Metainmo XML" | "Secondary XML" | "Onesta Base" = displaySourceFromProperty(property?.source),
 ): Listing {
   const descriptionPl = textFromDescription(property.descriptions);
   const title =
@@ -247,7 +272,7 @@ function mapPropertyToListing(
       ? "Oferta Metainmo"
       : source === "Secondary XML"
         ? "Oferta Secondary MLS"
-        : "Oferta Onesta FTP");
+        : "Oferta Onesta Base");
 
   return {
     ...emptyForm,
@@ -275,21 +300,57 @@ function mapPropertyToListing(
   };
 }
 
+function CountValue({
+  count,
+  error,
+  loading,
+}: {
+  count: number | null;
+  error?: string;
+  loading: boolean;
+}) {
+  if (count === null && loading) {
+    return <span className="countLoader" aria-label="Ładowanie liczby" />;
+  }
+
+  if (count === null && error) {
+    return (
+      <span className="countError" title={error}>
+        !
+      </span>
+    );
+  }
+
+  return <>{count ?? "–"}</>;
+}
+
 export default function OnesariPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [mainTab, setMainTab] = useState<MainTab>("offers");
+  const [mainTab, setMainTab] = useState<MainTab>("dashboard");
   const [addTab, setAddTab] = useState<AddTab>("data");
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
   const [query, setQuery] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const [notice, setNotice] = useState("");
   const [importStatus, setImportStatus] = useState("");
-  const [importing, setImporting] = useState<"metainmo" | "secondary" | "onesta" | null>(null);
+  const [importing, setImporting] = useState<ImportKind | null>(null);
+  const [importConfirmation, setImportConfirmation] =
+    useState<ImportConfirmation>(null);
+  const [importConfirmCountdown, setImportConfirmCountdown] = useState(0);
+  const [sourceTotals, setSourceTotals] = useState<SourceCounts>(emptySourceCounts);
+  const [isSourceTotalsLoading, setIsSourceTotalsLoading] = useState(true);
+  const [sourceTotalsError, setSourceTotalsError] = useState("");
+  const [sourceTotalsRefreshKey, setSourceTotalsRefreshKey] = useState(0);
   const [form, setForm] = useState<ListingForm>(emptyForm);
   const [images, setImages] = useState<ImageDraft[]>([]);
   const [listings, setListings] = useState<Listing[]>(initialListings);
+  const [allListings, setAllListings] = useState<Listing[]>([]);
+  const [allPage, setAllPage] = useState(1);
+  const [allTotal, setAllTotal] = useState<number | null>(null);
+  const [isAllLoading, setIsAllLoading] = useState(false);
+  const [allError, setAllError] = useState("");
   const [metainmoListings, setMetainmoListings] = useState<Listing[]>([]);
   const [metainmoPage, setMetainmoPage] = useState(1);
   const [metainmoTotal, setMetainmoTotal] = useState<number | null>(null);
@@ -320,6 +381,116 @@ export default function OnesariPage() {
   }, [router]);
 
   useEffect(() => {
+    if (isCheckingAuth) return;
+
+    let isMounted = true;
+    setIsSourceTotalsLoading(true);
+    setSourceTotalsError("");
+
+    supabase.auth
+      .getSession()
+      .then(async ({ data: sessionData }) => {
+        const token = sessionData.session?.access_token;
+        if (!token) throw new Error("Brak aktywnej sesji");
+
+        const response = await fetch("/api/onesari/counts", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload?.error || "Nie udało się pobrać liczników");
+        }
+        return payload as Record<keyof SourceCounts, number>;
+      })
+      .then((counts) => {
+        if (!isMounted) return;
+        setSourceTotals({
+          metainmo: counts.metainmo ?? 0,
+          secondary: counts.secondary ?? 0,
+          onesta: counts.onesta ?? 0,
+        });
+        setMetainmoTotal(counts.metainmo ?? 0);
+        setSecondaryTotal(counts.secondary ?? 0);
+        setOnestaTotal(counts.onesta ?? 0);
+      })
+      .catch((error: any) => {
+        if (!isMounted) return;
+        setSourceTotalsError(error?.message || "Nie udało się pobrać liczników");
+        setSourceTotals(emptySourceCounts);
+      })
+      .finally(() => {
+        if (isMounted) setIsSourceTotalsLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isCheckingAuth, sourceTotalsRefreshKey]);
+
+  useEffect(() => {
+    if (isCheckingAuth || mainTab !== "offers" || sourceFilter !== "all") return;
+
+    let isMounted = true;
+    setIsAllLoading(true);
+    setAllError("");
+
+    supabase.auth
+      .getSession()
+      .then(async ({ data: sessionData }) => {
+        const token = sessionData.session?.access_token;
+        if (!token) throw new Error("Brak aktywnej sesji");
+
+        const response = await fetch(`/api/onesari/all?page=${allPage}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload?.error || "Nie udało się pobrać ogłoszeń");
+        }
+        return payload as { data: any[]; count: number };
+      })
+      .then(({ data, count }) => {
+        if (!isMounted) return;
+        setAllListings((data || []).map((property) => mapPropertyToListing(property)));
+        setAllTotal(count ?? 0);
+      })
+      .catch((error: any) => {
+        if (!isMounted) return;
+        setAllError(error?.message || "Nie udało się pobrać ogłoszeń");
+        setAllListings([]);
+        setAllTotal(0);
+      })
+      .finally(() => {
+        if (isMounted) setIsAllLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [allPage, isCheckingAuth, mainTab, sourceFilter, sourceTotalsRefreshKey]);
+
+  useEffect(() => {
+    if (!importConfirmation) return;
+
+    setImportConfirmCountdown(3);
+    const interval = window.setInterval(() => {
+      setImportConfirmCountdown((current) => {
+        if (current <= 1) {
+          window.clearInterval(interval);
+          return 0;
+        }
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [importConfirmation]);
+
+  useEffect(() => {
     if (isCheckingAuth || mainTab !== "offers" || sourceFilter !== "Metainmo XML") return;
 
     let isMounted = true;
@@ -347,6 +518,7 @@ export default function OnesariPage() {
         if (!isMounted) return;
         setMetainmoListings((data || []).map((property) => mapPropertyToListing(property)));
         setMetainmoTotal(count ?? 0);
+        setSourceTotals((current) => ({ ...current, metainmo: count ?? 0 }));
       })
       .catch((error: any) => {
         if (!isMounted) return;
@@ -391,6 +563,7 @@ export default function OnesariPage() {
         if (!isMounted) return;
         setSecondaryListings((data || []).map((property) => mapPropertyToListing(property, "Secondary XML")));
         setSecondaryTotal(count ?? 0);
+        setSourceTotals((current) => ({ ...current, secondary: count ?? 0 }));
       })
       .catch((error: any) => {
         if (!isMounted) return;
@@ -408,7 +581,7 @@ export default function OnesariPage() {
   }, [isCheckingAuth, mainTab, sourceFilter, secondaryPage, secondaryRefreshKey]);
 
   useEffect(() => {
-    if (isCheckingAuth || mainTab !== "offers" || sourceFilter !== "Onesta FTP") return;
+    if (isCheckingAuth || mainTab !== "offers" || sourceFilter !== "Onesta Base") return;
 
     let isMounted = true;
     setIsOnestaLoading(true);
@@ -427,18 +600,19 @@ export default function OnesariPage() {
         });
         const payload = await response.json();
         if (!response.ok) {
-          throw new Error(payload?.error || "Nie udało się pobrać Onesta FTP");
+          throw new Error(payload?.error || "Nie udało się pobrać Onesta Base");
         }
         return payload as { data: any[]; count: number };
       })
       .then(({ data, count }) => {
         if (!isMounted) return;
-        setOnestaListings((data || []).map((property) => mapPropertyToListing(property, "Onesta FTP")));
+        setOnestaListings((data || []).map((property) => mapPropertyToListing(property, "Onesta Base")));
         setOnestaTotal(count ?? 0);
+        setSourceTotals((current) => ({ ...current, onesta: count ?? 0 }));
       })
       .catch((error: any) => {
         if (!isMounted) return;
-        setOnestaError(error?.message || "Nie udało się pobrać Onesta FTP");
+        setOnestaError(error?.message || "Nie udało się pobrać Onesta Base");
         setOnestaListings([]);
         setOnestaTotal(0);
       })
@@ -458,16 +632,16 @@ export default function OnesariPage() {
         ? metainmoListings
         : sourceFilter === "Secondary XML"
           ? secondaryListings
-          : sourceFilter === "Onesta FTP"
+          : sourceFilter === "Onesta Base"
             ? onestaListings
-            : listings;
+            : allListings;
 
     return baseListings.filter((listing) => {
       if (
         sourceFilter !== "all" &&
         sourceFilter !== "Metainmo XML" &&
         sourceFilter !== "Secondary XML" &&
-        sourceFilter !== "Onesta FTP" &&
+        sourceFilter !== "Onesta Base" &&
         listing.source !== sourceFilter
       ) {
         return false;
@@ -488,19 +662,15 @@ export default function OnesariPage() {
         .toLowerCase()
         .includes(normalized);
     });
-  }, [listings, metainmoListings, onestaListings, query, secondaryListings, sourceFilter]);
+  }, [allListings, metainmoListings, onestaListings, query, secondaryListings, sourceFilter]);
 
   const sourceCounts = useMemo(
     () => ({
-      metainmo:
-        metainmoTotal ?? listings.filter((listing) => listing.source === "Metainmo XML").length,
-      secondary:
-        secondaryTotal ?? listings.filter((listing) => listing.source === "Secondary XML").length,
-      onesta:
-        onestaTotal ?? listings.filter((listing) => listing.source === "Onesta FTP").length,
-      manual: listings.filter((listing) => listing.source === "Dodane ręcznie").length,
+      metainmo: metainmoTotal ?? sourceTotals.metainmo,
+      secondary: secondaryTotal ?? sourceTotals.secondary,
+      onesta: onestaTotal ?? sourceTotals.onesta,
     }),
-    [listings, metainmoTotal, onestaTotal, secondaryTotal],
+    [metainmoTotal, onestaTotal, secondaryTotal, sourceTotals],
   );
 
   const metainmoTotalPages = Math.max(
@@ -517,52 +687,72 @@ export default function OnesariPage() {
   );
 
   const allSourcesCount =
-    sourceCounts.metainmo + sourceCounts.secondary + sourceCounts.onesta + sourceCounts.manual;
+    sourceCounts.metainmo === null ||
+    sourceCounts.secondary === null ||
+    sourceCounts.onesta === null
+      ? null
+      : sourceCounts.metainmo + sourceCounts.secondary + sourceCounts.onesta;
 
-  const sourceFilters: Array<{ label: string; value: SourceFilter; count: number }> = [
+  const allTotalPages = Math.max(
+    1,
+    Math.ceil((allTotal ?? allSourcesCount ?? 0) / ALL_PAGE_SIZE),
+  );
+
+  const sourceFilters: Array<{ label: string; value: SourceFilter; count: number | null }> = [
     { label: "Wszystkie", value: "all", count: allSourcesCount },
     { label: "Metainmo", value: "Metainmo XML", count: sourceCounts.metainmo },
     { label: "Secondary MLS", value: "Secondary XML", count: sourceCounts.secondary },
-    { label: "Onesta FTP", value: "Onesta FTP", count: sourceCounts.onesta },
-    { label: "Ręczne", value: "Dodane ręcznie", count: sourceCounts.manual },
+    { label: "Onesta Base", value: "Onesta Base", count: sourceCounts.onesta },
   ];
 
   const totalVisibleCount =
-    sourceFilter === "Metainmo XML"
+    sourceFilter === "all"
+      ? (allTotal ?? allSourcesCount ?? 0)
+      : sourceFilter === "Metainmo XML"
       ? (metainmoTotal ?? 0)
       : sourceFilter === "Secondary XML"
         ? (secondaryTotal ?? 0)
-        : sourceFilter === "Onesta FTP"
+        : sourceFilter === "Onesta Base"
           ? (onestaTotal ?? 0)
           : filteredListings.length;
   const remoteSourceLabel =
-    sourceFilter === "Metainmo XML"
+    sourceFilter === "all"
+      ? "Wszystkie"
+      : sourceFilter === "Metainmo XML"
       ? "Metainmo"
       : sourceFilter === "Secondary XML"
         ? "Secondary MLS"
-        : sourceFilter === "Onesta FTP"
-          ? "Onesta FTP"
+        : sourceFilter === "Onesta Base"
+          ? "Onesta Base"
         : "";
   const remoteSourcePage =
-    sourceFilter === "Metainmo XML"
+    sourceFilter === "all"
+      ? allPage
+      : sourceFilter === "Metainmo XML"
       ? metainmoPage
       : sourceFilter === "Secondary XML"
         ? secondaryPage
         : onestaPage;
   const remoteSourceTotalPages =
-    sourceFilter === "Metainmo XML"
+    sourceFilter === "all"
+      ? allTotalPages
+      : sourceFilter === "Metainmo XML"
       ? metainmoTotalPages
       : sourceFilter === "Secondary XML"
         ? secondaryTotalPages
         : onestaTotalPages;
   const isRemoteSourceLoading =
-    sourceFilter === "Metainmo XML"
+    sourceFilter === "all"
+      ? isAllLoading
+      : sourceFilter === "Metainmo XML"
       ? isMetainmoLoading
       : sourceFilter === "Secondary XML"
         ? isSecondaryLoading
         : isOnestaLoading;
   const remoteSourceError =
-    sourceFilter === "Metainmo XML"
+    sourceFilter === "all"
+      ? allError
+      : sourceFilter === "Metainmo XML"
       ? metainmoError
       : sourceFilter === "Secondary XML"
         ? secondaryError
@@ -631,20 +821,35 @@ export default function OnesariPage() {
     setAddTab("data");
   }
 
-  async function runXmlImport(kind: "metainmo" | "secondary" | "onesta") {
+  function requestXmlImport(kind: ImportKind) {
+    setImportConfirmation({
+      kind,
+      label: kind === "metainmo" ? "Metainmo" : "Secondary MLS",
+    });
+  }
+
+  function cancelXmlImport() {
+    setImportConfirmation(null);
+    setImportConfirmCountdown(0);
+  }
+
+  function confirmXmlImport() {
+    if (!importConfirmation || importConfirmCountdown > 0) return;
+    const kind = importConfirmation.kind;
+    setImportConfirmation(null);
+    runXmlImport(kind);
+  }
+
+  async function runXmlImport(kind: ImportKind) {
     const endpoint =
       kind === "metainmo"
         ? "/api/metainmoToSupabase"
-        : kind === "secondary"
-          ? "/api/secondaryToSupabase"
-          : "/api/onestaFtpToSupabase";
+        : "/api/secondaryToSupabase";
     setImporting(kind);
     setImportStatus(
       kind === "metainmo"
         ? "Aktualizuję Metainmo..."
-        : kind === "secondary"
-          ? "Aktualizuję Secondary MLS..."
-          : "Aktualizuję Onesta FTP...",
+        : "Aktualizuję Secondary MLS...",
     );
 
     try {
@@ -659,7 +864,7 @@ export default function OnesariPage() {
 
       if (!response.ok) {
         setImportStatus(
-          `${kind === "metainmo" ? "Metainmo" : kind === "secondary" ? "Secondary MLS" : "Onesta FTP"}: błąd - ${
+          `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${
             data?.error || data?.details || "nieznany błąd"
           }`,
         );
@@ -674,6 +879,7 @@ export default function OnesariPage() {
         );
         setMetainmoPage(1);
         setMetainmoRefreshKey((current) => current + 1);
+        setSourceTotalsRefreshKey((current) => current + 1);
       } else if (kind === "secondary") {
         setImportStatus(
           `Secondary MLS OK: XML ${data?.total_xml ?? 0}, zapisane ${
@@ -682,14 +888,7 @@ export default function OnesariPage() {
         );
         setSecondaryPage(1);
         setSecondaryRefreshKey((current) => current + 1);
-      } else {
-        setImportStatus(
-          `Onesta FTP OK: XML ${data?.total_xml ?? 0}, zapisane ${
-            data?.total_saved ?? 0
-          }, usunięte stare ${data?.total_deleted_old ?? 0}.`,
-        );
-        setOnestaPage(1);
-        setOnestaRefreshKey((current) => current + 1);
+        setSourceTotalsRefreshKey((current) => current + 1);
       }
     } catch (error: any) {
       setImportStatus(error?.message || "Import nie powiódł się.");
@@ -718,21 +917,29 @@ export default function OnesariPage() {
       return;
     }
 
-    setListings((current) => [
-      {
-        ...form,
-        id: uid("listing"),
-        ref: `MAN-${Date.now()}`,
-        source: "Dodane ręcznie",
-        price: null,
-        currency: "EUR",
-        imageUrl: images[0]?.url || "/mini_bg_about_us.webp",
-        imagesCount: images.length,
-        createdAt: new Date().toISOString().slice(0, 10),
-      },
+    const nextListing: Listing = {
+      ...form,
+      id: uid("listing"),
+      ref: `OW-${Date.now()}`,
+      source: "Onesta Base",
+      price: null,
+      currency: "EUR",
+      imageUrl: images[0]?.url || "/mini_bg_about_us.webp",
+      imagesCount: images.length,
+      createdAt: new Date().toISOString().slice(0, 10),
+    };
+
+    setListings((current) => [nextListing, ...current]);
+    setAllListings((current) => [nextListing, ...current]);
+    setOnestaListings((current) => [nextListing, ...current]);
+    setAllTotal((current) => (current === null ? current : current + 1));
+    setOnestaTotal((current) => (current === null ? current : current + 1));
+    setSourceTotals((current) => ({
       ...current,
-    ]);
+      onesta: current.onesta === null ? current.onesta : current.onesta + 1,
+    }));
     resetDraft();
+    setSourceFilter("Onesta Base");
     setMainTab("offers");
     setNotice("Oferta została zapisana w lokalnym szkicu Onesari.");
   }
@@ -776,6 +983,13 @@ export default function OnesariPage() {
           </div>
           <nav className="onesariNav">
             <button
+              className={mainTab === "dashboard" ? "active" : ""}
+              type="button"
+              onClick={() => setMainTab("dashboard")}
+            >
+              <FaChartBar /> Pulpit
+            </button>
+            <button
               className={mainTab === "offers" ? "active" : ""}
               type="button"
               onClick={() => setMainTab("offers")}
@@ -806,14 +1020,21 @@ export default function OnesariPage() {
                 type="button"
                 onClick={() => {
                   setSourceFilter(filter.value);
+                  if (filter.value === "all") setAllPage(1);
                   if (filter.value === "Metainmo XML") setMetainmoPage(1);
                   if (filter.value === "Secondary XML") setSecondaryPage(1);
-                  if (filter.value === "Onesta FTP") setOnestaPage(1);
+                  if (filter.value === "Onesta Base") setOnestaPage(1);
                   setMainTab("offers");
                 }}
               >
                 <span>{filter.label}</span>
-                <b>{filter.count}</b>
+                <b>
+                  <CountValue
+                    count={filter.count}
+                    error={sourceTotalsError}
+                    loading={isSourceTotalsLoading}
+                  />
+                </b>
               </button>
             ))}
           </div>
@@ -837,28 +1058,124 @@ export default function OnesariPage() {
             </button>
           </header>
 
-          {mainTab === "offers" ? (
+          {mainTab === "dashboard" ? (
+            <section className="dashboardPanel" aria-label="Pulpit Onesari">
+              <div className="dashboardHero">
+                <div>
+                  <p>Pulpit</p>
+                  <h2>Stan bazy ogłoszeń</h2>
+                </div>
+                <button
+                  className="onesariPrimary"
+                  type="button"
+                  onClick={() => {
+                    setMainTab("add");
+                    setAddTab("data");
+                  }}
+                >
+                  <FaPlus /> Dodaj ogłoszenie
+                </button>
+              </div>
+
+              <section className="sourceGrid dashboardSources" aria-label="Źródła ogłoszeń">
+                {sourceFilters.map((filter) => (
+                  <button
+                    className="sourceCardButton"
+                    key={filter.value}
+                    type="button"
+                    onClick={() => {
+                      setSourceFilter(filter.value);
+                      if (filter.value === "all") setAllPage(1);
+                      if (filter.value === "Metainmo XML") setMetainmoPage(1);
+                      if (filter.value === "Secondary XML") setSecondaryPage(1);
+                      if (filter.value === "Onesta Base") setOnestaPage(1);
+                      setMainTab("offers");
+                    }}
+                  >
+                    <span>{filter.label}</span>
+                    <strong>
+                      <CountValue
+                        count={filter.count}
+                        error={sourceTotalsError}
+                        loading={isSourceTotalsLoading}
+                      />
+                    </strong>
+                  </button>
+                ))}
+              </section>
+
+              <section className="dashboardActions" aria-label="Szybkie akcje">
+                <article>
+                  <div>
+                    <p>Importy XML</p>
+                    <h3>Aktualizacja zewnętrznych źródeł</h3>
+                  </div>
+                  <div className="importActions compact">
+                    <button
+                      className="importButton metainmo"
+                      disabled={Boolean(importing)}
+                      type="button"
+                      onClick={() => requestXmlImport("metainmo")}
+                    >
+                      <FaSyncAlt className={importing === "metainmo" ? "spinning" : ""} />
+                      Aktualizuj Metainmo
+                    </button>
+                    <button
+                      className="importButton secondary"
+                      disabled={Boolean(importing)}
+                      type="button"
+                      onClick={() => requestXmlImport("secondary")}
+                    >
+                      <FaSyncAlt className={importing === "secondary" ? "spinning" : ""} />
+                      Aktualizuj Secondary MLS
+                    </button>
+                  </div>
+                  {importStatus ? <p className="importStatus">{importStatus}</p> : null}
+                </article>
+              </section>
+            </section>
+          ) : mainTab === "offers" ? (
             <>
               <section className="sourceGrid" aria-label="Źródła ogłoszeń">
                 <article>
                   <span>Wszystkie oferty</span>
-                  <strong>{allSourcesCount}</strong>
+                  <strong>
+                    <CountValue
+                      count={allSourcesCount}
+                      error={sourceTotalsError}
+                      loading={isSourceTotalsLoading}
+                    />
+                  </strong>
                 </article>
                 <article>
                   <span>Metainmo XML</span>
-                  <strong>{sourceCounts.metainmo}</strong>
+                  <strong>
+                    <CountValue
+                      count={sourceCounts.metainmo}
+                      error={sourceTotalsError}
+                      loading={isSourceTotalsLoading}
+                    />
+                  </strong>
                 </article>
                 <article>
                   <span>Secondary XML</span>
-                  <strong>{sourceCounts.secondary}</strong>
+                  <strong>
+                    <CountValue
+                      count={sourceCounts.secondary}
+                      error={sourceTotalsError}
+                      loading={isSourceTotalsLoading}
+                    />
+                  </strong>
                 </article>
                 <article>
-                  <span>Onesta FTP</span>
-                  <strong>{sourceCounts.onesta}</strong>
-                </article>
-                <article>
-                  <span>Dodane ręcznie</span>
-                  <strong>{sourceCounts.manual}</strong>
+                  <span>Onesta Base</span>
+                  <strong>
+                    <CountValue
+                      count={sourceCounts.onesta}
+                      error={sourceTotalsError}
+                      loading={isSourceTotalsLoading}
+                    />
+                  </strong>
                 </article>
               </section>
 
@@ -873,9 +1190,10 @@ export default function OnesariPage() {
               </label>
 
               {notice ? <p className="onesariNotice">{notice}</p> : null}
-              {sourceFilter === "Metainmo XML" ||
+              {sourceFilter === "all" ||
+              sourceFilter === "Metainmo XML" ||
               sourceFilter === "Secondary XML" ||
-              sourceFilter === "Onesta FTP" ? (
+              sourceFilter === "Onesta Base" ? (
                 <div className="paginationMeta">
                   <span>
                     {remoteSourceLabel}: {totalVisibleCount} ofert · strona{" "}
@@ -885,9 +1203,10 @@ export default function OnesariPage() {
                 </div>
               ) : null}
               {remoteSourceError &&
-              (sourceFilter === "Metainmo XML" ||
+              (sourceFilter === "all" ||
+                sourceFilter === "Metainmo XML" ||
                 sourceFilter === "Secondary XML" ||
-                sourceFilter === "Onesta FTP") ? (
+                sourceFilter === "Onesta Base") ? (
                 <p className="onesariError">{remoteSourceError}</p>
               ) : null}
 
@@ -936,15 +1255,18 @@ export default function OnesariPage() {
                   </article>
                 ))}
               </section>
-              {sourceFilter === "Metainmo XML" ||
+              {sourceFilter === "all" ||
+              sourceFilter === "Metainmo XML" ||
               sourceFilter === "Secondary XML" ||
-              sourceFilter === "Onesta FTP" ? (
+              sourceFilter === "Onesta Base" ? (
                 <nav className="paginationBar" aria-label={`Paginacja ${remoteSourceLabel}`}>
                   <button
                     disabled={remoteSourcePage <= 1 || isRemoteSourceLoading}
                     type="button"
                     onClick={() => {
-                      if (sourceFilter === "Metainmo XML") {
+                      if (sourceFilter === "all") {
+                        setAllPage((page) => Math.max(1, page - 1));
+                      } else if (sourceFilter === "Metainmo XML") {
                         setMetainmoPage((page) => Math.max(1, page - 1));
                       } else if (sourceFilter === "Secondary XML") {
                         setSecondaryPage((page) => Math.max(1, page - 1));
@@ -962,7 +1284,9 @@ export default function OnesariPage() {
                     disabled={remoteSourcePage >= remoteSourceTotalPages || isRemoteSourceLoading}
                     type="button"
                     onClick={() => {
-                      if (sourceFilter === "Metainmo XML") {
+                      if (sourceFilter === "all") {
+                        setAllPage((page) => Math.min(allTotalPages, page + 1));
+                      } else if (sourceFilter === "Metainmo XML") {
                         setMetainmoPage((page) => Math.min(metainmoTotalPages, page + 1));
                       } else if (sourceFilter === "Secondary XML") {
                         setSecondaryPage((page) => Math.min(secondaryTotalPages, page + 1));
@@ -990,7 +1314,7 @@ export default function OnesariPage() {
                   className="importButton metainmo"
                   disabled={Boolean(importing)}
                   type="button"
-                  onClick={() => runXmlImport("metainmo")}
+                  onClick={() => requestXmlImport("metainmo")}
                 >
                   <FaSyncAlt className={importing === "metainmo" ? "spinning" : ""} />
                   Aktualizuj Metainmo
@@ -999,19 +1323,10 @@ export default function OnesariPage() {
                   className="importButton secondary"
                   disabled={Boolean(importing)}
                   type="button"
-                  onClick={() => runXmlImport("secondary")}
+                  onClick={() => requestXmlImport("secondary")}
                 >
                   <FaSyncAlt className={importing === "secondary" ? "spinning" : ""} />
                   Aktualizuj Secondary MLS
-                </button>
-                <button
-                  className="importButton onesta"
-                  disabled={Boolean(importing)}
-                  type="button"
-                  onClick={() => runXmlImport("onesta")}
-                >
-                  <FaSyncAlt className={importing === "onesta" ? "spinning" : ""} />
-                  Aktualizuj Onesta FTP
                 </button>
               </div>
               {importStatus ? <p className="importStatus">{importStatus}</p> : null}
@@ -1253,6 +1568,39 @@ export default function OnesariPage() {
         </section>
       </main>
 
+      {importConfirmation ? (
+        <div className="confirmOverlay" role="dialog" aria-modal="true">
+          <section className="confirmModal">
+            <div>
+              <p>Potwierdzenie importu</p>
+              <h2>Aktualizować XML {importConfirmation.label}?</h2>
+              <span>
+                Ta akcja pobierze dane z XML i zapisze zmiany w Supabase dla tego źródła.
+              </span>
+            </div>
+            <div className="confirmActions">
+              <button
+                className="secondaryButton"
+                type="button"
+                onClick={cancelXmlImport}
+              >
+                Odrzuć
+              </button>
+              <button
+                className="confirmButton"
+                disabled={importConfirmCountdown > 0 || Boolean(importing)}
+                type="button"
+                onClick={confirmXmlImport}
+              >
+                {importConfirmCountdown > 0
+                  ? `Potwierdź za ${importConfirmCountdown}s`
+                  : "Potwierdź aktualizację"}
+              </button>
+            </div>
+          </section>
+        </div>
+      ) : null}
+
       <style jsx>{`
         .onesariShell {
           background: #f3f6f8;
@@ -1365,10 +1713,83 @@ export default function OnesariPage() {
         .sourceNav b {
           background: rgba(255, 255, 255, 0.12);
           border-radius: 999px;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
           font-size: 12px;
+          min-height: 24px;
           min-width: 26px;
           padding: 4px 7px;
           text-align: center;
+        }
+
+        .dashboardPanel {
+          display: grid;
+          gap: 18px;
+        }
+
+        .dashboardHero,
+        .dashboardActions article,
+        .confirmModal {
+          background: #ffffff;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          box-shadow: 0 14px 34px rgba(21, 32, 43, 0.08);
+        }
+
+        .dashboardHero {
+          align-items: center;
+          display: flex;
+          gap: 18px;
+          justify-content: space-between;
+          padding: 18px;
+        }
+
+        .dashboardHero p,
+        .dashboardActions p,
+        .confirmModal p {
+          color: #216e63;
+          font-size: 13px;
+          font-weight: 900;
+          margin: 0 0 4px;
+          text-transform: uppercase;
+        }
+
+        .dashboardHero h2,
+        .dashboardActions h3,
+        .confirmModal h2 {
+          margin: 0;
+        }
+
+        .dashboardHero h2 {
+          font-size: 26px;
+          line-height: 1.15;
+        }
+
+        .dashboardActions article {
+          display: grid;
+          gap: 16px;
+          padding: 18px;
+        }
+
+        .dashboardActions h3 {
+          font-size: 22px;
+          line-height: 1.15;
+        }
+
+        .sourceCardButton {
+          background: #ffffff;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          box-shadow: 0 14px 34px rgba(21, 32, 43, 0.08);
+          display: grid;
+          gap: 6px;
+          padding: 16px;
+          text-align: left;
+        }
+
+        .sourceCardButton:hover {
+          border-color: #216e63;
         }
 
         .onesariWorkspace {
@@ -1429,7 +1850,7 @@ export default function OnesariPage() {
         .sourceGrid {
           display: grid;
           gap: 12px;
-          grid-template-columns: repeat(5, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
         }
 
         .sourceGrid article,
@@ -1449,6 +1870,7 @@ export default function OnesariPage() {
         }
 
         .sourceGrid span,
+        .sourceCardButton span,
         .listingIdentity span,
         .listingFacts span,
         .importsHeader span,
@@ -1462,8 +1884,35 @@ export default function OnesariPage() {
         }
 
         .sourceGrid strong {
+          align-items: center;
+          display: inline-flex;
+          font-size: 28px;
+          min-height: 28px;
+          line-height: 1;
+        }
+
+        .sourceCardButton strong {
+          align-items: center;
+          display: inline-flex;
           font-size: 28px;
           line-height: 1;
+          min-height: 28px;
+        }
+
+        :global(.countLoader) {
+          animation: onesariPulse 0.85s ease-in-out infinite;
+          background: currentColor;
+          border-radius: 999px;
+          display: inline-block;
+          height: 7px;
+          opacity: 0.35;
+          width: 7px;
+        }
+
+        :global(.countError) {
+          color: #dc2626;
+          display: inline-block;
+          font-weight: 900;
         }
 
         .searchBox {
@@ -1688,7 +2137,11 @@ export default function OnesariPage() {
         .importActions {
           display: grid;
           gap: 12px;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .importActions.compact {
+          max-width: 720px;
         }
 
         .importButton {
@@ -1717,10 +2170,6 @@ export default function OnesariPage() {
           background: #654de6;
         }
 
-        .importButton.onesta {
-          background: #155149;
-        }
-
         .importStatus {
           background: #f9fafb;
           border: 1px solid #d8dee7;
@@ -1740,6 +2189,67 @@ export default function OnesariPage() {
           to {
             transform: rotate(360deg);
           }
+        }
+
+        @keyframes onesariPulse {
+          0%,
+          100% {
+            opacity: 0.25;
+            transform: scale(0.85);
+          }
+
+          50% {
+            opacity: 0.75;
+            transform: scale(1.15);
+          }
+        }
+
+        .confirmOverlay {
+          align-items: center;
+          background: rgba(15, 23, 42, 0.58);
+          display: flex;
+          inset: 0;
+          justify-content: center;
+          padding: 18px;
+          position: fixed;
+          z-index: 80;
+        }
+
+        .confirmModal {
+          display: grid;
+          gap: 18px;
+          max-width: 520px;
+          padding: 20px;
+          width: min(100%, 520px);
+        }
+
+        .confirmModal span {
+          color: #667085;
+          display: block;
+          font-size: 14px;
+          line-height: 1.5;
+          margin-top: 8px;
+        }
+
+        .confirmActions {
+          display: flex;
+          gap: 10px;
+          justify-content: flex-end;
+        }
+
+        .confirmButton {
+          background: #b45309;
+          border: 0;
+          border-radius: 8px;
+          color: #ffffff;
+          font-weight: 900;
+          min-height: 44px;
+          padding: 0 16px;
+        }
+
+        .confirmButton:disabled {
+          cursor: wait;
+          opacity: 0.55;
         }
 
         .offerForm {

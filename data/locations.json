@@ -2242,5 +2242,47 @@
     "name": "Yecla",
     "type": "town",
     "parentId": "costa_calida"
+  },
+  {
+    "id": "cypr_poludniowy",
+    "name": "Cypr Południowy",
+    "type": "coast",
+    "parentId": null,
+    "country": "cypr"
+  },
+  {
+    "id": "st_george_cypr",
+    "name": "St. George",
+    "type": "town",
+    "parentId": "cypr_poludniowy",
+    "country": "cypr"
+  },
+  {
+    "id": "akmas_cypr",
+    "name": "Akmas",
+    "type": "town",
+    "parentId": "cypr_poludniowy",
+    "country": "cypr"
+  },
+  {
+    "id": "peja_cypr",
+    "name": "Peja",
+    "type": "town",
+    "parentId": "cypr_poludniowy",
+    "country": "cypr"
+  },
+  {
+    "id": "pafos_cypr",
+    "name": "Pafos",
+    "type": "town",
+    "parentId": "cypr_poludniowy",
+    "country": "cypr"
+  },
+  {
+    "id": "pegeia_cypr",
+    "name": "Pegeia",
+    "type": "town",
+    "parentId": "cypr_poludniowy",
+    "country": "cypr"
   }
 ]

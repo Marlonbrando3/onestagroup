@@ -6,12 +6,18 @@ import LocationSearch from "./SearchEngine/LocationSearch";
 import PriceSelect from "./SearchEngine/PriceSearch";
 import locationsData from "@/data/locations.json";
 import { typeDictionarySingular } from "@/lib/titlesDictionary";
+import {
+  getPropertyCountryOption,
+  normalizeCountrySlug,
+  PROPERTY_COUNTRY_OPTIONS,
+} from "@/lib/propertyCountries";
 
 type LocationItem = {
   id: string;
   name: string;
-  type: "coast" | "province" | "city";
+  type: "coast" | "province" | "town" | "city";
   parentId: string | null;
+  country?: string;
 };
 
 type PriceRange = { min: number; max: number };
@@ -36,8 +42,18 @@ type Props = {
 const DEFAULT_PRICE: PriceRange = { min: 0, max: 5000000 };
 const NUMBER_OPTIONS = ["1", "2", "3", "4", "5"];
 
+function getLocationCountry(location: LocationItem) {
+  return location.country || "hiszpania";
+}
+
 const TYPE_LABEL_TO_DB_VALUES: Record<string, string[]> = {
-  Apartament: ["apartment", "Apartment", "Quad House", "Semi Detached"],
+  Apartament: [
+    "apartment",
+    "Apartment",
+    "Quad House",
+    "Semi Detached",
+    "Apartment Penthouse",
+  ],
   Penthouse: ["Penthouse", "Apartment Penthouse", "Penthouse Penthouse"],
   Bungalow: ["bungalow", "Bungalow"],
   Dom: [
@@ -134,6 +150,37 @@ function MarketSelect({
   );
 }
 
+function CountrySelect({
+  value,
+  onChange,
+  className = "",
+}: {
+  value: string;
+  onChange: (slug: string) => void;
+  className?: string;
+}) {
+  return (
+    <label
+      className={`flex h-11 w-full items-stretch text-sm font-semibold text-[#182334] ${className}`}
+    >
+      <span className="flex min-w-[78px] items-center justify-center border border-r-0 border-[#c9aa63] bg-[#d6b36a] px-3 uppercase tracking-[0.14em]">
+        Kraj
+      </span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-full min-w-0 flex-1 border border-[#d7c8ad] bg-white px-3 font-semibold text-[#182334] outline-none transition hover:border-[#b8954c] focus:border-[#b8954c]"
+      >
+        {PROPERTY_COUNTRY_OPTIONS.map((country) => (
+          <option key={country.slug} value={country.slug}>
+            {country.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 export default function Home({
   mobileButtonSearchEngine,
   searchEngine,
@@ -157,16 +204,11 @@ export default function Home({
     price: DEFAULT_PRICE,
   });
 
-  function slugify(title: string): string {
-    return title
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/ł/g, "l")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-");
-  }
+  const selectedCountry = getPropertyCountryOption(
+    Array.isArray(router.query.country)
+      ? router.query.country[0]
+      : router.query.country,
+  );
 
   const parseCsv = (param: string | string[] | undefined): string[] => {
     const raw = Array.isArray(param) ? param.join(",") : (param ?? "");
@@ -239,7 +281,11 @@ export default function Home({
   };
 
   const pushFiltersToQuery = (next: FiltersState) => {
-    const country = slugify((router.query.country as string) || "hiszpania");
+    const country = normalizeCountrySlug(
+      Array.isArray(router.query.country)
+        ? router.query.country[0]
+        : router.query.country,
+    );
     const query = buildQueryFromFilters(next);
     const nextSerialized = serializeQuery(query);
     const currentComparableQuery: Record<string, string> = {};
@@ -270,6 +316,27 @@ export default function Home({
     );
 
     setLoader(true);
+  };
+
+  const handleCountryChange = (countrySlug: string) => {
+    const normalizedCountry = normalizeCountrySlug(countrySlug);
+    const next = { ...filters, locations: [] };
+    const query = buildQueryFromFilters(next);
+
+    delete query.region;
+    delete query.location;
+
+    setFilters(next);
+    setLoader(true);
+
+    router.push(
+      {
+        pathname: `/nieruchomosci/${normalizedCountry}/`,
+        query,
+      },
+      undefined,
+      { shallow: false, scroll: false },
+    );
   };
 
   const updateFilter = (key: keyof FiltersState, value: any) => {
@@ -319,7 +386,11 @@ export default function Home({
     const locationIds = parseCsv(router.query.location);
     const locations = locationIds
       .map((id) => (locationsData as any[]).find((l) => l.id === id))
-      .filter(Boolean);
+      .filter(
+        (location): location is LocationItem =>
+          Boolean(location) &&
+          getLocationCountry(location as LocationItem) === selectedCountry.slug,
+      );
     const marketFromUrlRaw = Array.isArray(router.query.market)
       ? router.query.market[0]
       : String(router.query.market ?? "");
@@ -347,6 +418,8 @@ export default function Home({
     router.query.priceMax,
     router.query.location,
     router.query.market,
+    router.query.country,
+    selectedCountry.slug,
   ]);
 
   useEffect(() => {
@@ -442,12 +515,21 @@ export default function Home({
         id="search-wrapper"
         className={`${OutfitSans.className} mx-auto tracking-[1.2px] w-[90vw] max-w-[1330px] lg:sticky lg:top-[100px] lg:z-30 mb-[30px] mt-0 lg:-mt-[70px]`}
       >
+        <div className="mb-3 hidden lg:flex">
+          <CountrySelect
+            value={selectedCountry.slug}
+            onChange={handleCountryChange}
+            className="max-w-[240px]"
+          />
+        </div>
+
         {/* DESKTOP SEARCH BAR */}
         <div className="hidden border border-[#e5dac7] bg-white shadow-xl lg:flex lg:h-20 lg:flex-row lg:gap-0 text-sm">
           {/* LOCATION */}
           <div className="h-full w-full border-[#e5dac7] pl-4 lg:flex-[4.20] lg:border-r">
             <LocationSearch
               className="w-full h-full"
+              countrySlug={selectedCountry.slug}
               value={filters.locations}
               onChange={(val: LocationItem[]) => updateFilter("locations", val)}
             />
@@ -551,6 +633,13 @@ export default function Home({
               </div>
               {/* FILTERS */}
               <div className="space-y-4 p-4">
+                <div className="relative">
+                  <CountrySelect
+                    value={selectedCountry.slug}
+                    onChange={handleCountryChange}
+                  />
+                </div>
+
                 {/* LOCATION */}
                 <div className="relative">
                   {/* <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -558,6 +647,7 @@ export default function Home({
                   </label> */}
                   <LocationSearch
                     className="w-full"
+                    countrySlug={selectedCountry.slug}
                     value={filters.locations}
                     onChange={(val: LocationItem[]) =>
                       updateFilter("locations", val)

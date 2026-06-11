@@ -12,6 +12,7 @@ import ContactFormMain from "../../../components/ContactFormMain";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
+import { getPropertyCountryOption } from "@/lib/propertyCountries";
 
 interface Property {
   external_id: string | number;
@@ -30,6 +31,14 @@ interface Property {
   updated_at: string;
   country: string;
 }
+
+type LocationEntry = {
+  id: string;
+  name: string;
+  type: "coast" | "province" | "town" | "city";
+  parentId: string | null;
+  country?: string;
+};
 
 interface PageProps {
   properties: Property[];
@@ -170,7 +179,7 @@ export default function ListingsPage(props: PageProps) {
     mobileButtonSearchEngine.current.innerHTML = next ? "Zamknij" : "Filtry";
   };
 
-  const title = `Nieruchomości ${country.toUpperCase()}`;
+  const title = `Nieruchomości ${props.country.toUpperCase()}`;
 
   return (
     <div className="bg-gray-100/[0.3] w-full overflow-x-clip">
@@ -224,9 +233,16 @@ export default function ListingsPage(props: PageProps) {
   );
 }
 
-function getAllDescendants(id: string): string[] {
-  const children = locationsData.filter((l) => l.parentId === id);
-  return [id, ...children.flatMap((child) => getAllDescendants(child.id))];
+function getLocationCountry(location: LocationEntry) {
+  return location.country || "hiszpania";
+}
+
+function getAllDescendants(id: string, allLocations: LocationEntry[]): string[] {
+  const children = allLocations.filter((l) => l.parentId === id);
+  return [
+    id,
+    ...children.flatMap((child) => getAllDescendants(child.id, allLocations)),
+  ];
 }
 
 function parseCsvParam(val: unknown): string[] {
@@ -255,6 +271,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   context,
 ) => {
   const { country } = context.params as { country: string };
+  const countryOption = getPropertyCountryOption(country);
   const page = Math.max(1, parseInt((context.query.page as string) || "1"));
   const limit = 20;
   const from = (page - 1) * limit;
@@ -299,18 +316,32 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     beds !== undefined || bedsMin !== undefined || bedsMax !== undefined;
 
   const locationParam = location ? String(location).split(",") : [];
+  const countryLocations = (locationsData as LocationEntry[]).filter(
+    (entry) => getLocationCountry(entry) === countryOption.slug,
+  );
   const expandedIds = [
-    ...new Set(locationParam.flatMap((id) => getAllDescendants(id))),
+    ...new Set(
+      locationParam.flatMap((id) =>
+        countryLocations.some((entry) => entry.id === id)
+          ? getAllDescendants(id, countryLocations)
+          : [],
+      ),
+    ),
   ];
 
   const selectedTowns = expandedIds
-    .map((id) => locationsData.find((l) => l.id === id))
+    .map((id) => countryLocations.find((l) => l.id === id))
     .filter((l) => l?.type === "town" || l?.type === "city")
     .map((l) => l!.name);
 
   const selectedProvinces = expandedIds
-    .map((id) => locationsData.find((l) => l.id === id))
+    .map((id) => countryLocations.find((l) => l.id === id))
     .filter((l) => l?.type === "province")
+    .map((l) => l!.name);
+
+  const selectedCoasts = expandedIds
+    .map((id) => countryLocations.find((l) => l.id === id))
+    .filter((l) => l?.type === "coast")
     .map((l) => l!.name);
 
   let orderColumn = "price";
@@ -325,7 +356,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     return {
       props: {
         properties: [],
-        country,
+        country: countryOption.label,
         totalCount: 0,
         totalPages: 0,
         currentPage: 1,
@@ -342,6 +373,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     .lte("price", priceTo)
     .not("images", "is", null)
     .neq("images", "[]")
+    .in("country", countryOption.dbValues)
     .in("new_build", marketType !== null ? [marketType] : [true, false])
     .order(orderColumn, { ascending: orderAscending })
     .range(from, to);
@@ -374,13 +406,15 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
       .filter(Boolean)
       .map((t) => `town.ilike.%${t}%`);
 
-    if (selectedTowns.length > 0 && selectedProvinces.length > 0) {
-      const provinceClause = `province.in.(${selectedProvinces.map((p) => `"${p}"`).join(",")})`;
+    const regionNames = [...selectedProvinces, ...selectedCoasts];
+
+    if (selectedTowns.length > 0 && regionNames.length > 0) {
+      const provinceClause = `province.in.(${regionNames.map((p) => `"${p}"`).join(",")})`;
       query = query.or([...townLikeClauses, provinceClause].join(","));
     } else if (selectedTowns.length > 0) {
       query = query.or(townLikeClauses.join(","));
-    } else if (selectedProvinces.length > 0) {
-      query = query.in("province", selectedProvinces);
+    } else if (regionNames.length > 0) {
+      query = query.in("province", regionNames);
     }
   } else if (provincesParam?.length) {
     query = query.in("province", provincesParam);
@@ -401,7 +435,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   return {
     props: {
       properties: properties ?? [],
-      country,
+      country: countryOption.label,
       totalCount,
       totalPages,
       currentPage,

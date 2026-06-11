@@ -4,8 +4,9 @@ import data from "@/data/locations.json";
 type Location = {
   id: string;
   name: string;
-  type: "coast" | "province" | "city";
+  type: "coast" | "province" | "town" | "city";
   parentId: string | null;
+  country?: string;
   value?: any;
 };
 
@@ -13,9 +14,19 @@ type Props = {
   value: Location[];
   onChange: (val: Location[]) => void;
   className?: string;
+  countrySlug?: string;
 };
 
-export default function LocationSearch({ value, onChange, className }: Props) {
+function getLocationCountry(location: Location) {
+  return location.country || "hiszpania";
+}
+
+export default function LocationSearch({
+  value,
+  onChange,
+  className,
+  countrySlug = "hiszpania",
+}: Props) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Location[]>([]);
   const [open, setOpen] = useState(false);
@@ -25,6 +36,10 @@ export default function LocationSearch({ value, onChange, className }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const MAX_LOCATIONS = 6;
   const isLimitReached = value.length >= MAX_LOCATIONS;
+
+  const countryLocations = (data as Location[]).filter(
+    (location) => getLocationCountry(location) === countrySlug,
+  );
 
   const getHierarchy = (loc: Location, all: Location[]) => {
     const res = [loc];
@@ -58,17 +73,15 @@ export default function LocationSearch({ value, onChange, className }: Props) {
       return;
     }
 
-    const matches = (data as Location[]).filter((l) =>
+    const matches = countryLocations.filter((l) =>
       l.name.toLowerCase().includes(q),
     );
 
-    const expanded = matches.flatMap((m) =>
-      getHierarchy(m, data as Location[]),
-    );
+    const expanded = matches.flatMap((m) => getHierarchy(m, countryLocations));
 
     const unique = Array.from(new Map(expanded.map((i) => [i.id, i])).values());
 
-    const order = { city: 1, province: 2, coast: 3 };
+    const order = { town: 1, city: 1, province: 2, coast: 3 };
     unique.sort((a, b) => order[a.type] - order[b.type]);
 
     setResults(unique);
@@ -141,6 +154,14 @@ export default function LocationSearch({ value, onChange, className }: Props) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setQuery("");
+    setResults([]);
+    setOpen(false);
+    setHighlightedIndex(-1);
+    setLimitMessage("");
+  }, [countrySlug]);
+
   return (
     <div
       ref={ref}
@@ -190,7 +211,11 @@ export default function LocationSearch({ value, onChange, className }: Props) {
               }
             }}
             onKeyDown={handleKeyDown}
-            placeholder="np. Alicante, Malaga, Costa Blanca..."
+            placeholder={
+              countrySlug === "cypr"
+                ? "np. Pafos, Peja, Cypr Południowy..."
+                : "np. Alicante, Malaga, Costa Blanca..."
+            }
             disabled={isLimitReached}
             className={`${isLimitReached && "hidden"} min-w-[150px] flex-1 bg-transparent text-base text-[#182334] outline-none placeholder:text-[#9aa3af] md:text-sm`}
           />
@@ -210,7 +235,7 @@ export default function LocationSearch({ value, onChange, className }: Props) {
             >
               <span className="font-semibold text-[#182334]">{item.name}</span>
               <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-[#9b7a36]">
-                {item.type === "city" && "Miasto"}
+                {(item.type === "town" || item.type === "city") && "Miasto"}
                 {item.type === "province" && "Region"}
                 {item.type === "coast" && "Wybrzeże"}
               </span>
