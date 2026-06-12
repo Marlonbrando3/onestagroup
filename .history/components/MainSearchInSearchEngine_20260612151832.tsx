@@ -524,7 +524,7 @@ export default function Home({
                 Zmieniamy kraj...
               </p>
               <p className="mt-1 text-sm font-semibold text-[#5f6b7a]">
-                Ładujemy oferty: {countryTransition.label}
+                Ładuję oferty: {countryTransition.label}
               </p>
             </div>
           </div>
