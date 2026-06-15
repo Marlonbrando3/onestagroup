@@ -16,8 +16,12 @@ const ConsultationPopup = dynamic(
   { ssr: false },
 );
 
+const offerItems = [
+  { label: "Nieruchomości Hiszpania", href: "/nieruchomosci/hiszpania" },
+  { label: "Nieruchomości Cypr", href: "/nieruchomosci/cypr" },
+];
+
 const navItems = [
-  { label: "Nieruchomości w Hiszpanii", href: "/nieruchomosci/hiszpania" },
   { label: "O nas", href: "/aboutus" },
   { label: "Blog", href: "/blog" },
   { label: "Pobyt inwestorski", href: "/pobytinwestorski" },
@@ -80,6 +84,26 @@ export default function Header({
           </Link>
 
           <nav className="hidden items-center justify-end gap-1 xl:flex">
+            <div className="group relative py-2">
+              <button
+                type="button"
+                className="whitespace-nowrap rounded-full border border-[#d7c8ad] bg-white/70 px-4 py-3 text-[13px] font-bold uppercase tracking-[0.08em] text-[#9b7a36] transition hover:border-[#b8954c] hover:bg-white"
+              >
+                Oferty
+              </button>
+              <div className="pointer-events-none absolute left-0 top-full z-50 min-w-[310px] border border-[#e5dac7] bg-white p-2 opacity-0 shadow-xl transition group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                {offerItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className="block whitespace-nowrap px-3 py-3 text-[13px] font-bold uppercase tracking-[0.08em] text-[#334155] transition hover:bg-[#fbf8f2] hover:text-[#9b7a36]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -153,6 +177,23 @@ export default function Header({
           } overflow-hidden border-t border-[#e8ddca] bg-[#fbf8f2] shadow-[0_18px_32px_rgba(24,35,52,0.12)] transition-all duration-300`}
         >
           <nav className="mx-auto flex w-11/12 max-w-7xl flex-col py-4">
+            <div className="border-b border-[#e8ddca] py-4">
+              <p className="mb-3 text-[13px] font-extrabold uppercase tracking-[0.12em] text-[#9b7a36]">
+                Oferty
+              </p>
+              <div className="grid gap-2">
+                {offerItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className="text-[14px] font-semibold uppercase tracking-[0.08em] text-[#27364a]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
             {navItems.map((item) => (
               <Link
                 key={item.href}

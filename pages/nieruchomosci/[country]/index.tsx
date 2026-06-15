@@ -14,6 +14,24 @@ import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
 import { getPropertyCountryOption } from "@/lib/propertyCountries";
 
+const PROPERTY_LIST_COLUMNS = [
+  "external_id",
+  "type",
+  "town",
+  "province",
+  "price",
+  "beds",
+  "baths",
+  "images",
+  "new_build",
+  "surface_built",
+  "pool",
+  "vacantFromDate:available_from",
+  "updated_at",
+  "country",
+  "title",
+].join(",");
+
 interface Property {
   external_id: string | number;
   type: string;
@@ -368,7 +386,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 
   let query = supabaseServer
     .from("properties")
-    .select("*", { count: "exact" })
+    .select(PROPERTY_LIST_COLUMNS, { count: "exact" })
     .gte("price", priceFrom)
     .lte("price", priceTo)
     .not("images", "is", null)
@@ -434,7 +452,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 
   return {
     props: {
-      properties: properties ?? [],
+      properties: (properties ?? []) as unknown as Property[],
       country: countryOption.label,
       totalCount,
       totalPages,

@@ -226,7 +226,7 @@ export default function Header() {
                 >
                   OFERTY
                   <div
-                    className="hidden absolute -ml-2 bg-white flex-col items-center rounded-md border -mt-[6px]"
+                    className="hidden absolute -ml-2 bg-white flex-col items-center rounded-md border min-w-[250px]"
                     ref={MouseOnProperties}
                   >
                     <Link
@@ -235,13 +235,13 @@ export default function Header() {
                         pathname: "/nieruchomosci/[country]",
                         query: { country: "hiszpania", page: 1 },
                       }}
-                      className="p-1 text-black rounded-md w-full text-center group"
+                      className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
                       ref={MouseOnSpain}
                       data-name="MouseOnSpain"
                       // onMouseEnter={() => handleHover(MouseOnSpain)}
                       // onMouseLeave={() => handleHoverLeave(MouseOnSpain)}
                     >
-                      Nieruchomości w HISZPANII
+                      Nieruchomości Hiszpania
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                     </Link>
                     {/* <Link
@@ -267,15 +267,14 @@ export default function Header() {
                     <Link
                       href={{
                         pathname: "/nieruchomosci/[country]",
-                        query: { country: "dominikana", page: 1 },
+                        query: { country: "cypr", page: 1 },
                       }}
-                      className="p-1 text-black rounded-md w-full text-center group"
-                      ref={MouseOnDominican}
-                      data-name="MouseOnDominican"
+                      className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
+                      data-name="MouseOnCypr"
                       // onMouseEnter={() => handleHover(MouseOnDominican)}
                       // onMouseLeave={() => handleHoverLeave(MouseOnDominican)}
                     >
-                      Nieruchomości na DOMINIKANIE
+                      Nieruchomości Cypr
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                     </Link>
                   </div>

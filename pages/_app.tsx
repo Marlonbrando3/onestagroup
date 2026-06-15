@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useRef } from "react";
 import { MyContextProvider } from "@/components/context/myContext";
 import AnalitycsTools from "@/analitycs/analitycsTools";
+import OnestaAiChat from "@/components/OnestaAiChat";
 
 export default function App({ Component, pageProps }: AppProps) {
   const cookiesWindow = useRef<any>();
@@ -23,6 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <AnalitycsTools />
       <MyContextProvider>
         <Component {...pageProps} cookiesWindow={cookiesWindow} />
+        <OnestaAiChat />
       </MyContextProvider>
     </>
   );

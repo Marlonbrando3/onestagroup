@@ -51,8 +51,6 @@ export default function Newsletter() {
     }
   };
 
-  console.log(newsletterWasClosed);
-
   const hideNewsletter = () => {
     newsletter.current.style.visibility = "hidden";
     newsletterConfirmation.current.style.display = "none";
@@ -125,13 +123,16 @@ export default function Newsletter() {
             Zamknij komunikat
           </div>
         </div>
-        <p className="px-[3px] pt-[12px] text-center lg:px-[10px] lg:pt-[20px] text-[18px] md:leading-6 leading-5">
-          <p className="font-bold text-[24px] mb-[5px]">Witamy Cię serdecznie!</p>Zapraszamy Cię do
-          zapisu na nasz <span className="font-bold md:text-[20px] text-[12px]">newsletter</span> i
-          otrzymuj informacje o <span className="font-bold text-[20px]">nowościach</span> lub
-          artykułach dot. zakupu nieruchomości, inwestowania w nieruchomoci oraz ciekawych miejsc w
-          ciepłych krajach.
-        </p>
+        <div className="px-[3px] pt-[12px] text-center lg:px-[10px] lg:pt-[20px] text-[18px] md:leading-6 leading-5">
+          <p className="font-bold text-[24px] mb-[5px]">Witamy Cię serdecznie!</p>
+          <p>
+            Zapraszamy Cię do zapisu na nasz{" "}
+            <span className="font-bold md:text-[20px] text-[12px]">newsletter</span> i
+            otrzymuj informacje o <span className="font-bold text-[20px]">nowościach</span> lub
+            artykułach dot. zakupu nieruchomości, inwestowania w nieruchomoci oraz ciekawych miejsc w
+            ciepłych krajach.
+          </p>
+        </div>
         <form className=" flex flex-col px-[5px] md:px-[100px] py-[20px]" onSubmit={newNewsletter}>
           <div className="flex flex-col mb-[20px] text-[17px]">
             {/* <label className='pb-1 font-[700]'>Imię i nazwisko (wymagane)</label> */}

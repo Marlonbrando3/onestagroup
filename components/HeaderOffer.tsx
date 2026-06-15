@@ -226,7 +226,7 @@ export default function HeaderOffer() {
                 >
                   OFERTY
                   <div
-                    className="hidden absolute -ml-2 bg-white flex-col items-center rounded-md border -mt-[6px]"
+                    className="hidden absolute -ml-2 bg-white flex-col items-center rounded-md border min-w-[250px]"
                     ref={MouseOnProperties}
                   >
                     <Link
@@ -235,13 +235,24 @@ export default function HeaderOffer() {
                         pathname: "/nieruchomosci/[country]",
                         query: { country: "hiszpania" },
                       }}
-                      className="p-1 text-black rounded-md w-full text-center group"
+                      className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
                       ref={MouseOnSpain}
                       data-name="MouseOnSpain"
                       // onMouseEnter={() => handleHover(MouseOnSpain)}
                       // onMouseLeave={() => handleHoverLeave(MouseOnSpain)}
                     >
-                      Nieruchomości w HISZPANII
+                      Nieruchomości Hiszpania
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
+                    </Link>
+                    <Link
+                      onClick={handleClearData}
+                      href={{
+                        pathname: "/nieruchomosci/[country]",
+                        query: { country: "cypr" },
+                      }}
+                      className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
+                    >
+                      Nieruchomości Cypr
                       <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                     </Link>
                     {/* <Link
@@ -263,20 +274,6 @@ export default function HeaderOffer() {
                       onMouseLeave={() => handleHoverLeave(MouseOnPortugal)}
                     >
                       Nieruchomości w Portugalii
-                    </Link> */}
-                    {/* <Link
-                      href={{
-                        pathname: "/[country]",
-                        query: { country: "dominikana", page: 1 },
-                      }}
-                      className="p-1 text-black rounded-md w-full text-center group"
-                      ref={MouseOnDominican}
-                      data-name="MouseOnDominican"
-                      // onMouseEnter={() => handleHover(MouseOnDominican)}
-                      // onMouseLeave={() => handleHoverLeave(MouseOnDominican)}
-                    >
-                      Nieruchomości na DOMINIKANIE
-                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-100 h-1 bg-yellow-500"></span>
                     </Link> */}
                   </div>
                 </li>

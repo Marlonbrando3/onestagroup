@@ -28,18 +28,6 @@ export const PROPERTY_COUNTRY_OPTIONS: PropertyCountryOption[] = [
       "españa",
     ],
   },
-  {
-    label: "Tajlandia",
-    slug: "tajlandia",
-    dbValues: [
-      "Tajlandia",
-      "TAJLANDIA",
-      "tajlandia",
-      "Thailand",
-      "THAILAND",
-      "thailand",
-    ],
-  },
 ];
 
 export function normalizeCountrySlug(value: string | null | undefined) {

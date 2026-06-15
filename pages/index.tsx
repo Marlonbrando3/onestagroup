@@ -49,12 +49,6 @@ const markets = [
     href: "/nieruchomosci/cypr",
     image: "/cypr.png",
   },
-  {
-    title: "Tajlandia",
-    text: "Egzotyczny kierunek inwestycyjny dla klientów zainteresowanych najmem krótkoterminowym, wypoczynkiem i dywersyfikacją poza Europą.",
-    href: "/#contact",
-    image: "/bg_beach.jpeg",
-  },
 ];
 
 const reasons = [

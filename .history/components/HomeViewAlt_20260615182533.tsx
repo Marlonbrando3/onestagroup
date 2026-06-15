@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Red_Hat_DisplayFont, MontserratSans } from "../fonts/fonts";
+import Link from "next/link";
 
 import Image from "next/image";
 
@@ -26,7 +27,14 @@ export default function HomeViewAlt() {
   }, []);
 
   return (
-    <div className="w-screen md:h-screen h-auto flex bg-[url('/coast_2.svg')] bg-cover ">
+    <div className="w-screen md:h-screen h-auto flex relative overflow-hidden">
+      {/* <img
+        src="/coast_2.webp"
+        alt=""
+        fetchPriority="high"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover z-10"
+      /> */}
       <div className=" md:w-[50%] w-[98vw] mx-auto">
         <div className="md:mt-[100px] mt-[70px]">
           <div className="md:pl-[40px] md:mr-[50px] ml-[10px] text-[34px] md:leading-[34px] leading-[24px] mb-[30px]">
@@ -56,7 +64,7 @@ export default function HomeViewAlt() {
             nabywcy nieruchomości poszukują kogoś kto będzie dla Nich oparciem
             na każdym etapie procesu zakupu nie tylko przy sprzedaży. Dzięki
             doskonałej komunikacji i naszym metodom jesteśmy obecni w całym
-            prociesie zapewniając Jego bezpieczeństwo i bezbolesność.
+            procesie zapewniając jego bezpieczeństwo i bezbolesność.
           </p>{" "}
           <br></br>
           {/* <p
@@ -68,46 +76,54 @@ export default function HomeViewAlt() {
             className={`${Red_Hat_DisplayFont.className} font-bold md:h-[50px] w-[80%] md:pl-[45px] mx-auto md:mx-0`}
           >
             <div className="w-auto h-auto border-gray-900 flex">
-              <div className="h-[100px] w-[100px] mr-[15px] relative rounded-md overflow-hidden">
+              <div className="md:h-[150px] md:w-[150px] w-[100px] mr-[15px] relative rounded-md overflow-hidden">
                 {" "}
                 <Image
                   src="/Marek.webp"
                   fill
                   objectFit="cover"
-                  objectPosition="top"
+                  objectPosition="center -25px"
                   alt="onesta_Marek"
                 ></Image>
+                <div className="absolute bottom-0 right-0 w-[70px] h-[70px] border-r-[6px] border-b-[6px] border-[#E9B75F] rounded-md"></div>
               </div>
-
-              <div className="h-[100px] w-[100px] mr-[15px] relative rounded-md overflow-hidden">
+              <div className="md:h-[150px] md:w-[150px] w-[100px]  mr-[15px] relative rounded-md overflow-hidden">
                 <Image
-                  src="/Karolina.png"
+                  src="/Karolina.webp"
                   fill
                   objectFit="cover"
-                  objectPosition="top"
+                  objectPosition="center -24px"
                   alt="onesta_Karolina"
                 ></Image>
+                <div className="absolute bottom-0 right-0 w-[70px] h-[70px] border-r-[6px] border-b-[6px] border-[#E9B75F] rounded-md"></div>
               </div>
-              <div className="shadow-md h-[100px] w-[100px] ">
-                <div className="h-[100px] w-[100px] mr-[15px] relative rounded-md overflow-hidden">
-                  {" "}
-                  <Image
-                    src="/Przemek.png"
-                    fill
-                    objectFit="cover"
-                    objectPosition="top"
-                    alt="onesta_Przemek"
-                  ></Image>
-                </div>
+              <div className="md:h-[150px] md:w-[150px] w-[100px] h-[100px] mr-[15px] relative rounded-md overflow-hidden">
+                {" "}
+                <Image
+                  src="/Przemek.webp"
+                  fill
+                  objectFit="cover"
+                  objectPosition="center -32px"
+                  alt="onesta_Przemek"
+                ></Image>
+                <div className="absolute bottom-0 right-0 w-[70px] h-[70px] border-r-[6px] border-b-[6px] border-[#E9B75F] rounded-md"></div>
               </div>
             </div>
-            <div className="hidden md:block cursor-pointer border-[#275278] text-[18px] font-[400] mt-[60px] text-left w-[280px] py-[1px]  duration-200 leading-[20px] relative pl-[40px]">
-              Przewijaj stronę dalej <br></br> aby dowiedzieć się więcej
-              <div className="scroll-downs text-black">
-                <div className="mousey">
-                  <div className="scroller"></div>
+            <div className="flex h-auto  mt-[60px] text-[22px]">
+              {/* <div className="hidden md:block cursor-pointer border-[#275278] font-[400] text-left w-[280px] py-[1px]  duration-200 leading-[20px] relative pl-[40px]">
+                Przewijaj stronę dalej <br></br> aby dowiedzieć się więcej
+                <div className="scroll-downs text-black">
+                  <div className="mousey">
+                    <div className="scroller"></div>
+                  </div>
                 </div>
-              </div>
+              </div> */}
+              <Link
+                href="/nieruchomosci/hiszpania"
+                className="my-1 bg-[#ef4444] text-white rounded-md place-items-center grid px-6 py-1"
+              >
+                Wyszukaj oferty
+              </Link>
             </div>
           </div>
         </div>{" "}
@@ -128,7 +144,7 @@ export default function HomeViewAlt() {
           </div> */}
           <div className="w-[90%] lg:h-[560px] h-[800px] clear-both relative overflow-hidden rounded-[10px] border">
             <Image
-              src="/bg_main_site_2.png"
+              src="/main_img_video.webp"
               fill
               sizes="50vw"
               className="object-cover"
@@ -146,7 +162,7 @@ export default function HomeViewAlt() {
                 loop
                 playsInline
                 preload="none"
-                poster="/bg_main_site_2.png"
+                poster="/main_img_video.webp"
                 className="absolute inset-0 h-full w-full object-cover"
               ></video>
             )}
