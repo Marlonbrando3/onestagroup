@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState, useRef } from "react";
-import { IoCheckmarkDone } from "react-icons/io5";
+import { IoCheckmarkDone, IoClose } from "react-icons/io5";
 import { useRouter } from "next/router";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
@@ -97,62 +97,98 @@ export default function Newsletter() {
 
   return (
     <>
-      <div
+      <button
+        type="button"
         ref={newsletterMiniButton}
         onClick={showNewsletter}
-        className="hover:bg-red-600 duration-150 cursor-pointer hidden rounded-r-xl items-center justify-center fixed lg:h-[250px] h-[30px] lg:w-[40px] w-[160px] bottom-0 left-0 lg:top-[150px] top-[55px] bg-green-600 z-50"
+        className="fixed bottom-5 left-5 z-50 hidden items-center justify-center border border-[#d7c8ad] bg-[#182334] px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] text-white shadow-[0_14px_34px_rgba(24,35,52,0.22)] transition hover:border-[#b8954c] hover:bg-[#243449] lg:bottom-auto lg:top-[150px] lg:h-[220px] lg:w-[44px] lg:px-0 lg:py-0"
       >
-        <p className="lg:rotate-90 whitespace-nowrap w-[300px] h-[30px] text-[20px] pl-[10px] md:pl-auto text-white font-[500]">
-          Newsletter
-        </p>
-      </div>
+        <span className="whitespace-nowrap lg:rotate-90">Newsletter</span>
+      </button>
       <div
         ref={newsletter}
-        className="rounded-md mx-[5px] md:mx-auto invisible lg:w-[600px] lg:h-[380px] bg-white border-red-500 lg:top-[120px] top-[95px] left-0 right-0 z-[60] fixed shadow-2xl overflow-hidden"
+        className="invisible fixed left-0 right-0 top-[88px] z-[60] mx-[14px] overflow-hidden border border-[#e5dac7] bg-[#fbf8f2] text-[#182334] shadow-[0_24px_70px_rgba(24,35,52,0.24)] md:mx-auto md:w-[640px] lg:top-[120px]"
       >
         <div
           ref={newsletterConfirmation}
-          className="hidden aboslute w-full h-full bg-green-700 z-30 flex-col justify-center items-center"
+          className="absolute inset-0 z-30 hidden flex-col items-center justify-center bg-[#182334] px-8 text-center"
         >
-          <IoCheckmarkDone className="w-[80px] h-[80px] text-white" />
-          <p className="text-white text-[30px]">Udało się!</p>
-          <div
-            onClick={hideNewsletter}
-            className="bg-white px-[15px] py-[8px] mt-[15px] rounded-[6px] font-semibold cursor-pointer"
-          >
-            Zamknij komunikat
-          </div>
-        </div>
-        <div className="px-[3px] pt-[12px] text-center lg:px-[10px] lg:pt-[20px] text-[18px] md:leading-6 leading-5">
-          <p className="font-bold text-[24px] mb-[5px]">Witamy Cię serdecznie!</p>
-          <p>
-            Zapraszamy Cię do zapisu na nasz{" "}
-            <span className="font-bold md:text-[20px] text-[12px]">newsletter</span> i
-            otrzymuj informacje o <span className="font-bold text-[20px]">nowościach</span> lub
-            artykułach dot. zakupu nieruchomości, inwestowania w nieruchomoci oraz ciekawych miejsc w
-            ciepłych krajach.
+          <IoCheckmarkDone className="h-16 w-16 text-[#d8b66a]" />
+          <p className="mt-4 text-2xl font-semibold text-white">
+            Dziękujemy za zapis.
           </p>
+          <p className="mt-3 max-w-sm text-sm leading-6 text-white/72">
+            Od teraz będziemy wysyłać Ci wybrane materiały i aktualności z rynku nieruchomości za granicą.
+          </p>
+          <button
+            type="button"
+            onClick={hideNewsletter}
+            className="mt-7 border border-white/20 bg-white px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] text-[#182334] transition hover:bg-[#d8b66a]"
+          >
+            Zamknij
+          </button>
         </div>
-        <form className=" flex flex-col px-[5px] md:px-[100px] py-[20px]" onSubmit={newNewsletter}>
-          <div className="flex flex-col mb-[20px] text-[17px]">
-            {/* <label className='pb-1 font-[700]'>Imię i nazwisko (wymagane)</label> */}
+
+        <button
+          type="button"
+          onClick={hideNewsletter}
+          aria-label="Zamknij newsletter"
+          className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-[#e5dac7] bg-white text-[#182334] transition hover:border-[#b8954c]"
+        >
+          <IoClose className="h-5 w-5" />
+        </button>
+
+        <div className="grid md:grid-cols-[0.9fr_1.1fr]">
+          <aside className="bg-[#182334] px-6 py-7 text-white md:px-8 md:py-10">
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#d8b66a]">
+              Newsletter Onesta
+            </p>
+            <h2 className="mt-5 text-3xl font-semibold leading-tight">
+              Wiedza, która pomaga kupować spokojniej.
+            </h2>
+            <p className="mt-5 text-sm leading-7 text-white/72">
+              Wysyłamy tylko konkretne materiały: poradniki, zmiany formalne, nowe kierunki i praktyczne wskazówki przed zakupem nieruchomości za granicą.
+            </p>
+            <div className="mt-7 space-y-3 text-sm text-white/80">
+              <p className="border-l border-[#d8b66a] pl-4">
+                Proces zakupu i dokumenty
+              </p>
+              <p className="border-l border-[#d8b66a] pl-4">
+                Hiszpania, Cypr i kolejne rynki
+              </p>
+              <p className="border-l border-[#d8b66a] pl-4">
+                Bez spamu i przypadkowych ofert
+              </p>
+            </div>
+          </aside>
+
+          <form className="flex flex-col bg-white px-5 py-7 md:px-8 md:py-10" onSubmit={newNewsletter}>
+            <div className="mb-6 pr-10">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#9b7a36]">
+                Dołącz do listy
+              </p>
+              <p className="mt-3 text-sm leading-6 text-[#5f6b7a]">
+                Zostaw dane, a wyślemy Ci najważniejsze materiały bez informacyjnego szumu.
+              </p>
+            </div>
+
+          <div className="mb-4 flex flex-col text-[15px]">
             <input
               ref={name}
               name="name"
               onChange={handleForm}
-              className="h-[40px] rounded-md border border-gray-700 pl-3 placeholder:text-gray-600 placeholder:font-semibold"
-              placeholder="Twoje imię"
+              className="h-12 border border-[#d7c8ad] bg-[#fbf8f2] px-4 text-[#182334] outline-none transition placeholder:text-[#8a94a3] focus:border-[#b8954c] focus:bg-white"
+              placeholder="Imię"
               required
             ></input>
           </div>
-          <div className="flex flex-col mb-[20px] text-[17px]">
-            {/* <label className='pb-1 font-[700]'>Adres email (wymagane)</label> */}
+          <div className="mb-4 flex flex-col text-[15px]">
             <input
               ref={email}
               name="email"
               onChange={handleForm}
-              className="h-[40px] rounded-md border border-gray-600 pl-3 placeholder:text-gray-600 placeholder:font-semibold"
-              placeholder="Twój adres e-mail"
+              className="h-12 border border-[#d7c8ad] bg-[#fbf8f2] px-4 text-[#182334] outline-none transition placeholder:text-[#8a94a3] focus:border-[#b8954c] focus:bg-white"
+              placeholder="Adres e-mail"
               required
             ></input>
           </div>
@@ -165,29 +201,31 @@ export default function Newsletter() {
               placeholder="Numer telefonu (opcjonalnie)"
             ></input>
           </div> */}
-          <div className="flex mb-[20px] text-[19px]">
+          <label className="mb-5 flex cursor-pointer items-start gap-3 text-[13px] leading-5 text-[#5f6b7a]">
             <input
               type="checkbox"
-              className="cursor-pointer h-[20px] w-[20px] rounded-md border-2 border-gray-600 pl-3 placeholder:text-gray-600 placeholder:font-semibold"
+              className="mt-1 h-5 w-5 shrink-0 cursor-pointer accent-[#b8954c]"
               required
               placeholder="Numer telefonu (opcjonalnie)"
             ></input>
-            <p className="leading-5 pl-1 text-[14px] font-[500]">
-              Akceptuję regulamin i politykę prywatności (wymagane)
-            </p>
-          </div>
-          <div className="flex justify-between">
-            <button className="border-[2px] border-green-600 duration-150 md:w-[68%] w-[49%] h-[35px] bg-green-600 rounded-md text-[22px] font-[700] text-white hover:bg-white hover:text-black">
-              Zapisuję się
+            <span>
+              Akceptuję politykę prywatności i zgadzam się na otrzymywanie newslettera.
+            </span>
+          </label>
+          <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+            <button className="h-12 bg-[#182334] px-5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#b8954c]">
+              Zapisz mnie
             </button>
-            <div
+            <button
+              type="button"
               onClick={hideNewsletter}
-              className="cursor-pointer text-center border-[1px] border-black duration-150 md:w-[30%] w-[49%] h-[35px] bg-white rounded-md text-[18px] font-[300] text-black hover:bg-white hover:text-black leading-[35px]"
+              className="h-12 border border-[#d7c8ad] bg-white px-5 text-xs font-bold uppercase tracking-[0.16em] text-[#182334] transition hover:border-[#182334]"
             >
-              Może później
-            </div>
+              Później
+            </button>
           </div>
-        </form>
+          </form>
+        </div>
       </div>
     </>
   );
