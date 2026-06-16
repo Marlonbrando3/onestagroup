@@ -21,11 +21,14 @@ export default function CRMAddContactPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setSaved(false);
+    const normalizedPhone = form.phone.replace(/[\s\u00a0]+/g, "");
+    setForm((current) => ({ ...current, phone: normalizedPhone }));
     const contact = await addContact({
       name: form.name,
       company: "Bez firmy",
       email: form.email,
-      phone: form.phone,
+      phone: normalizedPhone,
       value: Number(form.maxBudget || 0),
       maxBudget: Number(form.maxBudget || 0),
       country: form.country,

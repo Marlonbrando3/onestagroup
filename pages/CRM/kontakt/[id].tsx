@@ -217,12 +217,14 @@ export default function CRMContactCardPage() {
     }
 
     setContactFormError("");
+    const normalizedPhone = contactForm.phone.replace(/[\s\u00a0]+/g, "");
+    setContactForm((current) => ({ ...current, phone: normalizedPhone }));
     setIsSavingContact(true);
     const updatedContact = await updateContact({
       id: contactId,
       name: contactForm.name,
       email: contactForm.email,
-      phone: contactForm.phone,
+      phone: normalizedPhone,
       value: Number(contactForm.maxBudget || 0),
       maxBudget: Number(contactForm.maxBudget || 0),
       country: contactForm.country,

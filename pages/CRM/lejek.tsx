@@ -41,7 +41,6 @@ const emptyPipelineContactForm = {
   name: "",
   email: "",
   phone: "",
-  value: "",
   maxBudget: "",
   country: "",
   bedrooms: "",
@@ -116,7 +115,6 @@ export default function CRMPipelinePage() {
   const {
     contacts,
     error,
-    addContact,
     updateContact,
     updateContactStatus,
     deleteContact,
@@ -651,40 +649,61 @@ export default function CRMPipelinePage() {
       setPipelineContactFormError("Imie i nazwisko jest wymagane.");
       return;
     }
-
-    setPipelineContactFormError("");
-    setIsSavingPipelineContact(true);
-    const targetPipelineId = addContactPipelineId;
-    const contact = await addContact({
-      name: pipelineContactForm.name,
-      company: "Bez firmy",
-      email: pipelineContactForm.email,
-      phone: pipelineContactForm.phone,
-      value: Number(
-        pipelineContactForm.value || pipelineContactForm.maxBudget || 0,
-      ),
-      maxBudget: Number(pipelineContactForm.maxBudget || 0),
-      country: pipelineContactForm.country,
-      bedrooms: pipelineContactForm.bedrooms,
-      bathrooms: pipelineContactForm.bathrooms,
-      coast: pipelineContactForm.coast,
-      purchaseTimeline: pipelineContactForm.purchaseTimeline,
-      pipelineOwner:
-        visibleOwner === "all" || visibleOwner === null
-          ? currentUserEmail
-          : visibleOwner,
-      pipelineId:
-        targetPipelineId === defaultCrmPipeline.id ? null : targetPipelineId,
-      status: addContactStage,
-    });
-    setIsSavingPipelineContact(false);
-    if (!contact) {
-      setPipelineContactFormError("Nie udalo sie dodac kontaktu.");
+    const normalizedPhone = pipelineContactForm.phone.replace(/[\s\u00a0]+/g, "");
+    if (!normalizedPhone) {
+      setPipelineContactFormError("Numer telefonu jest wymagany.");
       return;
     }
-    if (targetPipelineId !== selectedPipelineId) {
-      await reload();
+    if (!normalizedPhone.startsWith("+")) {
+      setPipelineContactFormError("Numer telefonu musi zaczynac sie od prefixu +.");
+      return;
     }
+
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) {
+      setPipelineContactFormError("Zaloguj sie, aby dodac kontakt.");
+      return;
+    }
+
+    setPipelineContactFormError("");
+    setPipelineContactForm((current) => ({ ...current, phone: normalizedPhone }));
+    setIsSavingPipelineContact(true);
+    const targetPipelineId = addContactPipelineId;
+    const response = await fetch("/api/crm/contacts", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: pipelineContactForm.name,
+        company: "Bez firmy",
+        email: pipelineContactForm.email,
+        phone: normalizedPhone,
+        value: Number(pipelineContactForm.maxBudget || 0),
+        maxBudget: Number(pipelineContactForm.maxBudget || 0),
+        country: pipelineContactForm.country,
+        bedrooms: pipelineContactForm.bedrooms,
+        bathrooms: pipelineContactForm.bathrooms,
+        coast: pipelineContactForm.coast,
+        purchaseTimeline: pipelineContactForm.purchaseTimeline,
+        pipelineOwner:
+          visibleOwner === "all" || visibleOwner === null
+            ? currentUserEmail
+            : visibleOwner,
+        pipelineId:
+          targetPipelineId === defaultCrmPipeline.id ? null : targetPipelineId,
+        status: addContactStage,
+      }),
+    });
+    const result = await response.json();
+    setIsSavingPipelineContact(false);
+    if (!response.ok) {
+      setPipelineContactFormError(result.error || "Nie udalo sie dodac kontaktu.");
+      return;
+    }
+    await reload();
     closePipelineContactPopup();
   }
 
@@ -1583,14 +1602,38 @@ export default function CRMPipelinePage() {
                     />
                   </label>
                   <label>
-                    <span>Kwota</span>
+                    <span>Adres email</span>
                     <input
-                      inputMode="numeric"
-                      value={pipelineContactForm.value}
+                      type="email"
+                      value={pipelineContactForm.email}
                       onChange={(event) =>
                         setPipelineContactForm({
                           ...pipelineContactForm,
-                          value: event.target.value,
+                          email: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    <span>Numer telefonu</span>
+                    <input
+                      value={pipelineContactForm.phone}
+                      onChange={(event) =>
+                        setPipelineContactForm({
+                          ...pipelineContactForm,
+                          phone: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    <span>Termin zakupu</span>
+                    <input
+                      value={pipelineContactForm.purchaseTimeline}
+                      onChange={(event) =>
+                        setPipelineContactForm({
+                          ...pipelineContactForm,
+                          purchaseTimeline: event.target.value,
                         })
                       }
                     />
@@ -1651,31 +1694,6 @@ export default function CRMPipelinePage() {
                 </div>
                 <div className="crmPipelineContactColumn">
                   <label>
-                    <span>Numer telefonu</span>
-                    <input
-                      value={pipelineContactForm.phone}
-                      onChange={(event) =>
-                        setPipelineContactForm({
-                          ...pipelineContactForm,
-                          phone: event.target.value,
-                        })
-                      }
-                    />
-                  </label>
-                  <label>
-                    <span>Adres email</span>
-                    <input
-                      type="email"
-                      value={pipelineContactForm.email}
-                      onChange={(event) =>
-                        setPipelineContactForm({
-                          ...pipelineContactForm,
-                          email: event.target.value,
-                        })
-                      }
-                    />
-                  </label>
-                  <label>
                     <span>Kraj</span>
                     <input
                       value={pipelineContactForm.country}
@@ -1732,18 +1750,6 @@ export default function CRMPipelinePage() {
                         setPipelineContactForm({
                           ...pipelineContactForm,
                           maxBudget: event.target.value,
-                        })
-                      }
-                    />
-                  </label>
-                  <label>
-                    <span>Termin zakupu</span>
-                    <input
-                      value={pipelineContactForm.purchaseTimeline}
-                      onChange={(event) =>
-                        setPipelineContactForm({
-                          ...pipelineContactForm,
-                          purchaseTimeline: event.target.value,
                         })
                       }
                     />

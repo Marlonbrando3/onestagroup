@@ -24,6 +24,10 @@ type UpdateContactPayload = Partial<NewContactPayload> & {
   id: string;
 };
 
+function normalizeCrmPhone(value: string) {
+  return value.replace(/[\s\u00a0]+/g, "");
+}
+
 export function useCrmContacts(owner?: string | null, pipelineId?: string) {
   const [contacts, setContacts] = useState<CrmContact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -91,10 +95,14 @@ export function useCrmContacts(owner?: string | null, pipelineId?: string) {
       return null;
     }
 
+    const normalizedPayload = {
+      ...payload,
+      phone: normalizeCrmPhone(payload.phone),
+    };
     const response = await fetch("/api/crm/contacts", {
       method: "POST",
       headers: { ...authHeaders, "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(normalizedPayload),
     });
     const result = await response.json();
     if (!response.ok) {
@@ -141,15 +149,22 @@ export function useCrmContacts(owner?: string | null, pipelineId?: string) {
       return null;
     }
 
+    const normalizedPayload =
+      typeof payload.phone === "undefined"
+        ? payload
+        : {
+            ...payload,
+            phone: normalizeCrmPhone(payload.phone),
+          };
     const previousContacts = contacts;
     setContacts((current) =>
       current.map((contact) =>
-        contact.id === payload.id
+        contact.id === normalizedPayload.id
           ? {
               ...contact,
-              ...payload,
-              value: payload.value ?? contact.value,
-              status: payload.status ?? contact.status,
+              ...normalizedPayload,
+              value: normalizedPayload.value ?? contact.value,
+              status: normalizedPayload.status ?? contact.status,
             }
           : contact,
       ),
@@ -158,7 +173,7 @@ export function useCrmContacts(owner?: string | null, pipelineId?: string) {
     const response = await fetch("/api/crm/contacts", {
       method: "PATCH",
       headers: { ...authHeaders, "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(normalizedPayload),
     });
     const result = await response.json();
     if (!response.ok) {

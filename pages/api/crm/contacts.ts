@@ -18,6 +18,57 @@ function handleSupabaseError(res: NextApiResponse, error: { message: string }) {
   return res.status(500).json({ error: isMissingTable ? missingTableMessage : error.message });
 }
 
+function normalizePhone(value: unknown) {
+  return String(value || "").replace(/[\s\u00a0]+/g, "");
+}
+
+async function findDuplicatePhone(phone: string, ignoredContactId?: string) {
+  if (!supabaseServer) return null;
+
+  const { data, error } = await supabaseServer
+    .from(tableName)
+    .select("id, phone")
+    .neq("phone", "");
+
+  if (error) {
+    throw error;
+  }
+
+  return (data || []).find((contact) => {
+    if (ignoredContactId && contact.id === ignoredContactId) return false;
+    return normalizePhone(contact.phone) === phone;
+  }) || null;
+}
+
+async function validatePhone(
+  res: NextApiResponse,
+  rawPhone: unknown,
+  ignoredContactId?: string,
+) {
+  const phone = normalizePhone(rawPhone);
+  if (!phone) {
+    res.status(400).json({ error: "Numer telefonu jest wymagany." });
+    return null;
+  }
+  if (!phone.startsWith("+")) {
+    res.status(400).json({ error: "Numer telefonu musi zaczynac sie od prefixu +." });
+    return null;
+  }
+
+  try {
+    const duplicate = await findDuplicatePhone(phone, ignoredContactId);
+    if (duplicate) {
+      res.status(409).json({ error: "Kontakt z tym numerem telefonu juz istnieje w CRM." });
+      return null;
+    }
+  } catch (error: any) {
+    handleSupabaseError(res, error);
+    return null;
+  }
+
+  return phone;
+}
+
 function mapContact(row: any) {
   const rawStatus = row.status || "Zakwalifikowano";
   return {
@@ -118,6 +169,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: "Imie i nazwisko jest wymagane." });
     }
 
+    const phone = await validatePhone(res, req.body?.phone);
+    if (!phone) {
+      return;
+    }
+
     const pipelineId = String(req.body?.pipelineId || "");
     const status = String(req.body?.status || "").trim() || "Zakwalifikowano";
     const requestedOwner = normalizeCrmEmail(req.body?.pipelineOwner);
@@ -127,7 +183,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       name,
       company: String(req.body?.company || "").trim() || "Bez firmy",
       email: String(req.body?.email || "").trim(),
-      phone: String(req.body?.phone || "").trim(),
+      phone,
       owner: "Marco",
       value: Number(req.body?.value || 0),
       country: String(req.body?.country || "").trim(),
@@ -184,7 +240,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (typeof req.body?.phone !== "undefined") {
-      payload.phone = String(req.body.phone || "").trim();
+      const phone = await validatePhone(res, req.body.phone, id);
+      if (!phone) {
+        return;
+      }
+      payload.phone = phone;
     }
 
     if (typeof req.body?.value !== "undefined") {
