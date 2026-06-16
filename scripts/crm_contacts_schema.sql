@@ -23,8 +23,21 @@ alter table public.crm_contacts add column if not exists coast text not null def
 alter table public.crm_contacts add column if not exists purchase_timeline text not null default '';
 alter table public.crm_contacts add column if not exists note text not null default '';
 alter table public.crm_contacts add column if not exists pipeline_owner text not null default 'marek.marszalek@onesta.com.pl';
+alter table public.crm_contacts add column if not exists pipeline_id uuid;
 
 create index if not exists crm_contacts_pipeline_owner_idx on public.crm_contacts (pipeline_owner);
+create index if not exists crm_contacts_pipeline_id_idx on public.crm_contacts (pipeline_id);
+
+create table if not exists public.crm_pipelines (
+  id uuid primary key default gen_random_uuid(),
+  owner_email text not null,
+  name text not null,
+  stages jsonb not null default '[]'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists crm_pipelines_owner_email_idx on public.crm_pipelines (owner_email);
 
 create table if not exists public.crm_activities (
   id uuid primary key default gen_random_uuid(),

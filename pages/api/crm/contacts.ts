@@ -1,7 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { crmLegacyStatusMap, crmStatuses } from "@/components/crm/types";
-import { canAccessCrm, getVisibleCrmOwner, isCrmAdmin, normalizeCrmEmail } from "@/components/crm/users";
+import {
+  canAccessCrm,
+  getVisibleCrmOwner,
+  isCrmAdmin,
+  normalizeCrmEmail,
+} from "@/components/crm/users";
 
 const tableName = "crm_contacts";
 const missingTableMessage =
@@ -31,7 +36,10 @@ function mapContact(row: any) {
     purchaseTimeline: row.purchase_timeline || "",
     note: row.note || "",
     pipelineOwner: row.pipeline_owner || "",
-    status: crmStatuses.includes(rawStatus) ? rawStatus : crmLegacyStatusMap[rawStatus] || "Zakwalifikowano",
+    pipelineId: row.pipeline_id || null,
+    status: crmStatuses.includes(rawStatus)
+      ? rawStatus
+      : crmLegacyStatusMap[rawStatus] || rawStatus || "Zakwalifikowano",
     source: row.source || "",
     lastContact: row.last_contact || "",
     createdAt: row.created_at,
@@ -79,6 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === "GET") {
     const owner = getVisibleCrmOwner(crmUser.email, req.query.owner);
+    const pipelineId = String(req.query.pipelineId || "");
     let query = supabaseServer
       .from(tableName)
       .select("*")
@@ -86,6 +95,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (owner !== "all") {
       query = query.eq("pipeline_owner", owner);
+    }
+
+    if (pipelineId && pipelineId !== "default") {
+      query = query.eq("pipeline_id", pipelineId);
+    } else {
+      query = query.is("pipeline_id", null);
     }
 
     const { data, error } = await query;
@@ -103,7 +118,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: "Imie i nazwisko jest wymagane." });
     }
 
-    const status = crmStatuses.includes(req.body?.status) ? req.body.status : "Zakwalifikowano";
+    const pipelineId = String(req.body?.pipelineId || "");
+    const status = String(req.body?.status || "").trim() || "Zakwalifikowano";
     const requestedOwner = normalizeCrmEmail(req.body?.pipelineOwner);
     const pipelineOwner =
       crmUser.isAdmin && requestedOwner ? getVisibleCrmOwner(crmUser.email, requestedOwner) : crmUser.email;
@@ -122,6 +138,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       purchase_timeline: String(req.body?.purchaseTimeline || "").trim(),
       note: String(req.body?.note || "").trim(),
       pipeline_owner: pipelineOwner === "all" ? crmUser.email : pipelineOwner,
+      pipeline_id: pipelineId && pipelineId !== "default" ? pipelineId : null,
       status,
       source: "CRM",
       last_contact: new Date().toISOString().slice(0, 10),
@@ -146,7 +163,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: "Brak ID kontaktu." });
     }
 
-    const payload: Record<string, string | number> = {
+    const payload: Record<string, string | number | null> = {
       last_contact: new Date().toISOString().slice(0, 10),
     };
 
@@ -203,11 +220,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (typeof req.body?.status !== "undefined") {
-      const status = req.body.status;
-      if (!crmStatuses.includes(status)) {
+      const status = String(req.body.status || "").trim();
+      if (!status) {
         return res.status(400).json({ error: "Nieprawidlowy etap." });
       }
       payload.status = status;
+    }
+
+    if (typeof req.body?.pipelineId !== "undefined") {
+      const pipelineId = String(req.body.pipelineId || "");
+      payload.pipeline_id = pipelineId && pipelineId !== "default" ? pipelineId : null;
     }
 
     if (crmUser.isAdmin && typeof req.body?.pipelineOwner !== "undefined") {

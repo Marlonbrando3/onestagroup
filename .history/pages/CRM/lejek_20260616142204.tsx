@@ -1739,6 +1739,7 @@ export default function CRMPipelinePage() {
           align-items: center;
           background: #f4f6f8;
           border-radius: 8px;
+          display: grid;
           flex: 0 0 auto;
           gap: 8px;
           grid-template-columns: minmax(180px, 280px) auto auto;

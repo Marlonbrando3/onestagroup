@@ -1736,7 +1736,7 @@ export default function CRMPipelinePage() {
         }
 
         .crmPipelineEditorTop {
-          align-items: center;
+          align-items: start;
           background: #f4f6f8;
           border-radius: 8px;
           flex: 0 0 auto;

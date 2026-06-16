@@ -94,14 +94,14 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
             display: grid;
             font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
               "Segoe UI", sans-serif;
-            grid-template-columns: 92px minmax(0, 1fr);
+            grid-template-columns: 64px minmax(0, 1fr);
             min-height: 100vh;
           }
 
           .crmSidebar {
             background: #18232f;
             color: #eef4f7;
-            padding: 18px 0;
+            padding: 13px 0;
           }
 
           .crmBrand {
@@ -113,12 +113,12 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
           .crmBrandMark {
             align-items: center;
             background: #216e63;
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             font-weight: 800;
-            height: 42px;
+            height: 29px;
             justify-content: center;
-            width: 42px;
+            width: 29px;
           }
 
           .crmBrand strong,
@@ -195,7 +195,7 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
           display: grid;
           font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
             sans-serif;
-          grid-template-columns: 92px minmax(0, 1fr);
+          grid-template-columns: 64px minmax(0, 1fr);
           min-height: 100vh;
         }
 
@@ -204,9 +204,9 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
           color: #eef4f7;
           display: flex;
           flex-direction: column;
-          gap: 26px;
+          gap: 18px;
           overflow: visible;
-          padding: 18px 0;
+          padding: 13px 0;
           position: relative;
           z-index: 40;
         }
@@ -220,12 +220,12 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
         .crmBrandMark {
           align-items: center;
           background: #216e63;
-          border-radius: 8px;
+          border-radius: 6px;
           display: flex;
           font-weight: 800;
-          height: 42px;
+          height: 29px;
           justify-content: center;
-          width: 42px;
+          width: 29px;
         }
 
         .crmBrandText {
@@ -235,21 +235,21 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
         .crmNav {
           align-items: center;
           display: grid;
-          gap: 18px;
+          gap: 13px;
           justify-items: center;
         }
 
         :global(.crmNavItem),
         .crmLogout {
           align-items: center;
-          border-radius: 8px;
+          border-radius: 6px;
           color: #ffffff;
           display: flex;
-          height: 56px;
+          height: 39px;
           justify-content: center;
           padding: 0;
           position: relative;
-          width: 56px;
+          width: 39px;
         }
 
         :global(.crmTooltip) {
@@ -291,12 +291,12 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
         .crmNav :global(svg),
         .crmLogout :global(svg) {
           fill: none;
-          height: 30px;
+          height: 21px;
           stroke: currentColor;
           stroke-linecap: round;
           stroke-linejoin: round;
           stroke-width: 2;
-          width: 30px;
+          width: 21px;
         }
 
         .crmLogout {

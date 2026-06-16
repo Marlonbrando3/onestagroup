@@ -1,13 +1,4 @@
-export type CrmStatus =
-  | "Zakwalifikowano"
-  | "Brak kontaktu"
-  | "Nawiązano kontakt"
-  | "Zakup w perspektywie"
-  | "Wysłano pierwsze oferty"
-  | "Rozmowy po ofertach"
-  | "Deklaracja/termin przylotu"
-  | "Etap prezentacji"
-  | "Do weryfikacji";
+export type CrmStatus = string;
 export type CrmActivityType =
   | "Wyślij oferty"
   | "Follow up"
@@ -32,6 +23,7 @@ export type CrmContact = {
   purchaseTimeline: string;
   note: string;
   pipelineOwner: string;
+  pipelineId?: string | null;
   status: CrmStatus;
   source: string;
   lastContact: string;
@@ -50,7 +42,7 @@ export const crmStatuses: CrmStatus[] = [
   "Do weryfikacji",
 ];
 
-export const crmStageProbabilities: Record<CrmStatus, number | null> = {
+export const crmStageProbabilities: Partial<Record<CrmStatus, number | null>> = {
   Zakwalifikowano: 5,
   "Brak kontaktu": 5,
   "Nawiązano kontakt": 10,
@@ -75,6 +67,32 @@ export const crmActivityTypes: CrmActivityType[] = [
   "Zadzwoń",
   "Spotkanie",
   "Prezentacja",
+];
+
+export type CrmPipeline = {
+  id: string;
+  name: string;
+  ownerEmail: string;
+  stages: CrmStatus[];
+  isDefault?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export const defaultCrmPipeline: CrmPipeline = {
+  id: "default",
+  name: "Lejek podstawowy",
+  ownerEmail: "global",
+  stages: crmStatuses,
+  isDefault: true,
+};
+
+export const customCrmPipelineDraftStages: CrmStatus[] = [
+  "Zakwalifikowano",
+  "Nawiązano kontakt",
+  "Złożono ofertę",
+  "Rozmowy po ofertach",
+  "Negocjacje",
 ];
 
 export type CrmActivity = {

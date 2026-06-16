@@ -1736,11 +1736,11 @@ export default function CRMPipelinePage() {
         }
 
         .crmPipelineEditorTop {
-          align-items: center;
+          align-items: start;
           background: #f4f6f8;
           border-radius: 8px;
           flex: 0 0 auto;
-          gap: 8px;
+          gap: 28px;
           grid-template-columns: minmax(180px, 280px) auto auto;
           padding: 8px;
         }

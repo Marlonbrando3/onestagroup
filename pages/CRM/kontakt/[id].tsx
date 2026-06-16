@@ -733,13 +733,14 @@ export default function CRMContactCardPage() {
       <style jsx>{`
         .crmContactPage {
           display: grid;
-          gap: 18px;
-          padding: 24px;
+          font-size: 13px;
+          gap: 14px;
+          padding: 19px;
         }
         .crmContactHeader {
           align-items: center;
           display: grid;
-          gap: 14px;
+          gap: 11px;
           grid-template-columns: auto minmax(0, 1fr) auto;
         }
         .crmContactHeader a {
@@ -748,13 +749,13 @@ export default function CRMContactCardPage() {
         }
         .crmContactHeader p {
           color: #216e63;
-          font-size: 13px;
+          font-size: 10px;
           font-weight: 800;
-          margin: 0 0 4px;
+          margin: 0 0 3px;
           text-transform: uppercase;
         }
         .crmContactHeader h1 {
-          font-size: clamp(28px, 4vw, 42px);
+          font-size: clamp(22px, 3.2vw, 34px);
           line-height: 1.08;
           margin: 0;
         }
@@ -765,7 +766,7 @@ export default function CRMContactCardPage() {
         .crmContactGrid {
           align-items: start;
           display: grid;
-          gap: 18px;
+          gap: 14px;
           grid-template-columns: 320px minmax(0, 1fr);
         }
         .crmContactSummary,
@@ -777,8 +778,8 @@ export default function CRMContactCardPage() {
         }
         .crmContactSummary {
           display: grid;
-          gap: 12px;
-          padding: 18px;
+          gap: 10px;
+          padding: 14px;
         }
         .crmSummaryTop {
           align-items: start;
@@ -791,8 +792,9 @@ export default function CRMContactCardPage() {
           border-radius: 8px;
           color: #155149;
           font-weight: 800;
-          min-height: 38px;
-          padding: 0 12px;
+          font-size: 12px;
+          min-height: 30px;
+          padding: 0 10px;
         }
         .crmAvatarLarge {
           align-items: center;
@@ -800,11 +802,11 @@ export default function CRMContactCardPage() {
           border-radius: 8px;
           color: #ffffff;
           display: flex;
-          font-size: 28px;
+          font-size: 22px;
           font-weight: 800;
-          height: 64px;
+          height: 51px;
           justify-content: center;
-          width: 64px;
+          width: 51px;
         }
         .crmContactSummary h2,
         .crmContactSummary p {
@@ -816,14 +818,14 @@ export default function CRMContactCardPage() {
         }
         .crmContactSummary dl {
           display: grid;
-          gap: 10px;
-          margin: 8px 0 0;
+          gap: 8px;
+          margin: 6px 0 0;
         }
         .crmContactSummary dl > div {
           border-top: 1px solid #eef1f4;
           display: grid;
-          gap: 4px;
-          padding-top: 10px;
+          gap: 3px;
+          padding-top: 8px;
         }
         .crmContactSummary dt,
         .crmContactSummary dd {
@@ -839,21 +841,21 @@ export default function CRMContactCardPage() {
           border-radius: 8px;
           font: inherit;
           font-weight: 800;
-          min-height: 40px;
+          min-height: 32px;
           outline: 0;
-          padding: 0 10px;
+          padding: 0 8px;
           width: 100%;
         }
         .crmContactEditForm {
           display: grid;
-          gap: 10px;
+          gap: 8px;
         }
         .crmContactEditForm label {
           color: #667085;
           display: grid;
-          font-size: 13px;
+          font-size: 10px;
           font-weight: 800;
-          gap: 6px;
+          gap: 5px;
         }
         .crmContactEditForm input,
         .crmContactEditForm select {
@@ -862,20 +864,21 @@ export default function CRMContactCardPage() {
           border-radius: 8px;
           color: #17202a;
           font: inherit;
-          min-height: 42px;
+          min-height: 34px;
           outline: 0;
-          padding: 0 10px;
+          padding: 0 8px;
           width: 100%;
         }
         .crmEditActions {
           display: flex;
-          gap: 8px;
+          gap: 6px;
         }
         .crmEditActions button {
           border-radius: 8px;
+          font-size: 12px;
           font-weight: 800;
-          min-height: 42px;
-          padding: 0 14px;
+          min-height: 34px;
+          padding: 0 11px;
         }
         .crmEditActions button:first-child {
           background: #216e63;
@@ -893,25 +896,26 @@ export default function CRMContactCardPage() {
         }
         .crmActivityPanel {
           display: grid;
-          gap: 16px;
-          padding: 18px;
+          gap: 13px;
+          padding: 14px;
         }
         .crmPanelTabs {
           background: #f4f6f8;
           border: 1px solid #d8dee7;
           border-radius: 8px;
           display: grid;
-          gap: 4px;
+          gap: 3px;
           grid-template-columns: repeat(2, minmax(0, 1fr));
-          padding: 4px;
+          padding: 3px;
         }
         .crmPanelTabs button {
           background: transparent;
           border: 0;
           border-radius: 6px;
           color: #4b5563;
+          font-size: 12px;
           font-weight: 900;
-          min-height: 38px;
+          min-height: 30px;
         }
         .crmPanelTabs button.active {
           background: #216e63;
@@ -919,7 +923,7 @@ export default function CRMContactCardPage() {
         }
         .crmTabs {
           display: grid;
-          gap: 8px;
+          gap: 6px;
           grid-template-columns: repeat(5, minmax(0, 1fr));
         }
         .crmTabs button {
@@ -927,8 +931,9 @@ export default function CRMContactCardPage() {
           border: 1px solid #d8dee7;
           border-radius: 8px;
           color: #1f2937;
+          font-size: 12px;
           font-weight: 800;
-          min-height: 42px;
+          min-height: 34px;
         }
         .crmTabs button.active {
           background: #e7f2ef;
@@ -937,11 +942,11 @@ export default function CRMContactCardPage() {
         }
         .crmActivityForm {
           display: grid;
-          gap: 10px;
+          gap: 8px;
         }
         .crmContactNoteForm {
           display: grid;
-          gap: 10px;
+          gap: 8px;
         }
         .crmContactNoteForm textarea {
           background: #f9fafb;
@@ -949,9 +954,9 @@ export default function CRMContactCardPage() {
           border-radius: 8px;
           color: #17202a;
           font: inherit;
-          min-height: 170px;
+          min-height: 136px;
           outline: 0;
-          padding: 12px;
+          padding: 10px;
           resize: vertical;
           width: 100%;
         }
@@ -960,10 +965,11 @@ export default function CRMContactCardPage() {
           border: 0;
           border-radius: 8px;
           color: #ffffff;
+          font-size: 12px;
           font-weight: 800;
           justify-self: start;
-          min-height: 44px;
-          padding: 0 16px;
+          min-height: 35px;
+          padding: 0 13px;
         }
         .crmContactNoteForm button:disabled {
           cursor: not-allowed;
@@ -976,19 +982,19 @@ export default function CRMContactCardPage() {
           border: 1px solid #d8dee7;
           border-radius: 8px;
           font: inherit;
-          min-height: 44px;
+          min-height: 35px;
           outline: 0;
-          padding: 0 12px;
+          padding: 0 10px;
           width: 100%;
         }
         .crmActivityForm textarea {
-          min-height: 120px;
-          padding: 12px;
+          min-height: 96px;
+          padding: 10px;
           resize: vertical;
         }
         .crmFormRow {
           display: grid;
-          gap: 10px;
+          gap: 8px;
           grid-template-columns: 1fr 180px;
         }
         .crmActivityForm button {
@@ -996,34 +1002,35 @@ export default function CRMContactCardPage() {
           border: 0;
           border-radius: 8px;
           color: #ffffff;
+          font-size: 12px;
           font-weight: 800;
           justify-self: start;
-          min-height: 44px;
-          padding: 0 16px;
+          min-height: 35px;
+          padding: 0 13px;
         }
         .crmCheckboxRow {
           align-items: center;
           color: #4b5563;
           display: flex;
-          font-size: 14px;
+          font-size: 11px;
           font-weight: 800;
-          gap: 9px;
+          gap: 7px;
         }
         .crmActivityForm .crmCheckboxRow input {
           accent-color: #216e63;
           flex: 0 0 auto;
-          height: 18px;
+          height: 14px;
           min-height: 0;
           padding: 0;
-          width: 18px;
+          width: 14px;
         }
         .crmOverduePanel {
           background: #fff7f6;
           border: 1px solid #f3b8b2;
           border-radius: 8px;
           display: grid;
-          gap: 10px;
-          padding: 14px;
+          gap: 8px;
+          padding: 11px;
         }
         .crmOverdueHeader {
           align-items: center;
@@ -1032,20 +1039,20 @@ export default function CRMContactCardPage() {
         }
         .crmOverdueHeader h2 {
           color: #b42318;
-          font-size: 18px;
+          font-size: 14px;
           margin: 0;
         }
         .crmOverdueHeader span {
           background: #fee4e2;
           border-radius: 999px;
           color: #b42318;
-          font-size: 13px;
+          font-size: 10px;
           font-weight: 900;
-          padding: 3px 8px;
+          padding: 2px 6px;
         }
         .crmOverdueList {
           display: grid;
-          gap: 8px;
+          gap: 6px;
         }
         .crmOverdueCard {
           align-items: start;
@@ -1053,9 +1060,9 @@ export default function CRMContactCardPage() {
           border: 1px solid #f3c7c2;
           border-radius: 8px;
           display: grid;
-          gap: 10px;
+          gap: 8px;
           grid-template-columns: 34px minmax(0, 1fr);
-          padding: 10px;
+          padding: 8px;
         }
         .crmOverdueCard > button {
           align-items: center;
@@ -1064,37 +1071,37 @@ export default function CRMContactCardPage() {
           border-radius: 999px;
           color: #d92d20;
           display: flex;
-          font-size: 16px;
+          font-size: 13px;
           font-weight: 900;
-          height: 30px;
+          height: 24px;
           justify-content: center;
           line-height: 1;
           padding: 0;
-          width: 30px;
+          width: 24px;
         }
         .crmOverdueCard strong {
           display: block;
-          font-size: 15px;
+          font-size: 12px;
           line-height: 1.2;
         }
         .crmOverdueCard p {
           color: #b42318;
-          font-size: 12px;
+          font-size: 10px;
           font-weight: 800;
-          margin: 4px 0 0;
+          margin: 3px 0 0;
         }
         .crmOverdueCard small {
           color: #667085;
           display: block;
-          font-size: 12px;
+          font-size: 10px;
           font-weight: 700;
           line-height: 1.35;
-          margin-top: 5px;
+          margin-top: 4px;
         }
         .crmTimeline {
           display: grid;
-          gap: 11px;
-          padding-top: 6px;
+          gap: 9px;
+          padding-top: 5px;
         }
         .crmTimelineHeader {
           align-items: center;
@@ -1109,13 +1116,13 @@ export default function CRMContactCardPage() {
           border-radius: 999px;
           color: #4b5563;
           font-weight: 800;
-          font-size: 13px;
-          padding: 3px 8px;
+          font-size: 10px;
+          padding: 2px 6px;
         }
         .crmHistoryRow {
           align-items: start;
           display: grid;
-          gap: 13px;
+          gap: 10px;
           grid-template-columns: 38px minmax(0, 1fr);
           position: relative;
         }
@@ -1142,7 +1149,7 @@ export default function CRMContactCardPage() {
           box-shadow: 0 3px 10px rgba(21, 32, 43, 0.12);
           color: #ffffff;
           display: flex;
-          font-size: 19px;
+          font-size: 15px;
           font-weight: 900;
           height: 38px;
           justify-content: center;
@@ -1169,12 +1176,12 @@ export default function CRMContactCardPage() {
         .crmHistoryTop {
           align-items: start;
           display: flex;
-          gap: 10px;
+          gap: 8px;
           justify-content: space-between;
-          padding: 13px 14px 6px;
+          padding: 10px 11px 5px;
         }
         .crmHistoryTop h3 {
-          font-size: 18px;
+          font-size: 14px;
           line-height: 1.15;
           margin: 0;
         }
@@ -1183,11 +1190,11 @@ export default function CRMContactCardPage() {
           border: 0;
           color: #667085;
           font: inherit;
-          font-size: 16px;
+          font-size: 13px;
           font-weight: 900;
           letter-spacing: 1px;
-          min-height: 26px;
-          padding: 0 3px;
+          min-height: 21px;
+          padding: 0 2px;
         }
         .crmHistoryMenu {
           position: relative;
@@ -1200,10 +1207,10 @@ export default function CRMContactCardPage() {
           box-shadow: 0 12px 28px rgba(21, 32, 43, 0.14);
           display: grid;
           min-width: 118px;
-          padding: 5px;
+          padding: 4px;
           position: absolute;
           right: 0;
-          top: 28px;
+          top: 22px;
           z-index: 40;
         }
         .crmHistoryMenuList button {
@@ -1211,11 +1218,11 @@ export default function CRMContactCardPage() {
           border: 0;
           border-radius: 6px;
           color: #1f2937;
-          font-size: 13px;
+          font-size: 10px;
           font-weight: 800;
           letter-spacing: 0;
-          min-height: 30px;
-          padding: 0 8px;
+          min-height: 24px;
+          padding: 0 6px;
           text-align: left;
         }
         .crmHistoryMenuList button:hover {
@@ -1229,10 +1236,10 @@ export default function CRMContactCardPage() {
           border-radius: 4px;
           color: #b42318;
           display: inline-flex;
-          font-size: 10px;
+          font-size: 8px;
           font-weight: 900;
-          margin-top: 5px;
-          padding: 2px 6px;
+          margin-top: 4px;
+          padding: 2px 5px;
           text-transform: uppercase;
         }
         .crmHistoryMeta {
@@ -1240,26 +1247,26 @@ export default function CRMContactCardPage() {
           color: #667085;
           display: flex;
           flex-wrap: wrap;
-          font-size: 12px;
+          font-size: 10px;
           font-weight: 700;
-          gap: 6px;
-          padding: 0 14px 13px;
+          gap: 5px;
+          padding: 0 11px 10px;
         }
         .crmHistoryMeta span:not(:last-child)::after {
           color: #98a2b3;
           content: "·";
-          margin-left: 6px;
+          margin-left: 5px;
         }
         .crmHistoryNote {
           background: #fff6d7;
           border-radius: 0 0 8px 8px;
           border-top: 1px solid #eadfba;
           color: #242a31;
-          font-size: 14px;
+          font-size: 11px;
           font-weight: 700;
           line-height: 1.45;
           margin: 0;
-          padding: 13px 14px;
+          padding: 10px 11px;
         }
         .crmError {
           color: #b42318;
@@ -1275,9 +1282,10 @@ export default function CRMContactCardPage() {
           background: rgba(15, 23, 42, 0.52);
           bottom: 0;
           display: flex;
+          font-size: 13px;
           justify-content: center;
           left: 0;
-          padding: 24px;
+          padding: 19px;
           position: fixed;
           right: 0;
           top: 0;
@@ -1288,27 +1296,28 @@ export default function CRMContactCardPage() {
           border-radius: 8px;
           box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
           display: grid;
-          gap: 16px;
+          gap: 13px;
           max-height: calc(100vh - 48px);
           max-width: 860px;
           overflow: auto;
-          padding: 18px;
+          padding: 14px;
           width: min(860px, 100%);
         }
         .crmActivityModal header {
           align-items: start;
           display: flex;
-          gap: 16px;
+          gap: 13px;
           justify-content: space-between;
         }
         .crmActivityModal header p {
           color: #216e63;
-          font-size: 13px;
+          font-size: 10px;
           font-weight: 900;
-          margin: 0 0 4px;
+          margin: 0 0 3px;
           text-transform: uppercase;
         }
         .crmActivityModal header h2 {
+          font-size: 19px;
           margin: 0;
         }
         .crmActivityModal header > button {
@@ -1316,21 +1325,22 @@ export default function CRMContactCardPage() {
           border: 1px solid #d8dee7;
           border-radius: 8px;
           color: #1f2937;
-          font-size: 28px;
-          height: 42px;
+          font-size: 22px;
+          height: 34px;
           line-height: 1;
-          width: 42px;
+          width: 34px;
         }
         .crmModalActions {
           display: flex;
-          gap: 10px;
+          gap: 8px;
           justify-content: flex-end;
         }
         .crmModalActions button {
           border-radius: 8px;
+          font-size: 12px;
           font-weight: 800;
-          min-height: 44px;
-          padding: 0 16px;
+          min-height: 35px;
+          padding: 0 13px;
         }
         .crmModalActions button:first-child {
           background: #ffffff;

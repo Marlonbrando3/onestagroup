@@ -874,15 +874,10 @@ export default function CRMPipelinePage() {
                 type="button"
                 onClick={savePipelineDraft}
                 disabled={isSavingPipeline}
-                className="w-[200px]"
               >
                 {isSavingPipeline ? "Zapisywanie..." : "Zapisz zmiany"}
               </button>
-              <button
-                type="button"
-                onClick={closePipelineEditor}
-                className="w-[200px]"
-              >
+              <button type="button" onClick={closePipelineEditor}>
                 Anuluj
               </button>
             </div>
@@ -1739,6 +1734,7 @@ export default function CRMPipelinePage() {
           align-items: center;
           background: #f4f6f8;
           border-radius: 8px;
+          display: grid;
           flex: 0 0 auto;
           gap: 8px;
           grid-template-columns: minmax(180px, 280px) auto auto;
@@ -2090,7 +2086,7 @@ export default function CRMPipelinePage() {
 
         .crmPipelineStagePicker {
           display: flex;
-          height: 59px;
+          height: 250px;
           min-width: 0;
           overflow-x: auto;
           overflow-y: visible;
@@ -2168,7 +2164,7 @@ export default function CRMPipelinePage() {
           font-size: 11px;
           font-weight: 800;
           left: 50%;
-          line-height: 0;
+          line-height: 1;
           opacity: 0;
           padding: 6px 8px;
           pointer-events: none;

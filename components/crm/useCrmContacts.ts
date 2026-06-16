@@ -16,6 +16,7 @@ type NewContactPayload = {
   purchaseTimeline: string;
   note?: string;
   pipelineOwner?: string;
+  pipelineId?: string | null;
   status: CrmStatus;
 };
 
@@ -23,7 +24,7 @@ type UpdateContactPayload = Partial<NewContactPayload> & {
   id: string;
 };
 
-export function useCrmContacts(owner?: string) {
+export function useCrmContacts(owner?: string | null, pipelineId?: string) {
   const [contacts, setContacts] = useState<CrmContact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +41,13 @@ export function useCrmContacts(owner?: string) {
   }, []);
 
   const loadContacts = useCallback(async () => {
+    if (owner === null) {
+      setContacts([]);
+      setError(null);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     const authHeaders = await getAuthHeaders();
@@ -50,7 +58,14 @@ export function useCrmContacts(owner?: string) {
       return;
     }
 
-    const query = owner ? `?owner=${encodeURIComponent(owner)}` : "";
+    const params = new URLSearchParams();
+    if (owner) {
+      params.set("owner", owner);
+    }
+    if (pipelineId) {
+      params.set("pipelineId", pipelineId);
+    }
+    const query = params.toString() ? `?${params.toString()}` : "";
     const response = await fetch(`/api/crm/contacts${query}`, {
       headers: authHeaders,
     });
@@ -62,7 +77,7 @@ export function useCrmContacts(owner?: string) {
     }
     setContacts(result.contacts || []);
     setIsLoading(false);
-  }, [getAuthHeaders, owner]);
+  }, [getAuthHeaders, owner, pipelineId]);
 
   useEffect(() => {
     loadContacts();

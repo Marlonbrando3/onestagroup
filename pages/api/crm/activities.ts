@@ -1,7 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { crmActivityTypes } from "@/components/crm/types";
-import { canAccessCrm, getVisibleCrmOwner, isCrmAdmin, normalizeCrmEmail } from "@/components/crm/users";
+import {
+  canAccessCrm,
+  getVisibleCrmOwner,
+  isCrmAdmin,
+  normalizeCrmEmail,
+} from "@/components/crm/users";
 
 const tableName = "crm_activities";
 const missingTableMessage =
@@ -59,14 +64,27 @@ async function requireCrmAuth(req: NextApiRequest, res: NextApiResponse) {
   };
 }
 
-async function getVisibleContactIds(userEmail: string, requestedOwner?: string | string[]) {
+async function getVisibleContactIds(
+  userEmail: string,
+  requestedOwner?: string | string[],
+  requestedPipelineId?: string | string[],
+) {
   if (!supabaseServer) return [];
 
   const owner = getVisibleCrmOwner(userEmail, requestedOwner);
+  const pipelineId = Array.isArray(requestedPipelineId)
+    ? requestedPipelineId[0]
+    : requestedPipelineId;
   let query = supabaseServer.from("crm_contacts").select("id");
 
   if (owner !== "all") {
     query = query.eq("pipeline_owner", owner);
+  }
+
+  if (pipelineId && pipelineId !== "default") {
+    query = query.eq("pipeline_id", pipelineId);
+  } else {
+    query = query.is("pipeline_id", null);
   }
 
   const { data, error } = await query;
@@ -127,7 +145,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       query = query.eq("contact_id", contactId);
     } else {
-      const contactIds = await getVisibleContactIds(crmUser.email, req.query.owner);
+      const contactIds = await getVisibleContactIds(
+        crmUser.email,
+        req.query.owner,
+        req.query.pipelineId,
+      );
       if (!contactIds.length) {
         return res.status(200).json({ activities: [] });
       }
