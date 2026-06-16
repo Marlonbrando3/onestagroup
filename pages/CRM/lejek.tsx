@@ -14,6 +14,7 @@ import {
 import { useCrmContacts } from "@/components/crm/useCrmContacts";
 import {
   crmUsers,
+  getCrmUser,
   isCrmAdmin,
   normalizeCrmEmail,
 } from "@/components/crm/users";
@@ -174,7 +175,12 @@ export default function CRMPipelinePage() {
   );
   const [editingPipelineId, setEditingPipelineId] = useState("");
   const [isSavingPipeline, setIsSavingPipeline] = useState(false);
+  const [deletePipelineConfirmation, setDeletePipelineConfirmation] =
+    useState<CrmPipeline | null>(null);
+  const [deletePipelineCountdown, setDeletePipelineCountdown] = useState(0);
+  const [isDeletingPipeline, setIsDeletingPipeline] = useState(false);
   const didDrag = useRef(false);
+  const currentCrmUser = getCrmUser(currentUserEmail);
 
   const activePipeline =
     pipelines.find((pipeline) => pipeline.id === selectedPipelineId) ||
@@ -348,6 +354,23 @@ export default function CRMPipelinePage() {
     };
   }, [selectedPipelineId, visibleOwner]);
 
+  useEffect(() => {
+    if (!deletePipelineConfirmation) return;
+
+    setDeletePipelineCountdown(3);
+    const interval = window.setInterval(() => {
+      setDeletePipelineCountdown((current) => {
+        if (current <= 1) {
+          window.clearInterval(interval);
+          return 0;
+        }
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [deletePipelineConfirmation]);
+
   function handleDragStart(event: DragEvent<HTMLElement>, contact: CrmContact) {
     didDrag.current = true;
     setDraggedId(contact.id);
@@ -434,6 +457,9 @@ export default function CRMPipelinePage() {
   }
 
   function openNewPipelineEditor() {
+    if (currentUserEmail) {
+      setSelectedOwner(currentUserEmail);
+    }
     setEditingPipelineId("");
     setPipelineDraftName(emptyPipelineDraftName);
     setPipelineDraftStages(customCrmPipelineDraftStages);
@@ -459,6 +485,60 @@ export default function CRMPipelinePage() {
     setEditingPipelineId("");
     setPipelinesError("");
     setIsSavingPipeline(false);
+  }
+
+  function requestDeletePipeline() {
+    if (!canEditActivePipeline) return;
+    setPipelinesError("");
+    setDeletePipelineConfirmation(activePipeline);
+  }
+
+  function cancelDeletePipeline() {
+    setDeletePipelineConfirmation(null);
+    setDeletePipelineCountdown(0);
+    setIsDeletingPipeline(false);
+  }
+
+  async function confirmDeletePipeline() {
+    if (
+      !deletePipelineConfirmation ||
+      deletePipelineCountdown > 0 ||
+      isDeletingPipeline
+    ) {
+      return;
+    }
+
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) {
+      setPipelinesError("Zaloguj sie, aby usunac lejek.");
+      return;
+    }
+
+    setIsDeletingPipeline(true);
+    setPipelinesError("");
+    const response = await fetch("/api/crm/pipelines", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: deletePipelineConfirmation.id }),
+    });
+    const result = await response.json();
+    setIsDeletingPipeline(false);
+    if (!response.ok) {
+      setPipelinesError(result.error || "Nie udalo sie usunac lejka.");
+      return;
+    }
+
+    setPipelines((current) =>
+      current.filter((pipeline) => pipeline.id !== deletePipelineConfirmation.id),
+    );
+    setSelectedPipelineId(defaultCrmPipeline.id);
+    setDeletePipelineConfirmation(null);
+    setDeletePipelineCountdown(0);
+    await reload();
   }
 
   function updatePipelineDraftStage(index: number, value: string) {
@@ -804,7 +884,18 @@ export default function CRMPipelinePage() {
     <CrmLayout active="pipeline">
       <section className="crmPipelinePage">
         <div className="crmPipelineTopbar">
-          {userIsAdmin ? (
+          {isPipelineEditorOpen ? (
+            <label>
+              <span>Właściciel</span>
+              <input
+                aria-label="Właściciel lejka"
+                className="crmPipelineOwnerLocked"
+                disabled
+                readOnly
+                value={currentCrmUser?.label || currentUserEmail}
+              />
+            </label>
+          ) : userIsAdmin ? (
             <label>
               <span>Właściciel</span>
               <select
@@ -848,13 +939,22 @@ export default function CRMPipelinePage() {
             Szansa sprzedaży
           </button>
           {canEditActivePipeline ? (
-            <button
-              className="crmEditPipelineButton"
-              type="button"
-              onClick={openEditPipelineEditor}
-            >
-              Edytuj lejek
-            </button>
+            <>
+              <button
+                className="crmEditPipelineButton"
+                type="button"
+                onClick={openEditPipelineEditor}
+              >
+                Edytuj lejek
+              </button>
+              <button
+                className="crmDeletePipelineButton"
+                type="button"
+                onClick={requestDeletePipeline}
+              >
+                Usuń lejek
+              </button>
+            </>
           ) : null}
         </div>
         {error ? <p className="crmError">{error}</p> : null}
@@ -874,14 +974,12 @@ export default function CRMPipelinePage() {
                 type="button"
                 onClick={savePipelineDraft}
                 disabled={isSavingPipeline}
-                className="w-[200px]"
               >
                 {isSavingPipeline ? "Zapisywanie..." : "Zapisz zmiany"}
               </button>
               <button
                 type="button"
                 onClick={closePipelineEditor}
-                className="w-[200px]"
               >
                 Anuluj
               </button>
@@ -893,7 +991,7 @@ export default function CRMPipelinePage() {
               {pipelineDraftStages.map((stage, index) => (
                 <section
                   className="crmPipelineEditorColumn"
-                  key={`${stage}-${index}`}
+                  key={`pipeline-stage-${index}`}
                 >
                   <input
                     aria-label={`Etap ${index + 1}`}
@@ -1668,6 +1766,40 @@ export default function CRMPipelinePage() {
             </form>
           </section>
         ) : null}
+        {deletePipelineConfirmation ? (
+          <section
+            aria-modal="true"
+            className="crmPipelineDeleteOverlay"
+            role="dialog"
+          >
+            <div className="crmPipelineDeleteModal">
+              <div>
+                <p>Potwierdzenie usunięcia</p>
+                <h2>Usunąć lejek „{deletePipelineConfirmation.name}”?</h2>
+                <span>
+                  Kontakty z tego lejka zostaną przeniesione do lejka
+                  podstawowego.
+                </span>
+              </div>
+              <div className="crmPipelineDeleteActions">
+                <button type="button" onClick={cancelDeletePipeline}>
+                  Anuluj
+                </button>
+                <button
+                  disabled={deletePipelineCountdown > 0 || isDeletingPipeline}
+                  type="button"
+                  onClick={confirmDeletePipeline}
+                >
+                  {deletePipelineCountdown > 0
+                    ? `Usuń za ${deletePipelineCountdown}s`
+                    : isDeletingPipeline
+                      ? "Usuwanie..."
+                      : "Usuń lejek"}
+                </button>
+              </div>
+            </div>
+          </section>
+        ) : null}
       </section>
       <style jsx>{`
         .crmPipelinePage {
@@ -1702,7 +1834,8 @@ export default function CRMPipelinePage() {
           margin: 0;
         }
 
-        .crmPipelineTopbar select {
+        .crmPipelineTopbar select,
+        .crmPipelineTopbar input {
           appearance: none;
           background: #ffffff;
           border: 1px solid #d5d9df;
@@ -1713,9 +1846,29 @@ export default function CRMPipelinePage() {
           padding: 7px 28px 7px 10px;
         }
 
+        .crmPipelineTopbar input.crmPipelineOwnerLocked {
+          background: #e4e7ec;
+          color: #667085;
+          cursor: not-allowed;
+          font-weight: 800;
+          padding-right: 10px;
+        }
+
         .crmSalesChanceButton,
         .crmEditPipelineButton {
           background: #216e63;
+          border: 0;
+          border-radius: 6px;
+          color: #ffffff;
+          font: inherit;
+          font-size: 12px;
+          font-weight: 900;
+          min-height: 34px;
+          padding: 0 12px;
+        }
+
+        .crmDeletePipelineButton {
+          background: #d92d20;
           border: 0;
           border-radius: 6px;
           color: #ffffff;
@@ -1739,9 +1892,11 @@ export default function CRMPipelinePage() {
           align-items: center;
           background: #f4f6f8;
           border-radius: 8px;
+          display: grid;
           flex: 0 0 auto;
-          gap: 8px;
-          grid-template-columns: minmax(180px, 280px) auto auto;
+          gap: 10px;
+          grid-template-columns: 280px max-content max-content;
+          justify-content: start;
           padding: 8px;
         }
 
@@ -1762,6 +1917,7 @@ export default function CRMPipelinePage() {
           font-size: 12px;
           font-weight: 900;
           min-height: 36px;
+          min-width: 142px;
           padding: 0 12px;
         }
 
@@ -2229,6 +2385,84 @@ export default function CRMPipelinePage() {
         .crmPipelineContactActions button:disabled {
           cursor: not-allowed;
           opacity: 0.72;
+        }
+
+        .crmPipelineDeleteOverlay {
+          align-items: center;
+          background: rgba(15, 23, 42, 0.58);
+          display: flex;
+          inset: 0;
+          justify-content: center;
+          padding: 18px;
+          position: fixed;
+          z-index: 190;
+        }
+
+        .crmPipelineDeleteModal {
+          background: #ffffff;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          box-shadow: 0 28px 80px rgba(21, 32, 43, 0.24);
+          display: grid;
+          gap: 18px;
+          max-width: 520px;
+          padding: 20px;
+          width: min(100%, 520px);
+        }
+
+        .crmPipelineDeleteModal p {
+          color: #b42318;
+          font-size: 12px;
+          font-weight: 900;
+          margin: 0 0 4px;
+          text-transform: uppercase;
+        }
+
+        .crmPipelineDeleteModal h2 {
+          color: #17202a;
+          font-size: 22px;
+          line-height: 1.15;
+          margin: 0;
+        }
+
+        .crmPipelineDeleteModal span {
+          color: #667085;
+          display: block;
+          font-size: 13px;
+          font-weight: 700;
+          line-height: 1.45;
+          margin-top: 8px;
+        }
+
+        .crmPipelineDeleteActions {
+          display: flex;
+          gap: 10px;
+          justify-content: flex-end;
+        }
+
+        .crmPipelineDeleteActions button {
+          border: 0;
+          border-radius: 8px;
+          font: inherit;
+          font-size: 13px;
+          font-weight: 900;
+          min-height: 40px;
+          padding: 0 14px;
+        }
+
+        .crmPipelineDeleteActions button:first-child {
+          background: #e4e7ec;
+          color: #344054;
+        }
+
+        .crmPipelineDeleteActions button:last-child {
+          background: #d92d20;
+          color: #ffffff;
+        }
+
+        .crmPipelineDeleteActions button:disabled {
+          cursor: wait;
+          opacity: 0.55;
         }
 
         .crmPipelineColumn {
@@ -2840,7 +3074,8 @@ export default function CRMPipelinePage() {
           .crmPipelineTopbar label,
           .crmPipelineTopbar select,
           .crmSalesChanceButton,
-          .crmEditPipelineButton {
+          .crmEditPipelineButton,
+          .crmDeletePipelineButton {
             width: 100%;
           }
 

@@ -9,6 +9,7 @@ import {
 import { supabaseServer } from "@/lib/supabaseClient";
 
 const tableName = "crm_pipelines";
+const contactsTableName = "crm_contacts";
 const missingTableMessage =
   "Tabela crm_pipelines nie istnieje w Supabase. Uruchom SQL z scripts/crm_contacts_schema.sql w Supabase SQL Editor.";
 
@@ -154,6 +155,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ pipeline: mapPipeline(data) });
   }
 
-  res.setHeader("Allow", "GET, POST, PATCH");
+  if (req.method === "DELETE") {
+    const id = String(req.body?.id || "");
+    if (!id || id === defaultCrmPipeline.id) {
+      return res.status(400).json({ error: "Nie mozna usunac tego lejka." });
+    }
+
+    const { error: contactsError } = await supabaseServer
+      .from(contactsTableName)
+      .update({
+        pipeline_id: null,
+        status: defaultCrmPipeline.stages[0] || "Zakwalifikowano",
+        last_contact: new Date().toISOString().slice(0, 10),
+      })
+      .eq("pipeline_id", id)
+      .eq("pipeline_owner", crmUser.email);
+
+    if (contactsError) {
+      return handleSupabaseError(res, contactsError);
+    }
+
+    const { error } = await supabaseServer
+      .from(tableName)
+      .delete()
+      .eq("id", id)
+      .eq("owner_email", crmUser.email);
+
+    if (error) {
+      return handleSupabaseError(res, error);
+    }
+
+    return res.status(200).json({ deleted: true, id });
+  }
+
+  res.setHeader("Allow", "GET, POST, PATCH, DELETE");
   return res.status(405).json({ error: "Method not allowed" });
 }

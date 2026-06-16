@@ -19,7 +19,7 @@ export const crmUsers: CrmUser[] = [
   },
   {
     email: "karolina@fenomen.nieruchomosci.pl",
-    label: "Karolina",
+    label: "Karolina Bakowicz",
     role: "user",
   },
 ];
