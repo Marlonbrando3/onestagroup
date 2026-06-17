@@ -144,6 +144,8 @@ const METAINMO_PAGE_SIZE = 20;
 const SECONDARY_PAGE_SIZE = 20;
 const ONESTA_PAGE_SIZE = 20;
 const ALL_PAGE_SIZE = 20;
+const CLOUDINARY_MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const CLOUDINARY_TARGET_IMAGE_BYTES = 9.5 * 1024 * 1024;
 const emptySourceCounts: SourceCounts = {
   metainmo: null,
   secondary: null,
@@ -262,6 +264,86 @@ function uid(prefix: string) {
 function formatFileSize(size: number) {
   if (size < 1024 * 1024) return `${Math.max(1, Math.round(size / 1024))} KB`;
   return `${(size / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function compressedFileName(fileName: string) {
+  const baseName = fileName.replace(/\.[^.]+$/, "") || "image";
+  return `${baseName}.jpg`;
+}
+
+function loadImageFromFile(file: File) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error(`Nie udało się odczytać obrazu ${file.name}`));
+    };
+    image.src = url;
+  });
+}
+
+function canvasToJpegBlob(canvas: HTMLCanvasElement, quality: number) {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error("Nie udało się skompresować obrazu"));
+      },
+      "image/jpeg",
+      quality,
+    );
+  });
+}
+
+async function compressImageForCloudinary(file: File) {
+  if (file.size <= CLOUDINARY_MAX_IMAGE_BYTES) return file;
+
+  const image = await loadImageFromFile(file);
+  const steps = [
+    { maxDimension: 2600, quality: 0.86 },
+    { maxDimension: 2400, quality: 0.82 },
+    { maxDimension: 2200, quality: 0.78 },
+    { maxDimension: 2000, quality: 0.74 },
+    { maxDimension: 1800, quality: 0.7 },
+    { maxDimension: 1600, quality: 0.66 },
+    { maxDimension: 1400, quality: 0.62 },
+    { maxDimension: 1200, quality: 0.58 },
+  ];
+
+  for (const step of steps) {
+    const scale = Math.min(1, step.maxDimension / Math.max(image.width, image.height));
+    const width = Math.max(1, Math.round(image.width * scale));
+    const height = Math.max(1, Math.round(image.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Przeglądarka nie obsługuje kompresji obrazów");
+
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, width, height);
+    context.drawImage(image, 0, 0, width, height);
+
+    const blob = await canvasToJpegBlob(canvas, step.quality);
+    if (blob.size <= CLOUDINARY_TARGET_IMAGE_BYTES) {
+      return new File([blob], compressedFileName(file.name), {
+        type: "image/jpeg",
+        lastModified: file.lastModified,
+      });
+    }
+  }
+
+  throw new Error(
+    `${file.name} ma ${formatFileSize(file.size)}, a limit Cloudinary to ${formatFileSize(
+      CLOUDINARY_MAX_IMAGE_BYTES,
+    )}. Zmniejsz ten plik przed dodaniem.`,
+  );
 }
 
 async function readJsonResponse<T>(response: Response, fallbackMessage: string) {
@@ -1286,6 +1368,16 @@ export default function OnesariPage() {
       const token = sessionData.session?.access_token;
       if (!token) throw new Error("Brak aktywnej sesji");
 
+      const preparedImages = [];
+      for (const [index, image] of images.entries()) {
+        setNotice(`Przygotowuję zdjęcie ${index + 1}/${images.length}...`);
+        const file = await compressImageForCloudinary(image.file);
+        preparedImages.push({
+          draft: image,
+          file,
+        });
+      }
+
       const signatureResponse = await fetch("/api/onesari/cloudinary-signature", {
         method: "POST",
         headers: {
@@ -1294,10 +1386,10 @@ export default function OnesariPage() {
         },
         body: JSON.stringify({
           uploadBatchId: uid("manual-upload"),
-          files: images.map((image) => ({
-            name: image.name,
-            size: image.size,
-            type: image.file.type,
+          files: preparedImages.map(({ file }) => ({
+            name: file.name,
+            size: file.size,
+            type: file.type,
           })),
         }),
       });
@@ -1314,15 +1406,15 @@ export default function OnesariPage() {
           ),
         );
       }
-      if (!signatureData.uploads?.length || signatureData.uploads.length !== images.length) {
+      if (!signatureData.uploads?.length || signatureData.uploads.length !== preparedImages.length) {
         throw new Error("Cloudinary nie zwrócił podpisów dla wszystkich zdjęć.");
       }
 
       const uploadedImages: SavedCloudinaryImage[] = [];
-      for (const [index, image] of images.entries()) {
+      for (const [index, image] of preparedImages.entries()) {
         const upload = signatureData.uploads[index];
         const cloudinaryPayload = new FormData();
-        cloudinaryPayload.append("file", image.file, image.name);
+        cloudinaryPayload.append("file", image.file, image.file.name);
         cloudinaryPayload.append("api_key", signatureData.apiKey);
         cloudinaryPayload.append("folder", upload.folder);
         cloudinaryPayload.append("overwrite", upload.overwrite);
@@ -1330,7 +1422,7 @@ export default function OnesariPage() {
         cloudinaryPayload.append("timestamp", String(upload.timestamp));
         cloudinaryPayload.append("signature", upload.signature);
 
-        setNotice(`Wysyłam zdjęcie ${index + 1}/${images.length} do Cloudinary...`);
+        setNotice(`Wysyłam zdjęcie ${index + 1}/${preparedImages.length} do Cloudinary...`);
         const uploadResponse = await fetch(
           `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
           {
@@ -1340,16 +1432,18 @@ export default function OnesariPage() {
         );
         const uploadData = await readJsonResponse<CloudinaryUploadResponse>(
           uploadResponse,
-          `Nie udało się wysłać zdjęcia ${image.name}`,
+          `Nie udało się wysłać zdjęcia ${image.draft.name}`,
         );
 
         if (!uploadResponse.ok || uploadData.error) {
-          throw new Error(uploadData.error?.message || `Nie udało się wysłać zdjęcia ${image.name}`);
+          throw new Error(
+            uploadData.error?.message || `Nie udało się wysłać zdjęcia ${image.draft.name}`,
+          );
         }
 
         const uploadedUrl = uploadData.secure_url || uploadData.url;
         if (!uploadedUrl) {
-          throw new Error(`Cloudinary nie zwrócił URL-a dla zdjęcia ${image.name}`);
+          throw new Error(`Cloudinary nie zwrócił URL-a dla zdjęcia ${image.draft.name}`);
         }
 
         uploadedImages.push({
@@ -1359,8 +1453,8 @@ export default function OnesariPage() {
           cloudinary_asset_id: uploadData.asset_id || null,
           cloudinary_public_id: uploadData.public_id || null,
           cloudinary_version: uploadData.version || null,
-          original_file_name: image.name,
-          bytes: uploadData.bytes || image.size || null,
+          original_file_name: image.draft.name,
+          bytes: uploadData.bytes || image.file.size || null,
           format: uploadData.format || null,
           width: uploadData.width || null,
           height: uploadData.height || null,
