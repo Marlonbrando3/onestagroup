@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabaseServer } from "@/lib/supabaseClient";
-import { isOnesariEnabled, rejectDisabledOnesari } from "@/lib/onesariFeature";
+import { canAccessOnesari, isOnesariEnabled, rejectDisabledOnesari } from "@/lib/onesariFeature";
 
 type SourceCount = "metainmo" | "secondary" | "onesta";
 
@@ -36,6 +36,9 @@ export default async function handler(
     await supabaseServer.auth.getUser(token);
   if (userError || !userData.user) {
     return res.status(401).json({ error: "Brak dostępu" });
+  }
+  if (!canAccessOnesari(userData.user.email)) {
+    return res.status(403).json({ error: "Brak dostępu do Onesari" });
   }
 
   const entries = await Promise.all(

@@ -1,7 +1,21 @@
 import type { NextApiResponse } from "next";
 
+export const onesariUsers = [
+  "marek.marszalek@onesta.com.pl",
+  "karolina@fenomen.nieruchomosci.pl",
+];
+
 export function isOnesariEnabled() {
-  return process.env.ONESARI_ENABLED === "true" || process.env.NODE_ENV !== "production";
+  return true;
+}
+
+export function normalizeOnesariEmail(email?: string | null) {
+  return (email || "").trim().toLowerCase();
+}
+
+export function canAccessOnesari(email?: string | null) {
+  const normalizedEmail = normalizeOnesariEmail(email);
+  return onesariUsers.some((user) => normalizeOnesariEmail(user) === normalizedEmail);
 }
 
 export function rejectDisabledOnesari(res: NextApiResponse) {

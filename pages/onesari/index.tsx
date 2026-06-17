@@ -28,7 +28,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { supabase } from "@/lib/supabaseClient";
-import { isOnesariEnabled } from "@/lib/onesariFeature";
+import { canAccessOnesari, isOnesariEnabled } from "@/lib/onesariFeature";
 
 type MainTab = "dashboard" | "offers" | "add" | "imports";
 type AddTab = "data" | "images";
@@ -43,6 +43,8 @@ type ListingForm = {
   area: string;
   bedrooms: string;
   bathrooms: string;
+  distanceToSeaM: string;
+  price: string;
   market: Market;
   propertyType: PropertyType;
   features: string[];
@@ -52,10 +54,11 @@ type ListingForm = {
   descriptionEn: string;
 };
 
-type Listing = ListingForm & {
+type Listing = Omit<ListingForm, "distanceToSeaM" | "price"> & {
   id: string;
   ref: string;
   source: "Metainmo XML" | "Secondary XML" | "Onesta Base";
+  distanceToSeaM: number | null;
   price: number | null;
   currency: string;
   imageUrl: string;
@@ -65,6 +68,7 @@ type Listing = ListingForm & {
 
 type ImageDraft = {
   id: string;
+  file: File;
   name: string;
   size: number;
   url: string;
@@ -123,6 +127,8 @@ const emptyForm: ListingForm = {
   area: "",
   bedrooms: "",
   bathrooms: "",
+  distanceToSeaM: "",
+  price: "",
   market: "pierwotny",
   propertyType: "apartament",
   features: [],
@@ -141,6 +147,7 @@ const initialListings: Listing[] = [
     area: "82",
     bedrooms: "2",
     bathrooms: "2",
+    distanceToSeaM: 350,
     market: "pierwotny",
     propertyType: "apartament",
     features: ["basen", "parking", "blisko do morza"],
@@ -164,6 +171,7 @@ const initialListings: Listing[] = [
     area: "134",
     bedrooms: "3",
     bathrooms: "2",
+    distanceToSeaM: 900,
     market: "wtórny",
     propertyType: "penthouse",
     features: ["widok na morze", "winda", "garaż"],
@@ -205,6 +213,13 @@ function formatPrice(price: number | null, currency = "EUR") {
     currency: currency || "EUR",
     maximumFractionDigits: 0,
   }).format(price);
+}
+
+function numberFromDraft(value: string) {
+  const normalized = value.trim().replace(",", ".");
+  if (!normalized) return null;
+  const numericValue = Number(normalized);
+  return Number.isFinite(numericValue) ? numericValue : null;
 }
 
 function stripHtml(value: unknown) {
@@ -284,6 +299,7 @@ function mapPropertyToListing(
     area: property.surface_built ? String(property.surface_built) : "",
     bedrooms: property.beds ? String(property.beds) : "",
     bathrooms: property.baths ? String(property.baths) : "",
+    distanceToSeaM: Number(property.distance_to_sea_m || 0) || null,
     market: property.new_build ? "pierwotny" : "wtórny",
     propertyType: normalizePropertyType(property.type),
     features: Array.isArray(property.features) ? property.features : [],
@@ -345,6 +361,8 @@ export default function OnesariPage() {
   const [sourceTotalsRefreshKey, setSourceTotalsRefreshKey] = useState(0);
   const [form, setForm] = useState<ListingForm>(emptyForm);
   const [images, setImages] = useState<ImageDraft[]>([]);
+  const [draggedImageId, setDraggedImageId] = useState<string | null>(null);
+  const [isSavingListing, setIsSavingListing] = useState(false);
   const [listings, setListings] = useState<Listing[]>(initialListings);
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [allPage, setAllPage] = useState(1);
@@ -373,6 +391,10 @@ export default function OnesariPage() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
+        router.push("/login");
+        return;
+      }
+      if (!canAccessOnesari(data.user.email)) {
         router.push("/login");
         return;
       }
@@ -781,6 +803,7 @@ export default function OnesariPage() {
       .filter((file) => file.type.startsWith("image/"))
       .map((file) => ({
         id: uid("image"),
+        file,
         name: file.name,
         size: file.size,
         url: URL.createObjectURL(file),
@@ -805,6 +828,57 @@ export default function OnesariPage() {
     event.preventDefault();
     setDragActive(false);
     addFiles(event.dataTransfer.files);
+  }
+
+  function moveImageBefore(draggedId: string, targetId: string) {
+    if (draggedId === targetId) return;
+
+    setImages((current) => {
+      const fromIndex = current.findIndex((image) => image.id === draggedId);
+      const toIndex = current.findIndex((image) => image.id === targetId);
+      if (
+        fromIndex === -1 ||
+        toIndex === -1 ||
+        fromIndex === toIndex ||
+        fromIndex === toIndex - 1
+      ) {
+        return current;
+      }
+
+      const nextImages = [...current];
+      const [draggedImage] = nextImages.splice(fromIndex, 1);
+      const insertIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
+      nextImages.splice(insertIndex, 0, draggedImage);
+      return nextImages;
+    });
+  }
+
+  function handleImageDragStart(event: DragEvent<HTMLElement>, imageId: string) {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", imageId);
+    setDraggedImageId(imageId);
+  }
+
+  function handleImageDragOver(event: DragEvent<HTMLElement>, imageId: string) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = "move";
+
+    const activeImageId = draggedImageId || event.dataTransfer.getData("text/plain");
+    if (activeImageId) moveImageBefore(activeImageId, imageId);
+  }
+
+  function handleImageDrop(event: DragEvent<HTMLElement>, imageId: string) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const activeImageId = draggedImageId || event.dataTransfer.getData("text/plain");
+    if (activeImageId) moveImageBefore(activeImageId, imageId);
+    setDraggedImageId(null);
+  }
+
+  function handleImageDragEnd() {
+    setDraggedImageId(null);
   }
 
   function removeImage(imageId: string) {
@@ -897,8 +971,10 @@ export default function OnesariPage() {
     }
   }
 
-  function saveListing(event: FormEvent<HTMLFormElement>) {
+  async function saveListing(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSavingListing) return;
+
     const requiredFields: TextField[] = [
       "country",
       "city",
@@ -917,31 +993,59 @@ export default function OnesariPage() {
       return;
     }
 
-    const nextListing: Listing = {
-      ...form,
-      id: uid("listing"),
-      ref: `OW-${Date.now()}`,
-      source: "Onesta Base",
-      price: null,
-      currency: "EUR",
-      imageUrl: images[0]?.url || "/mini_bg_about_us.webp",
-      imagesCount: images.length,
-      createdAt: new Date().toISOString().slice(0, 10),
-    };
+    setIsSavingListing(true);
+    setNotice("Zapisuję ofertę i wysyłam obrazy do Cloudinary...");
 
-    setListings((current) => [nextListing, ...current]);
-    setAllListings((current) => [nextListing, ...current]);
-    setOnestaListings((current) => [nextListing, ...current]);
-    setAllTotal((current) => (current === null ? current : current + 1));
-    setOnestaTotal((current) => (current === null ? current : current + 1));
-    setSourceTotals((current) => ({
-      ...current,
-      onesta: current.onesta === null ? current.onesta : current.onesta + 1,
-    }));
-    resetDraft();
-    setSourceFilter("Onesta Base");
-    setMainTab("offers");
-    setNotice("Oferta została zapisana w lokalnym szkicu Onesari.");
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Brak aktywnej sesji");
+
+      const payload = new FormData();
+      Object.entries(form).forEach(([key, value]) => {
+        if (key === "features") {
+          payload.append(key, JSON.stringify(value));
+          return;
+        }
+        payload.append(key, String(value));
+      });
+      images.forEach((image) => {
+        payload.append("images", image.file, image.name);
+      });
+
+      const response = await fetch("/api/onesari/create", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: payload,
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error || "Nie udało się zapisać oferty");
+      }
+
+      const nextListing = mapPropertyToListing(data.property, "Onesta Base");
+      setListings((current) => [nextListing, ...current]);
+      setAllListings((current) => [nextListing, ...current]);
+      setOnestaListings((current) => [nextListing, ...current]);
+      setAllTotal((current) => (current === null ? current : current + 1));
+      setOnestaTotal((current) => (current === null ? current : current + 1));
+      setSourceTotals((current) => ({
+        ...current,
+        onesta: current.onesta === null ? current.onesta : current.onesta + 1,
+      }));
+      setOnestaRefreshKey((current) => current + 1);
+      setSourceTotalsRefreshKey((current) => current + 1);
+      resetDraft();
+      setSourceFilter("Onesta Base");
+      setMainTab("offers");
+      setNotice("Oferta została zapisana w Supabase, a obrazy trafiły do Cloudinary.");
+    } catch (error: any) {
+      setNotice(error?.message || "Nie udało się zapisać oferty.");
+    } finally {
+      setIsSavingListing(false);
+    }
   }
 
   if (isCheckingAuth) {
@@ -1365,18 +1469,18 @@ export default function OnesariPage() {
                       />
                     </label>
                     <label>
+                      Wybrzeże
+                      <input
+                        value={form.coast}
+                        onChange={(event) => updateField("coast", event.target.value)}
+                      />
+                    </label>
+                    <label>
                       Miasto
                       <input
                         required
                         value={form.city}
                         onChange={(event) => updateField("city", event.target.value)}
-                      />
-                    </label>
-                    <label>
-                      Wybrzeże
-                      <input
-                        value={form.coast}
-                        onChange={(event) => updateField("coast", event.target.value)}
                       />
                     </label>
                     <label>
@@ -1441,6 +1545,26 @@ export default function OnesariPage() {
                         type="date"
                         value={form.availableFrom}
                         onChange={(event) => updateField("availableFrom", event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Odległość od morza (m)
+                      <input
+                        inputMode="numeric"
+                        min="0"
+                        type="number"
+                        value={form.distanceToSeaM}
+                        onChange={(event) => updateField("distanceToSeaM", event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Cena
+                      <input
+                        inputMode="decimal"
+                        min="0"
+                        type="number"
+                        value={form.price}
+                        onChange={(event) => updateField("price", event.target.value)}
                       />
                     </label>
                     <label className="wide">
@@ -1524,8 +1648,19 @@ export default function OnesariPage() {
 
                   {images.length ? (
                     <div className="imageGrid">
-                      {images.map((image) => (
-                        <article className="imageTile" key={image.id}>
+                      {images.map((image, index) => (
+                        <article
+                          aria-label={`${index + 1}. ${image.name}`}
+                          className={`imageTile ${
+                            draggedImageId === image.id ? "dragging" : ""
+                          }`}
+                          draggable
+                          key={image.id}
+                          onDragEnd={handleImageDragEnd}
+                          onDragOver={(event) => handleImageDragOver(event, image.id)}
+                          onDragStart={(event) => handleImageDragStart(event, image.id)}
+                          onDrop={(event) => handleImageDrop(event, image.id)}
+                        >
                           <img alt="" src={image.url} />
                           <div>
                             <strong>{image.name}</strong>
@@ -1559,8 +1694,8 @@ export default function OnesariPage() {
                   </span>
                 </div>
                 {notice ? <p>{notice}</p> : null}
-                <button className="onesariPrimary" type="submit">
-                  <FaSave /> ZAPISZ OFERTĘ
+                <button className="onesariPrimary" disabled={isSavingListing} type="submit">
+                  <FaSave /> {isSavingListing ? "ZAPISUJĘ..." : "ZAPISZ OFERTĘ"}
                 </button>
               </footer>
             </form>
@@ -2426,11 +2561,23 @@ export default function OnesariPage() {
           background: #f9fafb;
           border: 1px solid #d8dee7;
           border-radius: 8px;
+          cursor: grab;
           display: grid;
           gap: 10px;
           min-width: 0;
           padding: 10px;
           position: relative;
+          transition: border-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+        }
+
+        .imageTile:active {
+          cursor: grabbing;
+        }
+
+        .imageTile.dragging {
+          border-color: #216e63;
+          box-shadow: 0 12px 28px rgba(23, 32, 42, 0.14);
+          opacity: 0.62;
         }
 
         .imageTile img {
@@ -2438,6 +2585,7 @@ export default function OnesariPage() {
           border-radius: 6px;
           display: block;
           object-fit: cover;
+          pointer-events: none;
           width: 100%;
         }
 
