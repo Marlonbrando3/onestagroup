@@ -30,12 +30,32 @@ type UploadedImage = {
   height?: number;
 };
 
+type SavedImage = {
+  url: string | null;
+  provider: string;
+  order: number;
+  cloudinary_asset_id: string | null;
+  cloudinary_public_id: string | null;
+  cloudinary_version: number | null;
+  original_file_name: string | null;
+  bytes: number | null;
+  format: string | null;
+  width: number | null;
+  height: number | null;
+};
+
 const propertySelect =
   "id,external_id,ref,source,price,currency,type,town,province,country,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status";
 
-function textValue(form: FormData, key: string) {
-  const value = form.get(key);
-  return typeof value === "string" ? value.trim() : "";
+function isFormDataPayload(payload: FormData | Record<string, unknown>): payload is FormData {
+  return typeof FormData !== "undefined" && payload instanceof FormData;
+}
+
+function textValue(payload: FormData | Record<string, unknown>, key: string) {
+  const value = isFormDataPayload(payload) ? payload.get(key) : payload[key];
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "number" || typeof value === "boolean") return String(value).trim();
+  return "";
 }
 
 function nullableText(value: string) {
@@ -64,6 +84,15 @@ function parseFeatures(value: string) {
   } catch {
     return [];
   }
+}
+
+function featuresValue(payload: FormData | Record<string, unknown>) {
+  const value = isFormDataPayload(payload) ? payload.get("features") : payload.features;
+  if (Array.isArray(value)) {
+    return value.map((feature) => String(feature).trim()).filter(Boolean);
+  }
+  if (typeof value === "string") return parseFeatures(value);
+  return [];
 }
 
 function parseCloudinaryConfig(): CloudinaryConfig {
@@ -110,6 +139,52 @@ async function parseMultipartForm(req: NextApiRequest) {
   return new Response(body, {
     headers: { "content-type": contentType },
   }).formData();
+}
+
+async function parseJsonBody(req: NextApiRequest) {
+  const chunks: Buffer[] = [];
+
+  for await (const chunk of req) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+
+  const body = Buffer.concat(chunks).toString("utf8").trim();
+  if (!body) return {};
+  return JSON.parse(body) as Record<string, unknown>;
+}
+
+function normalizeClientImages(value: unknown): SavedImage[] {
+  if (!Array.isArray(value)) return [];
+
+  const images: SavedImage[] = [];
+
+  value.forEach((image, index) => {
+    if (!image || typeof image !== "object") return;
+    const item = image as Record<string, unknown>;
+    const url = typeof item.url === "string" && item.url.trim() ? item.url.trim() : null;
+    if (!url) return;
+
+    images.push({
+      url,
+      provider: "cloudinary",
+      order: Number.isFinite(Number(item.order)) ? Number(item.order) : index + 1,
+      cloudinary_asset_id:
+        typeof item.cloudinary_asset_id === "string" ? item.cloudinary_asset_id : null,
+      cloudinary_public_id:
+        typeof item.cloudinary_public_id === "string" ? item.cloudinary_public_id : null,
+      cloudinary_version: Number.isFinite(Number(item.cloudinary_version))
+        ? Number(item.cloudinary_version)
+        : null,
+      original_file_name:
+        typeof item.original_file_name === "string" ? item.original_file_name : null,
+      bytes: Number.isFinite(Number(item.bytes)) ? Number(item.bytes) : null,
+      format: typeof item.format === "string" ? item.format : null,
+      width: Number.isFinite(Number(item.width)) ? Number(item.width) : null,
+      height: Number.isFinite(Number(item.height)) ? Number(item.height) : null,
+    });
+  });
+
+  return images;
 }
 
 async function uploadToCloudinary(
@@ -201,53 +276,67 @@ export default async function handler(
   }
 
   try {
-    const form = await parseMultipartForm(req);
-    const features = parseFeatures(textValue(form, "features"));
-    const files = form
-      .getAll("images")
-      .filter((value): value is File => value instanceof File && value.size > 0);
-
-    if (!files.length) {
-      return res.status(400).json({ error: "Dodaj przynajmniej jeden obraz" });
-    }
-
     const now = new Date();
     const ref = `MAN-${now.getTime()}`;
     const externalId = `OW-${ref}`;
-    const cloudinary = parseCloudinaryConfig();
-    const uploadedImages = [];
+    const contentType = req.headers["content-type"] || "";
+    const isJsonRequest = contentType.includes("application/json");
+    let payload: FormData | Record<string, unknown>;
+    let uploadedImages: SavedImage[] = [];
 
-    for (const [index, file] of files.entries()) {
-      const uploaded = await uploadToCloudinary(file, externalId, index, cloudinary);
-      uploadedImages.push(uploaded);
+    if (isJsonRequest) {
+      const body = await parseJsonBody(req);
+      payload =
+        body.form && typeof body.form === "object" && !Array.isArray(body.form)
+          ? (body.form as Record<string, unknown>)
+          : body;
+      uploadedImages = normalizeClientImages(body.images);
+    } else {
+      const form = await parseMultipartForm(req);
+      payload = form;
+      const files = form
+        .getAll("images")
+        .filter((value): value is File => value instanceof File && value.size > 0);
+
+      const cloudinary = parseCloudinaryConfig();
+
+      for (const [index, file] of files.entries()) {
+        const uploaded = await uploadToCloudinary(file, externalId, index, cloudinary);
+        uploadedImages.push(uploaded);
+      }
     }
 
-    const market = textValue(form, "market");
-    const descriptionPl = nullableText(textValue(form, "descriptionPl"));
-    const descriptionEn = nullableText(textValue(form, "descriptionEn"));
-    const availableFrom = nullableText(textValue(form, "availableFrom"));
+    if (!uploadedImages.length) {
+      return res.status(400).json({ error: "Dodaj przynajmniej jeden obraz" });
+    }
+
+    const features = featuresValue(payload);
+    const market = textValue(payload, "market");
+    const descriptionPl = nullableText(textValue(payload, "descriptionPl"));
+    const descriptionEn = nullableText(textValue(payload, "descriptionEn"));
+    const availableFrom = nullableText(textValue(payload, "availableFrom"));
 
     const insertPayload = {
       source: "ONESTA_FTP",
       external_id: externalId,
       complex_id: null,
-      price: nullableNumber(textValue(form, "price")),
+      price: nullableNumber(textValue(payload, "price")),
       currency: "EUR",
       price_freq: null,
       part_ownership: null,
       leasehold: null,
       new_build: market ? market === "pierwotny" : null,
-      type: nullableText(textValue(form, "propertyType")),
-      town: nullableText(textValue(form, "city")),
-      province: nullableText(textValue(form, "coast")),
-      country: nullableText(textValue(form, "country")),
+      type: nullableText(textValue(payload, "propertyType")),
+      town: nullableText(textValue(payload, "city")),
+      province: nullableText(textValue(payload, "coast")),
+      country: nullableText(textValue(payload, "country")),
       ref,
-      surface_built: nullableNumber(textValue(form, "area")),
+      surface_built: nullableNumber(textValue(payload, "area")),
       surface_plot: null,
       latitude: null,
       longitude: null,
-      beds: nullableInteger(textValue(form, "bedrooms")),
-      baths: nullableInteger(textValue(form, "bathrooms")),
+      beds: nullableInteger(textValue(payload, "bedrooms")),
+      baths: nullableInteger(textValue(payload, "bathrooms")),
       pool: features.some((feature) => feature.toLowerCase().includes("basen")),
       urls: {},
       descriptions: {
@@ -260,8 +349,8 @@ export default async function handler(
       updated_at: now.toISOString(),
       status: null,
       operation: null,
-      title: nullableText(textValue(form, "title")),
-      distance_to_sea_m: nullableInteger(textValue(form, "distanceToSeaM")),
+      title: nullableText(textValue(payload, "title")),
+      distance_to_sea_m: nullableInteger(textValue(payload, "distanceToSeaM")),
       available_from: availableFrom,
       surface_usable: null,
       street: null,

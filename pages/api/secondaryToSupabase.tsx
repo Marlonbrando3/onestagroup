@@ -9,6 +9,12 @@ export const config = {
 const SECONDARY_XML_URL =
   "https://www.propmls.com/property-export/26t676x0545/export_1.xml";
 const SECONDARY_TABLE = "properties";
+const SECONDARY_CHUNK_SIZE = 10;
+const SECONDARY_WRITE_DELAY_MS = 900;
+const SECONDARY_DELETE_CHUNK_SIZE = 50;
+const SECONDARY_SELECT_CHUNK_SIZE = 200;
+const RETRY_DELAYS_MS = [1000, 2500, 5000, 10000, 15000];
+let secondaryImportInProgress = false;
 
 function toArray<T>(value: T | T[] | undefined | null): T[] {
   if (!value) return [];
@@ -104,14 +110,154 @@ function extractFeatures(property: any): string[] {
 const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
+function isTransientSupabaseError(error: any) {
+  const message = String(error?.message || error?.details || "").toLowerCase();
+  const status = String(error?.status || error?.code || "");
+  return (
+    status.startsWith("5") ||
+    message.includes("520") ||
+    message.includes("502") ||
+    message.includes("503") ||
+    message.includes("504") ||
+    message.includes("timeout") ||
+    message.includes("network") ||
+    message.includes("fetch failed")
+  );
+}
+
+async function upsertChunkWithRetry(chunk: any[]) {
+  for (let attempt = 1; attempt <= RETRY_DELAYS_MS.length + 1; attempt += 1) {
+    const { error } = await supabaseServer!
+      .from(SECONDARY_TABLE)
+      .upsert(chunk, { onConflict: "external_id", ignoreDuplicates: false });
+
+    if (!error) {
+      return null;
+    }
+
+    if (!isTransientSupabaseError(error) || attempt > RETRY_DELAYS_MS.length) {
+      return error;
+    }
+
+    await delay(RETRY_DELAYS_MS[attempt - 1]);
+  }
+
+  return { message: "Nie udało się zapisać chunku do Supabase" };
+}
+
+async function deleteStaleSecondaryRows(currentExternalIds: Set<string>) {
+  const staleIds: string[] = [];
+  let from = 0;
+
+  while (true) {
+    const { data, error } = await supabaseServer!
+      .from(SECONDARY_TABLE)
+      .select("id,external_id")
+      .like("external_id", "SEC-%")
+      .order("id", { ascending: true })
+      .range(from, from + SECONDARY_SELECT_CHUNK_SIZE - 1);
+
+    if (error) {
+      return { deletedRows: 0, error };
+    }
+
+    const rows = data || [];
+    for (const row of rows) {
+      if (!currentExternalIds.has(String(row.external_id))) {
+        staleIds.push(String(row.id));
+      }
+    }
+
+    if (rows.length < SECONDARY_SELECT_CHUNK_SIZE) break;
+    from += SECONDARY_SELECT_CHUNK_SIZE;
+    await delay(250);
+  }
+
+  let deletedRows = 0;
+  for (let i = 0; i < staleIds.length; i += SECONDARY_DELETE_CHUNK_SIZE) {
+    const ids = staleIds.slice(i, i + SECONDARY_DELETE_CHUNK_SIZE);
+    const { error } = await supabaseServer!
+      .from(SECONDARY_TABLE)
+      .delete()
+      .in("id", ids);
+
+    if (error) {
+      return { deletedRows, error };
+    }
+
+    deletedRows += ids.length;
+    await delay(SECONDARY_WRITE_DELAY_MS);
+  }
+
+  return { deletedRows, error: null };
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   let stage = "init";
+  const streamMode = req.headers["x-import-progress"] === "1";
+  let streamOpen = false;
+  let lockAcquired = false;
+
+  const sendEvent = (payload: Record<string, any>) => {
+    if (!streamMode) return;
+    if (!streamOpen) {
+      res.writeHead(200, {
+        "Content-Type": "application/x-ndjson; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+      });
+      streamOpen = true;
+    }
+    res.write(`${JSON.stringify(payload)}\n`);
+  };
+
+  const sendProgress = (
+    currentStage: string,
+    message: string,
+    percent: number,
+    processed: number | null = null,
+    total: number | null = null,
+  ) => {
+    sendEvent({
+      type: "progress",
+      stage: currentStage,
+      message,
+      percent,
+      processed,
+      total,
+    });
+  };
+
+  const sendError = (status: number, payload: Record<string, any>) => {
+    if (streamMode) {
+      sendEvent({ type: "error", ok: false, status, ...payload });
+      res.end();
+      return;
+    }
+    return res.status(status).json(payload);
+  };
+
+  const sendResult = (payload: Record<string, any>) => {
+    if (streamMode) {
+      sendEvent({ type: "result", ok: true, data: payload });
+      res.end();
+      return;
+    }
+    return res.status(200).json(payload);
+  };
+
   try {
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    if (secondaryImportInProgress) {
+      return sendError(409, {
+        error: "Import Secondary MLS już trwa. Poczekaj na zakończenie obecnego procesu.",
+      });
     }
 
     if (!supabaseServer) {
@@ -120,6 +266,9 @@ export default async function handler(
       });
     }
 
+    secondaryImportInProgress = true;
+    lockAcquired = true;
+
     const parser = new XMLParser({
       ignoreAttributes: false,
       processEntities: false,
@@ -127,6 +276,7 @@ export default async function handler(
     });
 
     stage = "download_parse_xml";
+    sendProgress(stage, "Pobieram XML Secondary MLS...", 5);
     let xmlData = "";
     let lastFetchError: any = null;
     const maxAttempts = 5;
@@ -157,7 +307,7 @@ export default async function handler(
     }
 
     if (lastFetchError || !xmlData) {
-      return res.status(500).json({
+      return sendError(500, {
         error: "Nie udało się pobrać XML",
         details: lastFetchError?.message ?? "download failed",
         stage,
@@ -165,16 +315,18 @@ export default async function handler(
       });
     }
 
+    sendProgress(stage, "Przetwarzam XML Secondary MLS...", 18);
     const parsed = parser.parse(xmlData);
     const properties = detectProperties(parsed);
 
     if (!properties.length) {
-      return res.status(400).json({
+      return sendError(400, {
         error: "Nie znaleziono rekordów w XML (nieznana struktura feedu).",
       });
     }
 
     stage = "map_records";
+    sendProgress(stage, "Mapuję rekordy z XML...", 30, properties.length, properties.length);
     const idCollisions: Record<string, number> = {};
     let duplicateIdRows = 0;
 
@@ -218,42 +370,16 @@ export default async function handler(
       };
     });
 
-    stage = "delete_old_sec_rows";
-    const { count: deletedRows, error: countError } = await supabaseServer
-      .from(SECONDARY_TABLE)
-      .select("id", { count: "exact", head: true })
-      .like("external_id", "SEC-%");
-
-    if (countError) {
-      return res.status(500).json({
-        error: "Błąd liczenia rekordów SEC-* w properties",
-        details: countError.message,
-      });
-    }
-
-    const { error: deleteError } = await supabaseServer
-      .from(SECONDARY_TABLE)
-      .delete()
-      .like("external_id", "SEC-%");
-
-    if (deleteError) {
-      return res.status(500).json({
-        error: "Błąd usuwania rekordów SEC-* z properties",
-        details: deleteError.message,
-      });
-    }
-
     stage = "insert_rows";
-    const chunkSize = 100;
+    const chunkSize = SECONDARY_CHUNK_SIZE;
     let insertedRows = 0;
+    sendProgress(stage, `Rozpoczynam zapis do bazy: 0/${mapped.length}`, 50, 0, mapped.length);
     for (let i = 0; i < mapped.length; i += chunkSize) {
       const chunk = mapped.slice(i, i + chunkSize);
-      const { error } = await supabaseServer
-        .from(SECONDARY_TABLE)
-        .insert(chunk);
+      const error = await upsertChunkWithRetry(chunk);
 
       if (error) {
-        return res.status(500).json({
+        return sendError(500, {
           error: "Błąd zapisu do properties",
           details: error.message,
           stage,
@@ -261,25 +387,62 @@ export default async function handler(
         });
       }
       insertedRows += chunk.length;
+      const percent =
+        mapped.length > 0 ? Math.min(90, 50 + Math.round((insertedRows / mapped.length) * 40)) : 90;
+      sendProgress(
+        stage,
+        `Zapis do bazy: ${insertedRows}/${mapped.length}`,
+        percent,
+        insertedRows,
+        mapped.length,
+      );
+
+      if (insertedRows < mapped.length) {
+        await delay(SECONDARY_WRITE_DELAY_MS);
+      }
+    }
+
+    stage = "delete_stale_sec_rows";
+    sendProgress(stage, "Czyszczę rekordy Secondary MLS spoza aktualnego XML...", 94, insertedRows, mapped.length);
+    const currentExternalIds = new Set(
+      mapped.map((property: any) => String(property.external_id)),
+    );
+    const { deletedRows, error: staleDeleteError } =
+      await deleteStaleSecondaryRows(currentExternalIds);
+
+    if (staleDeleteError) {
+      return sendError(500, {
+        error:
+          staleDeleteError.message ||
+          "Nowe dane zapisane, ale czyszczenie starych rekordów nie powiodło się.",
+        stage,
+        insertedRows,
+      });
     }
 
     stage = "done";
-    return res.status(200).json({
+    const payload = {
       message: "Export secondary XML do properties zakończony",
       total_xml: properties.length,
       total_mapped: mapped.length,
       total_saved: insertedRows,
-      total_deleted_sec: deletedRows ?? 0,
+      total_deleted_sec: deletedRows,
       duplicate_id_rows: duplicateIdRows,
       xml_url: SECONDARY_XML_URL,
       table: SECONDARY_TABLE,
       stage,
-    });
+    };
+    sendProgress(stage, "Import Secondary MLS zakończony.", 100, insertedRows, mapped.length);
+    return sendResult(payload);
   } catch (err: any) {
-    return res.status(500).json({
+    return sendError(500, {
       error: "Błąd serwera",
       details: err?.message ?? String(err),
       stage,
     });
+  } finally {
+    if (lockAcquired) {
+      secondaryImportInProgress = false;
+    }
   }
 }

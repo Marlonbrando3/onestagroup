@@ -74,6 +74,49 @@ type ImageDraft = {
   url: string;
 };
 
+type CloudinarySignature = {
+  folder: string;
+  overwrite: string;
+  public_id: string;
+  timestamp: number;
+  signature: string;
+};
+
+type CloudinarySignatureResponse = {
+  apiKey: string;
+  cloudName: string;
+  uploads: CloudinarySignature[];
+};
+
+type CloudinaryUploadResponse = {
+  asset_id?: string;
+  public_id?: string;
+  secure_url?: string;
+  url?: string;
+  version?: number;
+  bytes?: number;
+  format?: string;
+  width?: number;
+  height?: number;
+  error?: {
+    message?: string;
+  };
+};
+
+type SavedCloudinaryImage = {
+  url: string | null;
+  provider: "cloudinary";
+  order: number;
+  cloudinary_asset_id: string | null;
+  cloudinary_public_id: string | null;
+  cloudinary_version: number | null;
+  original_file_name: string;
+  bytes: number | null;
+  format: string | null;
+  width: number | null;
+  height: number | null;
+};
+
 type SourceCounts = {
   metainmo: number | null;
   secondary: number | null;
@@ -85,6 +128,15 @@ type ImportConfirmation = {
   kind: ImportKind;
   label: string;
 } | null;
+type ImportProgressState = {
+  kind: ImportKind;
+  percent: number;
+  processed: number | null;
+  total: number | null;
+  stage: string;
+  message: string;
+  error?: boolean;
+};
 
 type TextField = Exclude<keyof ListingForm, "features">;
 
@@ -106,6 +158,12 @@ const propertyTypes: PropertyType[] = [
   "penthouse",
   "dom",
 ];
+const countryOptions = ["Hiszpania", "Cypr", "Dominikana"];
+const coastOptionsByCountry: Record<string, string[]> = {
+  Hiszpania: ["Costa Blanca", "Costa del Sol", "Costa Calida", "Costa de Almeria"],
+  Cypr: ["Cypr Południowy"],
+  Dominikana: ["Samana"],
+};
 
 const featureOptions = [
   "ogród",
@@ -123,7 +181,7 @@ const featureOptions = [
 const emptyForm: ListingForm = {
   country: "Hiszpania",
   city: "",
-  coast: "",
+  coast: "Costa Blanca",
   area: "",
   bedrooms: "",
   bathrooms: "",
@@ -204,6 +262,42 @@ function uid(prefix: string) {
 function formatFileSize(size: number) {
   if (size < 1024 * 1024) return `${Math.max(1, Math.round(size / 1024))} KB`;
   return `${(size / 1024 / 1024).toFixed(1)} MB`;
+}
+
+async function readJsonResponse<T>(response: Response, fallbackMessage: string) {
+  const text = await response.text();
+  if (!text.trim()) {
+    throw new Error(
+      response.status === 413
+        ? "Za duża paczka zdjęć dla tego endpointu. Zmniejsz rozmiar plików albo wyślij mniej zdjęć naraz."
+        : fallbackMessage,
+    );
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new Error(
+      response.status === 413
+        ? "Za duża paczka zdjęć dla tego endpointu. Zmniejsz rozmiar plików albo wyślij mniej zdjęć naraz."
+        : `${fallbackMessage} (${response.status})`,
+    );
+  }
+}
+
+function responseError(
+  response: Response,
+  payload: { error?: string } | null | undefined,
+  fallbackMessage: string,
+) {
+  if (payload?.error) return payload.error;
+  if (response.status === 413) {
+    return "Za duża paczka zdjęć dla tego endpointu. Zmniejsz rozmiar plików albo wyślij mniej zdjęć naraz.";
+  }
+  if (response.status === 408 || response.status === 504) {
+    return "Upload trwał zbyt długo. Spróbuj ponownie z mniejszymi plikami.";
+  }
+  return `${fallbackMessage} (${response.status})`;
 }
 
 function formatPrice(price: number | null, currency = "EUR") {
@@ -352,6 +446,7 @@ export default function OnesariPage() {
   const [notice, setNotice] = useState("");
   const [importStatus, setImportStatus] = useState("");
   const [importing, setImporting] = useState<ImportKind | null>(null);
+  const [importProgress, setImportProgress] = useState<ImportProgressState | null>(null);
   const [importConfirmation, setImportConfirmation] =
     useState<ImportConfirmation>(null);
   const [importConfirmCountdown, setImportConfirmCountdown] = useState(0);
@@ -779,9 +874,20 @@ export default function OnesariPage() {
       : sourceFilter === "Secondary XML"
         ? secondaryError
         : onestaError;
+  const currentCoastOptions = coastOptionsByCountry[form.country] || [];
 
   function updateField(field: TextField, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
+    setNotice("");
+  }
+
+  function updateCountry(country: string) {
+    const coastOptions = coastOptionsByCountry[country] || [];
+    setForm((current) => ({
+      ...current,
+      country,
+      coast: coastOptions.includes(current.coast) ? current.coast : coastOptions[0] || "",
+    }));
     setNotice("");
   }
 
@@ -920,6 +1026,17 @@ export default function OnesariPage() {
         ? "/api/metainmoToSupabase"
         : "/api/secondaryToSupabase";
     setImporting(kind);
+    setImportProgress({
+      kind,
+      percent: 2,
+      processed: 0,
+      total: null,
+      stage: "start",
+      message:
+        kind === "metainmo"
+          ? "Uruchamiam import Metainmo..."
+          : "Uruchamiam import Secondary MLS...",
+    });
     setImportStatus(
       kind === "metainmo"
         ? "Aktualizuję Metainmo..."
@@ -927,48 +1044,215 @@ export default function OnesariPage() {
     );
 
     try {
-      const response = await fetch(endpoint, { method: "POST" });
-      const raw = await response.text();
-      let data: any = {};
-      try {
-        data = raw ? JSON.parse(raw) : {};
-      } catch {
-        data = { message: raw || "Odpowiedź bez JSON" };
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "x-import-progress": "1",
+        },
+      });
+
+      if (response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let finalEvent: any = null;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            if (!line.trim()) continue;
+            const event = JSON.parse(line);
+
+            if (event.type === "progress") {
+              setImportProgress({
+                kind,
+                percent: Number(event.percent ?? 0),
+                processed:
+                  typeof event.processed === "number" ? event.processed : null,
+                total: typeof event.total === "number" ? event.total : null,
+                stage: String(event.stage || ""),
+                message: String(event.message || ""),
+              });
+              setImportStatus(String(event.message || ""));
+              continue;
+            }
+
+            finalEvent = event;
+          }
+        }
+
+        if (buffer.trim()) {
+          finalEvent = JSON.parse(buffer);
+        }
+
+        if (!finalEvent) {
+          throw new Error("Brak końcowej odpowiedzi importu");
+        }
+
+        if (!response.ok) {
+          const errorMessage =
+            finalEvent?.error ||
+            finalEvent?.details ||
+            finalEvent?.message ||
+            "nieznany błąd";
+          setImportProgress((current) =>
+            current && current.kind === kind
+              ? {
+                  ...current,
+                  error: true,
+                  message: `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${errorMessage}`,
+                }
+              : current,
+          );
+          setImportStatus(
+            `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${errorMessage}`,
+          );
+          return;
+        }
+
+        if (finalEvent.type === "error" || finalEvent.ok === false) {
+          const errorMessage =
+            finalEvent?.error || finalEvent?.details || "nieznany błąd";
+          setImportProgress((current) =>
+            current && current.kind === kind
+              ? {
+                  ...current,
+                  error: true,
+                  message: `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${errorMessage}`,
+                }
+              : current,
+          );
+          setImportStatus(
+            `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${errorMessage}`,
+          );
+          return;
+        }
+
+        const data = finalEvent?.data ?? finalEvent ?? {};
+        setImportProgress((current) =>
+          current && current.kind === kind
+            ? {
+                ...current,
+                percent: 100,
+                processed:
+                  typeof current.total === "number" ? current.total : current.processed,
+                message:
+                  kind === "metainmo"
+                    ? `Metainmo OK: XML ${data?.total_xml ?? 0}, zapisane ${
+                        data?.total_saved ?? data?.total_after_dedupe ?? 0
+                      }, usunięte stare ${data?.total_deleted_stale ?? 0}.`
+                    : `Secondary MLS OK: XML ${data?.total_xml ?? 0}, zapisane ${
+                        data?.total_saved ?? 0
+                      }.`,
+              }
+            : current,
+        );
+
+        if (kind === "metainmo") {
+          setImportStatus(
+            `Metainmo OK: XML ${data?.total_xml ?? 0}, zapisane ${
+              data?.total_saved ?? data?.total_after_dedupe ?? 0
+            }, usunięte stare ${data?.total_deleted_stale ?? 0}.`,
+          );
+          setMetainmoPage(1);
+          setMetainmoRefreshKey((current) => current + 1);
+          setSourceTotalsRefreshKey((current) => current + 1);
+        } else if (kind === "secondary") {
+          setImportStatus(
+            `Secondary MLS OK: XML ${data?.total_xml ?? 0}, zapisane ${
+              data?.total_saved ?? 0
+            }, usunięte stare ${data?.total_deleted_sec ?? 0}.`,
+          );
+          setSecondaryPage(1);
+          setSecondaryRefreshKey((current) => current + 1);
+          setSourceTotalsRefreshKey((current) => current + 1);
+        }
+        return;
       }
 
       if (!response.ok) {
+        const raw = await response.text();
+        let data: any = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch {
+          data = { message: raw || "Odpowiedź bez JSON" };
+        }
         setImportStatus(
           `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${
             data?.error || data?.details || "nieznany błąd"
           }`,
         );
+        setImportProgress((current) =>
+          current && current.kind === kind
+            ? {
+                ...current,
+                error: true,
+                message: `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${
+                  data?.error || data?.details || "nieznany błąd"
+                }`,
+              }
+            : current,
+        );
         return;
-      }
-
-      if (kind === "metainmo") {
-        setImportStatus(
-          `Metainmo OK: XML ${data?.total_xml ?? 0}, po deduplikacji ${
-            data?.total_after_dedupe ?? 0
-          }.`,
-        );
-        setMetainmoPage(1);
-        setMetainmoRefreshKey((current) => current + 1);
-        setSourceTotalsRefreshKey((current) => current + 1);
-      } else if (kind === "secondary") {
-        setImportStatus(
-          `Secondary MLS OK: XML ${data?.total_xml ?? 0}, zapisane ${
-            data?.total_saved ?? 0
-          }, usunięte stare ${data?.total_deleted_sec ?? 0}.`,
-        );
-        setSecondaryPage(1);
-        setSecondaryRefreshKey((current) => current + 1);
-        setSourceTotalsRefreshKey((current) => current + 1);
       }
     } catch (error: any) {
       setImportStatus(error?.message || "Import nie powiódł się.");
+      setImportProgress((current) =>
+        current && current.kind === kind
+          ? {
+              ...current,
+              error: true,
+              message: error?.message || "Import nie powiódł się.",
+            }
+          : current,
+      );
     } finally {
       setImporting(null);
     }
+  }
+
+  const activeImportProgress = importing ? importProgress : null;
+
+  function renderImportFeedback() {
+    if (!importStatus && !activeImportProgress) return null;
+
+    const percent = Math.max(0, Math.min(100, Number(activeImportProgress?.percent ?? 0)));
+    const toneClass = activeImportProgress?.error ? "error" : "";
+
+    return (
+      <div className={`importFeedback ${toneClass}`}>
+        {activeImportProgress ? (
+          <>
+            <div className="importProgressMeta">
+              <strong>{activeImportProgress.message}</strong>
+              <span>
+                {typeof activeImportProgress.processed === "number" &&
+                typeof activeImportProgress.total === "number"
+                  ? `${activeImportProgress.processed}/${activeImportProgress.total}`
+                  : `${percent}%`}
+              </span>
+            </div>
+            <div
+              aria-hidden="true"
+              className={`importProgressTrack ${toneClass}`}
+            >
+              <div
+                className={`importProgressFill ${toneClass}`}
+                style={{ width: `${percent}%` }}
+              />
+            </div>
+          </>
+        ) : null}
+        {importStatus ? <p className="importStatus">{importStatus}</p> : null}
+      </div>
+    );
   }
 
   async function saveListing(event: FormEvent<HTMLFormElement>) {
@@ -978,6 +1262,7 @@ export default function OnesariPage() {
     const requiredFields: TextField[] = [
       "country",
       "city",
+      "coast",
       "area",
       "bedrooms",
       "bathrooms",
@@ -994,35 +1279,112 @@ export default function OnesariPage() {
     }
 
     setIsSavingListing(true);
-    setNotice("Zapisuję ofertę i wysyłam obrazy do Cloudinary...");
+    setNotice("Przygotowuję upload zdjęć do Cloudinary...");
 
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
       if (!token) throw new Error("Brak aktywnej sesji");
 
-      const payload = new FormData();
-      Object.entries(form).forEach(([key, value]) => {
-        if (key === "features") {
-          payload.append(key, JSON.stringify(value));
-          return;
-        }
-        payload.append(key, String(value));
+      const signatureResponse = await fetch("/api/onesari/cloudinary-signature", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uploadBatchId: uid("manual-upload"),
+          files: images.map((image) => ({
+            name: image.name,
+            size: image.size,
+            type: image.file.type,
+          })),
+        }),
       });
-      images.forEach((image) => {
-        payload.append("images", image.file, image.name);
-      });
+      const signatureData = await readJsonResponse<CloudinarySignatureResponse & { error?: string }>(
+        signatureResponse,
+        "Nie udało się przygotować uploadu zdjęć",
+      );
+      if (!signatureResponse.ok) {
+        throw new Error(
+          responseError(
+            signatureResponse,
+            signatureData,
+            "Nie udało się przygotować uploadu zdjęć",
+          ),
+        );
+      }
+      if (!signatureData.uploads?.length || signatureData.uploads.length !== images.length) {
+        throw new Error("Cloudinary nie zwrócił podpisów dla wszystkich zdjęć.");
+      }
 
+      const uploadedImages: SavedCloudinaryImage[] = [];
+      for (const [index, image] of images.entries()) {
+        const upload = signatureData.uploads[index];
+        const cloudinaryPayload = new FormData();
+        cloudinaryPayload.append("file", image.file, image.name);
+        cloudinaryPayload.append("api_key", signatureData.apiKey);
+        cloudinaryPayload.append("folder", upload.folder);
+        cloudinaryPayload.append("overwrite", upload.overwrite);
+        cloudinaryPayload.append("public_id", upload.public_id);
+        cloudinaryPayload.append("timestamp", String(upload.timestamp));
+        cloudinaryPayload.append("signature", upload.signature);
+
+        setNotice(`Wysyłam zdjęcie ${index + 1}/${images.length} do Cloudinary...`);
+        const uploadResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: cloudinaryPayload,
+          },
+        );
+        const uploadData = await readJsonResponse<CloudinaryUploadResponse>(
+          uploadResponse,
+          `Nie udało się wysłać zdjęcia ${image.name}`,
+        );
+
+        if (!uploadResponse.ok || uploadData.error) {
+          throw new Error(uploadData.error?.message || `Nie udało się wysłać zdjęcia ${image.name}`);
+        }
+
+        const uploadedUrl = uploadData.secure_url || uploadData.url;
+        if (!uploadedUrl) {
+          throw new Error(`Cloudinary nie zwrócił URL-a dla zdjęcia ${image.name}`);
+        }
+
+        uploadedImages.push({
+          url: uploadedUrl,
+          provider: "cloudinary",
+          order: index + 1,
+          cloudinary_asset_id: uploadData.asset_id || null,
+          cloudinary_public_id: uploadData.public_id || null,
+          cloudinary_version: uploadData.version || null,
+          original_file_name: image.name,
+          bytes: uploadData.bytes || image.size || null,
+          format: uploadData.format || null,
+          width: uploadData.width || null,
+          height: uploadData.height || null,
+        });
+      }
+
+      setNotice("Zapisuję ofertę w Supabase...");
       const response = await fetch("/api/onesari/create", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        body: payload,
+        body: JSON.stringify({
+          form,
+          images: uploadedImages,
+        }),
       });
-      const data = await response.json();
+      const data = await readJsonResponse<{ property?: any; error?: string }>(
+        response,
+        "Nie udało się zapisać oferty",
+      );
       if (!response.ok) {
-        throw new Error(data?.error || "Nie udało się zapisać oferty");
+        throw new Error(responseError(response, data, "Nie udało się zapisać oferty"));
       }
 
       const nextListing = mapPropertyToListing(data.property, "Onesta Base");
@@ -1234,7 +1596,7 @@ export default function OnesariPage() {
                       Aktualizuj Secondary MLS
                     </button>
                   </div>
-                  {importStatus ? <p className="importStatus">{importStatus}</p> : null}
+                  {renderImportFeedback()}
                 </article>
               </section>
             </section>
@@ -1433,7 +1795,7 @@ export default function OnesariPage() {
                   Aktualizuj Secondary MLS
                 </button>
               </div>
-              {importStatus ? <p className="importStatus">{importStatus}</p> : null}
+              {renderImportFeedback()}
             </section>
           ) : (
             <form className="offerForm" onSubmit={saveListing}>
@@ -1462,18 +1824,31 @@ export default function OnesariPage() {
                   <div className="fieldGrid">
                     <label>
                       Kraj
-                      <input
+                      <select
                         required
                         value={form.country}
-                        onChange={(event) => updateField("country", event.target.value)}
-                      />
+                        onChange={(event) => updateCountry(event.target.value)}
+                      >
+                        {countryOptions.map((country) => (
+                          <option key={country} value={country}>
+                            {country}
+                          </option>
+                        ))}
+                      </select>
                     </label>
                     <label>
                       Wybrzeże
-                      <input
+                      <select
+                        required
                         value={form.coast}
                         onChange={(event) => updateField("coast", event.target.value)}
-                      />
+                      >
+                        {currentCoastOptions.map((coast) => (
+                          <option key={coast} value={coast}>
+                            {coast}
+                          </option>
+                        ))}
+                      </select>
                     </label>
                     <label>
                       Miasto
@@ -2305,15 +2680,68 @@ export default function OnesariPage() {
           background: #654de6;
         }
 
-        .importStatus {
+        .importFeedback {
           background: #f9fafb;
           border: 1px solid #d8dee7;
           border-radius: 8px;
+          display: grid;
+          gap: 10px;
+          padding: 12px;
+        }
+
+        .importFeedback.error {
+          border-color: #f1b5b0;
+          background: #fff8f7;
+        }
+
+        .importProgressMeta {
+          align-items: center;
+          display: flex;
+          gap: 12px;
+          justify-content: space-between;
+        }
+
+        .importProgressMeta strong {
+          color: #17202a;
+          font-size: 13px;
+          min-width: 0;
+        }
+
+        .importProgressMeta span {
+          color: #667085;
+          font-size: 12px;
+          font-weight: 900;
+          white-space: nowrap;
+        }
+
+        .importProgressTrack {
+          background: #d8dee7;
+          border-radius: 999px;
+          height: 8px;
+          overflow: hidden;
+          width: 100%;
+        }
+
+        .importProgressTrack.error {
+          background: #f8d2cf;
+        }
+
+        .importProgressFill {
+          background: linear-gradient(90deg, #216e63 0%, #2d8c7e 100%);
+          border-radius: 999px;
+          height: 100%;
+          transition: width 0.24s ease;
+        }
+
+        .importProgressFill.error {
+          background: linear-gradient(90deg, #d92d20 0%, #f97066 100%);
+        }
+
+        .importStatus {
           color: #344054;
           font-size: 13px;
           font-weight: 800;
           margin: 0;
-          padding: 12px;
         }
 
         .spinning {
