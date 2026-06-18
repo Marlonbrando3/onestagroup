@@ -41,6 +41,8 @@ type ListingForm = {
   country: string;
   city: string;
   coast: string;
+  developer: string;
+  investmentName: string;
   area: string;
   bedrooms: string;
   bathrooms: string;
@@ -219,6 +221,8 @@ const editableFieldLabels: Record<EditableField, string> = {
   country: "Kraj",
   coast: "Wybrzeże",
   city: "Miasto",
+  developer: "Deweloper",
+  investmentName: "Nazwa inwestycji",
   area: "Metraż",
   bedrooms: "Liczba sypialni",
   bathrooms: "Liczba łazienek",
@@ -237,6 +241,8 @@ const editDataFields: TextField[] = [
   "country",
   "coast",
   "city",
+  "developer",
+  "investmentName",
   "area",
   "bedrooms",
   "bathrooms",
@@ -254,6 +260,8 @@ const emptyForm: ListingForm = {
   country: "Hiszpania",
   city: "",
   coast: "Costa Blanca",
+  developer: "",
+  investmentName: "",
   area: "",
   bedrooms: "",
   bathrooms: "",
@@ -638,6 +646,8 @@ function mapPropertyToListing(
     country: String(property.country || ""),
     city: String(property.town || ""),
     coast: String(property.province || ""),
+    developer: String(property.developer || ""),
+    investmentName: String(property.investment_name || ""),
     area: property.surface_built ? String(property.surface_built) : "",
     bedrooms: property.beds ? String(property.beds) : "",
     bathrooms: property.baths ? String(property.baths) : "",
@@ -666,6 +676,8 @@ function listingToForm(listing: Listing): ListingForm {
     country: listing.country || "Hiszpania",
     city: listing.city || "",
     coast: listing.coast || coastOptions[0] || "",
+    developer: listing.developer || "",
+    investmentName: listing.investmentName || "",
     area: listing.area || "",
     bedrooms: listing.bedrooms || "",
     bathrooms: listing.bathrooms || "",
@@ -2937,6 +2949,20 @@ export default function OnesariPage() {
                         required
                         value={form.city}
                         onChange={(event) => updateField("city", event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Deweloper
+                      <input
+                        value={form.developer}
+                        onChange={(event) => updateField("developer", event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Nazwa inwestycji
+                      <input
+                        value={form.investmentName}
+                        onChange={(event) => updateField("investmentName", event.target.value)}
                       />
                     </label>
                     <label>

@@ -6,6 +6,8 @@ type EditableField =
   | "country"
   | "city"
   | "coast"
+  | "developer"
+  | "investmentName"
   | "area"
   | "bedrooms"
   | "bathrooms"
@@ -20,7 +22,7 @@ type EditableField =
   | "descriptionEn";
 
 const propertySelect =
-  "id,external_id,ref,source,price,currency,type,town,province,country,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status";
+  "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status";
 
 function nullableText(value: unknown) {
   const normalized = String(value ?? "").trim();
@@ -100,6 +102,8 @@ function isEditableField(value: unknown): value is EditableField {
     value === "country" ||
     value === "city" ||
     value === "coast" ||
+    value === "developer" ||
+    value === "investmentName" ||
     value === "area" ||
     value === "bedrooms" ||
     value === "bathrooms" ||
@@ -149,6 +153,10 @@ async function applyEditableField(
     updatePayload.town = nullableText(value);
   } else if (field === "coast") {
     updatePayload.province = nullableText(value);
+  } else if (field === "developer") {
+    updatePayload.developer = nullableText(value);
+  } else if (field === "investmentName") {
+    updatePayload.investment_name = nullableText(value);
   } else if (field === "area") {
     updatePayload.surface_built = nullableNumber(value);
   } else if (field === "bedrooms") {

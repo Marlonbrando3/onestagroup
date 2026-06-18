@@ -40,11 +40,22 @@ export default function DescAboutObiect({
     const normalized = String(value || "")
       .replace(/\r\n/g, "\n")
       .replace(/\r/g, "\n")
+      .replace(/<(ul|ol)[^>]*>\s*/gi, "<$1>")
+      .replace(/\s*<\/(ul|ol)\s*>/gi, "</$1>")
+      .replace(/<\/li\s*>\s*<li/gi, "</li><li")
       .replace(/<\s*br\s*\/?>/gi, "\n")
+      .replace(/<p[^>]*>\s*<\/p\s*>/gi, "\n\n")
+      .replace(/<h[1-6][^>]*>/gi, "\n\n")
+      .replace(/<\/h[1-6]\s*>/gi, "\n\n")
+      .replace(/<li[^>]*>/gi, "\n• ")
+      .replace(/<\/li\s*>/gi, "")
+      .replace(/<\/?(ul|ol)[^>]*>/gi, "\n")
       .replace(/<\/p\s*>/gi, "\n\n")
       .replace(/<p[^>]*>/gi, "")
       .replace(/<\/div\s*>/gi, "\n")
       .replace(/<div[^>]*>/gi, "")
+      .replace(/<\/?(strong|b|em|i)[^>]*>/gi, "")
+      .replace(/<[^>]*>/g, "")
       .replace(/&nbsp;/gi, " ")
       .trim();
 
@@ -61,13 +72,16 @@ export default function DescAboutObiect({
 
         const content = lines.map((line) => escapeHtml(line)).join("<br />");
         const isHeading =
-          lines.length === 1 && lines[0].length < 60 && lines[0].length > 3;
+          lines.length === 1 &&
+          !lines[0].startsWith("•") &&
+          lines[0].length < 60 &&
+          lines[0].length > 3;
         return isHeading
           ? `<p><strong>${content}</strong></p>`
           : `<p>${content}</p>`;
       })
       .filter(Boolean)
-      .join("");
+      .join("<br />");
   };
 
   const { type, town, price, country, province, title, headerAdvertisement } =

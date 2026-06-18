@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { data, count, error } = await supabaseServer
     .from("properties")
     .select(
-      "id,external_id,ref,source,price,currency,type,town,province,country,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at",
+      "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at",
       { count: "exact" },
     )
     .eq("source", "METAINMO")

@@ -40,7 +40,7 @@ export default async function handler(
   const { data, count, error } = await supabaseServer
     .from("properties")
     .select(
-      "id,external_id,ref,source,price,currency,type,town,province,country,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status",
+      "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status",
       { count: "exact" },
     )
     .eq("source", "ONESTA_FTP")

@@ -2,6 +2,8 @@ alter table public.properties
   add column if not exists status text,
   add column if not exists operation text,
   add column if not exists title text,
+  add column if not exists developer text,
+  add column if not exists investment_name text,
   add column if not exists distance_to_sea_m integer,
   add column if not exists available_from date,
   add column if not exists surface_usable numeric,

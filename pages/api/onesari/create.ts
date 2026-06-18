@@ -45,7 +45,7 @@ type SavedImage = {
 };
 
 const propertySelect =
-  "id,external_id,ref,source,price,currency,type,town,province,country,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status";
+  "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status";
 
 function isFormDataPayload(payload: FormData | Record<string, unknown>): payload is FormData {
   return typeof FormData !== "undefined" && payload instanceof FormData;
@@ -352,6 +352,8 @@ export default async function handler(
       town: nullableText(textValue(payload, "city")),
       province: nullableText(textValue(payload, "coast")),
       country: nullableText(textValue(payload, "country")),
+      developer: nullableText(textValue(payload, "developer")),
+      investment_name: nullableText(textValue(payload, "investmentName")),
       ref,
       surface_built: nullableNumber(textValue(payload, "area")),
       surface_plot: null,
