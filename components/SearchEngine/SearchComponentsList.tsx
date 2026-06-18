@@ -64,7 +64,9 @@ export default function SearchInput({
             </Link>
           </div>
           <p className="mx-auto w-[90vw] max-w-[1300px] text-[28px] mt-[10px]">
-            Nieruchomości w Hiszpanii - oferty
+            Nieruchomości
+            {country === "hiszpania" && " w Hiszpanii"}
+            {country === "cypr" && " na Cyprze"} - oferty
           </p>
         </div>
       </form>

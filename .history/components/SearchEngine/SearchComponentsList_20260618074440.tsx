@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import MainSearchInSearchEngine from "../MainSearchInSearchEngine";
+import { MdKeyboardArrowRight } from "react-icons/md";
 import MobileFilters from "../MobileFilters";
 import { Red_Hat_DisplayFont } from "@/fonts/fonts";
 import Properties from "../../public/properties.json";
@@ -27,6 +28,8 @@ export default function SearchInput({
 }: FunctionProps) {
   const router = useRouter();
 
+  const { country } = router.query;
+
   const RefOffers = useRef<any>();
   const [ref, setRef] = useState<string>("");
   const [filteredProperties, setFilteredProperties]: any = useState();
@@ -41,7 +44,7 @@ export default function SearchInput({
     >
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="rounded-[7px] flex flex-col lg:flex-row justify-center items-stretch lg:items-center w-full h-auto relative lg:bg-gray-100/[0.3] px-3 md:px-4 lg:px-0"
+        className="rounded-[7px] flex flex-col lg:flex-row justify-center items-stretch lg:items-center w-full h-auto relative lg:bg-gray-100/[0.3] px-3 md:px-4 lg:px-0 mt-[20px]"
       >
         <div className="h-auto flex-col items-center w-full mx-auto">
           <MainSearchInSearchEngine
@@ -51,7 +54,20 @@ export default function SearchInput({
             searchEngine={searchEngine}
             mobileButtonSearchEngine={mobileButtonSearchEngine}
           />
-          <p className="mx-auto w-[1400px]">Wyjątkowe ogłoszenia w Hiszpanii</p>
+          <div className=" w-[90vw] max-w-[1300px] z-10 relative flex items-center mx-auto -mt-[20px] text-[14px]">
+            <Link href="/">Strona startowa</Link>
+            <MdKeyboardArrowRight className="md:mx-[10px] h-[20px] w-[20px] text-gray-400" />
+            <Link href="#">Nieruchomości</Link>
+            <MdKeyboardArrowRight className="md:mx-[10px] h-[20px] w-[20px] text-gray-400" />{" "}
+            <Link href="/nieruchomosci/hiszpania" className="capitalize">
+              {country}
+            </Link>
+          </div>
+          <p className="mx-auto w-[90vw] max-w-[1300px] text-[28px] mt-[10px]">
+            Nieruchomości
+            {country === "hiszpania" && "w Hiszpanii"}
+            {country === "cypr" && "w Hiszpanii"} - oferty
+          </p>
         </div>
       </form>
 
