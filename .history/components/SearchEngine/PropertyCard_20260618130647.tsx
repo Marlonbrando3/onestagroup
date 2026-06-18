@@ -45,11 +45,7 @@ function formatDistanceToSea(value: unknown) {
   const numeric = Number(value);
   if (!Number.isFinite(numeric) || numeric <= 0) return null;
 
-  return (
-    <p className="text-gray-900 font-900 text-[13px]">
-      {Math.round(numeric).toLocaleString("pl-PL")} m do morza{" "}
-    </p>
-  );
+  return <p>${Math.round(numeric).toLocaleString("pl-PL")} m do morza </p>};
 }
 
 export default function PropertyCard({
@@ -179,15 +175,15 @@ export default function PropertyCard({
               {listingTitle}
             </h2>
 
-            <div className="mt-2 h-[40px]">
-              {distanceToSeaLabel && (
-                <p className="mt-1 text-[13px] font-bold text-[#5f6b7a]">
-                  {distanceToSeaLabel}
-                </p>
-              )}
+            <div className="mt-2">
               <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7c8796]">
                 ref. {property?.external_id}
               </span>
+              {distanceToSeaLabel && (
+                <p className="mt-1 text-[11px] font-semibold text-[#5f6b7a]">
+                  {distanceToSeaLabel}
+                </p>
+              )}
             </div>
           </Link>
 

@@ -29,6 +29,7 @@ type FiltersState = {
   bedrooms: string[];
   bathrooms: string[];
   price: PriceRange;
+  distanceToSeaMax: number;
 };
 
 type Props = {
@@ -40,7 +41,12 @@ type Props = {
 };
 
 const DEFAULT_PRICE: PriceRange = { min: 0, max: 5000000 };
+const DEFAULT_DISTANCE_TO_SEA_MAX = 5000;
 const NUMBER_OPTIONS = ["1", "2", "3", "4", "5"];
+
+function clampDistanceToSea(value: number) {
+  return Math.max(0, Math.min(DEFAULT_DISTANCE_TO_SEA_MAX, value));
+}
 
 function getLocationCountry(location: LocationItem) {
   return location.country || "hiszpania";
@@ -129,7 +135,7 @@ function MarketSelect({
         {current}
       </button>
       {open && (
-        <div className="absolute left-0 top-[calc(100%+12px)] z-30 w-full overflow-hidden border border-[#e5dac7] bg-[#f7f3ec] shadow-xl">
+        <div className="absolute left-0 top-[calc(100%+12px)] z-30 w-full min-w-[180px] overflow-hidden border border-[#e5dac7] bg-[#f7f3ec] shadow-xl lg:w-[190px]">
           {["Wszystkie", ...MARKET_OPTIONS].map((opt) => (
             <button
               key={opt}
@@ -181,6 +187,44 @@ function CountrySelect({
   );
 }
 
+function DistanceToSeaRange({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (val: number) => void;
+}) {
+  const formatDistance = (meters: number) => {
+    if (meters >= DEFAULT_DISTANCE_TO_SEA_MAX) return "5 km i więcej";
+    if (meters >= 1000) {
+      const km = meters / 1000;
+      return `do ${Number.isInteger(km) ? km : km.toFixed(1)} km`;
+    }
+    return `do ${meters} m`;
+  };
+
+  return (
+    <div className="flex h-full w-full flex-col justify-center bg-white px-3">
+      <label className="mb-1 block text-xs font-semibold text-[#5f6b7a]">
+        Dystans do morza
+      </label>
+      <div className="mb-2 truncate text-sm font-semibold text-[#182334]">
+        {formatDistance(value)}
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={DEFAULT_DISTANCE_TO_SEA_MAX}
+        step={200}
+        value={value}
+        onChange={(event) => onChange(Number(event.target.value))}
+        className="h-[6px] w-full cursor-pointer appearance-none bg-[#e2d4bd] accent-[#b8954c]"
+        aria-label="Maksymalny dystans do morza"
+      />
+    </div>
+  );
+}
+
 export default function Home({
   mobileButtonSearchEngine,
   searchEngine,
@@ -207,6 +251,7 @@ export default function Home({
     bedrooms: [],
     bathrooms: [],
     price: DEFAULT_PRICE,
+    distanceToSeaMax: DEFAULT_DISTANCE_TO_SEA_MAX,
   });
 
   const selectedCountry = getPropertyCountryOption(
@@ -284,6 +329,9 @@ export default function Home({
       q.priceMin = String(next.price.min);
     if (next.price.max !== DEFAULT_PRICE.max)
       q.priceMax = String(next.price.max);
+    if (next.distanceToSeaMax !== DEFAULT_DISTANCE_TO_SEA_MAX) {
+      q.distanceToSeaMax = String(next.distanceToSeaMax);
+    }
 
     return q;
   };
@@ -403,6 +451,9 @@ export default function Home({
 
     const priceMin = parseNum(router.query.priceMin) ?? DEFAULT_PRICE.min;
     const priceMax = parseNum(router.query.priceMax) ?? DEFAULT_PRICE.max;
+    const distanceToSeaMax = clampDistanceToSea(
+      parseNum(router.query.distanceToSeaMax) ?? DEFAULT_DISTANCE_TO_SEA_MAX,
+    );
 
     const locationIds = parseCsv(router.query.location);
     const locations = locationIds
@@ -425,6 +476,7 @@ export default function Home({
       bedrooms,
       bathrooms,
       price: { min: priceMin, max: priceMax },
+      distanceToSeaMax,
     }));
   }, [
     router.isReady,
@@ -437,6 +489,7 @@ export default function Home({
     router.query.bathsMax,
     router.query.priceMin,
     router.query.priceMax,
+    router.query.distanceToSeaMax,
     router.query.location,
     router.query.market,
     router.query.country,
@@ -638,6 +691,14 @@ export default function Home({
             />
           </div>
 
+          {/* DYSTANS DO MORZA */}
+          <div className="h-full w-full border-[#e5dac7] lg:flex-[1.1] lg:border-r">
+            <DistanceToSeaRange
+              value={filters.distanceToSeaMax}
+              onChange={(val) => updateFilter("distanceToSeaMax", val)}
+            />
+          </div>
+
           {/* SEARCH BUTTON */}
           <div className="flex h-full w-full items-center justify-center bg-[#fbf8f2] px-3 lg:w-auto">
             <button
@@ -765,6 +826,14 @@ export default function Home({
                   <PriceSelect
                     value={filters.price}
                     onChange={(val: PriceRange) => updateFilter("price", val)}
+                  />
+                </div>
+
+                {/* DYSTANS DO MORZA */}
+                <div className="relative">
+                  <DistanceToSeaRange
+                    value={filters.distanceToSeaMax}
+                    onChange={(val) => updateFilter("distanceToSeaMax", val)}
                   />
                 </div>
 

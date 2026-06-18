@@ -181,7 +181,7 @@ export default function PropertyCard({
 
             <div className="mt-2 h-[40px]">
               {distanceToSeaLabel && (
-                <p className="mt-1 text-[13px] font-bold text-[#5f6b7a]">
+                <p className="mt-1 text-[13px] font-sbold text-[#5f6b7a]">
                   {distanceToSeaLabel}
                 </p>
               )}

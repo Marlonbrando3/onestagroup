@@ -5,19 +5,67 @@ type Props = {
   onChange: (val: { min: number; max: number }) => void;
 };
 
+function formatPriceInput(num: number) {
+  return `${new Intl.NumberFormat("pl-PL", {
+    maximumFractionDigits: 0,
+  })
+    .format(num)
+    .replace(/\u00a0/g, " ")} €`;
+}
+
 export default function PriceSelect({ value, onChange }: Props) {
+  const minLimit = 0;
+  const maxLimit = 1500000;
+  const minGap = 10000;
+
   const [open, setOpen] = useState(false);
-  const [local, setLocal] = useState(value);
+  const [local, setLocal] = useState(() => ({
+    min: value.min,
+    max: value.max >= 5000000 ? maxLimit : value.max,
+  }));
+  const [draft, setDraft] = useState(() => ({
+    min: formatPriceInput(value.min),
+    max:
+      value.max >= 5000000
+        ? `${formatPriceInput(maxLimit)} i więcej`
+        : formatPriceInput(value.max),
+  }));
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const ref = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  const minLimit = 0;
-  const maxLimit = 1500000;
-
   const percent = (val: number) =>
     ((val - minLimit) / (maxLimit - minLimit)) * 100;
+
+  const clamp = (num: number, min: number, max: number) =>
+    Math.min(Math.max(num, min), max);
+
+  const mapRangeForParent = (range: { min: number; max: number }) => ({
+    min: range.min,
+    max: range.max >= maxLimit ? 5000000 : range.max,
+  });
+
+  const syncDraft = (range: { min: number; max: number }) => {
+    setDraft({
+      min: formatPriceInput(Math.round(range.min)),
+      max:
+        range.max >= maxLimit
+          ? `${formatPriceInput(maxLimit)} i więcej`
+          : formatPriceInput(Math.round(range.max)),
+    });
+  };
+
+  const applyCommittedRange = (range: { min: number; max: number }) => {
+    setLocal(range);
+    syncDraft(range);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    const mapped = mapRangeForParent(range);
+    if (value.min !== mapped.min || value.max !== mapped.max) {
+      onChange(mapped);
+    }
+  };
 
   const getValueFromPosition = (x: number) => {
     const rect = sliderRef.current!.getBoundingClientRect();
@@ -32,8 +80,8 @@ export default function PriceSelect({ value, onChange }: Props) {
     const val = getValueFromPosition(e.clientX);
     setLocal((prev) => {
       if (type === "min")
-        return { ...prev, min: Math.min(val, prev.max - 10000) };
-      return { ...prev, max: Math.max(val, prev.min + 10000) };
+        return { ...prev, min: Math.min(val, prev.max - minGap) };
+      return { ...prev, max: Math.max(val, prev.min + minGap) };
     });
   };
 
@@ -53,8 +101,8 @@ export default function PriceSelect({ value, onChange }: Props) {
       const val = getValueFromPosition(ev.touches[0].clientX);
       setLocal((prev) => {
         if (type === "min")
-          return { ...prev, min: Math.min(val, prev.max - 10000) };
-        return { ...prev, max: Math.max(val, prev.min + 10000) };
+          return { ...prev, min: Math.min(val, prev.max - minGap) };
+        return { ...prev, max: Math.max(val, prev.min + minGap) };
       });
     };
     const up = () => {
@@ -69,16 +117,20 @@ export default function PriceSelect({ value, onChange }: Props) {
     if (open) return;
     setLocal({
       min: value.min,
-      max: value.max >= 5000000 ? 1500000 : value.max,
+      max: value.max >= 5000000 ? maxLimit : value.max,
     });
-  }, [value, open]);
+  }, [value, open, maxLimit]);
+
+  useEffect(() => {
+    syncDraft(local);
+  }, [local.min, local.max]);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      const mappedMax = local.max >= maxLimit ? 5000000 : local.max;
-      if (value.min === local.min && value.max === mappedMax) return;
-      onChange({ min: local.min, max: mappedMax });
+      const mapped = mapRangeForParent(local);
+      if (value.min === mapped.min && value.max === mapped.max) return;
+      onChange(mapped);
     }, 180);
 
     return () => {
@@ -96,12 +148,30 @@ export default function PriceSelect({ value, onChange }: Props) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const format = (num: number) =>
-    new Intl.NumberFormat("de-DE", {
-      style: "currency",
-      currency: "EUR",
-      maximumFractionDigits: 0,
-    }).format(num);
+  const commitManualValue = (type: "min" | "max", raw: string) => {
+    const digits = raw.replace(/[^\d]/g, "");
+    const parsed = Number(digits);
+
+    if (!digits || !Number.isFinite(parsed)) {
+      syncDraft(local);
+      return;
+    }
+
+    if (type === "min") {
+      const upperBound = Math.max(minLimit, local.max - minGap);
+      applyCommittedRange({
+        ...local,
+        min: clamp(Math.round(parsed), minLimit, upperBound),
+      });
+      return;
+    }
+
+    const lowerBound = Math.min(maxLimit, local.min + minGap);
+    applyCommittedRange({
+      ...local,
+      max: clamp(Math.round(parsed), lowerBound, maxLimit),
+    });
+  };
 
   return (
     <div ref={ref} className="w-full h-full lg:relative">
@@ -113,8 +183,10 @@ export default function PriceSelect({ value, onChange }: Props) {
           Zakres cenowy
         </label>
         <div className="text-sm font-semibold text-[#182334]">
-          {format(value.min)} -{" "}
-          {value.max >= 1500000 ? `${format(1500000)}+` : format(value.max)}
+          {formatPriceInput(value.min)} -{" "}
+          {value.max >= maxLimit
+            ? `${formatPriceInput(maxLimit)} i więcej`
+            : formatPriceInput(value.max)}
         </div>
       </div>
 
@@ -167,8 +239,20 @@ export default function PriceSelect({ value, onChange }: Props) {
                   Min
                 </span>
                 <input
-                  value={format(local.min)}
-                  readOnly
+                  type="text"
+                  inputMode="numeric"
+                  value={draft.min}
+                  onChange={(event) =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      min: event.target.value.replace(/[^\d]/g, ""),
+                    }))
+                  }
+                  onBlur={() => commitManualValue("min", draft.min)}
+                  onFocus={(event) => event.currentTarget.select()}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.currentTarget.blur();
+                  }}
                   className="mt-2 h-11 w-full border border-[#d7c8ad] bg-white px-3 text-sm font-semibold text-[#182334] outline-none"
                 />
               </div>
@@ -177,12 +261,20 @@ export default function PriceSelect({ value, onChange }: Props) {
                   Max
                 </span>
                 <input
-                  value={
-                    local.max >= maxLimit
-                      ? `${format(maxLimit)} +`
-                      : format(local.max)
+                  type="text"
+                  inputMode="numeric"
+                  value={draft.max}
+                  onChange={(event) =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      max: event.target.value.replace(/[^\d]/g, ""),
+                    }))
                   }
-                  readOnly
+                  onBlur={() => commitManualValue("max", draft.max)}
+                  onFocus={(event) => event.currentTarget.select()}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.currentTarget.blur();
+                  }}
                   className="mt-2 h-11 w-full border border-[#d7c8ad] bg-white px-3 text-sm font-semibold text-[#182334] outline-none"
                 />
               </div>
@@ -190,7 +282,7 @@ export default function PriceSelect({ value, onChange }: Props) {
 
             <div className="flex gap-3">
               <button
-                onClick={() => setLocal({ min: 0, max: 1500000 })}
+                onClick={() => applyCommittedRange({ min: 0, max: maxLimit })}
                 className="h-11 border border-[#d7c8ad] bg-white px-5 text-xs font-bold uppercase tracking-[0.14em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
               >
                 Reset

@@ -14,6 +14,8 @@ import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
 import { getPropertyCountryOption } from "@/lib/propertyCountries";
 
+const DEFAULT_DISTANCE_TO_SEA_MAX = 5000;
+
 const PROPERTY_LIST_COLUMNS = [
   "external_id",
   "type",
@@ -30,6 +32,7 @@ const PROPERTY_LIST_COLUMNS = [
   "updated_at",
   "country",
   "title",
+  "distance_to_sea_m",
 ].join(",");
 
 interface Property {
@@ -48,6 +51,7 @@ interface Property {
   vacantFromDate: string | null;
   updated_at: string;
   country: string;
+  distance_to_sea_m: number | null;
 }
 
 type LocationEntry = {
@@ -281,6 +285,13 @@ function parseNumList(val: unknown): number[] {
     .filter((n) => Number.isFinite(n));
 }
 
+function parseSingleNumber(val: unknown): number | null {
+  if (val === undefined || val === null) return null;
+  const raw = Array.isArray(val) ? val[0] : val;
+  const num = Number(raw);
+  return Number.isFinite(num) ? num : null;
+}
+
 function escapeLikeValue(value: string): string {
   return String(value).replace(/[%_,]/g, "").trim();
 }
@@ -307,6 +318,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     bedsMax,
     priceMin,
     priceMax,
+    distanceToSeaMax,
     location,
     sort,
   } = context.query;
@@ -323,6 +335,11 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   const bedsTo = bedsMax ? Number(bedsMax) : 99;
   const priceFrom = priceMin ? Number(priceMin) : 0;
   const priceTo = priceMax ? Number(priceMax) : 99_999_999;
+  const distanceToSeaLimit = parseSingleNumber(distanceToSeaMax);
+  const hasDistanceToSeaFilter =
+    distanceToSeaLimit !== null &&
+    distanceToSeaLimit >= 0 &&
+    distanceToSeaLimit < DEFAULT_DISTANCE_TO_SEA_MAX;
   const marketType = market ?? null;
 
   const typeList = parseCsvParam(type);
@@ -416,6 +433,12 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     } else {
       query = query.gte("beds", bedsFrom).lte("beds", bedsTo);
     }
+  }
+
+  if (hasDistanceToSeaFilter) {
+    query = query.or(
+      `distance_to_sea_m.lte.${distanceToSeaLimit},distance_to_sea_m.is.null`,
+    );
   }
 
   if (locationParam.length > 0) {
