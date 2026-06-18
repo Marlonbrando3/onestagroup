@@ -51,14 +51,5 @@ export const typeDictionary = typeDictionaryPlural;
 
 export const countryDictionary = {
   Spain: "Hiszpania",
-  Hiszpania: "Hiszpania",
   Cypr: "Cypr",
-  Cyprus: "Cypr",
-  Dominikana: "Dominikana",
-  "Dominican Republic": "Dominikana",
 };
-
-export function validTitleOrEmpty(title?: unknown) {
-  const value = String(title || "").trim();
-  return value.length >= 8 ? value : "";
-}

@@ -7,8 +7,9 @@ import { FaSwimmingPool } from "react-icons/fa";
 import { BiArea } from "react-icons/bi";
 import { MdIosShare } from "react-icons/md";
 import ResultsSlider from "./ResultsSlider";
-import { typeDictionary } from "../../lib/titlesDictionary";
+import { typeDictionarySingular, validTitleOrEmpty } from "../../lib/titlesDictionary";
 import { HomeRedHatDisplayFont as Red_Hat_DisplayFont } from "@/fonts/homeFonts";
+import { getCoastLabelFromProvince } from "@/lib/regionMap";
 
 type PropertyProps = {
   property: any;
@@ -43,13 +44,6 @@ export default function PropertyCard({
 }: PropertyProps) {
   const [copiedShowed, setCopiedShowed] = useState(false);
 
-  const regions: Record<string, string> = {
-    Murcia: "Costa Calida",
-    Alicante: "Costa Blanca",
-    Malaga: "Costa del Sol",
-    Almería: "Costa de Almeria",
-  };
-
   const market = property?.new_build ? "RYNEK PIERWOTNY" : "RYNEK WTÓRNY";
   const countryName =
     typeof property?.country === "string"
@@ -58,16 +52,16 @@ export default function PropertyCard({
 
   const countrySlug = slugify(countryName);
   const propertyType =
-    property?.type && property.type in typeDictionary
-      ? typeDictionary[property.type as keyof typeof typeDictionary]
+    property?.type && property.type in typeDictionarySingular
+      ? typeDictionarySingular[property.type as keyof typeof typeDictionarySingular]
       : "Nieruchomość";
   const generatedTitle = `${propertyType} w ${property?.town || "Hiszpanii"}`;
   const listingTitle =
-    String(property?.title || "").trim() ||
-    String(property?.headerAdvertisement || "").trim() ||
+    validTitleOrEmpty(property?.title) ||
+    validTitleOrEmpty(property?.headerAdvertisement) ||
     generatedTitle;
   const slug = slugify(listingTitle);
-  const locationLabel = regions[property?.province] || property?.province;
+  const locationLabel = getCoastLabelFromProvince(property?.province);
 
   const detailHref = {
     pathname: `/nieruchomosci/${countrySlug}/${slug}`,

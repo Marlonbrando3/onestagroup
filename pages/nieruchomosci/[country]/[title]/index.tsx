@@ -15,10 +15,7 @@ import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Slider from "@/components/SliderInOfferPage/slider";
 import Gallery from "@/components/SliderInOfferPage/gallery";
 import ContactInFooterMobile from "@/components/SearchEngine/ContactInFooterMobile";
-import {
-  typeDictionaryPlural,
-  typeDictionarySingular,
-} from "@/lib/titlesDictionary";
+import { typeDictionarySingular, validTitleOrEmpty } from "@/lib/titlesDictionary";
 
 export default function Property({ propertyFromSupabase }: any) {
   const router = useRouter();
@@ -36,13 +33,12 @@ export default function Property({ propertyFromSupabase }: any) {
   let showedImage: any | undefined;
   const { title } = router.query;
 
-  const typeLabel = propertyFromSupabase?.new_build
-    ? typeDictionaryPlural[propertyFromSupabase?.type] || "Nieruchomości"
-    : typeDictionarySingular[propertyFromSupabase?.type] || "Nieruchomość";
+  const typeLabel =
+    typeDictionarySingular[propertyFromSupabase?.type] || "Nieruchomość";
   const generatedTitle = `${typeLabel} w ${propertyFromSupabase?.town || "Hiszpanii"}`;
   const listingTitle =
-    String(propertyFromSupabase?.title || "").trim() ||
-    String(propertyFromSupabase?.headerAdvertisement || "").trim() ||
+    validTitleOrEmpty(propertyFromSupabase?.title) ||
+    validTitleOrEmpty(propertyFromSupabase?.headerAdvertisement) ||
     generatedTitle;
 
   if (images !== undefined) {

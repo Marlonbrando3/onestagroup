@@ -11,6 +11,17 @@ export default function Login() {
   const info = useRef();
   const [comm, setComm] = useState();
 
+  const getSafeRedirect = () => {
+    const redirect =
+      typeof router.query.redirect === "string" ? router.query.redirect : "";
+
+    if (redirect.startsWith("/") && !redirect.startsWith("//")) {
+      return redirect;
+    }
+
+    return "/admin";
+  };
+
   const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithPassword({
       email: email.current.value,
@@ -18,7 +29,7 @@ export default function Login() {
     });
 
     if (!error) {
-      router.push("/admin");
+      router.push(getSafeRedirect());
     } else {
       alert("Błąd logowania");
     }

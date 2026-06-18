@@ -75,12 +75,36 @@ function nullableInteger(value: string) {
   return numericValue === null ? null : Math.trunc(numericValue);
 }
 
+function featureTextValue(feature: unknown): string {
+  if (typeof feature === "string") return feature.trim();
+  if (typeof feature === "number" || typeof feature === "boolean") {
+    return String(feature).trim();
+  }
+  if (!feature || typeof feature !== "object") return "";
+
+  const featureObject = feature as Record<string, unknown>;
+  const candidateKeys = ["label", "name", "title", "value", "text", "feature", "pl", "en"];
+  for (const key of candidateKeys) {
+    const value = featureTextValue(featureObject[key]);
+    if (value) return value;
+  }
+
+  return "";
+}
+
+function normalizeFeatures(value: unknown): string[] {
+  const values = Array.isArray(value) ? value : [value];
+  const normalized = values
+    .map((feature) => featureTextValue(feature))
+    .filter((feature) => feature && feature !== "[object Object]");
+
+  return Array.from(new Set(normalized));
+}
+
 function parseFeatures(value: string) {
   try {
     const parsed = JSON.parse(value || "[]");
-    return Array.isArray(parsed)
-      ? parsed.map((feature) => String(feature).trim()).filter(Boolean)
-      : [];
+    return normalizeFeatures(parsed);
   } catch {
     return [];
   }
@@ -88,9 +112,7 @@ function parseFeatures(value: string) {
 
 function featuresValue(payload: FormData | Record<string, unknown>) {
   const value = isFormDataPayload(payload) ? payload.get("features") : payload.features;
-  if (Array.isArray(value)) {
-    return value.map((feature) => String(feature).trim()).filter(Boolean);
-  }
+  if (Array.isArray(value)) return normalizeFeatures(value);
   if (typeof value === "string") return parseFeatures(value);
   return [];
 }

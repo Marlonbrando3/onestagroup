@@ -405,6 +405,32 @@ function stripHtml(value: unknown) {
     .trim();
 }
 
+function featureTextValue(feature: unknown): string {
+  if (typeof feature === "string") return feature.trim();
+  if (typeof feature === "number" || typeof feature === "boolean") {
+    return String(feature).trim();
+  }
+  if (!feature || typeof feature !== "object") return "";
+
+  const featureObject = feature as Record<string, unknown>;
+  const candidateKeys = ["label", "name", "title", "value", "text", "feature", "pl", "en"];
+  for (const key of candidateKeys) {
+    const value = featureTextValue(featureObject[key]);
+    if (value) return value;
+  }
+
+  return "";
+}
+
+function normalizeFeatures(value: unknown): string[] {
+  const values = Array.isArray(value) ? value : [value];
+  const normalized = values
+    .map((feature) => featureTextValue(feature))
+    .filter((feature) => feature && feature !== "[object Object]");
+
+  return Array.from(new Set(normalized));
+}
+
 function textFromDescription(value: any) {
   if (!value) return "";
   if (typeof value === "string") return stripHtml(value);
@@ -478,7 +504,7 @@ function mapPropertyToListing(
     distanceToSeaM: Number(property.distance_to_sea_m || 0) || null,
     market: property.new_build ? "pierwotny" : "wtórny",
     propertyType: normalizePropertyType(property.type),
-    features: Array.isArray(property.features) ? property.features : [],
+    features: normalizeFeatures(property.features),
     availableFrom: property.date ? String(property.date).slice(0, 10) : "",
     title,
     descriptionPl,
@@ -568,11 +594,11 @@ export default function OnesariPage() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
-        router.push("/login");
+        router.push(`/login?redirect=${encodeURIComponent(router.asPath)}`);
         return;
       }
       if (!canAccessOnesari(data.user.email)) {
-        router.push("/login");
+        router.push(`/login?redirect=${encodeURIComponent(router.asPath)}`);
         return;
       }
       setIsCheckingAuth(false);
@@ -1462,6 +1488,10 @@ export default function OnesariPage() {
       }
 
       setNotice("Zapisuję ofertę w Supabase...");
+      const formPayload = {
+        ...form,
+        features: normalizeFeatures(form.features),
+      };
       const response = await fetch("/api/onesari/create", {
         method: "POST",
         headers: {
@@ -1469,7 +1499,7 @@ export default function OnesariPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          form,
+          form: formPayload,
           images: uploadedImages,
         }),
       });
@@ -1625,16 +1655,6 @@ export default function OnesariPage() {
                   <p>Pulpit</p>
                   <h2>Stan bazy ogłoszeń</h2>
                 </div>
-                <button
-                  className="onesariPrimary"
-                  type="button"
-                  onClick={() => {
-                    setMainTab("add");
-                    setAddTab("data");
-                  }}
-                >
-                  <FaPlus /> Dodaj ogłoszenie
-                </button>
               </div>
 
               <section className="sourceGrid dashboardSources" aria-label="Źródła ogłoszeń">
@@ -2073,6 +2093,7 @@ export default function OnesariPage() {
                     <label>
                       Opis PL
                       <textarea
+                        placeholder={"Opis z akapitami. Enter i puste linie zostaną zachowane na stronie oferty."}
                         required
                         value={form.descriptionPl}
                         onChange={(event) => updateField("descriptionPl", event.target.value)}
@@ -2081,6 +2102,7 @@ export default function OnesariPage() {
                     <label>
                       Opis ENG
                       <textarea
+                        placeholder={"Description with paragraphs. Line breaks will be preserved on the listing page."}
                         required
                         value={form.descriptionEn}
                         onChange={(event) => updateField("descriptionEn", event.target.value)}

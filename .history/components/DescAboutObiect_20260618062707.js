@@ -7,10 +7,7 @@ import { FaBath } from "react-icons/fa6";
 import { FaSwimmingPool } from "react-icons/fa";
 import ContactAgentInOffer from "./ContactAgentInOffer";
 import ContactAgentInOfferMobile from "./ContactAgentInOfferMobile";
-import {
-  typeDictionarySingular,
-  validTitleOrEmpty,
-} from "@/lib/titlesDictionary";
+import { typeDictionarySingular, validTitleOrEmpty } from "@/lib/titlesDictionary";
 import { getCoastLabelFromProvince, getCountryLabel } from "@/lib/regionMap";
 
 export default function DescAboutObiect({
@@ -28,47 +25,29 @@ export default function DescAboutObiect({
   const [descriptionView, setDescriptionView] = useState("default");
   const [translating, setTranslating] = useState(false);
 
-  const escapeHtml = (value) =>
-    String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+  const formatDescription = (value) =>
+    value
+      ?.split("\n")
+      .map((line) => {
+        const trimmed = line.trim();
 
-  const formatDescription = (value) => {
-    const normalized = String(value || "")
-      .replace(/\r\n/g, "\n")
-      .replace(/\r/g, "\n")
-      .replace(/<\s*br\s*\/?>/gi, "\n")
-      .replace(/<\/p\s*>/gi, "\n\n")
-      .replace(/<p[^>]*>/gi, "")
-      .replace(/<\/div\s*>/gi, "\n")
-      .replace(/<div[^>]*>/gi, "")
-      .replace(/&nbsp;/gi, " ")
-      .trim();
-
-    if (!normalized) return "";
-
-    return normalized
-      .split(/\n{2,}/)
-      .map((paragraph) => {
-        const lines = paragraph
-          .split("\n")
-          .map((line) => line.trim())
-          .filter(Boolean);
-        if (!lines.length) return "";
-
-        const content = lines.map((line) => escapeHtml(line)).join("<br />");
-        const isHeading = lines.length === 1 && lines[0].length < 60 && lines[0].length > 3;
-        return isHeading ? `<p><strong>${content}</strong></p>` : `<p>${content}</p>`;
+        if (!trimmed) return "<br>";
+        if (trimmed.length < 40 && trimmed.length > 3) {
+          return `<br><strong>${trimmed}</strong><br>`;
+        }
+        return `${trimmed}<br>`;
       })
-      .filter(Boolean)
-      .join("");
-  };
+      .join("") || "";
 
-  const { type, town, price, country, province, title, headerAdvertisement } =
-    propertyData;
+  const {
+    type,
+    town,
+    price,
+    country,
+    province,
+    title,
+    headerAdvertisement,
+  } = propertyData;
   const typeLabel = typeDictionarySingular[type] || "Nieruchomość";
   const listingTitle =
     validTitleOrEmpty(title) ||
@@ -119,9 +98,8 @@ export default function DescAboutObiect({
     "Clear Views": "Czysty widok",
     "clear-views": "Otwarty widok",
     "Sea Views": "Widok na morze",
-    "Widok na morze": "Widok na morze",
     "sea-view": "Widok na morze",
-    GARAŻ: "Garaż",
+    "GARAŻ":"Garaż"
     Basement: "Piwnica",
     basements: "Piwnica",
     Gymnasium: "Szkoła",

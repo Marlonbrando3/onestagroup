@@ -20,7 +20,7 @@ export default function ContactAgentInOffer() {
           fill
           alt="alt"
           objectFit="cover"
-          className="object-top scale-125 pt-[10px]"
+          className="object-top scale-125 pt-[0px]"
         ></Image>
       </div>
       <div

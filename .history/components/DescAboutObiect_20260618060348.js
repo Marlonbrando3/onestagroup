@@ -8,10 +8,10 @@ import { FaSwimmingPool } from "react-icons/fa";
 import ContactAgentInOffer from "./ContactAgentInOffer";
 import ContactAgentInOfferMobile from "./ContactAgentInOfferMobile";
 import {
+  typeDictionaryPlural,
   typeDictionarySingular,
-  validTitleOrEmpty,
+  countryDictionary,
 } from "@/lib/titlesDictionary";
-import { getCoastLabelFromProvince, getCountryLabel } from "@/lib/regionMap";
 
 export default function DescAboutObiect({
   propertyData,
@@ -28,55 +28,24 @@ export default function DescAboutObiect({
   const [descriptionView, setDescriptionView] = useState("default");
   const [translating, setTranslating] = useState(false);
 
-  const escapeHtml = (value) =>
-    String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+  const formatDescription = (value) =>
+    value
+      ?.split("\n")
+      .map((line) => {
+        const trimmed = line.trim();
 
-  const formatDescription = (value) => {
-    const normalized = String(value || "")
-      .replace(/\r\n/g, "\n")
-      .replace(/\r/g, "\n")
-      .replace(/<\s*br\s*\/?>/gi, "\n")
-      .replace(/<\/p\s*>/gi, "\n\n")
-      .replace(/<p[^>]*>/gi, "")
-      .replace(/<\/div\s*>/gi, "\n")
-      .replace(/<div[^>]*>/gi, "")
-      .replace(/&nbsp;/gi, " ")
-      .trim();
-
-    if (!normalized) return "";
-
-    return normalized
-      .split(/\n{2,}/)
-      .map((paragraph) => {
-        const lines = paragraph
-          .split("\n")
-          .map((line) => line.trim())
-          .filter(Boolean);
-        if (!lines.length) return "";
-
-        const content = lines.map((line) => escapeHtml(line)).join("<br />");
-        const isHeading = lines.length === 1 && lines[0].length < 60 && lines[0].length > 3;
-        return isHeading ? `<p><strong>${content}</strong></p>` : `<p>${content}</p>`;
+        if (!trimmed) return "<br>";
+        if (trimmed.length < 40 && trimmed.length > 3) {
+          return `<br><strong>${trimmed}</strong><br>`;
+        }
+        return `${trimmed}<br>`;
       })
-      .filter(Boolean)
-      .join("");
-  };
+      .join("") || "";
 
-  const { type, town, price, country, province, title, headerAdvertisement } =
-    propertyData;
-  const typeLabel = typeDictionarySingular[type] || "Nieruchomość";
-  const listingTitle =
-    validTitleOrEmpty(title) ||
-    validTitleOrEmpty(headerAdvertisement) ||
-    `${typeLabel} w ${town || "Hiszpanii"}`;
-  const countryLabel = getCountryLabel(country) || "Hiszpania";
-  const coastLabel = getCoastLabelFromProvince(province);
-  const locationLine = [coastLabel, town].filter(Boolean).join(", ");
+  const { type, town, price, beds, bath, country, new_build } = propertyData;
+  const typeLabel = new_build
+    ? typeDictionaryPlural[type] || "Nieruchomości"
+    : typeDictionarySingular[type] || "Nieruchomość";
 
   const translator = {
     Sauna: "Sauna",
@@ -119,9 +88,7 @@ export default function DescAboutObiect({
     "Clear Views": "Czysty widok",
     "clear-views": "Otwarty widok",
     "Sea Views": "Widok na morze",
-    "Widok na morze": "Widok na morze",
     "sea-view": "Widok na morze",
-    GARAŻ: "Garaż",
     Basement: "Piwnica",
     basements: "Piwnica",
     Gymnasium: "Szkoła",
@@ -230,7 +197,7 @@ export default function DescAboutObiect({
 
   const mapQuery = hasCoordinates
     ? `${localization.lat},${localization.lng}`
-    : `${town || ""}, ${countryLabel}`;
+    : `${town || ""}, ${country || "Hiszpania"}`;
 
   return (
     <div className="rounded-md lg:w-auto lg:mr-2 bg-white flex-1 text-[18px] tracking-[1.1px] font-[300] mx-[10px]">
@@ -244,9 +211,13 @@ export default function DescAboutObiect({
             <div className="h-full">
               {" "}
               <p className="text-[18px] leading-[18px] font-[600]">
-                {countryLabel}
+                {country && country in countryDictionary
+                  ? countryDictionary[country]
+                  : "any"}
               </p>
-              <p className="text-[20px]">{locationLine || listingTitle}</p>
+              <p className="text-[20px]">
+                {province}, {town}
+              </p>
               {/* <div className="text-[18px]">2 sypilanie, 2 łazienki, basen</div> */}
             </div>
           </div>
@@ -261,7 +232,7 @@ export default function DescAboutObiect({
           <div className="flex sm:justify-end lg:mt-[20px] flex-wrap">
             <div className="text-[18px] flex items-center">
               <IoBed className="h-full w-[22px] text-yellow-500" />
-              <p className="px-[7px]">{bedrooms} sypialnie</p>
+              <p className="px-[7px]">{bathrooms} sypilanie</p>
             </div>
             <div className="text-[18px] flex  items-center">
               <FaBath className="h-full w-[22px] text-yellow-500" />

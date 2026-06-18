@@ -47,7 +47,7 @@ export default function Descryption({
           descriptionEN={descriptionEN}
           features={features}
           localization={localization}
-          bedrooms={bathrooms}
+          bedrooms={bedrooms}
           bathrooms={bathrooms}
           pool={pool}
           propertyPrice={propertyPrice}
