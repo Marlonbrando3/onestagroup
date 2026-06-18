@@ -205,9 +205,13 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
           display: flex;
           flex-direction: column;
           gap: 18px;
-          overflow: visible;
+          max-height: 100vh;
+          min-height: 100vh;
+          overflow-x: visible;
+          overflow-y: auto;
           padding: 13px 0;
-          position: relative;
+          position: sticky;
+          top: 0;
           z-index: 40;
         }
 
@@ -318,8 +322,12 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
 
           .crmSidebar {
             flex-direction: row;
+            max-height: none;
+            min-height: 0;
             overflow-x: auto;
+            overflow-y: visible;
             padding: 12px;
+            position: static;
           }
 
           .crmNav {

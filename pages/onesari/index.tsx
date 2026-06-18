@@ -17,6 +17,7 @@ import {
   FaCheck,
   FaCloudUploadAlt,
   FaDatabase,
+  FaEdit,
   FaImages,
   FaListUl,
   FaPlus,
@@ -54,6 +55,8 @@ type ListingForm = {
   descriptionEn: string;
 };
 
+type EditableField = keyof ListingForm;
+
 type Listing = Omit<ListingForm, "distanceToSeaM" | "price"> & {
   id: string;
   ref: string;
@@ -62,6 +65,7 @@ type Listing = Omit<ListingForm, "distanceToSeaM" | "price"> & {
   price: number | null;
   currency: string;
   imageUrl: string;
+  images: ListingImage[];
   imagesCount: number;
   createdAt: string;
 };
@@ -116,6 +120,37 @@ type SavedCloudinaryImage = {
   width: number | null;
   height: number | null;
 };
+
+type ListingImage = {
+  id: string;
+  url: string | null;
+  provider: string;
+  order: number;
+  cloudinary_asset_id?: string | null;
+  cloudinary_public_id?: string | null;
+  cloudinary_version?: number | null;
+  original_file_name?: string | null;
+  bytes?: number | null;
+  format?: string | null;
+  width?: number | null;
+  height?: number | null;
+  [key: string]: unknown;
+};
+
+type EditImageItem =
+  | {
+      id: string;
+      kind: "existing";
+      image: ListingImage;
+    }
+  | {
+      id: string;
+      kind: "draft";
+      file: File;
+      name: string;
+      size: number;
+      url: string;
+    };
 
 type SourceCounts = {
   metainmo: number | null;
@@ -180,6 +215,41 @@ const featureOptions = [
   "widok na morze",
 ];
 
+const editableFieldLabels: Record<EditableField, string> = {
+  country: "Kraj",
+  coast: "Wybrzeże",
+  city: "Miasto",
+  area: "Metraż",
+  bedrooms: "Liczba sypialni",
+  bathrooms: "Liczba łazienek",
+  distanceToSeaM: "Odległość od morza (m)",
+  price: "Cena",
+  market: "Rynek",
+  propertyType: "Rodzaj nieruchomości",
+  features: "Dodatkowe atuty",
+  availableFrom: "Dostępne od",
+  title: "Tytuł",
+  descriptionPl: "Opis PL",
+  descriptionEn: "Opis ENG",
+};
+
+const editDataFields: TextField[] = [
+  "country",
+  "coast",
+  "city",
+  "area",
+  "bedrooms",
+  "bathrooms",
+  "market",
+  "propertyType",
+  "availableFrom",
+  "distanceToSeaM",
+  "price",
+  "title",
+];
+
+const editDescriptionFields: TextField[] = ["descriptionPl", "descriptionEn"];
+
 const emptyForm: ListingForm = {
   country: "Hiszpania",
   city: "",
@@ -220,6 +290,14 @@ const initialListings: Listing[] = [
     price: 299000,
     currency: "EUR",
     imageUrl: "/costablanca.webp",
+    images: [
+      {
+        id: "one-1-image",
+        url: "/costablanca.webp",
+        provider: "local",
+        order: 1,
+      },
+    ],
     imagesCount: 8,
     createdAt: "2026-06-10",
   },
@@ -244,6 +322,14 @@ const initialListings: Listing[] = [
     price: 685000,
     currency: "EUR",
     imageUrl: "/mini_bg_about_us.webp",
+    images: [
+      {
+        id: "one-2-image",
+        url: "/mini_bg_about_us.webp",
+        provider: "local",
+        order: 1,
+      },
+    ],
     imagesCount: 12,
     createdAt: "2026-06-10",
   },
@@ -405,6 +491,18 @@ function stripHtml(value: unknown) {
     .trim();
 }
 
+function textForTextarea(value: unknown) {
+  return String(value || "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/div>/gi, "\n")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 function featureTextValue(feature: unknown): string {
   if (typeof feature === "string") return feature.trim();
   if (typeof feature === "number" || typeof feature === "boolean") {
@@ -433,30 +531,71 @@ function normalizeFeatures(value: unknown): string[] {
 
 function textFromDescription(value: any) {
   if (!value) return "";
-  if (typeof value === "string") return stripHtml(value);
-  return stripHtml(value.pl || value.en || value.es || value["#text"] || "");
+  if (typeof value === "string") return textForTextarea(value);
+  return textForTextarea(value.pl || value.en || value.es || value["#text"] || "");
 }
 
-function imageUrlFromProperty(images: any) {
-  const list = Array.isArray(images) ? images : images ? [images] : [];
-  const first = list[0];
-  if (!first) return "/mini_bg_about_us.webp";
+function displayImageUrlFromValue(value: unknown) {
   const url =
-    typeof first === "string"
-      ? first
-      : (
-    first.url ||
-    first.src ||
-    first.href ||
-    first["@_url"] ||
-    first["url_@"] ||
-    first.image ||
-    "/mini_bg_about_us.webp"
-  );
-  if (typeof url === "string" && url.startsWith("ftp://")) {
+    typeof value === "string"
+      ? value
+      : value && typeof value === "object"
+        ? String(
+            (value as any).url ||
+              (value as any).src ||
+              (value as any).href ||
+              (value as any)["@_url"] ||
+              (value as any)["url_@"] ||
+              (value as any).image ||
+              "",
+          )
+        : "";
+
+  if (url && url.startsWith("ftp://")) {
     const fileName = decodeURIComponent(url.split("/").pop() || "");
     if (fileName) return `/api/onesari/ftp-image?file=${encodeURIComponent(fileName)}`;
   }
+
+  return url;
+}
+
+function normalizeListingImages(images: any): ListingImage[] {
+  const list = Array.isArray(images) ? images : images ? [images] : [];
+
+  return list
+    .map((image, index) => {
+      const url = displayImageUrlFromValue(image);
+      if (!url) return null;
+      const imageObject =
+        image && typeof image === "object" && !Array.isArray(image)
+          ? (image as Record<string, unknown>)
+          : {};
+
+      return {
+        ...imageObject,
+        id: String(
+          imageObject.id ||
+            imageObject.cloudinary_public_id ||
+            imageObject.public_id ||
+            imageObject.url ||
+            imageObject.src ||
+            imageObject.href ||
+            url ||
+            uid("image"),
+        ),
+        url,
+        provider: String(imageObject.provider || (String(url).startsWith("/api/onesari") ? "ftp" : "external")),
+        order: Number.isFinite(Number(imageObject.order)) ? Number(imageObject.order) : index + 1,
+      } as ListingImage;
+    })
+    .filter((image): image is ListingImage => Boolean(image));
+}
+
+function imageUrlFromProperty(images: any) {
+  const first = normalizeListingImages(images)[0];
+  if (!first) return "/mini_bg_about_us.webp";
+  const url =
+    typeof first.url === "string" && first.url ? first.url : "/mini_bg_about_us.webp";
   return url;
 }
 
@@ -482,6 +621,7 @@ function mapPropertyToListing(
   source: "Metainmo XML" | "Secondary XML" | "Onesta Base" = displaySourceFromProperty(property?.source),
 ): Listing {
   const descriptionPl = textFromDescription(property.descriptions);
+  const propertyImages = normalizeListingImages(property.images);
   const title =
     stripHtml(property.title || property.headerAdvertisement) ||
     `${normalizePropertyType(property.type)} ${property.town || ""}`.trim() ||
@@ -512,9 +652,32 @@ function mapPropertyToListing(
     source,
     price: Number(property.price || 0) || null,
     currency: String(property.currency || "EUR"),
-    imageUrl: imageUrlFromProperty(property.images),
-    imagesCount: Array.isArray(property.images) ? property.images.length : property.images ? 1 : 0,
+    imageUrl: propertyImages[0]?.url || imageUrlFromProperty(property.images),
+    images: propertyImages,
+    imagesCount: propertyImages.length,
     createdAt: property.updated_at ? String(property.updated_at).slice(0, 10) : "",
+  };
+}
+
+function listingToForm(listing: Listing): ListingForm {
+  const coastOptions = coastOptionsByCountry[listing.country] || [];
+
+  return {
+    country: listing.country || "Hiszpania",
+    city: listing.city || "",
+    coast: listing.coast || coastOptions[0] || "",
+    area: listing.area || "",
+    bedrooms: listing.bedrooms || "",
+    bathrooms: listing.bathrooms || "",
+    distanceToSeaM: listing.distanceToSeaM === null ? "" : String(listing.distanceToSeaM),
+    price: listing.price === null ? "" : String(listing.price),
+    market: listing.market || "pierwotny",
+    propertyType: listing.propertyType || "apartament",
+    features: normalizeFeatures(listing.features),
+    availableFrom: listing.availableFrom || "",
+    title: listing.title || "",
+    descriptionPl: listing.descriptionPl || "",
+    descriptionEn: listing.descriptionEn || "",
   };
 }
 
@@ -590,6 +753,20 @@ export default function OnesariPage() {
   const [isOnestaLoading, setIsOnestaLoading] = useState(false);
   const [onestaError, setOnestaError] = useState("");
   const [onestaRefreshKey, setOnestaRefreshKey] = useState(0);
+  const [editingListingId, setEditingListingId] = useState<string | null>(null);
+  const [editingDrafts, setEditingDrafts] = useState<Record<string, ListingForm>>({});
+  const [activeEditField, setActiveEditField] = useState<{
+    listingId: string;
+    field: EditableField;
+  } | null>(null);
+  const [savingEditField, setSavingEditField] = useState<{
+    listingId: string;
+    field: EditableField;
+  } | null>(null);
+  const [savingEditListingId, setSavingEditListingId] = useState<string | null>(null);
+  const [editTabs, setEditTabs] = useState<Record<string, AddTab>>({});
+  const [editImageItems, setEditImageItems] = useState<Record<string, EditImageItem[]>>({});
+  const [draggedEditImageId, setDraggedEditImageId] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -1012,6 +1189,504 @@ export default function OnesariPage() {
     setNotice("");
   }
 
+  function replaceListing(updatedListing: Listing) {
+    const replace = (current: Listing[]) =>
+      current.map((listing) => (listing.id === updatedListing.id ? updatedListing : listing));
+
+    setListings(replace);
+    setAllListings(replace);
+    setMetainmoListings(replace);
+    setSecondaryListings(replace);
+    setOnestaListings(replace);
+  }
+
+  function openListingEditor(listing: Listing) {
+    setEditingDrafts((current) => ({
+      ...current,
+      [listing.id]: current[listing.id] || listingToForm(listing),
+    }));
+    setEditTabs((current) => ({
+      ...current,
+      [listing.id]: current[listing.id] || "data",
+    }));
+    setEditImageItems((current) => ({
+      ...current,
+      [listing.id]:
+        current[listing.id] ||
+        listing.images.map((image, index) => ({
+          id: `existing-${listing.id}-${image.id || index}`,
+          kind: "existing",
+          image: {
+            ...image,
+            order: index + 1,
+          },
+        })),
+    }));
+    setEditingListingId((current) => (current === listing.id ? null : listing.id));
+    setActiveEditField(null);
+    setNotice("");
+  }
+
+  function updateDraftField(listingId: string, field: TextField, value: string) {
+    setEditingDrafts((current) => {
+      const draft = current[listingId] || emptyForm;
+      if (field === "country") {
+        const coastOptions = coastOptionsByCountry[value] || [];
+        return {
+          ...current,
+          [listingId]: {
+            ...draft,
+            country: value,
+            coast: coastOptions.includes(draft.coast) ? draft.coast : coastOptions[0] || "",
+          },
+        };
+      }
+
+      return {
+        ...current,
+        [listingId]: {
+          ...draft,
+          [field]: value,
+        },
+      };
+    });
+    setNotice("");
+  }
+
+  function toggleDraftFeature(listingId: string, feature: string) {
+    setEditingDrafts((current) => {
+      const draft = current[listingId] || emptyForm;
+      const selected = draft.features.includes(feature);
+      return {
+        ...current,
+        [listingId]: {
+          ...draft,
+          features: selected
+            ? draft.features.filter((item) => item !== feature)
+            : [...draft.features, feature],
+        },
+      };
+    });
+    setNotice("");
+  }
+
+  async function saveEditedField(listing: Listing, field: EditableField) {
+    const draft = editingDrafts[listing.id] || listingToForm(listing);
+    setSavingEditField({ listingId: listing.id, field });
+    setNotice("");
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Brak aktywnej sesji");
+
+      const response = await fetch("/api/onesari/update", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: listing.id,
+          field,
+          value: draft[field],
+        }),
+      });
+      const data = await readJsonResponse<{ property?: any; error?: string }>(
+        response,
+        "Nie udało się zapisać pola",
+      );
+      if (!response.ok) {
+        throw new Error(responseError(response, data, "Nie udało się zapisać pola"));
+      }
+      if (!data.property) throw new Error("Supabase nie zwrócił zapisanej oferty");
+
+      const updatedListing = mapPropertyToListing(data.property);
+      replaceListing(updatedListing);
+      setEditingDrafts((current) => ({
+        ...current,
+        [updatedListing.id]: listingToForm(updatedListing),
+      }));
+      setActiveEditField(null);
+      setNotice(`${editableFieldLabels[field]} zapisane.`);
+    } catch (error: any) {
+      setNotice(error?.message || "Nie udało się zapisać pola.");
+    } finally {
+      setSavingEditField(null);
+    }
+  }
+
+  async function saveEditedListing(listing: Listing) {
+    const draft = editingDrafts[listing.id] || listingToForm(listing);
+    setSavingEditListingId(listing.id);
+    setNotice("");
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Brak aktywnej sesji");
+
+      const response = await fetch("/api/onesari/update", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: listing.id,
+          values: {
+            ...draft,
+            features: normalizeFeatures(draft.features),
+          },
+        }),
+      });
+      const data = await readJsonResponse<{ property?: any; error?: string }>(
+        response,
+        "Nie udało się zapisać oferty",
+      );
+      if (!response.ok) {
+        throw new Error(responseError(response, data, "Nie udało się zapisać oferty"));
+      }
+      if (!data.property) throw new Error("Supabase nie zwrócił zapisanej oferty");
+
+      const updatedListing = mapPropertyToListing(data.property);
+      replaceListing(updatedListing);
+      setEditingDrafts((current) => ({
+        ...current,
+        [updatedListing.id]: listingToForm(updatedListing),
+      }));
+      setNotice("Oferta została zaktualizowana.");
+    } catch (error: any) {
+      setNotice(error?.message || "Nie udało się zapisać oferty.");
+    } finally {
+      setSavingEditListingId(null);
+    }
+  }
+
+  async function saveEditedImages(listing: Listing) {
+    const items = editImageItems[listing.id] || [];
+    if (!items.length) {
+      setNotice("Oferta musi mieć przynajmniej jedno zdjęcie.");
+      return;
+    }
+
+    setSavingEditListingId(listing.id);
+    setNotice("Przygotowuję zdjęcia oferty...");
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Brak aktywnej sesji");
+
+      const preparedDrafts = [];
+      for (const item of items) {
+        if (item.kind !== "draft") continue;
+        setNotice(`Przygotowuję zdjęcie ${preparedDrafts.length + 1}...`);
+        const file = await compressImageForCloudinary(item.file);
+        preparedDrafts.push({
+          item,
+          file,
+        });
+      }
+
+      const uploadedById = new Map<string, SavedCloudinaryImage>();
+      if (preparedDrafts.length) {
+        const signatureResponse = await fetch("/api/onesari/cloudinary-signature", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            uploadBatchId: `${listing.ref || listing.id}-${Date.now()}`,
+            files: preparedDrafts.map(({ file }) => ({
+              name: file.name,
+              size: file.size,
+              type: file.type,
+            })),
+          }),
+        });
+        const signatureData = await readJsonResponse<
+          CloudinarySignatureResponse & { error?: string }
+        >(signatureResponse, "Nie udało się przygotować uploadu zdjęć");
+        if (!signatureResponse.ok) {
+          throw new Error(
+            responseError(
+              signatureResponse,
+              signatureData,
+              "Nie udało się przygotować uploadu zdjęć",
+            ),
+          );
+        }
+        if (
+          !signatureData.uploads?.length ||
+          signatureData.uploads.length !== preparedDrafts.length
+        ) {
+          throw new Error("Cloudinary nie zwrócił podpisów dla wszystkich zdjęć.");
+        }
+
+        for (const [index, draft] of preparedDrafts.entries()) {
+          const upload = signatureData.uploads[index];
+          const cloudinaryPayload = new FormData();
+          cloudinaryPayload.append("file", draft.file, draft.file.name);
+          cloudinaryPayload.append("api_key", signatureData.apiKey);
+          cloudinaryPayload.append("folder", upload.folder);
+          cloudinaryPayload.append("overwrite", upload.overwrite);
+          cloudinaryPayload.append("public_id", upload.public_id);
+          cloudinaryPayload.append("timestamp", String(upload.timestamp));
+          cloudinaryPayload.append("signature", upload.signature);
+
+          setNotice(`Wysyłam zdjęcie ${index + 1}/${preparedDrafts.length} do Cloudinary...`);
+          const uploadResponse = await fetch(
+            `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
+            {
+              method: "POST",
+              body: cloudinaryPayload,
+            },
+          );
+          const uploadData = await readJsonResponse<CloudinaryUploadResponse>(
+            uploadResponse,
+            `Nie udało się wysłać zdjęcia ${draft.item.name}`,
+          );
+
+          if (!uploadResponse.ok || uploadData.error) {
+            throw new Error(
+              uploadData.error?.message || `Nie udało się wysłać zdjęcia ${draft.item.name}`,
+            );
+          }
+
+          const uploadedUrl = uploadData.secure_url || uploadData.url;
+          if (!uploadedUrl) {
+            throw new Error(`Cloudinary nie zwrócił URL-a dla zdjęcia ${draft.item.name}`);
+          }
+
+          uploadedById.set(draft.item.id, {
+            url: uploadedUrl,
+            provider: "cloudinary",
+            order: 0,
+            cloudinary_asset_id: uploadData.asset_id || null,
+            cloudinary_public_id: uploadData.public_id || null,
+            cloudinary_version: uploadData.version || null,
+            original_file_name: draft.item.name,
+            bytes: uploadData.bytes || draft.file.size || null,
+            format: uploadData.format || null,
+            width: uploadData.width || null,
+            height: uploadData.height || null,
+          });
+        }
+      }
+
+      const nextImages = items.map((item, index) => {
+        const image = (
+          item.kind === "existing"
+            ? item.image
+            : ({
+                ...uploadedById.get(item.id),
+              } as SavedCloudinaryImage)
+        ) as ListingImage | SavedCloudinaryImage;
+        const existingId = "id" in image ? image.id : null;
+
+        return {
+          ...image,
+          id:
+            image.cloudinary_public_id ||
+            existingId ||
+            image.url ||
+            `${listing.id}-image-${index + 1}`,
+          order: index + 1,
+        };
+      });
+
+      setNotice("Zapisuję kolejność zdjęć w Supabase...");
+      const response = await fetch("/api/onesari/update", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: listing.id,
+          images: nextImages,
+        }),
+      });
+      const data = await readJsonResponse<{ property?: any; error?: string }>(
+        response,
+        "Nie udało się zapisać zdjęć",
+      );
+      if (!response.ok) {
+        throw new Error(responseError(response, data, "Nie udało się zapisać zdjęć"));
+      }
+      if (!data.property) throw new Error("Supabase nie zwrócił zapisanej oferty");
+
+      const updatedListing = mapPropertyToListing(data.property);
+      replaceListing(updatedListing);
+      setEditImageItems((current) => ({
+        ...current,
+        [updatedListing.id]: updatedListing.images.map((image, index) => ({
+          id: `existing-${updatedListing.id}-${image.id || index}`,
+          kind: "existing",
+          image: {
+            ...image,
+            order: index + 1,
+          },
+        })),
+      }));
+      setNotice("Zdjęcia oferty zostały zaktualizowane.");
+    } catch (error: any) {
+      setNotice(error?.message || "Nie udało się zapisać zdjęć.");
+    } finally {
+      setSavingEditListingId(null);
+    }
+  }
+
+  function selectOptionsWithCurrent(options: string[], value: string) {
+    return value && !options.includes(value) ? [value, ...options] : options;
+  }
+
+  function renderEditControl(listing: Listing, field: EditableField) {
+    const draft = editingDrafts[listing.id] || listingToForm(listing);
+    const isSaving = savingEditListingId === listing.id;
+    const inputId = `edit-${listing.id}-${field}`;
+    const commonProps = {
+      disabled: isSaving,
+      id: inputId,
+    };
+
+    if (field === "features") {
+      return (
+        <div className="featureGrid">
+          {featureOptions.map((feature) => {
+            const selected = draft.features.includes(feature);
+            return (
+              <button
+                className={selected ? "selected" : ""}
+                disabled={isSaving}
+                key={feature}
+                type="button"
+                onClick={() => toggleDraftFeature(listing.id, feature)}
+              >
+                <span>{selected ? <FaCheck /> : null}</span>
+                {feature}
+              </button>
+            );
+          })}
+        </div>
+      );
+    }
+
+    if (field === "descriptionPl" || field === "descriptionEn") {
+      return (
+        <textarea
+          {...commonProps}
+          value={draft[field]}
+          onChange={(event) => updateDraftField(listing.id, field, event.target.value)}
+        />
+      );
+    }
+
+    if (field === "country") {
+      const options = selectOptionsWithCurrent(countryOptions, draft.country);
+      return (
+        <select
+          {...commonProps}
+          value={draft.country}
+          onChange={(event) => updateDraftField(listing.id, field, event.target.value)}
+        >
+          {options.map((country) => (
+            <option key={country} value={country}>
+              {country}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    if (field === "coast") {
+      const coastOptions = coastOptionsByCountry[draft.country] || [];
+      const options = selectOptionsWithCurrent(coastOptions, draft.coast);
+      return (
+        <select
+          {...commonProps}
+          value={draft.coast}
+          onChange={(event) => updateDraftField(listing.id, field, event.target.value)}
+        >
+          {options.map((coast) => (
+            <option key={coast} value={coast}>
+              {coast}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    if (field === "market") {
+      return (
+        <select
+          {...commonProps}
+          value={draft.market}
+          onChange={(event) => updateDraftField(listing.id, field, event.target.value)}
+        >
+          {markets.map((market) => (
+            <option key={market} value={market}>
+              {market}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    if (field === "propertyType") {
+      return (
+        <select
+          {...commonProps}
+          value={draft.propertyType}
+          onChange={(event) => updateDraftField(listing.id, field, event.target.value)}
+        >
+          {propertyTypes.map((propertyType) => (
+            <option key={propertyType} value={propertyType}>
+              {propertyType}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    const inputType = field === "availableFrom" ? "date" : "text";
+    const inputMode =
+      field === "area" || field === "price"
+        ? "decimal"
+        : field === "bedrooms" || field === "bathrooms" || field === "distanceToSeaM"
+          ? "numeric"
+          : undefined;
+
+    return (
+      <input
+        {...commonProps}
+        inputMode={inputMode}
+        min={field === "price" || field === "distanceToSeaM" ? "0" : undefined}
+        type={inputType}
+        value={draft[field]}
+        onChange={(event) => updateDraftField(listing.id, field, event.target.value)}
+      />
+    );
+  }
+
+  function renderEditField(listing: Listing, field: EditableField) {
+    return (
+      <div
+        className={`editField ${
+          field === "descriptionPl" || field === "descriptionEn" || field === "features"
+            ? "wide"
+            : ""
+        }`}
+        key={field}
+      >
+        <span className="editFieldLabel">{editableFieldLabels[field]}</span>
+        {renderEditControl(listing, field)}
+      </div>
+    );
+  }
+
   function addFiles(files: FileList | File[]) {
     const nextImages = Array.from(files)
       .filter((file) => file.type.startsWith("image/"))
@@ -1101,6 +1776,105 @@ export default function OnesariPage() {
       if (image) URL.revokeObjectURL(image.url);
       return current.filter((item) => item.id !== imageId);
     });
+  }
+
+  function addEditImageFiles(listingId: string, files: FileList | File[]) {
+    const nextImages: EditImageItem[] = Array.from(files)
+      .filter((file) => file.type.startsWith("image/"))
+      .map((file) => ({
+        id: uid("edit-image"),
+        kind: "draft",
+        file,
+        name: file.name,
+        size: file.size,
+        url: URL.createObjectURL(file),
+      }));
+
+    if (!nextImages.length) return;
+    setEditImageItems((current) => ({
+      ...current,
+      [listingId]: [...(current[listingId] || []), ...nextImages],
+    }));
+    setNotice("");
+  }
+
+  function handleEditImageFileChange(listingId: string, event: ChangeEvent<HTMLInputElement>) {
+    if (event.target.files) addEditImageFiles(listingId, event.target.files);
+    event.target.value = "";
+  }
+
+  function moveEditImageBefore(listingId: string, draggedId: string, targetId: string) {
+    if (draggedId === targetId) return;
+
+    setEditImageItems((current) => {
+      const list = current[listingId] || [];
+      const fromIndex = list.findIndex((image) => image.id === draggedId);
+      const toIndex = list.findIndex((image) => image.id === targetId);
+      if (
+        fromIndex === -1 ||
+        toIndex === -1 ||
+        fromIndex === toIndex ||
+        fromIndex === toIndex - 1
+      ) {
+        return current;
+      }
+
+      const nextImages = [...list];
+      const [draggedImage] = nextImages.splice(fromIndex, 1);
+      const insertIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
+      nextImages.splice(insertIndex, 0, draggedImage);
+
+      return {
+        ...current,
+        [listingId]: nextImages,
+      };
+    });
+  }
+
+  function handleEditImageDragStart(event: DragEvent<HTMLElement>, imageId: string) {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", imageId);
+    setDraggedEditImageId(imageId);
+  }
+
+  function handleEditImageDragOver(
+    listingId: string,
+    event: DragEvent<HTMLElement>,
+    imageId: string,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = "move";
+
+    const activeImageId = draggedEditImageId || event.dataTransfer.getData("text/plain");
+    if (activeImageId) moveEditImageBefore(listingId, activeImageId, imageId);
+  }
+
+  function handleEditImageDrop(
+    listingId: string,
+    event: DragEvent<HTMLElement>,
+    imageId: string,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const activeImageId = draggedEditImageId || event.dataTransfer.getData("text/plain");
+    if (activeImageId) moveEditImageBefore(listingId, activeImageId, imageId);
+    setDraggedEditImageId(null);
+  }
+
+  function removeEditImageItem(listingId: string, imageId: string) {
+    setEditImageItems((current) => {
+      const list = current[listingId] || [];
+      const removed = list.find((item) => item.id === imageId);
+      if (removed?.kind === "draft") URL.revokeObjectURL(removed.url);
+
+      return {
+        ...current,
+        [listingId]: list.filter((item) => item.id !== imageId),
+      };
+    });
+    setNotice("");
   }
 
   function resetDraft() {
@@ -1798,42 +2572,235 @@ export default function OnesariPage() {
                   <span>Rynek</span>
                   <span>Źródło</span>
                   <span>Obrazy</span>
+                  <span>Edycja</span>
                 </div>
-                {filteredListings.map((listing) => (
-                  <article className="listingRow" key={listing.id}>
-                    <div className="listingIdentity">
-                      <img alt="" src={listing.imageUrl} />
-                      <div>
-                        <span>REF {listing.ref}</span>
-                        <strong>{listing.title}</strong>
-                        <span>
-                          {listing.city}, {listing.country}
-                          {listing.coast ? ` · ${listing.coast}` : ""}
+                {filteredListings.map((listing) => {
+                  const isEditing = editingListingId === listing.id;
+                  const editTab = editTabs[listing.id] || "data";
+                  const currentEditImages = editImageItems[listing.id] || [];
+                  return (
+                    <div className="listingItem" key={listing.id}>
+                      <article className="listingRow">
+                        <div className="listingIdentity">
+                          <img alt="" src={listing.imageUrl} />
+                          <div>
+                            <span>REF {listing.ref}</span>
+                            <strong>{listing.title}</strong>
+                            <span>
+                              {listing.city}, {listing.country}
+                              {listing.coast ? ` · ${listing.coast}` : ""}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="listingDescription">
+                          <p>{listing.descriptionPl}</p>
+                          <div className="listingFacts">
+                            <span>
+                              <FaRulerCombined /> {listing.area} m2
+                            </span>
+                            <span>
+                              <FaBed /> {listing.bedrooms}
+                            </span>
+                            <span>
+                              <FaBath /> {listing.bathrooms}
+                            </span>
+                          </div>
+                        </div>
+                        <strong className="priceCell">
+                          {formatPrice(listing.price, listing.currency)}
+                        </strong>
+                        <span className="pill">{listing.market}</span>
+                        <span className="sourcePill">{listing.source}</span>
+                        <span className="imageCounter">
+                          <FaImages /> {listing.imagesCount}
                         </span>
-                      </div>
+                        <button
+                          aria-label={`Edytuj ofertę ${listing.ref}`}
+                          className={isEditing ? "editListingButton active" : "editListingButton"}
+                          type="button"
+                          onClick={() => openListingEditor(listing)}
+                        >
+                          <FaEdit />
+                        </button>
+                      </article>
+                      {isEditing ? (
+                        <section
+                          className="listingEditPanel"
+                          aria-label={`Edycja oferty ${listing.ref}`}
+                        >
+                          <div className="offerForm listingEditForm">
+                            <div className="formTabs listingEditTabs">
+                              <div className="segmented">
+                                <button
+                                  className={editTab === "data" ? "active" : ""}
+                                  type="button"
+                                  onClick={() =>
+                                    setEditTabs((current) => ({
+                                      ...current,
+                                      [listing.id]: "data",
+                                    }))
+                                  }
+                                >
+                                  DANE
+                                </button>
+                                <button
+                                  className={editTab === "images" ? "active" : ""}
+                                  type="button"
+                                  onClick={() =>
+                                    setEditTabs((current) => ({
+                                      ...current,
+                                      [listing.id]: "images",
+                                    }))
+                                  }
+                                >
+                                  OBRAZY
+                                </button>
+                              </div>
+                              <span>
+                                REF {listing.ref} · {currentEditImages.length} obrazów
+                              </span>
+                            </div>
+
+                            {editTab === "data" ? (
+                              <section className="formPanel listingEditBody">
+                                <div className="fieldGrid listingEditGrid">
+                                  {editDataFields.map((field) => renderEditField(listing, field))}
+                                </div>
+                                <section className="featurePicker listingEditFeatures">
+                                  {renderEditField(listing, "features")}
+                                </section>
+                                <div className="textareaGrid listingEditTextareas">
+                                  {editDescriptionFields.map((field) =>
+                                    renderEditField(listing, field),
+                                  )}
+                                </div>
+                              </section>
+                            ) : (
+                              <section className="formPanel listingEditBody" aria-label="Obrazy oferty">
+                                <input
+                                  accept="image/*"
+                                  hidden
+                                  id={`edit-images-${listing.id}`}
+                                  multiple
+                                  type="file"
+                                  onChange={(event) =>
+                                    handleEditImageFileChange(listing.id, event)
+                                  }
+                                />
+                                <div
+                                  className="uploadZone editUploadZone"
+                                  onDragLeave={() => setDragActive(false)}
+                                  onDragOver={handleDragOver}
+                                  onDrop={(event) => {
+                                    event.preventDefault();
+                                    setDragActive(false);
+                                    addEditImageFiles(listing.id, event.dataTransfer.files);
+                                  }}
+                                >
+                                  <FaCloudUploadAlt />
+                                  <strong>Dodaj kolejne zdjęcia do oferty</strong>
+                                  <button
+                                    className="secondaryButton"
+                                    type="button"
+                                    onClick={() =>
+                                      document.getElementById(`edit-images-${listing.id}`)?.click()
+                                    }
+                                  >
+                                    <FaRegImage /> Wyszukaj na dysku
+                                  </button>
+                                </div>
+
+                                {currentEditImages.length ? (
+                                  <div className="imageGrid">
+                                    {currentEditImages.map((image, index) => {
+                                      const imageUrl =
+                                        image.kind === "existing" ? image.image.url : image.url;
+                                      const title =
+                                        image.kind === "existing"
+                                          ? image.image.original_file_name ||
+                                            image.image.provider ||
+                                            `Zdjęcie ${index + 1}`
+                                          : image.name;
+                                      return (
+                                        <article
+                                          aria-label={`${index + 1}. ${title}`}
+                                          className={`imageTile ${
+                                            draggedEditImageId === image.id ? "dragging" : ""
+                                          }`}
+                                          draggable
+                                          key={image.id}
+                                          onDragEnd={() => setDraggedEditImageId(null)}
+                                          onDragOver={(event) =>
+                                            handleEditImageDragOver(listing.id, event, image.id)
+                                          }
+                                          onDragStart={(event) =>
+                                            handleEditImageDragStart(event, image.id)
+                                          }
+                                          onDrop={(event) =>
+                                            handleEditImageDrop(listing.id, event, image.id)
+                                          }
+                                        >
+                                          <img alt="" src={imageUrl || "/mini_bg_about_us.webp"} />
+                                          <div>
+                                            <strong>{title}</strong>
+                                            <span>
+                                              {image.kind === "draft"
+                                                ? formatFileSize(image.size)
+                                                : image.image.provider}
+                                            </span>
+                                          </div>
+                                          <button
+                                            aria-label={`Usuń ${title}`}
+                                            type="button"
+                                            onClick={() => removeEditImageItem(listing.id, image.id)}
+                                          >
+                                            <FaTimes />
+                                          </button>
+                                        </article>
+                                      );
+                                    })}
+                                  </div>
+                                ) : (
+                                  <div className="emptyImages">
+                                    <FaImages />
+                                    <span>Brak obrazów w tej ofercie</span>
+                                  </div>
+                                )}
+                              </section>
+                            )}
+
+                            <footer className="saveBar listingEditSaveBar">
+                              <div>
+                                <strong>{listing.title || "Edycja oferty"}</strong>
+                                <span>
+                                  {editTab === "data"
+                                    ? `${listing.city || "Miasto"} · ${
+                                        listing.features.length
+                                      } atutów`
+                                    : `${currentEditImages.length} obrazów w kolejce`}
+                                </span>
+                              </div>
+                              {notice ? <p>{notice}</p> : null}
+                              <button
+                                aria-label={`Zapisz ofertę ${listing.ref}`}
+                                className="confirmListingButton"
+                                disabled={savingEditListingId === listing.id}
+                                type="button"
+                                onClick={() =>
+                                  editTab === "data"
+                                    ? saveEditedListing(listing)
+                                    : saveEditedImages(listing)
+                                }
+                              >
+                                <FaCheck />
+                              </button>
+                            </footer>
+                          </div>
+                        </section>
+                      ) : null}
                     </div>
-                    <div className="listingDescription">
-                      <p>{listing.descriptionPl}</p>
-                      <div className="listingFacts">
-                        <span>
-                          <FaRulerCombined /> {listing.area} m2
-                        </span>
-                        <span>
-                          <FaBed /> {listing.bedrooms}
-                        </span>
-                        <span>
-                          <FaBath /> {listing.bathrooms}
-                        </span>
-                      </div>
-                    </div>
-                    <strong className="priceCell">{formatPrice(listing.price, listing.currency)}</strong>
-                    <span className="pill">{listing.market}</span>
-                    <span className="sourcePill">{listing.source}</span>
-                    <span className="imageCounter">
-                      <FaImages /> {listing.imagesCount}
-                    </span>
-                  </article>
-                ))}
+                  );
+                })}
               </section>
               {sourceFilter === "all" ||
               sourceFilter === "Metainmo XML" ||
@@ -2244,7 +3211,12 @@ export default function OnesariPage() {
           display: flex;
           flex-direction: column;
           gap: 28px;
+          max-height: 100vh;
+          min-height: 100vh;
+          overflow-y: auto;
           padding: 22px;
+          position: sticky;
+          top: 0;
         }
 
         .onesariBrand {
@@ -2599,11 +3571,15 @@ export default function OnesariPage() {
           overflow: hidden;
         }
 
+        .listingItem {
+          border-top: 1px solid #d8dee7;
+        }
+
         .listingHeader,
         .listingRow {
           display: grid;
           gap: 14px;
-          grid-template-columns: minmax(300px, 1.05fr) minmax(250px, 1fr) 140px 110px 150px 90px;
+          grid-template-columns: minmax(280px, 1.15fr) minmax(250px, 1fr) 112px 96px 132px 72px 76px;
           padding: 14px 16px;
         }
 
@@ -2615,9 +3591,14 @@ export default function OnesariPage() {
           text-transform: uppercase;
         }
 
+        .listingHeader span:nth-child(6),
+        .listingHeader span:nth-child(7) {
+          justify-self: center;
+          text-align: center;
+        }
+
         .listingRow {
           align-items: center;
-          border-top: 1px solid #d8dee7;
         }
 
         .listingIdentity,
@@ -2655,6 +3636,311 @@ export default function OnesariPage() {
           display: grid;
           gap: 4px;
           min-width: 0;
+        }
+
+        .editListingButton,
+        .editFieldButton,
+        .confirmFieldButton {
+          align-items: center;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          display: inline-flex;
+          flex: 0 0 auto;
+          height: 34px;
+          justify-content: center;
+          width: 34px;
+        }
+
+        .editFieldButton,
+        .confirmFieldButton {
+          height: 28px;
+          width: 28px;
+        }
+
+        .editListingButton,
+        .editFieldButton {
+          background: #ffffff;
+          color: #344054;
+        }
+
+        .editListingButton {
+          justify-self: center;
+        }
+
+        .editListingButton.active,
+        .editListingButton:hover,
+        .editFieldButton:hover {
+          border-color: #9acdc4;
+          color: #155149;
+        }
+
+        .confirmFieldButton {
+          background: #155149;
+          border-color: #155149;
+          color: #ffffff;
+        }
+
+        .confirmListingButton {
+          align-items: center;
+          background: #155149;
+          border: 0;
+          border-radius: 8px;
+          color: #ffffff;
+          display: inline-flex;
+          flex: 0 0 auto;
+          height: 44px;
+          justify-content: center;
+          width: 52px;
+        }
+
+        .editListingButton:disabled,
+        .editFieldButton:disabled,
+        .confirmFieldButton:disabled,
+        .confirmListingButton:disabled {
+          cursor: wait;
+          opacity: 0.55;
+        }
+
+        .listingEditPanel {
+          background: #eef2f5;
+          border-top: 1px solid #d8dee7;
+          display: grid;
+          overflow: hidden;
+          padding: 18px;
+        }
+
+        .listingEditForm {
+          border-radius: 8px;
+          box-shadow: 0 14px 34px rgba(21, 32, 43, 0.08);
+        }
+
+        .listingEditTabs {
+          min-height: 62px;
+        }
+
+        .listingEditTabs span {
+          color: #667085;
+          font-size: 13px;
+          font-weight: 900;
+          text-align: right;
+        }
+
+        .listingEditBody {
+          background: #ffffff;
+        }
+
+        .listingEditFeatures {
+          background: #ffffff;
+        }
+
+        .listingEditFeatures .editField {
+          gap: 12px;
+        }
+
+        .listingEditFeatures .editField.wide,
+        .listingEditTextareas .editField.wide {
+          grid-column: auto;
+        }
+
+        .listingEditTextareas .editField {
+          min-width: 0;
+        }
+
+        .listingEditSaveBar {
+          bottom: auto;
+          position: static;
+        }
+
+        .editField {
+          color: #344054;
+          display: grid;
+          font-size: 13px;
+          font-weight: 900;
+          gap: 7px;
+          min-width: 0;
+        }
+
+        :global(.listingEditGrid) {
+          display: grid;
+          gap: 14px;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        :global(.listingEditTextareas) {
+          display: grid;
+          gap: 14px;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        :global(.editField) {
+          color: #344054;
+          display: grid;
+          font-size: 13px;
+          font-weight: 900;
+          gap: 7px;
+          min-width: 0;
+        }
+
+        :global(.editFieldLabel) {
+          color: #344054;
+          display: block;
+          font-size: 13px;
+          font-weight: 900;
+          line-height: 1.25;
+          min-width: 0;
+        }
+
+        :global(.editField input),
+        :global(.editField select),
+        :global(.editField textarea) {
+          background: #f9fafb;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          color: #17202a;
+          display: block;
+          font: inherit;
+          min-width: 0;
+          outline: 0;
+          width: 100%;
+        }
+
+        :global(.editField input),
+        :global(.editField select) {
+          min-height: 44px;
+          padding: 0 12px;
+        }
+
+        :global(.editField textarea) {
+          min-height: 170px;
+          padding: 12px;
+          resize: vertical;
+        }
+
+        :global(.editField input:disabled),
+        :global(.editField select:disabled),
+        :global(.editField textarea:disabled) {
+          background: #f9fafb;
+          color: #667085;
+          opacity: 1;
+        }
+
+        :global(.listingEditFeatures .featureGrid) {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        :global(.listingEditFeatures .featureGrid button) {
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #d8dee7;
+          border-radius: 999px;
+          color: #344054;
+          display: inline-flex;
+          font-weight: 900;
+          gap: 7px;
+          min-height: 36px;
+          padding: 0 12px;
+        }
+
+        :global(.listingEditFeatures .featureGrid button.selected) {
+          background: #e7f2ef;
+          border-color: #9acdc4;
+          color: #155149;
+        }
+
+        :global(.listingEditFeatures .featureGrid button span) {
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #d8dee7;
+          border-radius: 999px;
+          display: flex;
+          height: 18px;
+          justify-content: center;
+          width: 18px;
+        }
+
+        .editFieldLabel {
+          color: #344054;
+          display: block;
+          font-size: 13px;
+          font-weight: 900;
+          line-height: 1.25;
+          min-width: 0;
+        }
+
+        .editControlShell {
+          min-width: 0;
+          position: relative;
+        }
+
+        .editFieldActions {
+          align-items: center;
+          display: inline-flex;
+          gap: 6px;
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 2;
+        }
+
+        .editField input,
+        .editField select,
+        .editField textarea {
+          background: #f9fafb;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          color: #17202a;
+          display: block;
+          font: inherit;
+          min-width: 0;
+          outline: 0;
+          width: 100%;
+        }
+
+        .editField input,
+        .editField select {
+          min-height: 44px;
+          padding: 0 12px;
+        }
+
+        .editField textarea {
+          min-height: 150px;
+          padding: 12px;
+          resize: vertical;
+        }
+
+        .editField input:disabled,
+        .editField select:disabled,
+        .editField textarea:disabled {
+          background: #f9fafb;
+          color: #667085;
+          opacity: 1;
+        }
+
+        .editFeaturePicker {
+          background: #ffffff;
+          display: block;
+          min-height: 44px;
+          width: 100%;
+        }
+
+        .editFeaturePicker p {
+          background: #f9fafb;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          color: #667085;
+          font-size: 13px;
+          font-weight: 800;
+          line-height: 1.45;
+          margin: 0;
+          min-height: 44px;
+          padding: 12px;
+        }
+
+        .editFeaturePicker.active {
+          background: #ffffff;
         }
 
         .listingIdentity strong,
@@ -3201,7 +4487,11 @@ export default function OnesariPage() {
 
           .onesariSidebar {
             flex-direction: row;
+            max-height: none;
+            min-height: 0;
             overflow-x: auto;
+            overflow-y: visible;
+            position: static;
           }
 
           .onesariNav {
@@ -3233,7 +4523,8 @@ export default function OnesariPage() {
             min-width: 1160px;
           }
 
-          .fieldGrid {
+          .fieldGrid,
+          .listingEditGrid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
         }
@@ -3261,6 +4552,7 @@ export default function OnesariPage() {
           .sourceGrid,
           .importActions,
           .fieldGrid,
+          .listingEditGrid,
           .textareaGrid {
             grid-template-columns: 1fr;
           }
