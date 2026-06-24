@@ -6,9 +6,9 @@ export const config = {
   maxDuration: 120,
 };
 
-const METAINMO_CHUNK_SIZE = 3;
-const METAINMO_WRITE_DELAY_MS = 900;
-const METAINMO_DELETE_CHUNK_SIZE = 50;
+const METAINMO_CHUNK_SIZE = 100;
+const METAINMO_WRITE_DELAY_MS = 0;
+const METAINMO_DELETE_CHUNK_SIZE = 200;
 const METAINMO_SELECT_CHUNK_SIZE = 200;
 const RETRY_DELAYS_MS = [1000, 2500, 5000, 10000, 15000];
 let metainmoImportInProgress = false;

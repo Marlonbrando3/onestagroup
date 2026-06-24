@@ -9,9 +9,9 @@ export const config = {
 const SECONDARY_XML_URL =
   "https://www.propmls.com/property-export/26t676x0545/export_1.xml";
 const SECONDARY_TABLE = "properties";
-const SECONDARY_CHUNK_SIZE = 10;
-const SECONDARY_WRITE_DELAY_MS = 900;
-const SECONDARY_DELETE_CHUNK_SIZE = 50;
+const SECONDARY_CHUNK_SIZE = 100;
+const SECONDARY_WRITE_DELAY_MS = 0;
+const SECONDARY_DELETE_CHUNK_SIZE = 200;
 const SECONDARY_SELECT_CHUNK_SIZE = 200;
 const RETRY_DELAYS_MS = [1000, 2500, 5000, 10000, 15000];
 let secondaryImportInProgress = false;
