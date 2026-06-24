@@ -1931,11 +1931,40 @@ export default function OnesariPage() {
     });
   }
 
+  function getXmlImportEndpoint(kind: ImportKind) {
+    const isLocalhost =
+      typeof window !== "undefined" &&
+      ["localhost", "127.0.0.1"].includes(window.location.hostname);
+
+    if (!isLocalhost) {
+      return kind === "metainmo"
+        ? "/.netlify/functions/metainmoToSupabase-background"
+        : "/.netlify/functions/secondaryToSupabase-background";
+    }
+
+    return kind === "metainmo"
+      ? "/api/metainmoToSupabase"
+      : "/api/secondaryToSupabase";
+  }
+
+  function markBackgroundImportQueued(kind: ImportKind) {
+    const label = kind === "metainmo" ? "Metainmo" : "Secondary MLS";
+    const message = `${label}: import uruchomiony w tle na Netlify. Dane odświeżą się automatycznie po zakończeniu.`;
+    setImportProgress((current) =>
+      current && current.kind === kind
+        ? {
+            ...current,
+            percent: 25,
+            message,
+          }
+        : current,
+    );
+    setImportStatus(message);
+    scheduleBackgroundImportRefresh(kind);
+  }
+
   async function runXmlImport(kind: ImportKind) {
-    const endpoint =
-      kind === "metainmo"
-        ? "/api/metainmoToSupabase"
-        : "/api/secondaryToSupabase";
+    const endpoint = getXmlImportEndpoint(kind);
     setImporting(kind);
     setImportProgress({
       kind,
@@ -1961,6 +1990,11 @@ export default function OnesariPage() {
           "x-import-progress": "1",
         },
       });
+
+      if (response.status === 202) {
+        markBackgroundImportQueued(kind);
+        return;
+      }
 
       if (response.body) {
         const reader = response.body.getReader();
@@ -2000,23 +2034,6 @@ export default function OnesariPage() {
 
         if (buffer.trim()) {
           finalEvent = JSON.parse(buffer);
-        }
-
-        if (!finalEvent && response.status === 202) {
-          const label = kind === "metainmo" ? "Metainmo" : "Secondary MLS";
-          const message = `${label}: import uruchomiony w tle na Netlify. Dane odświeżą się automatycznie po zakończeniu.`;
-          setImportProgress((current) =>
-            current && current.kind === kind
-              ? {
-                  ...current,
-                  percent: 25,
-                  message,
-                }
-              : current,
-          );
-          setImportStatus(message);
-          scheduleBackgroundImportRefresh(kind);
-          return;
         }
 
         if (!finalEvent) {

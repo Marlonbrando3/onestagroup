@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { XMLParser } from "fast-xml-parser";
-import { supabaseServer } from "@/lib/supabaseClient";
+import { supabaseServer } from "../../lib/supabaseClient";
 
 export const config = {
-  type: "experimental-background",
   maxDuration: 120,
 };
 
