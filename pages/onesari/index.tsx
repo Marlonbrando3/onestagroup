@@ -1914,6 +1914,23 @@ export default function OnesariPage() {
     runXmlImport(kind);
   }
 
+  function scheduleBackgroundImportRefresh(kind: ImportKind) {
+    if (typeof window === "undefined") return;
+
+    const refresh = () => {
+      setSourceTotalsRefreshKey((current) => current + 1);
+      if (kind === "metainmo") {
+        setMetainmoRefreshKey((current) => current + 1);
+      } else {
+        setSecondaryRefreshKey((current) => current + 1);
+      }
+    };
+
+    [30000, 90000, 180000, 360000, 600000].forEach((delayMs) => {
+      window.setTimeout(refresh, delayMs);
+    });
+  }
+
   async function runXmlImport(kind: ImportKind) {
     const endpoint =
       kind === "metainmo"
@@ -1983,6 +2000,23 @@ export default function OnesariPage() {
 
         if (buffer.trim()) {
           finalEvent = JSON.parse(buffer);
+        }
+
+        if (!finalEvent && response.status === 202) {
+          const label = kind === "metainmo" ? "Metainmo" : "Secondary MLS";
+          const message = `${label}: import uruchomiony w tle na Netlify. Dane odświeżą się automatycznie po zakończeniu.`;
+          setImportProgress((current) =>
+            current && current.kind === kind
+              ? {
+                  ...current,
+                  percent: 25,
+                  message,
+                }
+              : current,
+          );
+          setImportStatus(message);
+          scheduleBackgroundImportRefresh(kind);
+          return;
         }
 
         if (!finalEvent) {
