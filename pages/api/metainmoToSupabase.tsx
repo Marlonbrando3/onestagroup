@@ -63,6 +63,18 @@ function normalizeTimestamp(value: unknown): string {
   return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
 }
 
+function buildMetainmoExternalId(property: any): string | null {
+  const rawId =
+    toText(property?.id) ??
+    toText(property?.ref) ??
+    toText(property?.reference) ??
+    toText(property?.url?.pl) ??
+    toText(property?.url?.en) ??
+    toText(property?.url);
+
+  return rawId ? `MTI-${rawId}` : null;
+}
+
 function detectProperties(parsed: any): any[] {
   if (!parsed || typeof parsed !== "object") return [];
   if (parsed?.root?.property) return toArray(parsed.root.property);
@@ -153,6 +165,32 @@ function buildRawPayload(property: any) {
     distance_airport: toText(property?.distance_airport),
     hospital_distance: toText(property?.hospital_distance),
     distance_beach: toText(property?.distance_beach),
+  };
+}
+
+function dedupeRowsByExternalId(rows: any[]) {
+  const uniqueRows = new Map<string, any>();
+  let duplicateRows = 0;
+  let skippedRows = 0;
+
+  for (const row of rows) {
+    const externalId = toText(row?.external_id);
+    if (!externalId) {
+      skippedRows += 1;
+      continue;
+    }
+
+    if (uniqueRows.has(externalId)) {
+      duplicateRows += 1;
+    }
+
+    uniqueRows.set(externalId, row);
+  }
+
+  return {
+    rows: Array.from(uniqueRows.values()),
+    duplicateRows,
+    skippedRows,
   };
 }
 
@@ -336,10 +374,11 @@ export default async function handler(
         toText(property?.name?.en) ??
         toText(property?.name) ??
         null;
+      const externalId = buildMetainmoExternalId(property);
 
       return {
         source: "METAINMO",
-        external_id: `MTI-${property.id}`,
+        external_id: externalId,
         complex_id:
           toText(property.complex_id) ??
           toText(property.complex_url) ??
@@ -385,10 +424,14 @@ export default async function handler(
       };
     });
 
-    const uniqueByComplex = mapped;
+    const {
+      rows: uniqueMetainmoRows,
+      duplicateRows,
+      skippedRows,
+    } = dedupeRowsByExternalId(mapped);
 
     const chunkSize = METAINMO_CHUNK_SIZE;
-    const totalRows = uniqueByComplex.length;
+    const totalRows = uniqueMetainmoRows.length;
     let savedRows = 0;
 
     sendProgress(
@@ -400,8 +443,8 @@ export default async function handler(
     );
 
     // 🔹 wysyłka do Supabase
-    for (let i = 0; i < uniqueByComplex.length; i += chunkSize) {
-      const chunk = uniqueByComplex.slice(i, i + chunkSize);
+    for (let i = 0; i < uniqueMetainmoRows.length; i += chunkSize) {
+      const chunk = uniqueMetainmoRows.slice(i, i + chunkSize);
 
       const error = await upsertChunkWithRetry(chunk);
 
@@ -434,7 +477,7 @@ export default async function handler(
       totalRows,
     );
     const currentExternalIds = new Set(
-      uniqueByComplex.map((property: any) => String(property.external_id)),
+      uniqueMetainmoRows.map((property: any) => String(property.external_id)),
     );
     const { deletedRows, error: staleDeleteError } =
       await deleteStaleMetainmoRows(currentExternalIds);
@@ -451,9 +494,11 @@ export default async function handler(
     const payload = {
       message: "Export do Supabase zakończony",
       total_xml: mapped.length,
-      total_after_dedupe: uniqueByComplex.length,
+      total_after_dedupe: uniqueMetainmoRows.length,
       total_saved: savedRows,
       total_deleted_stale: deletedRows,
+      duplicate_external_id_rows: duplicateRows,
+      skipped_missing_external_id_rows: skippedRows,
     };
 
     sendProgress("done", "Import METAINMO zakończony.", 100, totalRows, totalRows);
