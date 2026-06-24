@@ -1931,15 +1931,28 @@ export default function OnesariPage() {
     });
   }
 
-  function getXmlImportEndpoint(kind: ImportKind) {
+  function createImportRunId() {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+      const value = Math.floor(Math.random() * 16);
+      const digit = char === "x" ? value : (value & 0x3) | 0x8;
+      return digit.toString(16);
+    });
+  }
+
+  function getXmlImportEndpoint(kind: ImportKind, runId: string) {
     const isLocalhost =
       typeof window !== "undefined" &&
       ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
     if (!isLocalhost) {
-      return kind === "metainmo"
+      const endpoint = kind === "metainmo"
         ? "/.netlify/functions/metainmoToSupabase-background"
         : "/.netlify/functions/secondaryToSupabase-background";
+      return `${endpoint}?runId=${encodeURIComponent(runId)}`;
     }
 
     return kind === "metainmo"
@@ -1947,24 +1960,140 @@ export default function OnesariPage() {
       : "/api/secondaryToSupabase";
   }
 
-  function markBackgroundImportQueued(kind: ImportKind) {
+  function refreshImportedSource(kind: ImportKind) {
+    setSourceTotalsRefreshKey((current) => current + 1);
+    if (kind === "metainmo") {
+      setMetainmoPage(1);
+      setMetainmoRefreshKey((current) => current + 1);
+    } else {
+      setSecondaryPage(1);
+      setSecondaryRefreshKey((current) => current + 1);
+    }
+  }
+
+  function importSuccessMessage(kind: ImportKind, data: any) {
+    return kind === "metainmo"
+      ? `Metainmo OK: XML ${data?.total_xml ?? 0}, zapisane ${
+          data?.total_saved ?? data?.total_after_dedupe ?? 0
+        }, usunięte stare ${data?.total_deleted_stale ?? 0}.`
+      : `Secondary MLS OK: XML ${data?.total_xml ?? 0}, zapisane ${
+          data?.total_saved ?? 0
+        }, usunięte stare ${data?.total_deleted_sec ?? 0}.`;
+  }
+
+  function markBackgroundImportQueued(kind: ImportKind, runId: string) {
     const label = kind === "metainmo" ? "Metainmo" : "Secondary MLS";
-    const message = `${label}: import uruchomiony w tle na Netlify. Dane odświeżą się automatycznie po zakończeniu.`;
+    const message = `${label}: import uruchomiony w tle na Netlify. Czekam na końcowy raport...`;
     setImportProgress((current) =>
       current && current.kind === kind
         ? {
             ...current,
             percent: 25,
+            stage: "background",
             message,
           }
         : current,
     );
     setImportStatus(message);
     scheduleBackgroundImportRefresh(kind);
+    pollBackgroundImportStatus(kind, runId);
+  }
+
+  async function pollBackgroundImportStatus(
+    kind: ImportKind,
+    runId: string,
+    attempt = 0,
+  ) {
+    if (attempt > 180) {
+      setImportStatus("Import nadal działa w tle. Odśwież /onesari za chwilę.");
+      setImporting(null);
+      return;
+    }
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Brak aktywnej sesji");
+
+      const response = await fetch(
+        `/api/onesari/import-status?id=${encodeURIComponent(runId)}`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(payload?.error || "Nie udało się pobrać statusu importu");
+      }
+
+      const run = payload?.importRun;
+      if (!run) throw new Error("Brak statusu importu");
+
+      const message = String(run.message || "");
+      setImportProgress((current) =>
+        current && current.kind === kind
+          ? {
+              ...current,
+              percent: Number(run.progressPercent ?? current.percent ?? 25),
+              processed:
+                typeof run.processed === "number" ? run.processed : current.processed,
+              total: typeof run.total === "number" ? run.total : current.total,
+              stage: String(run.status || "background"),
+              message: message || current.message,
+              error: run.status === "failed",
+            }
+          : current,
+      );
+      if (message) setImportStatus(message);
+
+      if (run.status === "completed") {
+        const data = run.result || {};
+        const finalMessage = importSuccessMessage(kind, data);
+        setImportProgress((current) =>
+          current && current.kind === kind
+            ? {
+                ...current,
+                percent: 100,
+                processed:
+                  typeof current.total === "number" ? current.total : current.processed,
+                stage: "completed",
+                message: finalMessage,
+              }
+            : current,
+        );
+        setImportStatus(finalMessage);
+        refreshImportedSource(kind);
+        setImporting(null);
+        return;
+      }
+
+      if (run.status === "failed") {
+        const errorMessage = run.error || run.message || "Import nie powiódł się.";
+        setImportProgress((current) =>
+          current && current.kind === kind
+            ? {
+                ...current,
+                percent: 100,
+                error: true,
+                stage: "failed",
+                message: errorMessage,
+              }
+            : current,
+        );
+        setImportStatus(errorMessage);
+        setImporting(null);
+        return;
+      }
+    } catch (error: any) {
+      setImportStatus(error?.message || "Czekam na status importu...");
+    }
+
+    window.setTimeout(() => pollBackgroundImportStatus(kind, runId, attempt + 1), 5000);
   }
 
   async function runXmlImport(kind: ImportKind) {
-    const endpoint = getXmlImportEndpoint(kind);
+    const runId = createImportRunId();
+    const endpoint = getXmlImportEndpoint(kind, runId);
+    let keepImportingForBackground = false;
     setImporting(kind);
     setImportProgress({
       kind,
@@ -1992,7 +2121,8 @@ export default function OnesariPage() {
       });
 
       if (response.status === 202) {
-        markBackgroundImportQueued(kind);
+        keepImportingForBackground = true;
+        markBackgroundImportQueued(kind, runId);
         return;
       }
 
@@ -2087,36 +2217,17 @@ export default function OnesariPage() {
                 percent: 100,
                 processed:
                   typeof current.total === "number" ? current.total : current.processed,
-                message:
-                  kind === "metainmo"
-                    ? `Metainmo OK: XML ${data?.total_xml ?? 0}, zapisane ${
-                        data?.total_saved ?? data?.total_after_dedupe ?? 0
-                      }, usunięte stare ${data?.total_deleted_stale ?? 0}.`
-                    : `Secondary MLS OK: XML ${data?.total_xml ?? 0}, zapisane ${
-                        data?.total_saved ?? 0
-                      }.`,
+                message: importSuccessMessage(kind, data),
               }
             : current,
         );
 
         if (kind === "metainmo") {
-          setImportStatus(
-            `Metainmo OK: XML ${data?.total_xml ?? 0}, zapisane ${
-              data?.total_saved ?? data?.total_after_dedupe ?? 0
-            }, usunięte stare ${data?.total_deleted_stale ?? 0}.`,
-          );
-          setMetainmoPage(1);
-          setMetainmoRefreshKey((current) => current + 1);
-          setSourceTotalsRefreshKey((current) => current + 1);
+          setImportStatus(importSuccessMessage(kind, data));
+          refreshImportedSource(kind);
         } else if (kind === "secondary") {
-          setImportStatus(
-            `Secondary MLS OK: XML ${data?.total_xml ?? 0}, zapisane ${
-              data?.total_saved ?? 0
-            }, usunięte stare ${data?.total_deleted_sec ?? 0}.`,
-          );
-          setSecondaryPage(1);
-          setSecondaryRefreshKey((current) => current + 1);
-          setSourceTotalsRefreshKey((current) => current + 1);
+          setImportStatus(importSuccessMessage(kind, data));
+          refreshImportedSource(kind);
         }
         return;
       }
@@ -2159,7 +2270,9 @@ export default function OnesariPage() {
           : current,
       );
     } finally {
-      setImporting(null);
+      if (!keepImportingForBackground) {
+        setImporting(null);
+      }
     }
   }
 

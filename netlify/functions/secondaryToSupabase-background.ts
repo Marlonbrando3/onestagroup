@@ -1,6 +1,8 @@
+import crypto from "crypto";
 import secondaryHandler from "../../pages/api/secondaryToSupabase";
+import { upsertImportRun } from "../../lib/onesariImportRuns";
 
-function createApiResponse() {
+function createApiResponse(onJson: (payload: any, statusCode: number) => void) {
   const response: any = {
     statusCode: 200,
     headers: {} as Record<string, string>,
@@ -21,6 +23,7 @@ function createApiResponse() {
       return response;
     },
     json(payload: unknown) {
+      onJson(payload, response.statusCode);
       console.log(JSON.stringify(payload));
       return response;
     },
@@ -29,16 +32,69 @@ function createApiResponse() {
   return response;
 }
 
-export async function handler() {
+export async function handler(event: any) {
+  const runId =
+    String(event?.queryStringParameters?.runId || "").trim() ||
+    crypto.randomUUID();
+  let finalPayload: any = null;
+  let finalStatusCode = 200;
+
+  await upsertImportRun(runId, "secondary", {
+    status: "running",
+    message: "Secondary MLS: import działa w tle...",
+    progressPercent: 5,
+  });
+
   const req: any = {
     method: "POST",
     headers: {},
   };
 
-  await secondaryHandler(req, createApiResponse());
+  try {
+    await secondaryHandler(
+      req,
+      createApiResponse((payload, statusCode) => {
+        finalPayload = payload;
+        finalStatusCode = statusCode;
+      }),
+    );
+
+    if (finalStatusCode >= 400 || finalPayload?.error) {
+      const errorMessage =
+        finalPayload?.error || finalPayload?.details || "Import Secondary MLS nie powiódł się";
+      await upsertImportRun(runId, "secondary", {
+        status: "failed",
+        message: `Secondary MLS: błąd - ${errorMessage}`,
+        progressPercent: 100,
+        result: finalPayload,
+        error: String(errorMessage),
+        completedAt: new Date().toISOString(),
+      });
+    } else {
+      await upsertImportRun(runId, "secondary", {
+        status: "completed",
+        message: "Secondary MLS: import zakończony.",
+        progressPercent: 100,
+        processed: finalPayload?.total_saved ?? null,
+        total: finalPayload?.total_mapped ?? finalPayload?.total_xml ?? null,
+        result: finalPayload,
+        completedAt: new Date().toISOString(),
+      });
+    }
+  } catch (error: any) {
+    const errorMessage = error?.message || "Import Secondary MLS nie powiódł się";
+    await upsertImportRun(runId, "secondary", {
+      status: "failed",
+      message: `Secondary MLS: błąd - ${errorMessage}`,
+      progressPercent: 100,
+      error: errorMessage,
+      completedAt: new Date().toISOString(),
+    });
+    throw error;
+  }
 
   return {
     statusCode: 202,
-    body: "Secondary import queued",
+    body: JSON.stringify({ runId }),
   };
 }
