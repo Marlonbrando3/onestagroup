@@ -40,37 +40,46 @@ export default function CRMContactsPage() {
         />
 
         {error ? <p className="crmError">{error}</p> : null}
-        {isLoading ? <p className="crmMuted">Ladowanie kontaktow...</p> : null}
 
-        <section className="crmTable" aria-label="Kontakty">
+        <section aria-busy={isLoading} className="crmTable" aria-label="Kontakty">
           <div className="crmTableHeader">
             <span>Kontakt</span>
             <span>Status</span>
             <span>Wartosc</span>
             <span>Telefon</span>
           </div>
-          {filteredContacts.map((contact) => (
-            <article className="crmContactLine" key={contact.id}>
-              <div className="crmContactIdentity">
-                <div className="crmAvatar">{contact.name.slice(0, 1)}</div>
-                <div>
-                  <Link href={`/crm/kontakt/${contact.id}`}>
-                    <strong>{contact.name}</strong>
-                  </Link>
+          {isLoading ? (
+            <div className="crmContactsLoading" role="status" aria-live="polite">
+              <div className="crmContactsLoaderCard">
+                <span aria-hidden="true" className="crmContactsLoader" />
+                <strong>Wczytywanie kontaktów...</strong>
+              </div>
+            </div>
+          ) : (
+            filteredContacts.map((contact) => (
+              <article className="crmContactLine" key={contact.id}>
+                <div className="crmContactIdentity">
+                  <div className="crmAvatar">{contact.name.slice(0, 1)}</div>
+                  <div>
+                    <Link href={`/crm/kontakt/${contact.id}`}>
+                      <strong>{contact.name}</strong>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-              <span className="crmStatusPill">{contact.status}</span>
-              <strong>{crmCurrency.format(contact.value)}</strong>
-              <div className="crmLinks">
-                <a href={`tel:${contact.phone}`}>{contact.phone || "Brak telefonu"}</a>
-                <a href={`mailto:${contact.email}`}>{contact.email || "Brak emaila"}</a>
-              </div>
-            </article>
-          ))}
+                <span className="crmStatusPill">{contact.status}</span>
+                <strong>{crmCurrency.format(contact.value)}</strong>
+                <div className="crmLinks">
+                  <a href={`tel:${contact.phone}`}>{contact.phone || "Brak telefonu"}</a>
+                  <a href={`mailto:${contact.email}`}>{contact.email || "Brak emaila"}</a>
+                </div>
+              </article>
+            ))
+          )}
         </section>
       </section>
       <style jsx>{`
         .crmWorkspace {
+          align-content: start;
           display: grid;
           gap: 20px;
           min-width: 0;
@@ -113,6 +122,7 @@ export default function CRMContactsPage() {
         }
 
         .crmSearch {
+          align-self: start;
           background: #ffffff;
           border: 1px solid #d8dee7;
           border-radius: 8px;
@@ -128,6 +138,7 @@ export default function CRMContactsPage() {
           border: 1px solid #d8dee7;
           border-radius: 8px;
           box-shadow: 0 14px 34px rgba(21, 32, 43, 0.08);
+          min-height: 320px;
           overflow: hidden;
         }
 
@@ -135,7 +146,7 @@ export default function CRMContactsPage() {
         .crmContactLine {
           display: grid;
           gap: 14px;
-          grid-template-columns: minmax(260px, 1.4fr) max-content 140px minmax(220px, 1fr);
+          grid-template-columns: minmax(260px, 1.4fr) 220px 140px minmax(220px, 1fr);
           padding: 14px 16px;
         }
 
@@ -145,6 +156,41 @@ export default function CRMContactsPage() {
           font-size: 12px;
           font-weight: 800;
           text-transform: uppercase;
+        }
+
+        .crmContactsLoading {
+          align-items: center;
+          display: flex;
+          justify-content: center;
+          min-height: 268px;
+        }
+
+        .crmContactsLoaderCard {
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #e5e9ee;
+          border-radius: 10px;
+          box-shadow: 0 12px 30px rgba(21, 32, 43, 0.09);
+          color: #667085;
+          display: flex;
+          font-size: 13px;
+          gap: 11px;
+          padding: 16px 20px;
+        }
+
+        .crmContactsLoader {
+          animation: crmContactsLoaderSpin 0.8s linear infinite;
+          border: 2px solid #d7e4e1;
+          border-radius: 999px;
+          border-top-color: #216e63;
+          height: 22px;
+          width: 22px;
+        }
+
+        @keyframes crmContactsLoaderSpin {
+          to {
+            transform: rotate(360deg);
+          }
         }
 
         .crmContactLine {
