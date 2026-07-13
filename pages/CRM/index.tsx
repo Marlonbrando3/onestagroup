@@ -34,7 +34,7 @@ export default function CRMContactsPage() {
 
         <input
           className="crmSearch"
-          placeholder="Szukaj kontaktu, firmy, telefonu..."
+          placeholder="Szukaj kontaktu, telefonu..."
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -57,7 +57,6 @@ export default function CRMContactsPage() {
                   <Link href={`/crm/kontakt/${contact.id}`}>
                     <strong>{contact.name}</strong>
                   </Link>
-                  <span>{contact.company}</span>
                 </div>
               </div>
               <span className="crmStatusPill">{contact.status}</span>
@@ -99,13 +98,18 @@ export default function CRMContactsPage() {
           margin: 0;
         }
 
-        .crmPrimaryButton {
+        :global(.crmPrimaryButton) {
+          align-items: center;
           background: #216e63;
+          border: 0;
           border-radius: 8px;
           color: #ffffff;
-          font-weight: 800;
-          min-height: 44px;
-          padding: 11px 16px;
+          display: inline-flex;
+          font-size: 13px;
+          font-weight: 900;
+          justify-content: center;
+          min-height: 40px;
+          padding: 0 14px;
         }
 
         .crmSearch {
@@ -131,7 +135,7 @@ export default function CRMContactsPage() {
         .crmContactLine {
           display: grid;
           gap: 14px;
-          grid-template-columns: minmax(260px, 1.4fr) 130px 140px minmax(220px, 1fr);
+          grid-template-columns: minmax(260px, 1.4fr) max-content 140px minmax(220px, 1fr);
           padding: 14px 16px;
         }
 
@@ -195,6 +199,7 @@ export default function CRMContactsPage() {
           font-weight: 800;
           justify-content: center;
           padding: 6px 10px;
+          white-space: nowrap;
         }
 
         .crmError {

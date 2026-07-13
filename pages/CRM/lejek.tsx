@@ -114,6 +114,7 @@ export default function CRMPipelinePage() {
     : null;
   const {
     contacts,
+    isLoading: isContactsLoading,
     error,
     updateContact,
     updateContactStatus,
@@ -1028,6 +1029,13 @@ export default function CRMPipelinePage() {
               </section>
             </div>
           </section>
+        ) : !currentUserEmail || isContactsLoading ? (
+          <div className="crmPipelineLoading" role="status" aria-live="polite">
+            <div className="crmPipelineLoaderCard">
+              <span aria-hidden="true" className="crmPipelineLoader" />
+              <strong>Wczytywanie kontaktów...</strong>
+            </div>
+          </div>
         ) : (
           <div className="crmPipelineBoard">
             {columns.map((column) => {
@@ -1987,6 +1995,42 @@ export default function CRMPipelinePage() {
           font-weight: 900;
           min-height: 40px;
           padding: 0 10px;
+        }
+
+        .crmPipelineLoading {
+          align-items: center;
+          display: flex;
+          flex: 1 1 auto;
+          justify-content: center;
+          min-height: 220px;
+        }
+
+        .crmPipelineLoaderCard {
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #e5e9ee;
+          border-radius: 10px;
+          box-shadow: 0 12px 30px rgba(21, 32, 43, 0.09);
+          color: #667085;
+          display: flex;
+          font-size: 13px;
+          gap: 11px;
+          padding: 16px 20px;
+        }
+
+        .crmPipelineLoader {
+          animation: crmPipelineLoaderSpin 0.8s linear infinite;
+          border: 2px solid #d7e4e1;
+          border-radius: 999px;
+          border-top-color: #216e63;
+          height: 22px;
+          width: 22px;
+        }
+
+        @keyframes crmPipelineLoaderSpin {
+          to {
+            transform: rotate(360deg);
+          }
         }
 
         .crmPipelineBoard {
