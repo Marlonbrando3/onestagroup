@@ -20,6 +20,7 @@ type Props = {
   propertyPrice: any;
   propertType: any;
   descriptionEN: any;
+  locale?: "pl" | "en";
 };
 
 export default function Descryption({
@@ -36,6 +37,7 @@ export default function Descryption({
   propertyPrice,
   propertType,
   propertyData,
+  locale = "pl",
 }: Props) {
   return (
     <div className="lg:flex lg:flex-wrap w-full rounded-md lg:w-[1580px] md:w-[95vw] max-w-full lg:leading-7 mx-auto mt-[10px] relative filter">
@@ -45,6 +47,7 @@ export default function Descryption({
           propertyData={propertyData}
           description={description}
           descriptionEN={descriptionEN}
+          locale={locale}
           features={features}
           localization={localization}
           bedrooms={bedrooms}
@@ -55,6 +58,7 @@ export default function Descryption({
         <ContactColumnInOffer
           propertyPrice={propertyPrice}
           propertyRef={propertyRef}
+          locale={locale}
         />
       </div>
 

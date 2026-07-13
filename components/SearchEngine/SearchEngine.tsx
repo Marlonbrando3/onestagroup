@@ -21,6 +21,7 @@ type FunctionProps = {
   isMobileFiltersOpen: any;
   setIsMobileFiltersOpen: any;
   totalCount: any;
+  locale?: "pl" | "en";
 };
 
 type SearchEngineProps = FunctionProps & ServerSideProps;
@@ -34,6 +35,7 @@ export default function SearchEngine({
   setLoader,
   isMobileFiltersOpen,
   setIsMobileFiltersOpen,
+  locale = "pl",
   ...restProps
 }: SearchEngineProps) {
   return (
@@ -47,12 +49,14 @@ export default function SearchEngine({
           searchEngine={searchEngine}
           isMobileFiltersOpen={isMobileFiltersOpen}
           setIsMobileFiltersOpen={setIsMobileFiltersOpen}
+          locale={locale}
         />
         <SearchResults
           {...restProps}
           count={count}
           loader={loader}
           setLoader={setLoader}
+          locale={locale}
         />
         <Pagination
           currentPage={restProps.current}

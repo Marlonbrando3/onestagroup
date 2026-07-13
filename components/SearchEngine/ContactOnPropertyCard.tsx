@@ -6,17 +6,24 @@ import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion
 
 type Props = {
   propertyRef: any;
+  locale?: "pl" | "en";
 };
 
-export default function ContactOnPropertyCard({ propertyRef }: Props) {
+export default function ContactOnPropertyCard({
+  propertyRef,
+  locale = "pl",
+}: Props) {
   const router = useRouter();
+  const isEn = locale === "en";
   const { id } = router.query;
 
   const [Name, setName] = useState();
   const [Phone, setPhone] = useState();
   const [Mail, setHandleMarginSlider] = useState();
   const [massege, setMessage] = useState(
-    "Zainteresowało mnie to ogłoszenie.\nProszę o kontakt w celu przekazania szczegółów lub ustalenia terminu spotkania. Nr. ogłoszenia ",
+    isEn
+      ? "I am interested in this listing.\nPlease contact me with details or to arrange a meeting. Listing ref. "
+      : "Zainteresowało mnie to ogłoszenie.\nProszę o kontakt w celu przekazania szczegółów lub ustalenia terminu spotkania. Nr. ogłoszenia ",
   );
 
   // ➕ zgody
@@ -36,7 +43,11 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
     e.preventDefault();
 
     if (!rodoConsent) {
-      alert("Musisz zaakceptować politykę prywatności");
+      alert(
+        isEn
+          ? "You must accept the privacy policy"
+          : "Musisz zaakceptować politykę prywatności",
+      );
       return;
     }
 
@@ -63,13 +74,15 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
 
     if (results.status === 200) {
       trackGoogleAdsContactConversion();
-      submitButton.current.innerHTML = "Wysłano";
+      submitButton.current.innerHTML = isEn ? "Sent" : "Wysłano";
       submitButton.current.style.backgroundColor = "green";
     } else {
-      submitButton.current.innerHTML = "Błąd, spróbuj jeszcze raz";
+      submitButton.current.innerHTML = isEn
+        ? "Error, please try again"
+        : "Błąd, spróbuj jeszcze raz";
       submitButton.current.style.backgroundColor = "red";
       setTimeout(() => {
-        submitButton.current.innerHTML = "Wyślij ponownie";
+        submitButton.current.innerHTML = isEn ? "Send again" : "Wyślij ponownie";
         submitButton.current.style.backgroundColor = "yellow";
       }, 1500);
     }
@@ -78,9 +91,13 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
   return (
     <div className={`${OutfitSans.className} h-auto grow`}>
       <div className="bg-white rounded-md p-4 h-[550px] hidden lg:block z-40 bg-yellow-300/[0.2]">
-        <p className="font-[500] pb-4 text-[20px]"> Jestem zainteresowany</p>
+        <p className="font-[500] pb-4 text-[20px]">
+          {isEn ? "I am interested" : " Jestem zainteresowany"}
+        </p>
         <p className="font-[300] pb-4 text-[16px] leading-[18px]">
-          Skontaktuj się z nami wypełniając formularz kontaktowy
+          {isEn
+            ? "Contact us by completing the form below"
+            : "Skontaktuj się z nami wypełniając formularz kontaktowy"}
         </p>
 
         <form
@@ -91,7 +108,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
             onChange={handleChangingForm}
             name="name"
             value={Name}
-            placeholder="Imię (wymagane)"
+            placeholder={isEn ? "Name (required)" : "Imię (wymagane)"}
             className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
             required
           />
@@ -100,7 +117,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
             name="phone"
             value={Phone}
             onChange={handleChangingForm}
-            placeholder="Numer telefonu"
+            placeholder={isEn ? "Phone number" : "Numer telefonu"}
             className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
             required
           />
@@ -110,7 +127,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
             type="email"
             value={Mail}
             onChange={handleChangingForm}
-            placeholder="Adres email"
+            placeholder={isEn ? "Email address" : "Adres email"}
             className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
             required
           />
@@ -133,13 +150,13 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
                 required
               />
               <p>
-                Akceptuję{" "}
+                {isEn ? "I accept the " : "Akceptuję "}
                 <a
                   href="/polityka-prywatnosci"
                   target="_blank"
                   className="underline"
                 >
-                  politykę prywatności
+                  {isEn ? "privacy policy" : "politykę prywatności"}
                 </a>
                 .
               </p>
@@ -153,10 +170,9 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
                 className="min-w-[18px] min-h-[18px] mt-[2px]"
               />
               <p className="leading-[14px]">
-                Wyrażam zgodę na przetwarzanie moich danych osobowych przez
-                Onesta Group Sp. z o.o. w celach marketingowych, w tym na
-                kontakt telefoniczny oraz mailowy w celu przedstawienia ofert
-                nieruchomości.
+                {isEn
+                  ? "I consent to the processing of my personal data by Onesta Group Sp. z o.o. for marketing purposes, including phone and email contact to present property offers."
+                  : "Wyrażam zgodę na przetwarzanie moich danych osobowych przez Onesta Group Sp. z o.o. w celach marketingowych, w tym na kontakt telefoniczny oraz mailowy w celu przedstawienia ofert nieruchomości."}
               </p>
             </div>
           </div>
@@ -165,7 +181,7 @@ export default function ContactOnPropertyCard({ propertyRef }: Props) {
             ref={submitButton}
             className="bg-yellow-500 rounded-md text-white font-bold h-[40px]"
           >
-            Wyślij
+            {isEn ? "Send" : "Wyślij"}
           </button>
         </form>
       </div>

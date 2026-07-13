@@ -3,7 +3,11 @@ import Image from "next/image";
 import { FiPhone } from "react-icons/fi";
 import { FiMail } from "react-icons/fi";
 
-export default function ContactAgentInOfferMobile() {
+export default function ContactAgentInOfferMobile({
+  locale = "pl",
+}: {
+  locale?: "pl" | "en";
+}) {
   const phoneRef = useRef<HTMLAnchorElement | null>(null);
   const mailRef = useRef<HTMLAnchorElement | null>(null);
 
@@ -50,7 +54,7 @@ export default function ContactAgentInOfferMobile() {
             onClick={() => handleShowingContact(phoneRef)}
           >
             <FiPhone />
-            <p className="pl-[10px]">Telefon</p>
+            <p className="pl-[10px]">{locale === "en" ? "Phone" : "Telefon"}</p>
           </div>
           <div
             className="border px-[10px] py-[7px] text-center text-[18px] text-center flex items-center border-yellow-600 w-[49%] cursor-pointer duration-200 hover:bg-yellow-600 hover:text-white cursor-pointer "

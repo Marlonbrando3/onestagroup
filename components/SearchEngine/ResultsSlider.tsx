@@ -3,6 +3,7 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
 import Image from "next/image";
 import Link from "next/link";
+import { localePath, SiteLocale } from "@/lib/i18n";
 
 type Images = {
   date: string | null;
@@ -14,6 +15,7 @@ type Images = {
   propertyId: string | number;
   propertyTitle: string;
   slug: string;
+  locale?: SiteLocale;
   onAllImagesFailed?: () => void;
 };
 
@@ -25,6 +27,7 @@ export default function ResultsSlider({
   deliveryDate,
   date,
   slug,
+  locale = "pl",
   onAllImagesFailed: _onAllImagesFailed,
 }: Images) {
   const [index, setIndex] = useState(0);
@@ -91,6 +94,10 @@ export default function ResultsSlider({
 
     setTouchStartX(null);
   };
+  const paths = localePath[locale];
+  const isEn = locale === "en";
+  const isPrimary =
+    market === "RYNEK PIERWOTNY" || market === "PRIMARY MARKET";
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#e8ddca]">
@@ -98,9 +105,9 @@ export default function ResultsSlider({
         {market}
       </div>
 
-      {market === "RYNEK PIERWOTNY" && deliveryDate && (
+      {isPrimary && deliveryDate && (
         <div className="absolute bottom-3 left-3 z-10 bg-white/95 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#334155] shadow-sm">
-          Data aktualizacji {String(date || "").slice(0, 10)}
+          {isEn ? "Updated" : "Data aktualizacji"} {String(date || "").slice(0, 10)}
         </div>
       )}
 
@@ -146,18 +153,18 @@ export default function ResultsSlider({
               <Link
                 key={slide.key}
                 href={{
-                  pathname: `/nieruchomosci/${countrySlug}/${slug}`,
+                  pathname: paths.property(countrySlug, slug),
                   query: { id: propertyId },
                 }}
                 className="min-w-full h-full flex items-center justify-center bg-red-500/70 text-3xl text-white font-[700]"
               >
-                Więcej zdjęć
+                {isEn ? "More photos" : "Więcej zdjęć"}
               </Link>
             ) : (
               <Link
                 key={slide.key}
                 href={{
-                  pathname: `/nieruchomosci/${countrySlug}/${slug}`,
+                  pathname: paths.property(countrySlug, slug),
                   query: { id: propertyId },
                 }}
                 className="min-w-full h-full relative"

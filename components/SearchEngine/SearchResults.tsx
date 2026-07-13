@@ -8,7 +8,8 @@ import { MdOutlineIosShare } from "react-icons/md";
 export default function SearchResults(props: any) {
   const router = useRouter();
 
-  const { properties, loader, setLoader, count } = props;
+  const { properties, loader, setLoader, count, locale = "pl" } = props;
+  const isEn = locale === "en";
   const [sort, setSort] = useState<string>("price_asc");
 
   const handleShareResults = async () => {
@@ -22,10 +23,10 @@ export default function SearchResults(props: any) {
 
       await navigator.clipboard.writeText(shortUrl);
 
-      alert("Link skopiowany");
+      alert(isEn ? "Link copied" : "Link skopiowany");
     } catch (err) {
       console.error(err);
-      alert("Błąd kopiowania linku");
+      alert(isEn ? "Error copying link" : "Błąd kopiowania linku");
     }
   };
 
@@ -63,10 +64,10 @@ export default function SearchResults(props: any) {
       >
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#9b7a36]">
-            Wyniki wyszukiwania
+            {isEn ? "Search results" : "Wyniki wyszukiwania"}
           </p>
           <div className="mt-1 text-[18px] font-bold text-[#182334]">
-            Znaleziono {count} ogłoszeń
+            {isEn ? `Found ${count} listings` : `Znaleziono ${count} ogłoszeń`}
           </div>
         </div>
 
@@ -84,8 +85,12 @@ export default function SearchResults(props: any) {
             onChange={handleSortChange}
             className="h-11 border border-[#d7c8ad] bg-white px-3 text-[14px] font-semibold text-[#182334] outline-none transition focus:border-[#b8954c]"
           >
-            <option value="price_asc">Od najniższej ceny</option>
-            <option value="price_desc">Od najwyższej ceny</option>
+            <option value="price_asc">
+              {isEn ? "Lowest price first" : "Od najniższej ceny"}
+            </option>
+            <option value="price_desc">
+              {isEn ? "Highest price first" : "Od najwyższej ceny"}
+            </option>
           </select>
         </div>
       </div>
@@ -95,7 +100,11 @@ export default function SearchResults(props: any) {
               <PropertyCardSkeleton key={`sk-${i}`} />
             ))
           : properties.map((property: any) => (
-              <PropertyCard key={property.external_id} property={property} />
+              <PropertyCard
+                key={property.external_id}
+                property={property}
+                locale={locale}
+              />
             ))}
       </div>
     </div>

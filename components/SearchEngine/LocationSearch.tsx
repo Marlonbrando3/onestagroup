@@ -15,6 +15,7 @@ type Props = {
   onChange: (val: Location[]) => void;
   className?: string;
   countrySlug?: string;
+  locale?: "pl" | "en";
 };
 
 function getLocationCountry(location: Location) {
@@ -26,7 +27,9 @@ export default function LocationSearch({
   onChange,
   className,
   countrySlug = "hiszpania",
+  locale = "pl",
 }: Props) {
+  const isEn = locale === "en";
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Location[]>([]);
   const [open, setOpen] = useState(false);
@@ -93,7 +96,11 @@ export default function LocationSearch({
     if (value.find((s) => s.id === loc.id)) return;
 
     if (isLimitReached) {
-      setLimitMessage(`Możesz wybrać maksymalnie ${MAX_LOCATIONS} lokalizacji`);
+      setLimitMessage(
+        isEn
+          ? `You can select up to ${MAX_LOCATIONS} locations`
+          : `Możesz wybrać maksymalnie ${MAX_LOCATIONS} lokalizacji`,
+      );
       return;
     }
 
@@ -170,11 +177,13 @@ export default function LocationSearch({
       <div className="relative flex h-full w-full flex-col justify-center overflow-hidden bg-white pr-3 transition hover:bg-[#fbf8f2]">
         <div className="mb-1 flex items-center justify-between">
           <label className="text-sm font-semibold text-[#5f6b7a] md:text-xs">
-            Lokalizacja
+            {isEn ? "Location" : "Lokalizacja"}
           </label>
           {(isLimitReached || limitMessage) && (
             <p className="whitespace-nowrap bg-[#182334] px-2 py-1 text-[10px] font-semibold text-white">
-              {`Możesz wybrać maksymalnie ${MAX_LOCATIONS} lokalizacji`}
+              {isEn
+                ? `You can select up to ${MAX_LOCATIONS} locations`
+                : `Możesz wybrać maksymalnie ${MAX_LOCATIONS} lokalizacji`}
             </p>
           )}
         </div>
@@ -213,8 +222,12 @@ export default function LocationSearch({
             onKeyDown={handleKeyDown}
             placeholder={
               countrySlug === "cypr"
-                ? "np. Pafos, Peja, Cypr Południowy..."
-                : "np. Alicante, Malaga, Costa Blanca..."
+                ? isEn
+                  ? "e.g. Paphos, Peyia, Southern Cyprus..."
+                  : "np. Pafos, Peja, Cypr Południowy..."
+                : isEn
+                  ? "e.g. Alicante, Malaga, Costa Blanca..."
+                  : "np. Alicante, Malaga, Costa Blanca..."
             }
             disabled={isLimitReached}
             className={`${isLimitReached && "hidden"} min-w-[150px] flex-1 bg-transparent text-base text-[#182334] outline-none placeholder:text-[#9aa3af] md:text-sm`}
@@ -235,9 +248,10 @@ export default function LocationSearch({
             >
               <span className="font-semibold text-[#182334]">{item.name}</span>
               <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-[#9b7a36]">
-                {(item.type === "town" || item.type === "city") && "Miasto"}
-                {item.type === "province" && "Region"}
-                {item.type === "coast" && "Wybrzeże"}
+                {(item.type === "town" || item.type === "city") &&
+                  (isEn ? "Town" : "Miasto")}
+                {item.type === "province" && (isEn ? "Region" : "Region")}
+                {item.type === "coast" && (isEn ? "Coast" : "Wybrzeże")}
               </span>
             </div>
           ))}

@@ -5,8 +5,15 @@ import { CiPhone } from "react-icons/ci";
 import { MontserratSans } from "@/fonts/fonts";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
-export default function AboutUsRightForm() {
+type AboutUsRightFormProps = {
+  locale?: "pl" | "en";
+};
+
+export default function AboutUsRightForm({
+  locale = "pl",
+}: AboutUsRightFormProps) {
   const router = useRouter();
+  const isEn = locale === "en";
   const submitButton = useRef<HTMLButtonElement | null>(null);
 
   const [dataForm, setDataForm] = useState({
@@ -27,12 +34,14 @@ export default function AboutUsRightForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!privacy) {
-      alert("Zaakceptuj politykę prywatności.");
+      alert(
+        isEn ? "Please accept the privacy policy." : "Zaakceptuj politykę prywatności.",
+      );
       return;
     }
 
     if (submitButton.current) {
-      submitButton.current.innerText = "Wysyłam...";
+      submitButton.current.innerText = isEn ? "Sending..." : "Wysyłam...";
       submitButton.current.disabled = true;
     }
 
@@ -44,7 +53,9 @@ export default function AboutUsRightForm() {
           Ref: "About Us",
           dataForm: {
             ...dataForm,
-            Message: `${dataForm.Message}\n\nPreferowana pora kontaktu: ${contactTime.join(", ") || "brak"}`,
+            Message: `${dataForm.Message}\n\n${
+              isEn ? "Preferred contact time" : "Preferowana pora kontaktu"
+            }: ${contactTime.join(", ") || (isEn ? "none" : "brak")}`,
           },
           consents: { privacy, marketing: false },
           source: router.asPath,
@@ -54,10 +65,12 @@ export default function AboutUsRightForm() {
 
       if (!res.ok) throw new Error("Send failed");
       trackGoogleAdsContactConversion();
-      if (submitButton.current) submitButton.current.innerText = "Wysłano";
+      if (submitButton.current) submitButton.current.innerText = isEn ? "Sent" : "Wysłano";
     } catch {
       if (submitButton.current) {
-        submitButton.current.innerText = "Błąd, spróbuj ponownie";
+        submitButton.current.innerText = isEn
+          ? "Error, please try again"
+          : "Błąd, spróbuj ponownie";
         submitButton.current.disabled = false;
       }
     }
@@ -71,12 +84,12 @@ export default function AboutUsRightForm() {
         <div className="bg-[#f2f2f2] rounded-[18px] p-4 lg:p-5">
           <div className="flex items-start justify-between gap-3">
             <p className="text-[24px] leading-[0.95] font-[700] text-slate-800">
-              Napisz do Nas
+              {isEn ? "Write to us" : "Napisz do Nas"}
             </p>
             <div className="text-right">
               <div className="inline-flex items-center text-orange-500 font-[700] text-[12px]">
                 <CiPhone className="w-4 h-4 mr-1" />
-                lub zadzwoń
+                {isEn ? "or call" : "lub zadzwoń"}
               </div>
               <p className="text-[24px] leading-[1] font-[800] text-orange-500 mt-1 whitespace-nowrap">
                 +48 576 65 25 25
@@ -85,14 +98,16 @@ export default function AboutUsRightForm() {
           </div>
 
           <p className="text-slate-600 text-[13px] mt-3 mb-4">
-            Wypełnij formularz, a oddzwonimy do Ciebie.
+            {isEn
+              ? "Complete the form and we will get back to you."
+              : "Wypełnij formularz, a oddzwonimy do Ciebie."}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-3">
             <input
               required
               type="text"
-              placeholder="Imię i Nazwisko *"
+              placeholder={isEn ? "Full name *" : "Imię i Nazwisko *"}
               className="w-full bg-white rounded-[8px] h-10 px-3 text-[13px] outline-none border border-gray-200"
               onChange={(e) =>
                 setDataForm((p) => ({ ...p, Name: e.target.value }))
@@ -102,7 +117,7 @@ export default function AboutUsRightForm() {
               <input
                 required
                 type="email"
-                placeholder="Adres e-mail *"
+                placeholder={isEn ? "Email address *" : "Adres e-mail *"}
                 className="w-full bg-white rounded-[8px] h-10 px-3 text-[13px] outline-none border border-gray-200"
                 onChange={(e) =>
                   setDataForm((p) => ({ ...p, Email: e.target.value }))
@@ -111,7 +126,7 @@ export default function AboutUsRightForm() {
               <input
                 required
                 type="tel"
-                placeholder="Numer telefonu *"
+                placeholder={isEn ? "Phone number *" : "Numer telefonu *"}
                 className="w-full bg-white rounded-[8px] h-10 px-3 text-[13px] outline-none border border-gray-200"
                 onChange={(e) =>
                   setDataForm((p) => ({ ...p, Phone: e.target.value }))
@@ -119,7 +134,7 @@ export default function AboutUsRightForm() {
               />
             </div>
             <textarea
-              placeholder="Wiadomość"
+              placeholder={isEn ? "Message" : "Wiadomość"}
               className="w-full bg-white rounded-[8px] h-28 px-3 py-2 text-[13px] outline-none border border-gray-200 resize-none"
               onChange={(e) =>
                 setDataForm((p) => ({ ...p, Message: e.target.value }))
@@ -128,7 +143,7 @@ export default function AboutUsRightForm() {
 
             <div>
               <p className="text-slate-700 text-[13px] mb-2">
-                Dogodna pora kontaktu:
+                {isEn ? "Convenient contact time:" : "Dogodna pora kontaktu:"}
               </p>
               <div className="flex flex-wrap gap-4">
                 {["9-13", "13-17", "17-21"].map((slot) => (
@@ -157,9 +172,9 @@ export default function AboutUsRightForm() {
                 required
               />
               <span className="text-slate-700">
-                Oświadczam, że zapoznałem/am się z{" "}
+                {isEn ? "I confirm that I have read the " : "Oświadczam, że zapoznałem/am się z "}
                 <Link href="/polityka-prywatnosci" className="underline">
-                  Polityką Prywatności
+                  {isEn ? "Privacy Policy" : "Polityką Prywatności"}
                 </Link>
                 .
               </span>
@@ -170,7 +185,7 @@ export default function AboutUsRightForm() {
               type="submit"
               className="w-full h-10 rounded-full bg-[#0f8ff1] text-white text-[18px] font-[700] leading-none"
             >
-              Wyślij
+              {isEn ? "Send" : "Wyślij"}
             </button>
           </form>
         </div>

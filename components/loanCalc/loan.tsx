@@ -4,9 +4,11 @@ import ContactForm from "../ContactForm";
 
 type Props = {
   propertyPrice: any;
+  locale?: "pl" | "en";
 };
 
-export default function Loan({ propertyPrice }: Props) {
+export default function Loan({ propertyPrice, locale = "pl" }: Props) {
+  const isEn = locale === "en";
   const loanDurationSelect = 30;
   let i = 0;
 
@@ -20,7 +22,12 @@ export default function Loan({ propertyPrice }: Props) {
 
   const options = Array.from({ length: loanDurationSelect }, (_, i) => (
     <option key={i} value={i + 1}>
-      {i + 1} {(i == 0 && "rok") || (i < 4 && "lata") || (i < 30 && "lat")}
+      {i + 1}{" "}
+      {isEn
+        ? i === 0
+          ? "year"
+          : "years"
+        : (i == 0 && "rok") || (i < 4 && "lata") || (i < 30 && "lat")}
     </option>
   ));
 
@@ -70,16 +77,20 @@ export default function Loan({ propertyPrice }: Props) {
       className={`${OutfitSans.className} my-[30px]  rounded-md p-4 tracking-[1.1px] `}
     >
       <div className="w-full border-b-[1px] border-gray-300 mb-[30px]"></div>
-      <p className="font-bold text-[22px] font-[400]">Kalkulator kredytowy</p>
+      <p className="font-bold text-[22px] font-[400]">
+        {isEn ? "Mortgage calculator" : "Kalkulator kredytowy"}
+      </p>
       <p className="mt-[20px] text-[14px] leading-[14px]">
-        Kalkulacja, którą uzyskujesz jest orientacyjna, nie jest ofertą banku
-        ani cześcią umowy. Aby uzyskać wiążącą ofertę wymagana jest weryfikacja
-        w oddziale banku.
+        {isEn
+          ? "This calculation is indicative only and is not a bank offer or part of any agreement. A binding offer requires verification by the bank."
+          : "Kalkulacja, którą uzyskujesz jest orientacyjna, nie jest ofertą banku ani cześcią umowy. Aby uzyskać wiążącą ofertę wymagana jest weryfikacja w oddziale banku."}
       </p>
       <div className="border-red-800 flex mt-[30px] w-full flex-col lg:flex-row">
         <div className="lg:w-full flex flex-col h-[300px] justify-between w-full">
           <div className="w-full">
-            <p className="text-[14px] mb-[2px]">Wkład własny %</p>
+            <p className="text-[14px] mb-[2px]">
+              {isEn ? "Down payment %" : "Wkład własny %"}
+            </p>
             <input
               name="ownMoney"
               onChange={(e) => handleLeanParams(e)}
@@ -91,7 +102,9 @@ export default function Loan({ propertyPrice }: Props) {
             ></input>
           </div>
           <div className="w-full">
-            <p className="text-[14px] mb-[2px]">Oprocentowanie kredytu:</p>
+            <p className="text-[14px] mb-[2px]">
+              {isEn ? "Interest rate:" : "Oprocentowanie kredytu:"}
+            </p>
             <select
               defaultValue={loanInterest}
               name="interest"
@@ -104,7 +117,9 @@ export default function Loan({ propertyPrice }: Props) {
             </select>
           </div>
           <div>
-            <p className="text-[14px] mb-[2px]">Okres kredytowania:</p>
+            <p className="text-[14px] mb-[2px]">
+              {isEn ? "Loan term:" : "Okres kredytowania:"}
+            </p>
             <select
               name="duration"
               defaultValue={20}
@@ -116,13 +131,13 @@ export default function Loan({ propertyPrice }: Props) {
           </div>
           <div className="w-full h-auto">
             <p className="bg-yellow-400 mb-[10px] text-center rounded-md font-[500]">
-              Miesięczna rata:
+              {isEn ? "Monthly payment:" : "Miesięczna rata:"}
             </p>
             <p className="font-[700] text-[26px] text-yellow-600 text-center">
               {(Math.ceil(monthlyPayment * 100) / 100)
                 .toString()
                 .replace(".", ",")}{" "}
-              €/m-c
+              {isEn ? "€/month" : "€/m-c"}
             </p>
           </div>
         </div>

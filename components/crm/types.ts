@@ -4,7 +4,8 @@ export type CrmActivityType =
   | "Follow up"
   | "Zadzwoń"
   | "Spotkanie"
-  | "Prezentacja";
+  | "Prezentacja"
+  | "Brak kontaktu";
 export type CrmActivityStatus = "planned" | "done";
 
 export type CrmContact = {
@@ -67,6 +68,7 @@ export const crmActivityTypes: CrmActivityType[] = [
   "Zadzwoń",
   "Spotkanie",
   "Prezentacja",
+  "Brak kontaktu",
 ];
 
 export type CrmPipeline = {

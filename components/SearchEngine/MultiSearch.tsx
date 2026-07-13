@@ -7,13 +7,22 @@ type Props = {
   options: string[];
   value: string[];
   onChange: (val: string[]) => void;
+  locale?: "pl" | "en";
 };
 
-export function MultiSelect({ label, options, value, onChange }: Props) {
+export function MultiSelect({
+  label,
+  options,
+  value,
+  onChange,
+  locale = "pl",
+}: Props) {
   const [open, setOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const placeholder = locale === "en" ? "All" : "Wybierz";
+  const isPropertyTypeSelect = label === "Zabudowa" || label === "Property type";
 
   useEffect(() => {
     setOpen(false);
@@ -63,7 +72,7 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
           {label}
         </label>
         <div className="truncate text-sm font-semibold text-[#182334]">
-          {value.length > 0 ? value.join(", ") : "Wybierz"}
+          {value.length > 0 ? value.join(", ") : placeholder}
         </div>
       </div>
 
@@ -73,7 +82,7 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
           {isDesktop && (
             <div
               className={`absolute top-[calc(100%+5px)] left-0 ${
-                label === "Zabudowa" ? "w-[400px]" : "w-[200px]"
+                isPropertyTypeSelect ? "w-[400px]" : "w-[200px]"
               } z-10 border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-xl`}
             >
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
@@ -84,10 +93,10 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
                   <div
                     key={item}
                     onClick={() => toggle(item)}
-                    className="flex cursor-pointer items-center gap-3 text-sm font-medium text-[#334155]"
+                    className="flex min-w-0 cursor-pointer items-center gap-3 text-sm font-medium text-[#334155]"
                   >
                     <div
-                      className={`flex h-5 w-5 items-center justify-center border ${
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center border ${
                         value.includes(item)
                           ? "border-[#182334] bg-[#182334]"
                           : "border-[#d7c8ad] bg-white"
@@ -97,7 +106,7 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
                         <span className="text-xs text-white">✓</span>
                       )}
                     </div>
-                    {item}
+                    <span className="min-w-0 leading-snug">{item}</span>
                   </div>
                 ))}
               </div>
@@ -125,10 +134,10 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
                       <div
                         key={item}
                         onClick={() => toggle(item)}
-                        className="flex cursor-pointer items-center gap-3 text-sm font-medium text-[#334155]"
+                        className="flex min-w-0 cursor-pointer items-center gap-3 text-sm font-medium text-[#334155]"
                       >
                         <div
-                          className={`flex h-5 w-5 items-center justify-center border ${
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center border ${
                             value.includes(item)
                               ? "border-[#182334] bg-[#182334]"
                               : "border-[#d7c8ad] bg-white"
@@ -138,7 +147,7 @@ export function MultiSelect({ label, options, value, onChange }: Props) {
                             <span className="text-xs text-white">✓</span>
                           )}
                         </div>
-                        {item}
+                        <span className="min-w-0 leading-snug">{item}</span>
                       </div>
                     ))}
                   </div>

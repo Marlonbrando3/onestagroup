@@ -4,9 +4,16 @@ import Languages from "./languages";
 
 type Person = {
   data: any;
+  locale?: "pl" | "en";
 };
 
-export default function Person({ data }: Person) {
+const titleMap: Record<string, string> = {
+  "Co-founder & CEO": "Co-founder & CEO",
+  "Co-Fonder": "Co-founder",
+  "Konsultant ds. klientów inwestycyjnych": "Investment Client Consultant",
+};
+
+export default function Person({ data, locale = "pl" }: Person) {
   const LanguagesData = data.languages.map((i: any) => {
     if (i.includes("PL")) {
       return <Languages key={i} data={i} lang="PL" />;
@@ -53,7 +60,7 @@ export default function Person({ data }: Person) {
             {data.name}
           </p>
           <p className="text-[10px] md:text-[10px] lg:text-[11px] leading-tight font-[700] uppercase text-[#9a9a9a] mt-2 tracking-[1.2px]">
-            {data.title}
+            {locale === "en" ? titleMap[data.title] || data.title : data.title}
           </p>
         </div>
 

@@ -2,7 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { GreatVibes, Red_Hat_DisplayFont, MoonDance } from "../../fonts/fonts";
 
-export default function MiniHomeViewAboutUs() {
+type MiniHomeViewAboutUsProps = {
+  locale?: "pl" | "en";
+};
+
+export default function MiniHomeViewAboutUs({
+  locale = "pl",
+}: MiniHomeViewAboutUsProps) {
   const router = useRouter();
   const [country, setCountry] = useState("");
 
@@ -31,7 +37,7 @@ export default function MiniHomeViewAboutUs() {
         <div className="lg:w-[1100px] w-[90%] mx-auto z-10 relative h-full">
           <div className="w-full h-full place-content-center grid pt-[60px]">
             <h2 className="md:text-[49px] text-[34px] text-white bg-gradient-to-r from-gray-900/[0.4] to-gray-900/[0.5] leading-[30px] lg:leading-[49px] text-center">
-              Poznaj Onesta Group
+              {locale === "en" ? "Meet Onesta Group" : "Poznaj Onesta Group"}
             </h2>
           </div>
         </div>

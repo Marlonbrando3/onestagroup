@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <AnalitycsTools />
       <MyContextProvider>
         <Component {...pageProps} cookiesWindow={cookiesWindow} />
-        <OnestaAiChat />
+        {router.pathname !== "/sale" && <OnestaAiChat />}
       </MyContextProvider>
     </>
   );

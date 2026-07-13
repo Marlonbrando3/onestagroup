@@ -30,7 +30,7 @@ const agents: Agent[] = [
   },
 ];
 
-function AgentCard({ agent }: { agent: Agent }) {
+function AgentCard({ agent, locale = "pl" }: { agent: Agent; locale?: "pl" | "en" }) {
   const [showPhone, setShowPhone] = useState(false);
   const [showMail, setShowMail] = useState(false);
 
@@ -69,7 +69,7 @@ function AgentCard({ agent }: { agent: Agent }) {
             onClick={() => setShowPhone(true)}
           >
             <FiPhone />
-            <span className="pl-[10px]">Telefon</span>
+            <span className="pl-[10px]">{locale === "en" ? "Phone" : "Telefon"}</span>
           </button>
           <button
             type="button"
@@ -85,11 +85,11 @@ function AgentCard({ agent }: { agent: Agent }) {
   );
 }
 
-export default function ContactAgentInOffer() {
+export default function ContactAgentInOffer({ locale = "pl" }: { locale?: "pl" | "en" }) {
   return (
     <div className="hidden w-full flex-col gap-3 lg:flex">
       {agents.map((agent) => (
-        <AgentCard agent={agent} key={agent.email} />
+        <AgentCard agent={agent} key={agent.email} locale={locale} />
       ))}
     </div>
   );

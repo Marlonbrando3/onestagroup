@@ -15,6 +15,7 @@ type FunctionProps = {
   setLoader: any;
   isMobileFiltersOpen: any;
   setIsMobileFiltersOpen: any;
+  locale?: "pl" | "en";
 };
 
 export default function SearchInput({
@@ -25,8 +26,11 @@ export default function SearchInput({
   setLoader,
   isMobileFiltersOpen,
   setIsMobileFiltersOpen,
+  locale = "pl",
 }: FunctionProps) {
   const router = useRouter();
+  const isEn = locale === "en";
+  const propertiesHref = isEn ? "/en/properties/hiszpania" : "/nieruchomosci/hiszpania";
 
   const { country } = router.query;
 
@@ -53,20 +57,22 @@ export default function SearchInput({
             handleShowMobileFilters={handleShowMobileFilters}
             searchEngine={searchEngine}
             mobileButtonSearchEngine={mobileButtonSearchEngine}
+            locale={locale}
           />
           <div className=" w-[90vw] max-w-[1300px] z-10 relative flex items-center mx-auto -mt-[20px] text-[14px]">
-            <Link href="/">Strona startowa</Link>
+            <Link href={isEn ? "/en" : "/"}>{isEn ? "Home" : "Strona startowa"}</Link>
             <MdKeyboardArrowRight className="md:mx-[10px] h-[20px] w-[20px] text-gray-400" />
-            <Link href="#">Nieruchomości</Link>
+            <Link href="#">{isEn ? "Properties" : "Nieruchomości"}</Link>
             <MdKeyboardArrowRight className="md:mx-[10px] h-[20px] w-[20px] text-gray-400" />{" "}
-            <Link href="/nieruchomosci/hiszpania" className="capitalize">
+            <Link href={propertiesHref} className="capitalize">
               {country}
             </Link>
           </div>
           <p className="mx-auto w-[90vw] max-w-[1300px] text-[28px] mt-[10px]">
-            Nieruchomości
-            {country === "hiszpania" && " w Hiszpanii"}
-            {country === "cypr" && " na Cyprze"} - oferty
+            {isEn ? "Properties" : "Nieruchomości"}
+            {country === "hiszpania" && (isEn ? " in Spain" : " w Hiszpanii")}
+            {country === "cypr" && (isEn ? " in Cyprus" : " na Cyprze")}{" "}
+            {isEn ? "- offers" : "- oferty"}
           </p>
         </div>
       </form>

@@ -12,6 +12,7 @@ import {
   validTitleOrEmpty,
 } from "@/lib/titlesDictionary";
 import { getCoastLabelFromProvince, getCountryLabel } from "@/lib/regionMap";
+import { countryLabel, propertyTypeLabel } from "@/lib/i18n";
 
 export default function DescAboutObiect({
   propertyData,
@@ -23,7 +24,9 @@ export default function DescAboutObiect({
   bedrooms,
   pool,
   propertyPrice,
+  locale = "pl",
 }) {
+  const isEn = locale === "en";
   const [translatedDescription, setTranslatedDescription] = useState("");
   const [descriptionView, setDescriptionView] = useState("default");
   const [translating, setTranslating] = useState(false);
@@ -86,12 +89,21 @@ export default function DescAboutObiect({
 
   const { type, town, price, country, province, title, headerAdvertisement } =
     propertyData;
-  const typeLabel = typeDictionarySingular[type] || "Nieruchomość";
+  const typeLabel =
+    propertyTypeLabel[locale]?.[type] ||
+    typeDictionarySingular[type] ||
+    (isEn ? "Property" : "Nieruchomość");
   const listingTitle =
     validTitleOrEmpty(title) ||
     validTitleOrEmpty(headerAdvertisement) ||
-    `${typeLabel} w ${town || "Hiszpanii"}`;
-  const countryLabel = getCountryLabel(country) || "Hiszpania";
+    (isEn
+      ? `${typeLabel} in ${town || "Spain"}`
+      : `${typeLabel} w ${town || "Hiszpanii"}`);
+  const displayedCountryLabel =
+    countryLabel[locale]?.[country] ||
+    countryLabel[locale]?.[String(country || "").toLowerCase()] ||
+    getCountryLabel(country) ||
+    (isEn ? "Spain" : "Hiszpania");
   const coastLabel = getCoastLabelFromProvince(province);
   const locationLine = [coastLabel, town].filter(Boolean).join(", ");
 
@@ -176,6 +188,13 @@ export default function DescAboutObiect({
       : [];
 
   const featuresComparision = normalizedFeatures.map((i) => {
+    if (isEn) {
+      return (
+        <div className="pr-[10px] md:text-[18px] text-[15px]">
+          {String(i).replace(/-/g, " ")} &nbsp;|
+        </div>
+      );
+    }
     if (translator[i] !== undefined)
       return (
         <div className="pr-[10px] md:text-[18px] text-[15px]">
@@ -235,7 +254,9 @@ export default function DescAboutObiect({
       ? translatedDescription
       : descriptionView === "english"
         ? formattedDescriptionEN || finalFormattedDescription
-        : finalFormattedDescription;
+        : isEn
+          ? formattedDescriptionEN || finalFormattedDescription
+          : finalFormattedDescription;
 
   const hasCoordinates =
     localization?.lat !== null &&
@@ -247,7 +268,7 @@ export default function DescAboutObiect({
 
   const mapQuery = hasCoordinates
     ? `${localization.lat},${localization.lng}`
-    : `${town || ""}, ${countryLabel}`;
+    : `${town || ""}, ${displayedCountryLabel}`;
 
   return (
     <div className="rounded-md lg:w-auto lg:mr-2 bg-white flex-1 text-[18px] tracking-[1.1px] font-[300] mx-[10px]">
@@ -261,7 +282,7 @@ export default function DescAboutObiect({
             <div className="h-full">
               {" "}
               <p className="text-[18px] leading-[18px] font-[600]">
-                {countryLabel}
+                {displayedCountryLabel}
               </p>
               <p className="text-[20px]">{locationLine || listingTitle}</p>
               {/* <div className="text-[18px]">2 sypilanie, 2 łazienki, basen</div> */}
@@ -273,38 +294,46 @@ export default function DescAboutObiect({
           <p className="font-[700] text-[46px] text-yellow-500 leading-[30px]">
             {price !== 0
               ? `${propertyPrice.toLocaleString().replaceAll(",", " ")} €`
-              : "konsutacja"}
+              : isEn
+                ? "consultation"
+                : "konsutacja"}
           </p>
           <div className="flex sm:justify-end lg:mt-[20px] flex-wrap">
             <div className="text-[18px] flex items-center">
               <IoBed className="h-full w-[22px] text-yellow-500" />
-              <p className="px-[7px]">{bedrooms} sypialnie</p>
+              <p className="px-[7px]">
+                {bedrooms} {isEn ? "bedrooms" : "sypialnie"}
+              </p>
             </div>
             <div className="text-[18px] flex  items-center">
               <FaBath className="h-full w-[22px] text-yellow-500" />
-              <p className="px-[7px]">{bathrooms} łazienki</p>
+              <p className="px-[7px]">
+                {bathrooms} {isEn ? "bathrooms" : "łazienki"}
+              </p>
             </div>
             {pool === true && (
               <div className="text-[18px] flex  items-center">
                 <FaSwimmingPool className="h-full w-[22px] text-yellow-500" />
-                <p className="px-[7px]">basen</p>
+                <p className="px-[7px]">{isEn ? "pool" : "basen"}</p>
               </div>
             )}
           </div>
         </div>
       </div>
-      <ContactAgentInOfferMobile />
+      <ContactAgentInOfferMobile locale={locale} />
       <div className="w-full border-b-[1px] border-gray-300 clear-both"></div>
       <p className="font-[600] md:text-[18px] text-[15px] my-4">
         {" "}
-        CECHY NIERUCHOMOŚCI
+        {isEn ? "PROPERTY FEATURES" : "CECHY NIERUCHOMOŚCI"}
       </p>
       <div className="flex flex-wrap mb-[20px]">{featuresComparision}</div>
       <div className="w-full border-b-[1px] border-gray-300"></div>
       <div className="my-4 flex items-center justify-between gap-3">
-        <p className="font-[600] md:text-[18px] text-[15px]">OPIS PROJEKTU</p>
+        <p className="font-[600] md:text-[18px] text-[15px]">
+          {isEn ? "PROJECT DESCRIPTION" : "OPIS PROJEKTU"}
+        </p>
         <div className="flex items-center gap-2">
-          {!hasPolishDescription && (
+          {!isEn && !hasPolishDescription && (
             <button
               type="button"
               onClick={handleTranslateToPolish}
@@ -325,7 +354,8 @@ export default function DescAboutObiect({
               </span>
             </button>
           )}
-          <button
+          {!isEn && (
+            <button
             type="button"
             onClick={handleShowEnglish}
             className="text-[13px] md:text-[14px] px-3 py-1 rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-yellow-200 hover:text-gray-800 font-bold inline-flex items-center gap-2"
@@ -340,6 +370,7 @@ export default function DescAboutObiect({
               <span className="block w-full h-1/3 bg-[#C8102E]" />
             </span>
           </button>
+          )}
         </div>
       </div>
       <div
@@ -348,7 +379,9 @@ export default function DescAboutObiect({
         }}
         className="prose whitespace-normal md:text-[18px] text-[15px] md:leading-[30px] leading-[22px] font-[300] tracking-[1.1px] mb-[20px]"
       ></div>
-      <p className="font-[600] md:text-[18px] text-[15px] my-4"> LOKALIZACJA</p>
+      <p className="font-[600] md:text-[18px] text-[15px] my-4">
+        {isEn ? " LOCATION" : " LOKALIZACJA"}
+      </p>
       <div className="w-full border-b-[1px] border-gray-300"></div>
       <div className="w-full h-[240px] relative">
         <iframe

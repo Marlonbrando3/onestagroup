@@ -10,7 +10,6 @@ import {
 } from "@/components/crm/types";
 import { useCrmActivities } from "@/components/crm/useCrmActivities";
 import { useCrmContacts } from "@/components/crm/useCrmContacts";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
@@ -85,6 +84,8 @@ export default function CRMContactCardPage() {
   });
   const [activePanelTab, setActivePanelTab] = useState<"notes" | "task">("notes");
   const [contactNote, setContactNote] = useState("");
+  const [savedContactNote, setSavedContactNote] = useState("");
+  const [isContactNoteFocused, setIsContactNoteFocused] = useState(false);
   const [isSavingContactNote, setIsSavingContactNote] = useState(false);
   const [contactNoteMessage, setContactNoteMessage] = useState("");
   const [contactNoteError, setContactNoteError] = useState("");
@@ -101,6 +102,20 @@ export default function CRMContactCardPage() {
     note: "",
     status: "planned" as CrmActivityStatus,
   });
+  const isContactNoteDirty = contactNote !== savedContactNote;
+
+  useEffect(() => {
+    if (!openActivityMenuId) return;
+
+    function closeActivityMenuOnOutsideClick(event: PointerEvent) {
+      const target = event.target;
+      if (target instanceof Element && target.closest(".crmHistoryMenu")) return;
+      setOpenActivityMenuId("");
+    }
+
+    document.addEventListener("pointerdown", closeActivityMenuOnOutsideClick);
+    return () => document.removeEventListener("pointerdown", closeActivityMenuOnOutsideClick);
+  }, [openActivityMenuId]);
 
   useEffect(() => {
     if (!contact) return;
@@ -117,6 +132,8 @@ export default function CRMContactCardPage() {
       status: contact.status,
     });
     setContactNote(contact.note || "");
+    setSavedContactNote(contact.note || "");
+    setIsContactNoteFocused(false);
     setContactNoteError("");
     setContactNoteMessage("");
   }, [contact]);
@@ -241,7 +258,7 @@ export default function CRMContactCardPage() {
 
   async function handleContactNoteSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!contactId) return;
+    if (!contactId || !isContactNoteDirty) return;
 
     setContactNoteError("");
     setContactNoteMessage("");
@@ -257,6 +274,8 @@ export default function CRMContactCardPage() {
     }
 
     setContactNote(updatedContact.note || "");
+    setSavedContactNote(updatedContact.note || "");
+    setIsContactNoteFocused(false);
     setContactNoteMessage("Notatka zapisana.");
   }
 
@@ -283,7 +302,6 @@ export default function CRMContactCardPage() {
     <CrmLayout active="contacts">
       <section className="crmContactPage">
         <header className="crmContactHeader">
-          <Link href="/crm">← Kontakty</Link>
           <div>
             <p>Rekord klienta</p>
             <h1>{contact?.name || "Kontakt"}</h1>
@@ -485,68 +503,77 @@ export default function CRMContactCardPage() {
               {activePanelTab === "notes" ? (
                 <form className="crmContactNoteForm" onSubmit={handleContactNoteSave}>
                   <textarea
+                    className={
+                      isContactNoteFocused || isContactNoteDirty ? "editing" : "saved"
+                    }
                     placeholder="Notatka o kliencie, preferencje, ustalenia..."
                     value={contactNote}
+                    onBlur={() => setIsContactNoteFocused(false)}
                     onChange={(event) => {
                       setContactNote(event.target.value);
                       setContactNoteMessage("");
                       setContactNoteError("");
                     }}
+                    onFocus={() => setIsContactNoteFocused(true)}
                   />
                   {contactNoteError ? <p className="crmError">{contactNoteError}</p> : null}
                   {contactNoteMessage ? <p className="crmSuccess">{contactNoteMessage}</p> : null}
-                  <button disabled={isSavingContactNote} type="submit">
+                  <button disabled={isSavingContactNote || !isContactNoteDirty} type="submit">
                     {isSavingContactNote ? "Zapisywanie..." : "Zapisz notatkę"}
                   </button>
                 </form>
               ) : (
                 <>
-                  <div className="crmTabs" aria-label="Typ dzialania">
-                    {crmActivityTypes.map((type) => (
-                      <button
-                        className={form.type === type ? "active" : ""}
-                        key={type}
-                        type="button"
-                        onClick={() => changeType(type)}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
-
-                  <form className="crmActivityForm" onSubmit={handleSubmit}>
-                    <input
-                      placeholder="Tytul dzialania"
-                      value={form.title}
-                      onChange={(event) => setForm({ ...form, title: event.target.value })}
-                    />
-                    <div className="crmFormRow">
-                      <input
-                        type="date"
-                        value={form.dueDate}
-                        onChange={(event) => setForm({ ...form, dueDate: event.target.value })}
-                      />
-                      <input
-                        type="time"
-                        value={form.dueTime}
-                        onChange={(event) => setForm({ ...form, dueTime: event.target.value })}
-                      />
+                  <div className="crmTaskEditor">
+                    <div className="crmTabs" aria-label="Typ dzialania">
+                      {crmActivityTypes.map((type) => (
+                        <button
+                          className={`${form.type === type ? "active" : ""} ${
+                            type === "Brak kontaktu" ? "crmNoContact" : ""
+                          }`.trim()}
+                          key={type}
+                          type="button"
+                          onClick={() => changeType(type)}
+                        >
+                          {type}
+                        </button>
+                      ))}
                     </div>
-                    <textarea
-                      placeholder="Notatka, opis, ustalenia..."
-                      value={form.note}
-                      onChange={(event) => setForm({ ...form, note: event.target.value })}
-                    />
-                    <label className="crmCheckboxRow">
-                      <input
-                        checked={markNewActivityDone}
-                        type="checkbox"
-                        onChange={(event) => setMarkNewActivityDone(event.target.checked)}
+
+                    <form className="crmActivityForm" onSubmit={handleSubmit}>
+                      <div className="crmTaskScheduleRow">
+                        <input
+                          placeholder="Tytul dzialania"
+                          value={form.title}
+                          onChange={(event) => setForm({ ...form, title: event.target.value })}
+                        />
+                        <input
+                          type="date"
+                          value={form.dueDate}
+                          onChange={(event) => setForm({ ...form, dueDate: event.target.value })}
+                        />
+                        <input
+                          type="time"
+                          value={form.dueTime}
+                          onChange={(event) => setForm({ ...form, dueTime: event.target.value })}
+                        />
+                      </div>
+                      <textarea
+                        placeholder="Notatka, opis, ustalenia..."
+                        value={form.note}
+                        onChange={(event) => setForm({ ...form, note: event.target.value })}
                       />
-                      Oznacz zadanie jako wykonane
-                    </label>
-                    <button type="submit">Zapisz dzialanie</button>
-                  </form>
+                      <label className="crmCheckboxRow">
+                        <input
+                          checked={markNewActivityDone}
+                          type="checkbox"
+                          onChange={(event) => setMarkNewActivityDone(event.target.checked)}
+                        />
+                        Oznacz zadanie jako wykonane
+                      </label>
+                      <button type="submit">Zapisz dzialanie</button>
+                    </form>
+                  </div>
                 </>
               )}
 
@@ -558,7 +585,12 @@ export default function CRMContactCardPage() {
                   </div>
                   <div className="crmOverdueList">
                     {overdueActivities.map((activity) => (
-                      <article className="crmOverdueCard" key={activity.id}>
+                      <article
+                        className={`crmOverdueCard ${
+                          openActivityMenuId === `overdue-${activity.id}` ? "menuOpen" : ""
+                        }`}
+                        key={activity.id}
+                      >
                         <button
                           aria-label="Oznacz zadanie jako wykonane"
                           type="button"
@@ -573,6 +605,30 @@ export default function CRMContactCardPage() {
                             {activity.dueTime ? `, ${activity.dueTime.slice(0, 5)}` : ""}
                           </p>
                           {activity.note ? <small>{activity.note}</small> : null}
+                        </div>
+                        <div className="crmHistoryMenu crmOverdueMenu">
+                          <button
+                            aria-expanded={openActivityMenuId === `overdue-${activity.id}`}
+                            aria-label="Opcje działania"
+                            type="button"
+                            onClick={() =>
+                              setOpenActivityMenuId((current) =>
+                                current === `overdue-${activity.id}` ? "" : `overdue-${activity.id}`,
+                              )
+                            }
+                          >
+                            ...
+                          </button>
+                          {openActivityMenuId === `overdue-${activity.id}` ? (
+                            <div className="crmHistoryMenuList">
+                              <button type="button" onClick={() => openActivityEdit(activity)}>
+                                Edytuj
+                              </button>
+                              <button type="button" onClick={() => handleActivityDelete(activity.id)}>
+                                Usuń
+                              </button>
+                            </div>
+                          ) : null}
                         </div>
                       </article>
                     ))}
@@ -665,70 +721,76 @@ export default function CRMContactCardPage() {
               </button>
             </header>
 
-            <div className="crmTabs" aria-label="Typ dzialania">
-              {crmActivityTypes.map((type) => (
-                <button
-                  className={activityEditForm.type === type ? "active" : ""}
-                  key={type}
-                  type="button"
-                  onClick={() => changeEditType(type)}
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
+            <div className="crmTaskEditor">
+              <div className="crmTabs" aria-label="Typ dzialania">
+                {crmActivityTypes.map((type) => (
+                  <button
+                    className={`${activityEditForm.type === type ? "active" : ""} ${
+                      type === "Brak kontaktu" ? "crmNoContact" : ""
+                    }`.trim()}
+                    key={type}
+                    type="button"
+                    onClick={() => changeEditType(type)}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
 
-            <form className="crmActivityForm" onSubmit={handleActivityEditSubmit}>
-              <input
-                placeholder="Tytul dzialania"
-                value={activityEditForm.title}
-                onChange={(event) =>
-                  setActivityEditForm({ ...activityEditForm, title: event.target.value })
-                }
-              />
-              <div className="crmFormRow">
-                <input
-                  type="date"
-                  value={activityEditForm.dueDate}
+              <form className="crmActivityForm" onSubmit={handleActivityEditSubmit}>
+                <div className="crmTaskScheduleRow">
+                  <input
+                    placeholder="Tytul dzialania"
+                    value={activityEditForm.title}
+                    onChange={(event) =>
+                      setActivityEditForm({ ...activityEditForm, title: event.target.value })
+                    }
+                  />
+                  <input
+                    type="date"
+                    value={activityEditForm.dueDate}
+                    onChange={(event) =>
+                      setActivityEditForm({ ...activityEditForm, dueDate: event.target.value })
+                    }
+                  />
+                  <input
+                    type="time"
+                    value={activityEditForm.dueTime}
+                    onChange={(event) =>
+                      setActivityEditForm({ ...activityEditForm, dueTime: event.target.value })
+                    }
+                  />
+                </div>
+                <select
+                  value={activityEditForm.status}
                   onChange={(event) =>
-                    setActivityEditForm({ ...activityEditForm, dueDate: event.target.value })
+                    setActivityEditForm({
+                      ...activityEditForm,
+                      status: event.target.value as CrmActivityStatus,
+                    })
+                  }
+                >
+                  <option value="planned">Niewykonane</option>
+                  <option value="done">Wykonane</option>
+                </select>
+                <textarea
+                  placeholder="Notatka, opis, ustalenia..."
+                  value={activityEditForm.note}
+                  onChange={(event) =>
+                    setActivityEditForm({ ...activityEditForm, note: event.target.value })
                   }
                 />
-                <input
-                  type="time"
-                  value={activityEditForm.dueTime}
-                  onChange={(event) =>
-                    setActivityEditForm({ ...activityEditForm, dueTime: event.target.value })
-                  }
-                />
-              </div>
-              <select
-                value={activityEditForm.status}
-                onChange={(event) =>
-                  setActivityEditForm({
-                    ...activityEditForm,
-                    status: event.target.value as CrmActivityStatus,
-                  })
-                }
-              >
-                <option value="planned">Niewykonane</option>
-                <option value="done">Wykonane</option>
-              </select>
-              <textarea
-                placeholder="Notatka, opis, ustalenia..."
-                value={activityEditForm.note}
-                onChange={(event) => setActivityEditForm({ ...activityEditForm, note: event.target.value })}
-              />
-              {activityEditError ? <p className="crmError">{activityEditError}</p> : null}
-              <div className="crmModalActions">
-                <button disabled={isSavingActivityEdit} type="button" onClick={closeActivityEdit}>
-                  Anuluj
-                </button>
-                <button disabled={isSavingActivityEdit} type="submit">
-                  {isSavingActivityEdit ? "Zapisywanie..." : "Zapisz zmiany"}
-                </button>
-              </div>
-            </form>
+                {activityEditError ? <p className="crmError">{activityEditError}</p> : null}
+                <div className="crmModalActions">
+                  <button disabled={isSavingActivityEdit} type="button" onClick={closeActivityEdit}>
+                    Anuluj
+                  </button>
+                  <button disabled={isSavingActivityEdit} type="submit">
+                    {isSavingActivityEdit ? "Zapisywanie..." : "Zapisz zmiany"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </section>
         </div>
       ) : null}
@@ -737,17 +799,20 @@ export default function CRMContactCardPage() {
           display: grid;
           font-size: 13px;
           gap: 14px;
-          padding: 19px;
+          padding: 0 19px 19px;
         }
         .crmContactHeader {
           align-items: center;
+          background: #f4f6f8;
+          box-shadow: 0 8px 14px rgba(21, 32, 43, 0.06);
           display: grid;
           gap: 11px;
-          grid-template-columns: auto minmax(0, 1fr) auto;
-        }
-        .crmContactHeader a {
-          color: #1265c7;
-          font-weight: 800;
+          grid-template-columns: minmax(0, 1fr) auto;
+          margin: 0 -19px;
+          padding: 10px 19px;
+          position: sticky;
+          top: 0;
+          z-index: 30;
         }
         .crmContactHeader p {
           color: #216e63;
@@ -902,31 +967,43 @@ export default function CRMContactCardPage() {
           padding: 14px;
         }
         .crmPanelTabs {
-          background: #f4f6f8;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          display: grid;
-          gap: 3px;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          padding: 3px;
+          align-items: flex-end;
+          display: flex;
+          gap: 10px;
         }
         .crmPanelTabs button {
           background: transparent;
           border: 0;
-          border-radius: 6px;
+          border-bottom: 2px solid transparent;
+          border-radius: 0;
           color: #4b5563;
           font-size: 12px;
           font-weight: 900;
-          min-height: 30px;
+          min-height: 28px;
+          padding: 0 5px;
         }
         .crmPanelTabs button.active {
-          background: #216e63;
-          color: #ffffff;
+          background: transparent;
+          border-bottom-color: #216e63;
+          color: #216e63;
+        }
+        .crmTaskEditor {
+          align-items: start;
+          display: grid;
+          gap: 12px;
+          grid-template-areas: "form types";
+          grid-template-columns: minmax(0, 1fr) 150px;
+        }
+        .crmTaskEditor > .crmActivityForm {
+          grid-area: form;
+        }
+        .crmTaskEditor > .crmTabs {
+          grid-area: types;
         }
         .crmTabs {
           display: grid;
           gap: 6px;
-          grid-template-columns: repeat(5, minmax(0, 1fr));
+          grid-template-columns: 1fr;
         }
         .crmTabs button {
           background: #f9fafb;
@@ -941,6 +1018,16 @@ export default function CRMContactCardPage() {
           background: #e7f2ef;
           border-color: #216e63;
           color: #155149;
+        }
+        .crmTabs button.crmNoContact {
+          background: #bf6b6b;
+          border-color: #ad5d5d;
+          color: #ffffff;
+        }
+        .crmTabs button.crmNoContact.active {
+          background: #a95050;
+          border-color: #934545;
+          color: #ffffff;
         }
         .crmActivityForm {
           display: grid;
@@ -960,7 +1047,19 @@ export default function CRMContactCardPage() {
           outline: 0;
           padding: 10px;
           resize: vertical;
+          transition:
+            background 0.15s ease,
+            border-color 0.15s ease,
+            box-shadow 0.15s ease;
           width: 100%;
+        }
+        .crmContactNoteForm textarea.editing {
+          background: #ffffff;
+          border-color: #aab6c4;
+          box-shadow: 0 0 0 2px rgba(33, 110, 99, 0.1);
+        }
+        .crmContactNoteForm textarea.saved {
+          background: #f9fafb;
         }
         .crmContactNoteForm button {
           background: #216e63;
@@ -974,8 +1073,10 @@ export default function CRMContactCardPage() {
           padding: 0 13px;
         }
         .crmContactNoteForm button:disabled {
+          background: #d8dde4;
+          color: #7b8491;
           cursor: not-allowed;
-          opacity: 0.7;
+          opacity: 1;
         }
         .crmActivityForm input,
         .crmActivityForm select,
@@ -990,14 +1091,17 @@ export default function CRMContactCardPage() {
           width: 100%;
         }
         .crmActivityForm textarea {
-          min-height: 96px;
+          min-height: 126px;
           padding: 10px;
           resize: vertical;
         }
-        .crmFormRow {
+        .crmTaskScheduleRow {
           display: grid;
           gap: 8px;
-          grid-template-columns: 1fr 180px;
+          grid-template-columns: minmax(0, 1fr) 150px 110px;
+        }
+        .crmTaskScheduleRow > input {
+          min-width: 0;
         }
         .crmActivityForm button {
           background: #216e63;
@@ -1014,17 +1118,17 @@ export default function CRMContactCardPage() {
           align-items: center;
           color: #4b5563;
           display: flex;
-          font-size: 11px;
+          font-size: 14px;
           font-weight: 800;
-          gap: 7px;
+          gap: 9px;
         }
         .crmActivityForm .crmCheckboxRow input {
           accent-color: #216e63;
           flex: 0 0 auto;
-          height: 14px;
+          height: 18px;
           min-height: 0;
           padding: 0;
-          width: 14px;
+          width: 18px;
         }
         .crmOverduePanel {
           background: #fff7f6;
@@ -1032,6 +1136,7 @@ export default function CRMContactCardPage() {
           border-radius: 8px;
           display: grid;
           gap: 8px;
+          margin-top: 67px;
           padding: 11px;
         }
         .crmOverdueHeader {
@@ -1063,8 +1168,12 @@ export default function CRMContactCardPage() {
           border-radius: 8px;
           display: grid;
           gap: 8px;
-          grid-template-columns: 34px minmax(0, 1fr);
+          grid-template-columns: 34px minmax(0, 1fr) auto;
           padding: 8px;
+          position: relative;
+        }
+        .crmOverdueCard.menuOpen {
+          z-index: 20;
         }
         .crmOverdueCard > button {
           align-items: center;
@@ -1083,8 +1192,19 @@ export default function CRMContactCardPage() {
         }
         .crmOverdueCard strong {
           display: block;
-          font-size: 12px;
+          font-size: 17px;
+          font-weight: 700;
           line-height: 1.2;
+        }
+        .crmOverdueMenu > button {
+          background: transparent;
+          border: 0;
+          color: #667085;
+          font-size: 13px;
+          font-weight: 900;
+          letter-spacing: 1px;
+          min-height: 21px;
+          padding: 0 2px;
         }
         .crmOverdueCard p {
           color: #b42318;
@@ -1111,6 +1231,8 @@ export default function CRMContactCardPage() {
           justify-content: space-between;
         }
         .crmTimelineHeader h2 {
+          font-size: 150%;
+          font-weight: 800;
           margin: 0;
         }
         .crmTimelineHeader span {
@@ -1183,7 +1305,8 @@ export default function CRMContactCardPage() {
           padding: 10px 11px 5px;
         }
         .crmHistoryTop h3 {
-          font-size: 14px;
+          font-size: 17px;
+          font-weight: 700;
           line-height: 1.15;
           margin: 0;
         }
@@ -1332,6 +1455,9 @@ export default function CRMContactCardPage() {
           line-height: 1;
           width: 34px;
         }
+        .crmActivityModal .crmActivityForm textarea {
+          min-height: 105px;
+        }
         .crmModalActions {
           display: flex;
           gap: 8px;
@@ -1361,8 +1487,14 @@ export default function CRMContactCardPage() {
         @media (max-width: 1000px) {
           .crmContactGrid,
           .crmContactHeader,
-          .crmFormRow,
+          .crmTaskScheduleRow,
           .crmTabs {
+            grid-template-columns: 1fr;
+          }
+          .crmTaskEditor {
+            grid-template-areas:
+              "form"
+              "types";
             grid-template-columns: 1fr;
           }
           .crmHistoryRow {

@@ -13,8 +13,7 @@ import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
 import { getPropertyCountryOption } from "@/lib/propertyCountries";
-
-const DEFAULT_DISTANCE_TO_SEA_MAX = 5000;
+import { SiteLocale, countryLabel } from "@/lib/i18n";
 
 const PROPERTY_LIST_COLUMNS = [
   "external_id",
@@ -70,11 +69,14 @@ interface PageProps {
   currentPage: number;
   perPage: number;
   query: Record<string, string | string[]>;
+  locale?: SiteLocale;
 }
 
 export default function ListingsPage(props: PageProps) {
   const router = useRouter();
   const { country } = router.query;
+  const locale = props.locale ?? "pl";
+  const isEn = locale === "en";
 
   const searchEngine = useRef<HTMLDivElement>(null);
   const mobileButtonSearchEngine = useRef<HTMLButtonElement>(null);
@@ -198,15 +200,33 @@ export default function ListingsPage(props: PageProps) {
     setIsMobileFiltersOpen(next);
 
     searchEngine.current.style.top = next ? "0px" : "-120vh";
-    mobileButtonSearchEngine.current.innerHTML = next ? "Zamknij" : "Filtry";
+    mobileButtonSearchEngine.current.innerHTML = next
+      ? isEn
+        ? "Close"
+        : "Zamknij"
+      : isEn
+        ? "Filters"
+        : "Filtry";
   };
 
-  const title = `Nieruchomości ${props.country.toUpperCase()}`;
+  const localizedCountry =
+    countryLabel[locale][String(country)] || (isEn ? props.country : props.country);
+  const title = isEn
+    ? `Properties in ${localizedCountry} | Onesta Group`
+    : `Nieruchomości ${props.country.toUpperCase()}`;
 
   return (
     <div className="bg-gray-100/[0.3] w-full overflow-x-clip">
       <Head>
         <title>{title}</title>
+        <meta
+          name="description"
+          content={
+            isEn
+              ? `Browse selected overseas properties in ${localizedCountry}. Onesta Group supports buyers from selection to formalities and handover.`
+              : `Sprawdź aktualne oferty nieruchomości: ${props.country}.`
+          }
+        />
       </Head>
       <WhatsAppButton />
       <Consultation
@@ -219,6 +239,7 @@ export default function ListingsPage(props: PageProps) {
           setShowOffersPopup(true);
           hasShownPopupRef.current = false;
         }}
+        locale={locale}
       />
       <div className="pt-[74px] xl:pt-[82px]" />
       <MiniHomeView />
@@ -237,6 +258,7 @@ export default function ListingsPage(props: PageProps) {
         properties={propertiesState}
         isMobileFiltersOpen={isMobileFiltersOpen}
         setIsMobileFiltersOpen={setIsMobileFiltersOpen}
+        locale={locale}
       />
 
       <div ref={lastElementRef} style={{ height: 50 }} />
@@ -249,8 +271,8 @@ export default function ListingsPage(props: PageProps) {
         </div>
       )}
 
-      <ContactFormMain />
-      <Footer />
+      <ContactFormMain locale={locale} />
+      <Footer locale={locale} />
     </div>
   );
 }
@@ -285,13 +307,6 @@ function parseNumList(val: unknown): number[] {
     .filter((n) => Number.isFinite(n));
 }
 
-function parseSingleNumber(val: unknown): number | null {
-  if (val === undefined || val === null) return null;
-  const raw = Array.isArray(val) ? val[0] : val;
-  const num = Number(raw);
-  return Number.isFinite(num) ? num : null;
-}
-
 function escapeLikeValue(value: string): string {
   return String(value).replace(/[%_,]/g, "").trim();
 }
@@ -318,7 +333,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     bedsMax,
     priceMin,
     priceMax,
-    distanceToSeaMax,
     location,
     sort,
   } = context.query;
@@ -335,11 +349,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   const bedsTo = bedsMax ? Number(bedsMax) : 99;
   const priceFrom = priceMin ? Number(priceMin) : 0;
   const priceTo = priceMax ? Number(priceMax) : 99_999_999;
-  const distanceToSeaLimit = parseSingleNumber(distanceToSeaMax);
-  const hasDistanceToSeaFilter =
-    distanceToSeaLimit !== null &&
-    distanceToSeaLimit >= 0 &&
-    distanceToSeaLimit < DEFAULT_DISTANCE_TO_SEA_MAX;
   const marketType = market ?? null;
 
   const typeList = parseCsvParam(type);
@@ -433,12 +442,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     } else {
       query = query.gte("beds", bedsFrom).lte("beds", bedsTo);
     }
-  }
-
-  if (hasDistanceToSeaFilter) {
-    query = query.or(
-      `distance_to_sea_m.lte.${distanceToSeaLimit},distance_to_sea_m.is.null`,
-    );
   }
 
   if (locationParam.length > 0) {

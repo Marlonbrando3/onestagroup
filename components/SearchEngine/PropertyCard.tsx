@@ -7,16 +7,16 @@ import { FaSwimmingPool } from "react-icons/fa";
 import { BiArea } from "react-icons/bi";
 import { MdIosShare } from "react-icons/md";
 import ResultsSlider from "./ResultsSlider";
-import {
-  typeDictionarySingular,
-  validTitleOrEmpty,
-} from "../../lib/titlesDictionary";
+import { validTitleOrEmpty } from "../../lib/titlesDictionary";
 import { HomeRedHatDisplayFont as Red_Hat_DisplayFont } from "@/fonts/homeFonts";
 import { getCoastLabelFromProvince } from "@/lib/regionMap";
+import { localePath, propertyTypeLabel, SiteLocale } from "@/lib/i18n";
+import { getPropertyCountryOption } from "@/lib/propertyCountries";
 
 type PropertyProps = {
   property: any;
   onBrokenImages?: (externalId: string | number) => void;
+  locale?: SiteLocale;
 };
 
 function slugify(value: string): string {
@@ -41,13 +41,14 @@ function formatValue(value: unknown, fallback = "-") {
   return String(value);
 }
 
-function formatDistanceToSea(value: unknown) {
+function formatDistanceToSea(value: unknown, locale: SiteLocale) {
   const numeric = Number(value);
   if (!Number.isFinite(numeric) || numeric <= 0) return null;
 
   return (
     <p className="text-gray-900 font-900 text-[13px]">
-      {Math.round(numeric).toLocaleString("pl-PL")} m do morza{" "}
+      {Math.round(numeric).toLocaleString(locale === "en" ? "en-US" : "pl-PL")}{" "}
+      m {locale === "en" ? "to the sea" : "do morza"}{" "}
     </p>
   );
 }
@@ -55,46 +56,60 @@ function formatDistanceToSea(value: unknown) {
 export default function PropertyCard({
   property,
   onBrokenImages,
+  locale = "pl",
 }: PropertyProps) {
   const [copiedShowed, setCopiedShowed] = useState(false);
+  const isEn = locale === "en";
+  const paths = localePath[locale];
 
-  const market = property?.new_build ? "RYNEK PIERWOTNY" : "RYNEK WTÓRNY";
+  const market = property?.new_build
+    ? isEn
+      ? "PRIMARY MARKET"
+      : "RYNEK PIERWOTNY"
+    : isEn
+      ? "RESALE MARKET"
+      : "RYNEK WTÓRNY";
   const countryName =
     typeof property?.country === "string"
       ? property.country
       : property?.country?.name || "hiszpania";
 
-  const countrySlug = slugify(countryName);
+  const countrySlug = getPropertyCountryOption(countryName).slug;
   const propertyType =
-    property?.type && property.type in typeDictionarySingular
-      ? typeDictionarySingular[
-          property.type as keyof typeof typeDictionarySingular
-        ]
-      : "Nieruchomość";
-  const generatedTitle = `${propertyType} w ${property?.town || "Hiszpanii"}`;
+    property?.type && property.type in propertyTypeLabel[locale]
+      ? propertyTypeLabel[locale][property.type]
+      : isEn
+        ? "Property"
+        : "Nieruchomość";
+  const generatedTitle = isEn
+    ? `${propertyType} in ${property?.town || "Spain"}`
+    : `${propertyType} w ${property?.town || "Hiszpanii"}`;
   const listingTitle =
     validTitleOrEmpty(property?.title) ||
     validTitleOrEmpty(property?.headerAdvertisement) ||
     generatedTitle;
   const slug = slugify(listingTitle);
   const locationLabel = getCoastLabelFromProvince(property?.province);
-  const distanceToSeaLabel = formatDistanceToSea(property?.distance_to_sea_m);
+  const distanceToSeaLabel = formatDistanceToSea(
+    property?.distance_to_sea_m,
+    locale,
+  );
 
   const detailHref = {
-    pathname: `/nieruchomosci/${countrySlug}/${slug}`,
+    pathname: paths.property(countrySlug, slug),
     query: { id: property?.external_id },
   };
 
   const share = async () => {
     const shareUrl =
       typeof window !== "undefined"
-        ? `${window.location.origin}/nieruchomosci/${countrySlug}/${slug}?id=${property?.external_id}`
-        : `/nieruchomosci/${countrySlug}/${slug}?id=${property?.external_id}`;
+        ? `${window.location.origin}${paths.property(countrySlug, slug)}?id=${property?.external_id}`
+        : `${paths.property(countrySlug, slug)}?id=${property?.external_id}`;
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "Zobacz tę nieruchomość",
+          title: isEn ? "View this property" : "Zobacz tę nieruchomość",
           url: shareUrl,
         });
       } else if (navigator.clipboard) {
@@ -107,22 +122,22 @@ export default function PropertyCard({
 
   const stats = [
     {
-      label: "Sypialnie",
+      label: isEn ? "Bedrooms" : "Sypialnie",
       value: formatValue(property?.beds),
       Icon: IoBedOutline,
     },
     {
-      label: "Łazienki",
+      label: isEn ? "Bathrooms" : "Łazienki",
       value: formatValue(property?.baths),
       Icon: PiBathtubLight,
     },
     {
-      label: "Basen",
-      value: property?.pool === true ? "Tak" : "Nie",
+      label: isEn ? "Pool" : "Basen",
+      value: property?.pool === true ? (isEn ? "Yes" : "Tak") : isEn ? "No" : "Nie",
       Icon: FaSwimmingPool,
     },
     {
-      label: "Powierzchnia",
+      label: isEn ? "Area" : "Powierzchnia",
       value: property?.surface_built ? `${property.surface_built} m²` : "-",
       Icon: BiArea,
     },
@@ -137,6 +152,7 @@ export default function PropertyCard({
           date={property?.updated_at}
           region={property?.province}
           countrySlug={countrySlug}
+          locale={locale}
           images={property?.images}
           market={market}
           deliveryDate={property?.vacantFromDate}
@@ -160,7 +176,7 @@ export default function PropertyCard({
 
           {copiedShowed && (
             <div className="absolute right-3 top-12 z-20 bg-[#182334] px-3 py-2 text-xs font-semibold text-white shadow-lg">
-              Skopiowano link
+              {isEn ? "Link copied" : "Skopiowano link"}
             </div>
           )}
 
@@ -169,9 +185,9 @@ export default function PropertyCard({
               <IoMdPin className="mt-[2px] h-4 w-4 shrink-0 text-[#b8954c]" />
               <div>
                 <p className="font-semibold text-[#182334]">
-                  {locationLabel || "Wybrzeże"}
+                  {locationLabel || (isEn ? "Coast" : "Wybrzeże")}
                 </p>
-                <p>{property?.town || "Hiszpania"}</p>
+                <p>{property?.town || (isEn ? "Spain" : "Hiszpania")}</p>
               </div>
             </div>
 
@@ -210,11 +226,13 @@ export default function PropertyCard({
         <div className="flex items-center justify-between gap-3 border-t border-[#e5dac7] bg-[#fbf8f2] px-3 py-3">
           <div>
             <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#7c8796]">
-              Cena
+              {isEn ? "Price" : "Cena"}
             </p>
             <p className="text-[20px] font-extrabold leading-tight text-[#9b7a36]">
               {property?.new_build && Number(property?.price || 0) > 0 && (
-                <span className="mr-1 text-xs font-bold">od</span>
+                <span className="mr-1 text-xs font-bold">
+                  {isEn ? "from" : "od"}
+                </span>
               )}
               {formatPrice(property?.price)}
             </p>
@@ -223,7 +241,7 @@ export default function PropertyCard({
             href={detailHref}
             className="shrink-0 border border-[#b8954c] bg-[#d6b36a] px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
           >
-            Szczegóły
+            {isEn ? "Details" : "Szczegóły"}
           </Link>
         </div>
       </div>

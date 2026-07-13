@@ -11,6 +11,7 @@ import {
   normalizeCountrySlug,
   PROPERTY_COUNTRY_OPTIONS,
 } from "@/lib/propertyCountries";
+import { SiteLocale, localePath } from "@/lib/i18n";
 
 type LocationItem = {
   id: string;
@@ -29,7 +30,6 @@ type FiltersState = {
   bedrooms: string[];
   bathrooms: string[];
   price: PriceRange;
-  distanceToSeaMax: number;
 };
 
 type Props = {
@@ -38,15 +38,11 @@ type Props = {
   mobileButtonSearchEngine: any;
   loader: any;
   setLoader: any;
+  locale?: SiteLocale;
 };
 
 const DEFAULT_PRICE: PriceRange = { min: 0, max: 5000000 };
-const DEFAULT_DISTANCE_TO_SEA_MAX = 5000;
 const NUMBER_OPTIONS = ["1", "2", "3", "4", "5"];
-
-function clampDistanceToSea(value: number) {
-  return Math.max(0, Math.min(DEFAULT_DISTANCE_TO_SEA_MAX, value));
-}
 
 function getLocationCountry(location: LocationItem) {
   return location.country || "hiszpania";
@@ -76,6 +72,27 @@ const TYPE_LABEL_TO_DB_VALUES: Record<string, string[]> = {
   "Dom szeregowy": ["townhouse", "Town House"],
   Posiadłość: ["Finca"],
   Nieruchomość: ["shop", "null"],
+  Apartment: [
+    "apartment",
+    "Apartment",
+    "Quad House",
+    "Semi Detached",
+    "Apartment Penthouse",
+  ],
+  House: [
+    "casas",
+    "Country House",
+    "Country House Penthouse",
+    "Town House",
+    "Town House Penthouse",
+    "townhouse",
+    "villa",
+    "Villa",
+    "Villa Penthouse",
+  ],
+  Townhouse: ["townhouse", "Town House"],
+  Finca: ["Finca"],
+  Property: ["shop", "null"],
 };
 
 const TYPE_DB_TO_LABEL: Record<string, string> = Object.entries(
@@ -87,23 +104,52 @@ const TYPE_DB_TO_LABEL: Record<string, string> = Object.entries(
   },
   {} as Record<string, string>,
 );
+const TYPE_DB_TO_LABEL_EN: Record<string, string> = {
+  apartment: "Apartment",
+  "apartment penthouse": "Penthouse",
+  bungalow: "Bungalow",
+  casas: "House",
+  "country house": "House",
+  "country house penthouse": "House",
+  finca: "Finca",
+  penthouse: "Penthouse",
+  "penthouse penthouse": "Penthouse",
+  "quad house": "Apartment",
+  "semi detached": "Apartment",
+  shop: "Property",
+  "town house": "Townhouse",
+  "town house penthouse": "House",
+  townhouse: "Townhouse",
+  villa: "House",
+  "villa penthouse": "House",
+  null: "Property",
+};
 
 const MARKET_OPTIONS = ["Pierwotny", "Wtórny"];
+const MARKET_OPTIONS_EN = ["Primary", "Resale"];
 const MARKET_LABEL_TO_QUERY: Record<string, "true" | "false"> = {
   Pierwotny: "true",
   Wtórny: "false",
+  Primary: "true",
+  Resale: "false",
 };
 const MARKET_QUERY_TO_LABEL: Record<string, string> = {
   true: "Pierwotny",
   false: "Wtórny",
 };
+const MARKET_QUERY_TO_LABEL_EN: Record<string, string> = {
+  true: "Primary",
+  false: "Resale",
+};
 
 function MarketSelect({
   value,
   onChange,
+  locale = "pl",
 }: {
   value: string[];
   onChange: (val: string[]) => void;
+  locale?: SiteLocale;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -118,10 +164,13 @@ function MarketSelect({
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
-  const current = value[0] ?? "Wszystkie";
+  const isEn = locale === "en";
+  const allLabel = isEn ? "All" : "Wszystkie";
+  const options = isEn ? MARKET_OPTIONS_EN : MARKET_OPTIONS;
+  const current = value[0] ?? allLabel;
 
   const pick = (label: string) => {
-    onChange(label === "Wszystkie" ? [] : [label]);
+    onChange(label === allLabel ? [] : [label]);
     setOpen(false);
   };
 
@@ -136,7 +185,7 @@ function MarketSelect({
       </button>
       {open && (
         <div className="absolute left-0 top-[calc(100%+12px)] z-30 w-full min-w-[180px] overflow-hidden border border-[#e5dac7] bg-[#f7f3ec] shadow-xl lg:w-[190px]">
-          {["Wszystkie", ...MARKET_OPTIONS].map((opt) => (
+          {[allLabel, ...options].map((opt) => (
             <button
               key={opt}
               type="button"
@@ -160,17 +209,20 @@ function CountrySelect({
   value,
   onChange,
   className = "",
+  locale = "pl",
 }: {
   value: string;
   onChange: (slug: string) => void;
   className?: string;
+  locale?: SiteLocale;
 }) {
+  const isEn = locale === "en";
   return (
     <label
       className={`flex h-11 w-full items-stretch text-sm font-semibold text-[#182334] ${className}`}
     >
       <span className="flex min-w-[78px] items-center justify-center border border-r-0 border-[#c9aa63] bg-[#d6b36a] px-3 uppercase tracking-[0.14em]">
-        Kraj
+        {isEn ? "Country" : "Kraj"}
       </span>
       <select
         value={value}
@@ -179,49 +231,15 @@ function CountrySelect({
       >
         {PROPERTY_COUNTRY_OPTIONS.map((country) => (
           <option key={country.slug} value={country.slug}>
-            {country.label}
+            {isEn && country.slug === "hiszpania"
+              ? "Spain"
+              : isEn && country.slug === "cypr"
+                ? "Cyprus"
+                : country.label}
           </option>
         ))}
       </select>
     </label>
-  );
-}
-
-function DistanceToSeaRange({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (val: number) => void;
-}) {
-  const formatDistance = (meters: number) => {
-    if (meters >= DEFAULT_DISTANCE_TO_SEA_MAX) return "5 km i więcej";
-    if (meters >= 1000) {
-      const km = meters / 1000;
-      return `do ${Number.isInteger(km) ? km : km.toFixed(1)} km`;
-    }
-    return `do ${meters} m`;
-  };
-
-  return (
-    <div className="flex h-full w-full flex-col justify-center bg-white px-3">
-      <label className="mb-1 block text-xs font-semibold text-[#5f6b7a]">
-        Dystans do morza
-      </label>
-      <div className="mb-2 truncate text-sm font-semibold text-[#182334]">
-        {formatDistance(value)}
-      </div>
-      <input
-        type="range"
-        min={0}
-        max={DEFAULT_DISTANCE_TO_SEA_MAX}
-        step={200}
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className="h-[6px] w-full cursor-pointer appearance-none bg-[#e2d4bd] accent-[#b8954c]"
-        aria-label="Maksymalny dystans do morza"
-      />
-    </div>
   );
 }
 
@@ -230,8 +248,11 @@ export default function Home({
   searchEngine,
   loader,
   setLoader,
+  locale = "pl",
 }: Props) {
   const router = useRouter();
+  const isEn = locale === "en";
+  const paths = localePath[locale];
   const [mobileModalOpen, setMobileModalOpen] = useState(false);
   const [countryTransition, setCountryTransition] = useState({
     active: false,
@@ -251,7 +272,6 @@ export default function Home({
     bedrooms: [],
     bathrooms: [],
     price: DEFAULT_PRICE,
-    distanceToSeaMax: DEFAULT_DISTANCE_TO_SEA_MAX,
   });
 
   const selectedCountry = getPropertyCountryOption(
@@ -329,9 +349,6 @@ export default function Home({
       q.priceMin = String(next.price.min);
     if (next.price.max !== DEFAULT_PRICE.max)
       q.priceMax = String(next.price.max);
-    if (next.distanceToSeaMax !== DEFAULT_DISTANCE_TO_SEA_MAX) {
-      q.distanceToSeaMax = String(next.distanceToSeaMax);
-    }
 
     return q;
   };
@@ -364,7 +381,7 @@ export default function Home({
 
     router.push(
       {
-        pathname: `/nieruchomosci/${country}/`,
+        pathname: paths.properties(country),
         query,
       },
       undefined,
@@ -396,7 +413,7 @@ export default function Home({
     router
       .push(
         {
-          pathname: `/nieruchomosci/${normalizedCountry}/`,
+          pathname: paths.properties(normalizedCountry),
           query,
         },
         undefined,
@@ -424,7 +441,10 @@ export default function Home({
     const typeFromUrl = Array.from(
       new Set(
         parseCsv(router.query.type).map(
-          (db) => TYPE_DB_TO_LABEL[db.toLowerCase()] ?? db,
+          (db) =>
+            (isEn ? TYPE_DB_TO_LABEL_EN : TYPE_DB_TO_LABEL)[
+              db.toLowerCase()
+            ] ?? db,
         ),
       ),
     );
@@ -451,10 +471,6 @@ export default function Home({
 
     const priceMin = parseNum(router.query.priceMin) ?? DEFAULT_PRICE.min;
     const priceMax = parseNum(router.query.priceMax) ?? DEFAULT_PRICE.max;
-    const distanceToSeaMax = clampDistanceToSea(
-      parseNum(router.query.distanceToSeaMax) ?? DEFAULT_DISTANCE_TO_SEA_MAX,
-    );
-
     const locationIds = parseCsv(router.query.location);
     const locations = locationIds
       .map((id) => (locationsData as any[]).find((l) => l.id === id))
@@ -466,7 +482,10 @@ export default function Home({
     const marketFromUrlRaw = Array.isArray(router.query.market)
       ? router.query.market[0]
       : String(router.query.market ?? "");
-    const marketLabel = MARKET_QUERY_TO_LABEL[marketFromUrlRaw] ?? null;
+    const marketLabel =
+      (isEn ? MARKET_QUERY_TO_LABEL_EN : MARKET_QUERY_TO_LABEL)[
+        marketFromUrlRaw
+      ] ?? null;
 
     setFilters((prev) => ({
       ...prev,
@@ -476,7 +495,6 @@ export default function Home({
       bedrooms,
       bathrooms,
       price: { min: priceMin, max: priceMax },
-      distanceToSeaMax,
     }));
   }, [
     router.isReady,
@@ -489,7 +507,6 @@ export default function Home({
     router.query.bathsMax,
     router.query.priceMin,
     router.query.priceMax,
-    router.query.distanceToSeaMax,
     router.query.location,
     router.query.market,
     router.query.country,
@@ -557,14 +574,16 @@ export default function Home({
     };
   }, [router.events, setLoader]);
 
-  const types = [
-    "Apartament",
-    "Penthouse",
-    "Bungalow",
-    "Dom",
-    "Dom szeregowy",
-    "Posiadłość",
-  ];
+  const types = isEn
+    ? ["Apartment", "Penthouse", "Bungalow", "House", "Townhouse", "Finca"]
+    : [
+        "Apartament",
+        "Penthouse",
+        "Bungalow",
+        "Dom",
+        "Dom szeregowy",
+        "Posiadłość",
+      ];
 
   return (
     <>
@@ -574,10 +593,15 @@ export default function Home({
             <span className="h-9 w-9 animate-spin rounded-full border-4 border-[#e5dac7] border-t-[#b8954c]" />
             <div>
               <p className="text-lg font-bold text-[#182334]">
-                Zmieniamy kraj...
+                {isEn ? "Changing country..." : "Zmieniamy kraj..."}
               </p>
               <p className="mt-1 text-sm font-semibold text-[#5f6b7a]">
-                Ładujemy oferty: {countryTransition.label}
+                {isEn ? "Loading offers:" : "Ładujemy oferty:"}{" "}
+                {isEn && countryTransition.slug === "hiszpania"
+                  ? "Spain"
+                  : isEn && countryTransition.slug === "cypr"
+                    ? "Cyprus"
+                    : countryTransition.label}
               </p>
             </div>
           </div>
@@ -612,7 +636,7 @@ export default function Home({
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
-          <span className="text-left">Wyszukaj</span>
+          <span className="text-left">{isEn ? "Search" : "Wyszukaj"}</span>
         </button>
       </div>
 
@@ -625,6 +649,7 @@ export default function Home({
             value={displayedCountrySlug}
             onChange={handleCountryChange}
             className="max-w-[240px]"
+            locale={locale}
           />
         </div>
 
@@ -637,6 +662,7 @@ export default function Home({
               countrySlug={selectedCountry.slug}
               value={filters.locations}
               onChange={(val: LocationItem[]) => updateFilter("locations", val)}
+              locale={locale}
             />
           </div>
 
@@ -644,9 +670,10 @@ export default function Home({
           <div className="h-full w-full border-[#e5dac7] px-4 lg:flex-1 lg:border-r">
             <MultiSelect
               options={types}
-              label="Zabudowa"
+              label={isEn ? "Property type" : "Zabudowa"}
               value={filters.type}
               onChange={(val) => updateFilter("type", val)}
+              locale={locale}
             />
           </div>
 
@@ -654,11 +681,12 @@ export default function Home({
           <div className="flex h-full w-full min-w-0 items-center border-[#e5dac7] px-4 lg:flex-[0.75] lg:border-r">
             <div className="w-full">
               <label className="mb-1 block text-xs font-semibold text-[#5f6b7a]">
-                Rynek
+                {isEn ? "Market" : "Rynek"}
               </label>
               <MarketSelect
                 value={filters.market}
                 onChange={(val) => updateFilter("market", val)}
+                locale={locale}
               />
             </div>
           </div>
@@ -667,9 +695,10 @@ export default function Home({
           <div className="h-full w-full border-[#e5dac7] px-4 lg:flex-[0.75] lg:border-r">
             <MultiSelect
               options={NUMBER_OPTIONS}
-              label="Sypilani"
+              label={isEn ? "Bedrooms" : "Sypilani"}
               value={filters.bedrooms}
               onChange={(val) => updateFilter("bedrooms", val)}
+              locale={locale}
             />
           </div>
 
@@ -677,9 +706,10 @@ export default function Home({
           <div className="h-full w-full border-[#e5dac7] px-4 lg:flex-[0.75] lg:border-r">
             <MultiSelect
               options={NUMBER_OPTIONS}
-              label="Łazienek"
+              label={isEn ? "Bathrooms" : "Łazienek"}
               value={filters.bathrooms}
               onChange={(val) => updateFilter("bathrooms", val)}
+              locale={locale}
             />
           </div>
 
@@ -688,14 +718,7 @@ export default function Home({
             <PriceSelect
               value={filters.price}
               onChange={(val: PriceRange) => updateFilter("price", val)}
-            />
-          </div>
-
-          {/* DYSTANS DO MORZA */}
-          <div className="h-full w-full border-[#e5dac7] lg:flex-[1.1] lg:border-r">
-            <DistanceToSeaRange
-              value={filters.distanceToSeaMax}
-              onChange={(val) => updateFilter("distanceToSeaMax", val)}
+              locale={locale}
             />
           </div>
 
@@ -731,10 +754,10 @@ export default function Home({
               <div className="sticky top-0 flex items-center justify-between border-b border-[#e5dac7] bg-[#f7f3ec] p-4">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#9b7a36]">
-                    Filtry
+                    {isEn ? "Filters" : "Filtry"}
                   </p>
                   <h2 className="text-xl font-semibold text-[#182334]">
-                    Wyszukaj
+                    {isEn ? "Search" : "Wyszukaj"}
                   </h2>
                 </div>
                 <button
@@ -750,6 +773,7 @@ export default function Home({
                   <CountrySelect
                     value={displayedCountrySlug}
                     onChange={handleCountryChange}
+                    locale={locale}
                   />
                 </div>
 
@@ -765,75 +789,73 @@ export default function Home({
                     onChange={(val: LocationItem[]) =>
                       updateFilter("locations", val)
                     }
+                    locale={locale}
                   />
                 </div>
 
                 {/* ZABUDOWA */}
                 <div className="relative">
                   <label className="mb-2 block text-sm font-semibold text-[#182334]">
-                    Zabudowa
+                    {isEn ? "Property type" : "Zabudowa"}
                   </label>
                   <MultiSelect
                     options={types}
-                    label="Zabudowa"
+                    label={isEn ? "Property type" : "Zabudowa"}
                     value={filters.type}
                     onChange={(val) => updateFilter("type", val)}
+                    locale={locale}
                   />
                 </div>
 
                 {/* RYNEK */}
                 <div className="relative">
                   <label className="mb-2 block text-sm font-semibold text-[#182334]">
-                    Rynek
+                    {isEn ? "Market" : "Rynek"}
                   </label>
                   <MarketSelect
                     value={filters.market}
                     onChange={(val) => updateFilter("market", val)}
+                    locale={locale}
                   />
                 </div>
 
                 {/* SYPIALNIE */}
                 <div className="relative">
                   <label className="mb-2 block text-sm font-semibold text-[#182334]">
-                    Sypialnie
+                    {isEn ? "Bedrooms" : "Sypialnie"}
                   </label>
                   <MultiSelect
                     options={NUMBER_OPTIONS}
-                    label="Sypilani"
+                    label={isEn ? "Bedrooms" : "Sypilani"}
                     value={filters.bedrooms}
                     onChange={(val) => updateFilter("bedrooms", val)}
+                    locale={locale}
                   />
                 </div>
 
                 {/* ŁAZIENKI */}
                 <div className="relative">
                   <label className="mb-2 block text-sm font-semibold text-[#182334]">
-                    Łazienki
+                    {isEn ? "Bathrooms" : "Łazienki"}
                   </label>
                   <MultiSelect
                     options={NUMBER_OPTIONS}
-                    label="Łazienek"
+                    label={isEn ? "Bathrooms" : "Łazienek"}
                     value={filters.bathrooms}
                     onChange={(val) => updateFilter("bathrooms", val)}
+                    locale={locale}
                   />
                 </div>
 
                 {/* CENA */}
                 <div className="relative">
                   <label className="mb-2 block text-sm font-semibold text-[#182334]">
-                    Cena
+                    {isEn ? "Price" : "Cena"}
                   </label>
                   <PriceSelect
                     value={filters.price}
                     onChange={(val: PriceRange) => updateFilter("price", val)}
-                  />
-                </div>
-
-                {/* DYSTANS DO MORZA */}
-                <div className="relative">
-                  <DistanceToSeaRange
-                    value={filters.distanceToSeaMax}
-                    onChange={(val) => updateFilter("distanceToSeaMax", val)}
+                    locale={locale}
                   />
                 </div>
 
@@ -845,7 +867,7 @@ export default function Home({
                   }}
                   className="mt-6 w-full border border-[#b8954c] bg-[#d6b36a] py-3 font-semibold uppercase tracking-[0.12em] text-[#182334] transition-colors hover:border-[#182334] hover:bg-[#182334] hover:text-white"
                 >
-                  Szukaj
+                  {isEn ? "Search" : "Szukaj"}
                 </button>
               </div>
             </div>

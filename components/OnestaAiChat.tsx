@@ -18,14 +18,24 @@ const hiddenPathPrefixes = [
   "/signup",
 ];
 
-const initialMessages: Message[] = [
-  {
-    id: "welcome",
-    role: "assistant",
-    content:
-      "Cześć, jestem asystentem Onesta. Mogę pomóc porównać kraje, doprecyzować potrzeby albo wskazać, gdzie szukać ofert.",
-  },
-];
+const initialMessages = {
+  pl: [
+    {
+      id: "welcome",
+      role: "assistant",
+      content:
+        "Cześć, jestem asystentem Onesta. Mogę pomóc porównać kraje, doprecyzować potrzeby albo wskazać, gdzie szukać ofert.",
+    },
+  ] as Message[],
+  en: [
+    {
+      id: "welcome",
+      role: "assistant",
+      content:
+        "Hi, I am the Onesta assistant. I can help compare countries, clarify your needs or point you to the right property offers.",
+    },
+  ] as Message[],
+};
 
 function createMessage(role: Message["role"], content: string): Message {
   return {
@@ -37,8 +47,11 @@ function createMessage(role: Message["role"], content: string): Message {
 
 export default function OnestaAiChat() {
   const router = useRouter();
+  const isEn = router.pathname.startsWith("/en");
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [messages, setMessages] = useState<Message[]>(
+    initialMessages[isEn ? "en" : "pl"],
+  );
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -97,7 +110,9 @@ export default function OnestaAiChat() {
         ...currentMessages,
         createMessage(
           "assistant",
-          "Nie udało mi się teraz odpowiedzieć. Spróbuj ponownie za chwilę albo skontaktuj się bezpośrednio z doradcą Onesty.",
+          isEn
+            ? "I could not respond right now. Please try again shortly or contact an Onesta advisor directly."
+            : "Nie udało mi się teraz odpowiedzieć. Spróbuj ponownie za chwilę albo skontaktuj się bezpośrednio z doradcą Onesty.",
         ),
       ]);
     } finally {
@@ -116,12 +131,14 @@ export default function OnestaAiChat() {
                 Onesta AI
               </p>
               <p className="text-xs font-medium text-[#5f6b7a]">
-                Asystent nieruchomości za granicą
+                {isEn
+                  ? "Overseas property assistant"
+                  : "Asystent nieruchomości za granicą"}
               </p>
             </div>
             <button
               type="button"
-              aria-label="Zamknij czat"
+              aria-label={isEn ? "Close chat" : "Zamknij czat"}
               onClick={() => setOpen(false)}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e5dac7] bg-[#fbf8f2] text-[#182334] transition hover:border-[#b8954c]"
             >
@@ -152,7 +169,7 @@ export default function OnestaAiChat() {
               <div className="flex justify-start">
                 <div className="flex items-center gap-2 rounded-2xl border border-[#e8ddca] bg-white px-4 py-3 text-sm text-[#5f6b7a]">
                   <span className="h-2 w-2 animate-pulse rounded-full bg-[#b8954c]" />
-                  Piszę odpowiedź...
+                  {isEn ? "Writing an answer..." : "Piszę odpowiedź..."}
                 </div>
               </div>
             )}
@@ -175,13 +192,17 @@ export default function OnestaAiChat() {
                 }}
                 maxLength={1200}
                 rows={2}
-                placeholder="Zapytaj o Hiszpanię, Cypr, budżet albo proces zakupu..."
+                placeholder={
+                  isEn
+                    ? "Ask about Spain, Cyprus, budget or the purchase process..."
+                    : "Zapytaj o Hiszpanię, Cypr, budżet albo proces zakupu..."
+                }
                 className="min-h-[48px] flex-1 resize-none rounded-2xl border border-[#d7c8ad] bg-[#fbf8f2] px-4 py-3 text-sm text-[#182334] outline-none transition placeholder:text-[#8a94a3] focus:border-[#b8954c] focus:bg-white"
               />
               <button
                 type="submit"
                 disabled={loading || input.trim().length === 0}
-                aria-label="Wyślij wiadomość"
+                aria-label={isEn ? "Send message" : "Wyślij wiadomość"}
                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#b8954c] text-white transition hover:bg-[#9b7a36] disabled:cursor-not-allowed disabled:bg-[#d7c8ad]"
               >
                 <IoSend className="h-5 w-5" />
@@ -193,12 +214,20 @@ export default function OnestaAiChat() {
 
       <button
         type="button"
-        aria-label={open ? "Zamknij czat Onesta AI" : "Otwórz czat Onesta AI"}
+        aria-label={
+          open
+            ? isEn
+              ? "Close Onesta AI chat"
+              : "Zamknij czat Onesta AI"
+            : isEn
+              ? "Open Onesta AI chat"
+              : "Otwórz czat Onesta AI"
+        }
         onClick={() => setOpen((current) => !current)}
         className="flex h-14 items-center gap-3 rounded-full border border-[#d7c8ad] bg-[#182334] px-5 text-sm font-extrabold uppercase tracking-[0.1em] text-white shadow-[0_16px_36px_rgba(24,35,52,0.26)] transition hover:border-[#b8954c] hover:bg-[#243449]"
       >
         <IoChatbubblesOutline className="h-6 w-6 text-[#d8b66a]" />
-        <span className="hidden sm:inline">Zapytaj AI</span>
+        <span className="hidden sm:inline">{isEn ? "Ask AI" : "Zapytaj AI"}</span>
       </button>
     </div>
   );

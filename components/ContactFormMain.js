@@ -5,9 +5,10 @@ import { useRouter } from "next/router";
 import { HomeMontserratSans as MontserratSans } from "../fonts/homeFonts";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
-export default function ContactFormMain() {
+export default function ContactFormMain({ locale = "pl" }) {
   const router = useRouter();
   const submitButton = useRef();
+  const isEn = locale === "en";
 
   const [dataForm, setDataForm] = useState({
     Name: "",
@@ -25,12 +26,16 @@ export default function ContactFormMain() {
     e.preventDefault();
 
     if (!consents.privacy) {
-      alert("Musisz zaakceptować politykę prywatności.");
+      alert(
+        isEn
+          ? "You must accept the privacy policy."
+          : "Musisz zaakceptować politykę prywatności.",
+      );
       return;
     }
 
     if (submitButton.current) {
-      submitButton.current.innerHTML = "Wysyłam...";
+      submitButton.current.innerHTML = isEn ? "Sending..." : "Wysyłam...";
       submitButton.current.style.backgroundColor = "#d6b36a";
       submitButton.current.disabled = true;
     }
@@ -67,12 +72,16 @@ export default function ContactFormMain() {
 
       if (submitButton.current) {
         submitButton.current.style.backgroundColor = "#15803d";
-        submitButton.current.innerHTML = "Wiadomość wysłana";
+        submitButton.current.innerHTML = isEn
+          ? "Message sent"
+          : "Wiadomość wysłana";
       }
     } catch (err) {
       console.error("Main contact form failed:", err);
       if (submitButton.current) {
-        submitButton.current.innerHTML = "Błąd, spróbuj ponownie";
+        submitButton.current.innerHTML = isEn
+          ? "Error, please try again"
+          : "Błąd, spróbuj ponownie";
         submitButton.current.disabled = false;
       }
     }
@@ -95,16 +104,22 @@ export default function ContactFormMain() {
               Onesta Group
             </p>
             <h3 className="mt-4 text-3xl font-semibold leading-tight">
-              Porozmawiajmy o bezpiecznym zakupie nieruchomości.
+              {isEn
+                ? "Let’s talk about a safe property purchase abroad."
+                : "Porozmawiajmy o bezpiecznym zakupie nieruchomości."}
             </h3>
             <div className="mt-10 space-y-7 text-sm leading-7 text-white/78">
               <div>
-                <p className="font-bold text-white">Biuro dla klientów</p>
+                <p className="font-bold text-white">
+                  {isEn ? "Client office" : "Biuro dla klientów"}
+                </p>
                 <p>45-865 Opole</p>
                 <p>ul. Niemodlińska 58a</p>
               </div>
               <div>
-                <p className="font-bold text-white">Siedziba firmy</p>
+                <p className="font-bold text-white">
+                  {isEn ? "Company registered office" : "Siedziba firmy"}
+                </p>
                 <p>Onesta Group sp. z o.o.</p>
                 <p>53-148 Wrocław, ul. Wolbromska 18/1b</p>
                 <p>NIP: 899 292 23 78</p>
@@ -126,10 +141,12 @@ export default function ContactFormMain() {
         <form className="bg-white p-6 md:p-8 lg:p-10" onSubmit={handleSubmit}>
           <div className="mb-8">
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#b8954c]">
-              Formularz kontaktowy
+              {isEn ? "Contact form" : "Formularz kontaktowy"}
             </p>
             <h3 className="mt-2 text-2xl font-bold text-[#182334] md:text-3xl">
-              Napisz, czego szukasz. Oddzwonimy z konkretną odpowiedzią.
+              {isEn
+                ? "Tell us what you are looking for. We will reply with specific guidance."
+                : "Napisz, czego szukasz. Oddzwonimy z konkretną odpowiedzią."}
             </h3>
           </div>
 
@@ -137,7 +154,7 @@ export default function ContactFormMain() {
             <input
               className={inputClass}
               type="text"
-              placeholder="Imię i nazwisko"
+              placeholder={isEn ? "Full name" : "Imię i nazwisko"}
               required
               onChange={(e) =>
                 setDataForm({ ...dataForm, Name: e.target.value })
@@ -147,7 +164,7 @@ export default function ContactFormMain() {
             <input
               className={inputClass}
               type="tel"
-              placeholder="Numer telefonu"
+              placeholder={isEn ? "Phone number" : "Numer telefonu"}
               required
               onChange={(e) =>
                 setDataForm({ ...dataForm, Phone: e.target.value })
@@ -157,7 +174,7 @@ export default function ContactFormMain() {
             <input
               className={`${inputClass} md:col-span-2`}
               type="email"
-              placeholder="Adres email"
+              placeholder={isEn ? "Email address" : "Adres email"}
               required
               onChange={(e) =>
                 setDataForm({ ...dataForm, Email: e.target.value })
@@ -166,7 +183,11 @@ export default function ContactFormMain() {
 
             <textarea
               className="min-h-[170px] w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] px-4 py-3 text-[#182334] outline-none transition placeholder:text-[#8a94a3] focus:border-[#b8954c] md:col-span-2"
-              placeholder="Opisz budżet, kraj, termin i cel zakupu"
+              placeholder={
+                isEn
+                  ? "Describe your budget, country, timing and purchase goal"
+                  : "Opisz budżet, kraj, termin i cel zakupu"
+              }
               onChange={(e) =>
                 setDataForm({ ...dataForm, Message: e.target.value })
               }
@@ -185,9 +206,9 @@ export default function ContactFormMain() {
                 }
               />
               <span>
-                Akceptuję{" "}
+                {isEn ? "I accept the " : "Akceptuję "}
                 <Link href="/polityka-prywatnosci" className="underline">
-                  politykę prywatności
+                  {isEn ? "privacy policy" : "politykę prywatności"}
                 </Link>
                 .
               </span>
@@ -203,10 +224,9 @@ export default function ContactFormMain() {
                 }
               />
               <span>
-                Wyrażam zgodę na przetwarzanie moich danych osobowych przez
-                Onesta Group Sp. z o.o. w celach marketingowych, w tym na
-                kontakt telefoniczny oraz mailowy w celu przedstawienia ofert
-                nieruchomości.
+                {isEn
+                  ? "I consent to the processing of my personal data by Onesta Group Sp. z o.o. for marketing purposes, including contact by phone and email to present property offers."
+                  : "Wyrażam zgodę na przetwarzanie moich danych osobowych przez Onesta Group Sp. z o.o. w celach marketingowych, w tym na kontakt telefoniczny oraz mailowy w celu przedstawienia ofert nieruchomości."}
               </span>
             </label>
           </div>
@@ -216,7 +236,7 @@ export default function ContactFormMain() {
             type="submit"
             className="mt-7 h-12 w-full rounded-md bg-[#182334] px-7 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#b8954c] md:w-auto"
           >
-            Wyślij wiadomość
+            {isEn ? "Send message" : "Wyślij wiadomość"}
           </button>
         </form>
       </div>

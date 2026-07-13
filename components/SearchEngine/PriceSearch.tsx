@@ -3,17 +3,19 @@ import { useState, useRef, useEffect } from "react";
 type Props = {
   value: { min: number; max: number };
   onChange: (val: { min: number; max: number }) => void;
+  locale?: "pl" | "en";
 };
 
-function formatPriceInput(num: number) {
-  return `${new Intl.NumberFormat("pl-PL", {
+function formatPriceInput(num: number, locale: "pl" | "en" = "pl") {
+  return `${new Intl.NumberFormat(locale === "en" ? "en-US" : "pl-PL", {
     maximumFractionDigits: 0,
   })
     .format(num)
     .replace(/\u00a0/g, " ")} €`;
 }
 
-export default function PriceSelect({ value, onChange }: Props) {
+export default function PriceSelect({ value, onChange, locale = "pl" }: Props) {
+  const isEn = locale === "en";
   const minLimit = 0;
   const maxLimit = 1500000;
   const minGap = 10000;
@@ -24,11 +26,11 @@ export default function PriceSelect({ value, onChange }: Props) {
     max: value.max >= 5000000 ? maxLimit : value.max,
   }));
   const [draft, setDraft] = useState(() => ({
-    min: formatPriceInput(value.min),
+    min: formatPriceInput(value.min, locale),
     max:
       value.max >= 5000000
-        ? `${formatPriceInput(maxLimit)} i więcej`
-        : formatPriceInput(value.max),
+        ? `${formatPriceInput(maxLimit, locale)} ${isEn ? "or more" : "i więcej"}`
+        : formatPriceInput(value.max, locale),
   }));
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -48,11 +50,11 @@ export default function PriceSelect({ value, onChange }: Props) {
 
   const syncDraft = (range: { min: number; max: number }) => {
     setDraft({
-      min: formatPriceInput(Math.round(range.min)),
+      min: formatPriceInput(Math.round(range.min), locale),
       max:
         range.max >= maxLimit
-          ? `${formatPriceInput(maxLimit)} i więcej`
-          : formatPriceInput(Math.round(range.max)),
+          ? `${formatPriceInput(maxLimit, locale)} ${isEn ? "or more" : "i więcej"}`
+          : formatPriceInput(Math.round(range.max), locale),
     });
   };
 
@@ -180,13 +182,13 @@ export default function PriceSelect({ value, onChange }: Props) {
         className="flex h-full w-full cursor-pointer flex-col justify-center bg-white px-3 transition hover:bg-[#fbf8f2]"
       >
         <label className="mb-1 text-xs font-semibold text-[#5f6b7a]">
-          Zakres cenowy
+          {isEn ? "Price range" : "Zakres cenowy"}
         </label>
         <div className="text-sm font-semibold text-[#182334]">
-          {formatPriceInput(value.min)} -{" "}
+          {formatPriceInput(value.min, locale)} -{" "}
           {value.max >= maxLimit
-            ? `${formatPriceInput(maxLimit)} i więcej`
-            : formatPriceInput(value.max)}
+            ? `${formatPriceInput(maxLimit, locale)} ${isEn ? "or more" : "i więcej"}`
+            : formatPriceInput(value.max, locale)}
         </div>
       </div>
 
@@ -195,10 +197,12 @@ export default function PriceSelect({ value, onChange }: Props) {
           <div className="flex flex-col gap-6">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
-                Zakres cenowy
+                {isEn ? "Price range" : "Zakres cenowy"}
               </p>
               <p className="mt-2 text-sm leading-6 text-[#5f6b7a]">
-                Przesuń zakres, aby zawęzić wyniki do budżetu zakupu.
+                {isEn
+                  ? "Adjust the range to narrow results to your purchase budget."
+                  : "Przesuń zakres, aby zawęzić wyniki do budżetu zakupu."}
               </p>
             </div>
 

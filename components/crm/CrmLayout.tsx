@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -31,10 +32,9 @@ function AddContactIcon() {
 function PipelineIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path d="M4 19V5" />
-      <path d="M4 19h16" />
-      <path d="m7 15 4-4 3 3 5-7" />
-      <path d="M15 7h4v4" />
+      <circle cx="12" cy="12" r="9" />
+      <path d="M15.4 8.4c-.8-.8-2-1.3-3.4-1.3-1.9 0-3.4 1-3.4 2.5 0 1.6 1.4 2.2 3.5 2.7 2.1.5 3.4 1.2 3.4 2.8 0 1.6-1.5 2.8-3.6 2.8-1.6 0-3-.6-3.9-1.6" />
+      <path d="M12 5.2v13.6" />
     </svg>
   );
 }
@@ -79,7 +79,9 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
       <main className="crmShell">
         <aside className="crmSidebar" aria-label="CRM">
           <div className="crmBrand">
-            <div className="crmBrandMark">O</div>
+            <div className="crmBrandMark">
+              <Image alt="One CRM" height={29} priority src="/oneCRMpng.png" width={41} />
+            </div>
             <div>
               <strong>Onesta CRM</strong>
               <span>Kontakty</span>
@@ -112,13 +114,20 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
 
           .crmBrandMark {
             align-items: center;
-            background: #216e63;
+            background: #ffffff;
             border-radius: 6px;
             display: flex;
-            font-weight: 800;
             height: 29px;
             justify-content: center;
-            width: 29px;
+            overflow: hidden;
+            padding: 2px;
+            width: 41px;
+          }
+
+          .crmBrandMark :global(img) {
+            height: 100%;
+            object-fit: contain;
+            width: 100%;
           }
 
           .crmBrand strong,
@@ -147,7 +156,9 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
     <main className="crmShell">
       <aside className="crmSidebar" aria-label="CRM">
         <div className="crmBrand">
-          <div className="crmBrandMark">O</div>
+          <div className="crmBrandMark">
+            <Image alt="One CRM" height={29} priority src="/oneCRMpng.png" width={41} />
+          </div>
           <div className="crmBrandText">
             <strong>Onesta CRM</strong>
             <span>Kontakty</span>
@@ -207,8 +218,7 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
           gap: 18px;
           max-height: 100vh;
           min-height: 100vh;
-          overflow-x: visible;
-          overflow-y: auto;
+          overflow: visible;
           padding: 13px 0;
           position: sticky;
           top: 0;
@@ -223,13 +233,20 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
 
         .crmBrandMark {
           align-items: center;
-          background: #216e63;
+          background: #ffffff;
           border-radius: 6px;
           display: flex;
-          font-weight: 800;
           height: 29px;
           justify-content: center;
-          width: 29px;
+          overflow: hidden;
+          padding: 2px;
+          width: 41px;
+        }
+
+        .crmBrandMark :global(img) {
+          height: 100%;
+          object-fit: contain;
+          width: 100%;
         }
 
         .crmBrandText {
@@ -304,6 +321,7 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
         }
 
         .crmLogout {
+          align-self: center;
           background: rgba(255, 255, 255, 0.06);
           border: 1px solid rgba(255, 255, 255, 0.12);
           color: #eef4f7;

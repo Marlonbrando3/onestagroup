@@ -5,10 +5,14 @@ import Team from "../../data/team.json";
 
 type OurTeamMainProps = {
   embedded?: boolean;
+  locale?: "pl" | "en";
 };
 
-export default function Ourteammain({ embedded = false }: OurTeamMainProps) {
-  const data = Team.map((i) => <Person key={i.id} data={i} />);
+export default function Ourteammain({
+  embedded = false,
+  locale = "pl",
+}: OurTeamMainProps) {
+  const data = Team.map((i) => <Person key={i.id} data={i} locale={locale} />);
 
   return (
     <div
@@ -20,7 +24,9 @@ export default function Ourteammain({ embedded = false }: OurTeamMainProps) {
     >
       <div className="w-full mb-9">
         <p className="text-center text-[38px] md:text-[34px] font-[500] tracking-[0.4px]">
-          Jesteśmy do Twojej dyspozycji
+          {locale === "en"
+            ? "We are here to support you"
+            : "Jesteśmy do Twojej dyspozycji"}
         </p>
       </div>
 

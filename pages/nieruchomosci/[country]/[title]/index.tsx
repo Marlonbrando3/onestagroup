@@ -15,10 +15,18 @@ import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Slider from "@/components/SliderInOfferPage/slider";
 import Gallery from "@/components/SliderInOfferPage/gallery";
 import ContactInFooterMobile from "@/components/SearchEngine/ContactInFooterMobile";
-import { typeDictionarySingular, validTitleOrEmpty } from "@/lib/titlesDictionary";
+import { validTitleOrEmpty } from "@/lib/titlesDictionary";
+import { propertyTypeLabel, SiteLocale } from "@/lib/i18n";
 
-export default function Property({ propertyFromSupabase }: any) {
+export default function Property({
+  propertyFromSupabase,
+  locale = "pl",
+}: {
+  propertyFromSupabase: any;
+  locale?: SiteLocale;
+}) {
   const router = useRouter();
+  const isEn = locale === "en";
 
   const [propertyData, setPropertyData] = useState<any[]>([]);
   // const [PropertyImages, setPropertyImages] = useState<any[]>([]);
@@ -34,8 +42,11 @@ export default function Property({ propertyFromSupabase }: any) {
   const { title } = router.query;
 
   const typeLabel =
-    typeDictionarySingular[propertyFromSupabase?.type] || "Nieruchomość";
-  const generatedTitle = `${typeLabel} w ${propertyFromSupabase?.town || "Hiszpanii"}`;
+    propertyTypeLabel[locale][propertyFromSupabase?.type] ||
+    (isEn ? "Property" : "Nieruchomość");
+  const generatedTitle = isEn
+    ? `${typeLabel} in ${propertyFromSupabase?.town || "Spain"}`
+    : `${typeLabel} w ${propertyFromSupabase?.town || "Hiszpanii"}`;
   const listingTitle =
     validTitleOrEmpty(propertyFromSupabase?.title) ||
     validTitleOrEmpty(propertyFromSupabase?.headerAdvertisement) ||
@@ -83,6 +94,14 @@ export default function Property({ propertyFromSupabase }: any) {
     <>
       <Head>
         <title>{listingTitle} | Onesta Group</title>
+        <meta
+          name="description"
+          content={
+            isEn
+              ? `${listingTitle}. View details, photos and contact Onesta Group about this overseas property.`
+              : `${listingTitle}. Sprawdź szczegóły oferty nieruchomości z Onesta Group.`
+          }
+        />
         <link rel="shortcut icon" href="/logotype.png" />
         <meta
           name="viewport"
@@ -132,7 +151,7 @@ export default function Property({ propertyFromSupabase }: any) {
             />
           </div>
         </div>
-        <Header />
+        <Header locale={locale} />
         {/* <MiniHomeViewOffer /> */}
         <div className="lg:w-full md:w-[95vw] w-full pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
           <div
@@ -172,6 +191,7 @@ export default function Property({ propertyFromSupabase }: any) {
           features={propertyFromSupabase.features}
           description={propertyFromSupabase.descriptions.pl}
           descriptionEN={propertyFromSupabase.descriptions.en}
+          locale={locale}
           bedrooms={propertyFromSupabase.beds}
           bathrooms={propertyFromSupabase.baths}
           distance={propertyData[0]?.distance}
@@ -181,8 +201,11 @@ export default function Property({ propertyFromSupabase }: any) {
           propertyPrice={propertyFromSupabase.price}
           propertType={propertyFromSupabase.type}
         />
-        <ContactInFooterMobile propertyRef={propertyFromSupabase.external_id} />
-        <Footer />
+        <ContactInFooterMobile
+          propertyRef={propertyFromSupabase.external_id}
+          locale={locale}
+        />
+        <Footer locale={locale} />
       </div>
     </>
   );
