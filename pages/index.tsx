@@ -15,6 +15,7 @@ import {
   HomeWorkSans as WorkSans,
 } from "../fonts/homeFonts";
 import Team from "../data/team.json";
+import NewsletterSignupForm from "@/components/NewsletterSignupForm";
 
 const Header = dynamic(() => import("../components/Header"), {
   loading: () => <div style={{ height: "80px" }} />,
@@ -301,6 +302,21 @@ export default function FirstView() {
                 </article>
               );
             })}
+          </div>
+        </section>
+
+        <section id="newsletter" className="border-y border-[#e5dac7] bg-[#efe8dc] py-20 md:py-24">
+          <div className="mx-auto grid w-11/12 max-w-7xl items-center gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#9b7a36]">Newsletter Onesta</p>
+              <h2 className={`${PlayfairSans.className} mt-4 text-4xl font-semibold leading-tight md:text-5xl`}>
+                Najważniejsze informacje bez informacyjnego szumu.
+              </h2>
+              <p className="mt-5 max-w-xl text-base leading-8 text-[#5f6b7a]">
+                Poradniki, formalności, analizy rynków i praktyczne wskazówki dla osób rozważających zakup nieruchomości za granicą.
+              </p>
+            </div>
+            <NewsletterSignupForm />
           </div>
         </section>
 

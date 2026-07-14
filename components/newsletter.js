@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useState, useRef } from "react";
 import { IoCheckmarkDone, IoClose } from "react-icons/io5";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
 export default function Newsletter() {
@@ -15,6 +16,12 @@ export default function Newsletter() {
   const newsletterConfirmation = useRef();
 
   const [newsletterWasClosed, setNewsletterWasClosed] = useState(false);
+  const [consentAccepted, setConsentAccepted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState(
+    "Wysłaliśmy wiadomość z linkiem potwierdzającym. Otwórz ją i dokończ zapis.",
+  );
 
   const handleForm = (e) => {
     const nameData = e.target.name;
@@ -30,24 +37,33 @@ export default function Newsletter() {
 
   const newNewsletter = async (e) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    setSubmitError("");
 
-    let results = await fetch("/api/newNewsletter", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name.current.value,
-        email: email.current.value,
-      }),
-    });
+    try {
+      const results = await fetch("/api/newNewsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.current.value,
+          email: email.current.value,
+          consentAccepted,
+          sourceUrl: window.location.href,
+        }),
+      });
 
-    const resultStatus = await results.json();
-
-    if (resultStatus.status === 200) {
+      const result = await results.json();
+      if (!results.ok) throw new Error(result.error || "Nie udało się rozpocząć zapisu.");
       trackGoogleAdsContactConversion();
+      setConfirmationMessage(result.message || "Sprawdź skrzynkę e-mail i potwierdź zapis.");
       newsletterConfirmation.current.style.display = "flex";
-    } else {
+    } catch (error) {
+      setSubmitError(error?.message || "Nie udało się rozpocząć zapisu.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -115,10 +131,10 @@ export default function Newsletter() {
         >
           <IoCheckmarkDone className="h-16 w-16 text-[#d8b66a]" />
           <p className="mt-4 text-2xl font-semibold text-white">
-            Dziękujemy za zapis.
+            Sprawdź swoją skrzynkę
           </p>
           <p className="mt-3 max-w-sm text-sm leading-6 text-white/72">
-            Od teraz będziemy wysyłać Ci wybrane materiały i aktualności z rynku nieruchomości za granicą.
+            {confirmationMessage}
           </p>
           <button
             type="button"
@@ -186,6 +202,8 @@ export default function Newsletter() {
             <input
               ref={email}
               name="email"
+              type="email"
+              autoComplete="email"
               onChange={handleForm}
               className="h-12 border border-[#d7c8ad] bg-[#fbf8f2] px-4 text-[#182334] outline-none transition placeholder:text-[#8a94a3] focus:border-[#b8954c] focus:bg-white"
               placeholder="Adres e-mail"
@@ -204,17 +222,32 @@ export default function Newsletter() {
           <label className="mb-5 flex cursor-pointer items-start gap-3 text-[13px] leading-5 text-[#5f6b7a]">
             <input
               type="checkbox"
+              checked={consentAccepted}
+              onChange={(event) => setConsentAccepted(event.target.checked)}
               className="mt-1 h-5 w-5 shrink-0 cursor-pointer accent-[#b8954c]"
               required
-              placeholder="Numer telefonu (opcjonalnie)"
             ></input>
             <span>
-              Akceptuję politykę prywatności i zgadzam się na otrzymywanie newslettera.
+              Wyrażam zgodę na otrzymywanie od Onesta Group Sp. z o.o. newslettera oraz informacji
+              handlowych i marketingowych drogą elektroniczną na podany adres e-mail. Wiem, że zgodę
+              mogę wycofać w każdej chwili. Zapoznałem/am się z{" "}
+              <Link href="/polityka-prywatnosci" className="underline" target="_blank">
+                polityką prywatności
+              </Link>
+              .
             </span>
           </label>
+          {submitError ? (
+            <p className="mb-4 border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              {submitError}
+            </p>
+          ) : null}
           <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
-            <button className="h-12 bg-[#182334] px-5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#b8954c]">
-              Zapisz mnie
+            <button
+              disabled={submitting}
+              className="h-12 bg-[#182334] px-5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#b8954c] disabled:cursor-wait disabled:opacity-60"
+            >
+              {submitting ? "Wysyłanie…" : "Zapisz mnie"}
             </button>
             <button
               type="button"

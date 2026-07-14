@@ -45,9 +45,10 @@ export default function Header({
         { label: "About us", href: paths.about },
         { label: "Investor trip", href: paths.investorTrip },
       ]
-    : [
+      : [
         { label: "O nas", href: "/aboutus" },
         { label: "Blog", href: "/blog" },
+        { label: "Newsletter", href: "/newsletter" },
         { label: "Pobyt inwestorski", href: paths.investorTrip },
       ];
 

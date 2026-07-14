@@ -58,7 +58,7 @@ export default function Footer({ locale = "pl" }: { locale?: SiteLocale }) {
         { label: "Properties in Spain", href: "/en/properties/hiszpania" },
         { label: "Properties in Cyprus", href: "/en/properties/cypr" },
       ]
-    : menuItems;
+    : [...menuItems, { label: "Newsletter", href: "/newsletter" }];
 
   return (
     <footer

@@ -3,10 +3,10 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { canAccessCrm } from "./users";
+import { canAccessCrm, isCrmAdmin } from "./users";
 
 type CrmLayoutProps = {
-  active: "contacts" | "add" | "pipeline";
+  active: "contacts" | "add" | "pipeline" | "mailing";
   children: ReactNode;
 };
 
@@ -39,6 +39,15 @@ function PipelineIcon() {
   );
 }
 
+function MailingIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M4 7l8 6 8-6" />
+    </svg>
+  );
+}
+
 function LogoutIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -52,6 +61,7 @@ function LogoutIcon() {
 export default function CrmLayout({ active, children }: CrmLayoutProps) {
   const router = useRouter();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -65,9 +75,15 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
         });
         return;
       }
+      const admin = isCrmAdmin(data.user.email);
+      if (active === "mailing" && !admin) {
+        router.push("/crm");
+        return;
+      }
+      setIsAdmin(admin);
       setIsCheckingAuth(false);
     });
-  }, [router]);
+  }, [active, router]);
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -192,6 +208,17 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
             <PipelineIcon />
             <span className="crmTooltip">Lejek</span>
           </Link>
+          {isAdmin ? (
+            <Link
+              aria-label="Mailing"
+              className={`crmNavItem ${active === "mailing" ? "active" : ""}`}
+              href="/crm/mailing"
+              title="Mailing"
+            >
+              <MailingIcon />
+              <span className="crmTooltip">Mailing</span>
+            </Link>
+          ) : null}
         </nav>
         <button aria-label="Wyloguj" className="crmLogout" type="button" onClick={handleLogout} title="Wyloguj">
           <LogoutIcon />

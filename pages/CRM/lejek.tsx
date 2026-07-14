@@ -178,7 +178,11 @@ export default function CRMPipelinePage() {
     useState<CrmPipeline | null>(null);
   const [deletePipelineCountdown, setDeletePipelineCountdown] = useState(0);
   const [isDeletingPipeline, setIsDeletingPipeline] = useState(false);
+  const [contactSearchQuery, setContactSearchQuery] = useState("");
+  const [isContactSearchOpen, setIsContactSearchOpen] = useState(false);
+  const [highlightedContactIndex, setHighlightedContactIndex] = useState(0);
   const didDrag = useRef(false);
+  const contactSearchRef = useRef<HTMLDivElement>(null);
   const currentCrmUser = getCrmUser(currentUserEmail);
 
   const activePipeline =
@@ -212,6 +216,20 @@ export default function CRMPipelinePage() {
       contacts: stageContacts,
     };
   });
+
+  const suggestedContacts = useMemo(() => {
+    const normalizedQuery = contactSearchQuery.trim().toLocaleLowerCase("pl");
+    const matchingContacts = normalizedQuery
+      ? contacts.filter((contact) =>
+          [contact.name, contact.email, contact.phone]
+            .join(" ")
+            .toLocaleLowerCase("pl")
+            .includes(normalizedQuery),
+        )
+      : contacts;
+
+    return matchingContacts.slice(0, 8);
+  }, [contactSearchQuery, contacts]);
 
   const oldestActivityByContactId = useMemo(() => {
     const grouped = new Map<string, CrmActivity[]>();
@@ -252,6 +270,32 @@ export default function CRMPipelinePage() {
       ignore = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!isContactSearchOpen) return;
+
+    function closeContactSearchOnOutsideClick(event: PointerEvent) {
+      if (
+        event.target instanceof Node &&
+        !contactSearchRef.current?.contains(event.target)
+      ) {
+        setIsContactSearchOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", closeContactSearchOnOutsideClick);
+    return () =>
+      document.removeEventListener(
+        "pointerdown",
+        closeContactSearchOnOutsideClick,
+      );
+  }, [isContactSearchOpen]);
+
+  useEffect(() => {
+    setContactSearchQuery("");
+    setIsContactSearchOpen(false);
+    setHighlightedContactIndex(0);
+  }, [selectedOwner, selectedPipelineId]);
 
   useEffect(() => {
     let ignore = false;
@@ -440,6 +484,12 @@ export default function CRMPipelinePage() {
       event.preventDefault();
       return;
     }
+    router.push(`/crm/kontakt/${contactId}`);
+  }
+
+  function openSearchedContact(contactId: string) {
+    setIsContactSearchOpen(false);
+    setContactSearchQuery("");
     router.push(`/crm/kontakt/${contactId}`);
   }
 
@@ -958,6 +1008,98 @@ export default function CRMPipelinePage() {
           >
             Szansa sprzedaży
           </button>
+          <div className="crmContactSearch" ref={contactSearchRef}>
+            <span aria-hidden="true" className="crmContactSearchIcon" />
+            <input
+              aria-autocomplete="list"
+              aria-controls="crm-contact-suggestions"
+              aria-expanded={isContactSearchOpen}
+              aria-label="Szukaj klienta"
+              autoComplete="off"
+              placeholder="Szukaj klienta..."
+              role="combobox"
+              value={contactSearchQuery}
+              onChange={(event) => {
+                setContactSearchQuery(event.target.value);
+                setHighlightedContactIndex(0);
+                setIsContactSearchOpen(true);
+              }}
+              onFocus={() => setIsContactSearchOpen(true)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setIsContactSearchOpen(false);
+                  return;
+                }
+                if (event.key === "ArrowDown") {
+                  event.preventDefault();
+                  setIsContactSearchOpen(true);
+                  setHighlightedContactIndex((current) =>
+                    Math.min(
+                      current + 1,
+                      Math.max(suggestedContacts.length - 1, 0),
+                    ),
+                  );
+                  return;
+                }
+                if (event.key === "ArrowUp") {
+                  event.preventDefault();
+                  setHighlightedContactIndex((current) =>
+                    Math.max(current - 1, 0),
+                  );
+                  return;
+                }
+                if (event.key === "Enter" && suggestedContacts.length) {
+                  event.preventDefault();
+                  openSearchedContact(
+                    suggestedContacts[highlightedContactIndex]?.id ||
+                      suggestedContacts[0].id,
+                  );
+                }
+              }}
+            />
+            {isContactSearchOpen ? (
+              <div
+                className="crmContactSuggestions"
+                id="crm-contact-suggestions"
+                role="listbox"
+              >
+                {isContactsLoading ? (
+                  <p className="crmContactSearchState">Wczytywanie klientów...</p>
+                ) : suggestedContacts.length ? (
+                  suggestedContacts.map((contact, index) => (
+                    <button
+                      aria-selected={index === highlightedContactIndex}
+                      className={
+                        index === highlightedContactIndex ? "highlighted" : ""
+                      }
+                      key={contact.id}
+                      role="option"
+                      type="button"
+                      onMouseEnter={() => setHighlightedContactIndex(index)}
+                      onClick={() => openSearchedContact(contact.id)}
+                    >
+                      <span className="crmContactSuggestionAvatar" aria-hidden="true">
+                        {contact.name.trim().slice(0, 1).toUpperCase() || "?"}
+                      </span>
+                      <span className="crmContactSuggestionText">
+                        <strong>{contact.name || "Klient bez nazwy"}</strong>
+                        <small>
+                          {contact.phone || contact.email || "Brak danych kontaktowych"}
+                        </small>
+                      </span>
+                      <span className="crmContactSuggestionStatus">
+                        {contact.status}
+                      </span>
+                    </button>
+                  ))
+                ) : (
+                  <p className="crmContactSearchState">
+                    Brak klientów pasujących do wyszukiwania.
+                  </p>
+                )}
+              </div>
+            ) : null}
+          </div>
           {canEditActivePipeline ? (
             <>
               <button
@@ -1866,6 +2008,144 @@ export default function CRMPipelinePage() {
           cursor: not-allowed;
           font-weight: 800;
           padding-right: 10px;
+        }
+
+        .crmContactSearch {
+          margin-left: auto;
+          max-width: 360px;
+          min-width: 250px;
+          position: relative;
+          width: min(32vw, 360px);
+          z-index: 40;
+        }
+
+        .crmPipelineTopbar .crmContactSearch input {
+          min-height: 34px;
+          min-width: 0;
+          outline: 0;
+          padding: 7px 12px 7px 34px;
+          width: 100%;
+        }
+
+        .crmPipelineTopbar .crmContactSearch input:focus {
+          border-color: #216e63;
+          box-shadow: 0 0 0 3px rgba(33, 110, 99, 0.12);
+        }
+
+        .crmContactSearchIcon {
+          border: 2px solid #667085;
+          border-radius: 999px;
+          height: 11px;
+          left: 12px;
+          pointer-events: none;
+          position: absolute;
+          top: 10px;
+          width: 11px;
+          z-index: 1;
+        }
+
+        .crmContactSearchIcon::after {
+          background: #667085;
+          content: "";
+          height: 2px;
+          left: 8px;
+          position: absolute;
+          top: 8px;
+          transform: rotate(45deg);
+          transform-origin: left center;
+          width: 6px;
+        }
+
+        .crmContactSuggestions {
+          background: #ffffff;
+          border: 1px solid #d5d9df;
+          border-radius: 8px;
+          box-shadow: 0 16px 36px rgba(21, 32, 43, 0.16);
+          left: 0;
+          margin-top: 6px;
+          max-height: 370px;
+          overflow-y: auto;
+          padding: 5px;
+          position: absolute;
+          right: 0;
+          top: 100%;
+        }
+
+        .crmContactSuggestions button {
+          align-items: center;
+          background: transparent;
+          border: 0;
+          border-radius: 6px;
+          color: #17202a;
+          cursor: pointer;
+          display: grid;
+          font: inherit;
+          gap: 9px;
+          grid-template-columns: 32px minmax(0, 1fr) auto;
+          padding: 8px;
+          text-align: left;
+          width: 100%;
+        }
+
+        .crmContactSuggestions button:hover,
+        .crmContactSuggestions button.highlighted {
+          background: #edf5f3;
+        }
+
+        .crmContactSuggestionAvatar {
+          align-items: center;
+          background: #dcebe7;
+          border-radius: 999px;
+          color: #216e63;
+          display: flex;
+          font-size: 12px;
+          font-weight: 900;
+          height: 32px;
+          justify-content: center;
+          width: 32px;
+        }
+
+        .crmContactSuggestionText {
+          display: grid;
+          gap: 2px;
+          min-width: 0;
+        }
+
+        .crmContactSuggestionText strong,
+        .crmContactSuggestionText small {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .crmContactSuggestionText strong {
+          font-size: 12px;
+        }
+
+        .crmContactSuggestionText small {
+          color: #667085;
+          font-size: 10px;
+        }
+
+        .crmContactSuggestionStatus {
+          background: #eef2f6;
+          border-radius: 999px;
+          color: #475467;
+          font-size: 9px;
+          font-weight: 800;
+          max-width: 110px;
+          overflow: hidden;
+          padding: 4px 7px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .crmContactSearchState {
+          color: #667085;
+          font-size: 11px;
+          margin: 0;
+          padding: 12px;
+          text-align: center;
         }
 
         .crmSalesChanceButton,
@@ -3123,10 +3403,17 @@ export default function CRMPipelinePage() {
 
           .crmPipelineTopbar label,
           .crmPipelineTopbar select,
+          .crmContactSearch,
           .crmSalesChanceButton,
           .crmEditPipelineButton,
           .crmDeletePipelineButton {
             width: 100%;
+          }
+
+          .crmContactSearch {
+            margin-left: 0;
+            max-width: none;
+            min-width: 0;
           }
 
           .crmPipelineContactColumns {

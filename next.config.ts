@@ -21,6 +21,10 @@ const nextConfig: NextConfig = {
         destination: "/CRM/lejek",
       },
       {
+        source: "/crm/mailing",
+        destination: "/CRM/mailing",
+      },
+      {
         source: "/crm/kontakt/:id",
         destination: "/CRM/kontakt/:id",
       },
