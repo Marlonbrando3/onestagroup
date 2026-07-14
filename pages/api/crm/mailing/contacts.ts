@@ -10,10 +10,20 @@ import {
   getRequestIp,
   getRequestUserAgent,
   normalizeNewsletterEmail,
+  recordNewsletterEvent,
   withdrawNewsletterSubscription,
 } from "@/lib/newsletterDoubleOptIn";
 
-const allowedStatuses: MarketingEmailStatus[] = ["unsubscribed"];
+const allowedStatuses: MarketingEmailStatus[] = ["unsubscribed", "refused"];
+
+const refusalChannels = new Set(["phone", "email", "sms", "in_person", "other"]);
+const refusalChannelLabels: Record<string, string> = {
+  phone: "rozmowa telefoniczna",
+  email: "wiadomość e-mail",
+  sms: "SMS / komunikator",
+  in_person: "rozmowa osobista",
+  other: "inny sposób",
+};
 
 function mapContact(row: any, subscription?: any, pipelineName?: string) {
   const ownerEmail = String(row.pipeline_owner || "").trim().toLowerCase();
@@ -101,11 +111,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ).slice(0, 10000);
     if (ids.length !== 1 || !allowedStatuses.includes(status)) {
       return res.status(400).json({
-        error: "Wycofanie zgody jest możliwe wyłącznie dla jednego, wskazanego kontaktu.",
+        error: "Zmiana statusu jest możliwa wyłącznie dla jednego, wskazanego kontaktu.",
       });
     }
 
-    const confirmationEmail = normalizeNewsletterEmail(req.body?.confirmationEmail);
     const { data: contact, error: contactError } = await supabaseServer
       .from("crm_contacts")
       .select(
@@ -115,40 +124,127 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .single();
     if (contactError) return handleMailingDatabaseError(res, contactError);
     const contactEmail = normalizeNewsletterEmail(contact.email);
-    if (!confirmationEmail || confirmationEmail !== contactEmail) {
-      return res.status(400).json({
-        error: "Wpisany adres e-mail nie jest identyczny z adresem wybranego kontaktu.",
+
+    if (status === "refused") {
+      const refusalChannel = String(req.body?.refusalChannel || "").trim();
+      const refusalNote = String(req.body?.refusalNote || "").trim().slice(0, 1000);
+      if (!refusalChannels.has(refusalChannel)) {
+        return res.status(400).json({ error: "Wybierz sposób, w jaki klient przekazał odmowę." });
+      }
+
+      const refusedAt = new Date().toISOString();
+      let subscription: any = null;
+      if (contactEmail) {
+        const { data, error: subscriptionError } = await supabaseServer
+          .from("newsletter_subscriptions")
+          .select("id,email_normalized,status,token_hash")
+          .eq("email_normalized", contactEmail)
+          .maybeSingle();
+        if (subscriptionError) return handleMailingDatabaseError(res, subscriptionError);
+        subscription = data;
+
+        await recordNewsletterEvent({
+          subscriptionId: subscription?.id || null,
+          email: contactEmail,
+          eventType: "newsletter_refusal_recorded",
+          tokenHash: subscription?.token_hash || "",
+          requestMethod: "PATCH",
+          ip: getRequestIp(req),
+          userAgent: getRequestUserAgent(req),
+          occurredAt: refusedAt,
+          payload: {
+            crmContactId: contact.id,
+            recordedBy: admin.email,
+            channel: refusalChannel,
+            channelLabel: refusalChannelLabels[refusalChannel],
+            note: refusalNote,
+            previousCrmStatus: contact.marketing_email_status || "unknown",
+            previousSubscriptionStatus: subscription?.status || null,
+          },
+        });
+
+        if (subscription?.status === "confirmed") {
+          await withdrawNewsletterSubscription({
+            subscriptionId: subscription.id,
+            email: subscription.email_normalized,
+            source: `CRM — odmowa klienta (${refusalChannelLabels[refusalChannel]})`,
+            occurredAt: refusedAt,
+            requestMethod: "PATCH",
+            ip: getRequestIp(req),
+            userAgent: getRequestUserAgent(req),
+            payload: {
+              crmContactId: contact.id,
+              recordedBy: admin.email,
+              refusalChannel,
+              refusalNote,
+            },
+          });
+        } else if (subscription?.status === "pending") {
+          const { error: cancellationError } = await supabaseServer
+            .from("newsletter_subscriptions")
+            .update({
+              status: "unsubscribed",
+              unsubscribed_at: refusedAt,
+              token_expires_at: refusedAt,
+              updated_at: refusedAt,
+            })
+            .eq("id", subscription.id)
+            .eq("status", "pending");
+          if (cancellationError) return handleMailingDatabaseError(res, cancellationError);
+        }
+      }
+
+      const refusalSource = [
+        `CRM — odmowa klienta (${refusalChannelLabels[refusalChannel]})`,
+        `zapisana przez ${admin.email}`,
+        refusalNote ? `notatka: ${refusalNote}` : "",
+      ].filter(Boolean).join("; ");
+      const { error: refusalUpdateError } = await supabaseServer
+        .from("crm_contacts")
+        .update({
+          marketing_email_status: "refused",
+          marketing_unsubscribed_at: refusedAt,
+          marketing_consent_source: refusalSource,
+        })
+        .eq("id", contact.id);
+      if (refusalUpdateError) return handleMailingDatabaseError(res, refusalUpdateError);
+    } else {
+      const confirmationEmail = normalizeNewsletterEmail(req.body?.confirmationEmail);
+      if (!confirmationEmail || confirmationEmail !== contactEmail) {
+        return res.status(400).json({
+          error: "Wpisany adres e-mail nie jest identyczny z adresem wybranego kontaktu.",
+        });
+      }
+      if (contact.marketing_email_status !== "consented") {
+        return res.status(409).json({ error: "Ten kontakt nie ma aktywnej zgody do wycofania." });
+      }
+
+      const { data: subscription, error: subscriptionError } = await supabaseServer
+        .from("newsletter_subscriptions")
+        .select("id,email_normalized")
+        .eq("email_normalized", contactEmail)
+        .maybeSingle();
+      if (subscriptionError) return handleMailingDatabaseError(res, subscriptionError);
+      if (!subscription) {
+        return res.status(409).json({
+          error: "Brak powiązanego rejestru zgody. Wycofanie nie zostało wykonane.",
+        });
+      }
+
+      await withdrawNewsletterSubscription({
+        subscriptionId: subscription.id,
+        email: subscription.email_normalized,
+        source: `CRM — ręczne wycofanie przez ${admin.email}`,
+        requestMethod: "PATCH",
+        ip: getRequestIp(req),
+        userAgent: getRequestUserAgent(req),
+        payload: {
+          crmContactId: contact.id,
+          withdrawnBy: admin.email,
+          fullEmailReenteredAndMatched: true,
+        },
       });
     }
-    if (contact.marketing_email_status !== "consented") {
-      return res.status(409).json({ error: "Ten kontakt nie ma aktywnej zgody do wycofania." });
-    }
-
-    const { data: subscription, error: subscriptionError } = await supabaseServer
-      .from("newsletter_subscriptions")
-      .select("id,email_normalized")
-      .eq("email_normalized", contactEmail)
-      .maybeSingle();
-    if (subscriptionError) return handleMailingDatabaseError(res, subscriptionError);
-    if (!subscription) {
-      return res.status(409).json({
-        error: "Brak powiązanego rejestru zgody. Wycofanie nie zostało wykonane.",
-      });
-    }
-
-    await withdrawNewsletterSubscription({
-      subscriptionId: subscription.id,
-      email: subscription.email_normalized,
-      source: `CRM — ręczne wycofanie przez ${admin.email}`,
-      requestMethod: "PATCH",
-      ip: getRequestIp(req),
-      userAgent: getRequestUserAgent(req),
-      payload: {
-        crmContactId: contact.id,
-        withdrawnBy: admin.email,
-        fullEmailReenteredAndMatched: true,
-      },
-    });
 
     const { data: updated, error: updatedError } = await supabaseServer
       .from("crm_contacts")

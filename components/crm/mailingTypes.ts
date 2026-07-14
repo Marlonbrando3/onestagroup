@@ -1,4 +1,4 @@
-export type MarketingEmailStatus = "unknown" | "consented" | "unsubscribed" | "blocked";
+export type MarketingEmailStatus = "unknown" | "consented" | "unsubscribed" | "refused" | "blocked";
 
 export type MailingContact = {
   id: string;
