@@ -2,30 +2,6 @@
 const nextConfig = {
   compress: true,
   productionBrowserSourceMaps: false,
-  async rewrites() {
-    return [
-      {
-        source: "/crm",
-        destination: "/CRM",
-      },
-      {
-        source: "/crm/dodaj-kontakt",
-        destination: "/CRM/dodaj-kontakt",
-      },
-      {
-        source: "/crm/lejek",
-        destination: "/CRM/lejek",
-      },
-      {
-        source: "/crm/mailing",
-        destination: "/CRM/mailing",
-      },
-      {
-        source: "/crm/kontakt/:id",
-        destination: "/CRM/kontakt/:id",
-      },
-    ];
-  },
   images: {
     formats: ["image/avif", "image/webp"],
     localPatterns: [

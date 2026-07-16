@@ -612,7 +612,7 @@ export default function CrmMailingPage() {
             <span>Grupy odbiorców, zgody i kampanie w jednym miejscu.</span>
           </div>
           <div className="headerActions">
-            <Link href="/CRM/dodaj-kontakt">+ Dodaj kontakt</Link>
+            <Link href="/crm/dodaj-kontakt">+ Dodaj kontakt</Link>
             <div className="headerBadge">Resend ready</div>
           </div>
         </header>

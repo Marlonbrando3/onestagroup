@@ -94,6 +94,7 @@ export default function CRMContactCardPage() {
   const [editingActivityId, setEditingActivityId] = useState("");
   const [isSavingActivityEdit, setIsSavingActivityEdit] = useState(false);
   const [activityEditError, setActivityEditError] = useState("");
+  const [initializedContactId, setInitializedContactId] = useState("");
   const [activityEditForm, setActivityEditForm] = useState({
     type: "Zadzwoń" as CrmActivityType,
     title: "",
@@ -103,6 +104,11 @@ export default function CRMContactCardPage() {
     status: "planned" as CrmActivityStatus,
   });
   const isContactNoteDirty = contactNote !== savedContactNote;
+  const isPageLoading =
+    !router.isReady ||
+    isContactLoading ||
+    areActivitiesLoading ||
+    Boolean(contact && initializedContactId !== contact.id);
 
   useEffect(() => {
     if (!openActivityMenuId) return;
@@ -136,6 +142,7 @@ export default function CRMContactCardPage() {
     setIsContactNoteFocused(false);
     setContactNoteError("");
     setContactNoteMessage("");
+    setInitializedContactId(contact.id);
   }, [contact]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -300,19 +307,35 @@ export default function CRMContactCardPage() {
 
   return (
     <CrmLayout active="contacts">
-      <section className="crmContactPage">
-        <header className="crmContactHeader">
-          <div>
-            <p>Rekord klienta</p>
-            <h1>{contact?.name || "Kontakt"}</h1>
-            <span>{contact?.email || contact?.phone || "Ladowanie danych..."}</span>
+      {isPageLoading ? (
+        <section className="crmContactLoader" aria-busy="true" aria-live="polite">
+          <div className="crmContactLoaderContent">
+            <span className="crmContactLoaderSpinner" aria-hidden="true" />
+            <strong>Ładowanie kontaktu</strong>
+            <small>Pobieramy dane klienta i historię komunikacji…</small>
           </div>
-          {contact ? <strong>{crmCurrency.format(contact.maxBudget || contact.value)}</strong> : null}
-        </header>
+        </section>
+      ) : (
+        <section className="crmContactPage">
+        {contact ? (
+          <header className="crmContactHeader">
+            <div>
+              <p>Rekord klienta</p>
+              <h1>{contact.name}</h1>
+              <span>{contact.email || contact.phone || "Brak danych kontaktowych"}</span>
+            </div>
+            <strong>{crmCurrency.format(contact.maxBudget || contact.value)}</strong>
+          </header>
+        ) : null}
 
         {contactsError ? <p className="crmError">{contactsError}</p> : null}
         {activitiesError ? <p className="crmError">{activitiesError}</p> : null}
-        {isContactLoading ? <p className="crmMuted">Ladowanie kontaktu...</p> : null}
+        {!contact && !contactsError ? (
+          <div className="crmContactNotFound">
+            <strong>Nie znaleziono kontaktu</strong>
+            <span>Rekord nie istnieje albo został usunięty.</span>
+          </div>
+        ) : null}
 
         {contact ? (
           <div className="crmContactGrid">
@@ -708,6 +731,7 @@ export default function CRMContactCardPage() {
           </div>
         ) : null}
       </section>
+      )}
       {editingActivityId ? (
         <div className="crmModalBackdrop" role="presentation">
           <section aria-modal="true" className="crmActivityModal" role="dialog">
@@ -795,6 +819,61 @@ export default function CRMContactCardPage() {
         </div>
       ) : null}
       <style jsx>{`
+        .crmContactLoader {
+          align-items: center;
+          background: #f4f6f8;
+          display: flex;
+          justify-content: center;
+          min-height: calc(100vh - 28px);
+          padding: 40px 20px;
+        }
+        .crmContactLoaderContent {
+          align-items: center;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          text-align: center;
+        }
+        .crmContactLoaderContent strong {
+          color: #17202a;
+          font-size: 15px;
+        }
+        .crmContactLoaderContent small {
+          color: #667085;
+          font-size: 12px;
+        }
+        .crmContactLoaderSpinner {
+          animation: crmContactSpin 0.8s linear infinite;
+          border: 3px solid #cddbd8;
+          border-radius: 50%;
+          border-top-color: #216e63;
+          height: 42px;
+          margin-bottom: 5px;
+          width: 42px;
+        }
+        @keyframes crmContactSpin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        .crmContactNotFound {
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          justify-content: center;
+          min-height: 280px;
+          text-align: center;
+        }
+        .crmContactNotFound strong {
+          font-size: 18px;
+        }
+        .crmContactNotFound span {
+          color: #667085;
+        }
         .crmContactPage {
           display: grid;
           font-size: 13px;

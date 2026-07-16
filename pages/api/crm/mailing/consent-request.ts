@@ -8,10 +8,8 @@ import {
   getRequestIp,
   getRequestUserAgent,
   isNewsletterEmail,
-  isNewsletterTestRecipient,
   NEWSLETTER_CONSENT_TEXT,
   NEWSLETTER_CONSENT_VERSION,
-  NEWSLETTER_TEST_RECIPIENT,
   normalizeNewsletterEmail,
   recordNewsletterEvent,
   sha256,
@@ -54,14 +52,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     if (contact.marketing_email_status === "consented" && contact.marketing_consent_evidence_id) {
       return res.status(409).json({ error: "Ten kontakt ma już potwierdzoną zgodę." });
-    }
-
-    const publicSignupEnabled = process.env.NEWSLETTER_PUBLIC_SIGNUP_ENABLED === "true";
-    const testRecipient = normalizeNewsletterEmail(
-      process.env.NEWSLETTER_TEST_RECIPIENT || NEWSLETTER_TEST_RECIPIENT,
-    );
-    if (!publicSignupEnabled && !isNewsletterTestRecipient(email, testRecipient)) {
-      return res.status(403).json({ error: "W trybie testowym prośbę można wysłać tylko do adresu testowego." });
     }
 
     const { data: existing, error: existingError } = await supabaseServer
