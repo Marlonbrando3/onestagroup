@@ -41,7 +41,7 @@ export async function handler(event: any) {
 
   await upsertImportRun(runId, "metainmo", {
     status: "running",
-    message: "Metainmo: import działa w tle...",
+    message: "REDSP: import działa w tle...",
     progressPercent: 5,
   });
 
@@ -61,10 +61,10 @@ export async function handler(event: any) {
 
     if (finalStatusCode >= 400 || finalPayload?.error) {
       const errorMessage =
-        finalPayload?.error || finalPayload?.details || "Import Metainmo nie powiódł się";
+        finalPayload?.error || finalPayload?.details || "Import REDSP nie powiódł się";
       await upsertImportRun(runId, "metainmo", {
         status: "failed",
-        message: `Metainmo: błąd - ${errorMessage}`,
+        message: `REDSP: błąd - ${errorMessage}`,
         progressPercent: 100,
         result: finalPayload,
         error: String(errorMessage),
@@ -73,7 +73,7 @@ export async function handler(event: any) {
     } else {
       await upsertImportRun(runId, "metainmo", {
         status: "completed",
-        message: "Metainmo: import zakończony.",
+        message: "REDSP: import zakończony.",
         progressPercent: 100,
         processed: finalPayload?.total_saved ?? null,
         total: finalPayload?.total_after_dedupe ?? finalPayload?.total_xml ?? null,
@@ -82,10 +82,10 @@ export async function handler(event: any) {
       });
     }
   } catch (error: any) {
-    const errorMessage = error?.message || "Import Metainmo nie powiódł się";
+    const errorMessage = error?.message || "Import REDSP nie powiódł się";
     await upsertImportRun(runId, "metainmo", {
       status: "failed",
-      message: `Metainmo: błąd - ${errorMessage}`,
+      message: `REDSP: błąd - ${errorMessage}`,
       progressPercent: 100,
       error: errorMessage,
       completedAt: new Date().toISOString(),

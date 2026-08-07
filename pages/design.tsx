@@ -401,6 +401,13 @@ function getProvinceCoastLabel(province?: string | null) {
     Malaga: "Costa del Sol",
     Málaga: "Costa del Sol",
     Almería: "Costa de Almeria",
+    Almeria: "Costa de Almeria",
+    Cádiz: "Costa de la Luz",
+    Cadiz: "Costa de la Luz",
+    Castellón: "Costa del Azahar",
+    Castellon: "Costa del Azahar",
+    Granada: "Costa Tropical",
+    Valencia: "Costa de Valencia",
   };
 
   return province ? provinceCoasts[province] || province : "Hiszpania";

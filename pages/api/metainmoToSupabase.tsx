@@ -11,6 +11,8 @@ const METAINMO_WRITE_DELAY_MS = 0;
 const METAINMO_DELETE_CHUNK_SIZE = 200;
 const METAINMO_SELECT_CHUNK_SIZE = 200;
 const RETRY_DELAYS_MS = [1000, 2500, 5000, 10000, 15000];
+const METAINMO_XML_URL =
+  "https://xml.redsp.net/files/1127/9317amm45f/dom-hisz-kyero_v3.xml";
 let metainmoImportInProgress = false;
 
 const delay = (ms: number) =>
@@ -53,6 +55,66 @@ function toBoolean(value: unknown): boolean | null {
   if (!text) return null;
   if (["1", "true", "yes", "tak"].includes(text)) return true;
   if (["0", "false", "no", "nie"].includes(text)) return false;
+  return null;
+}
+
+function normalizeProvince(value: unknown): string | null {
+  const province = toText(value);
+  if (!province) return null;
+
+  const normalized = province
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  return normalized === "malaga" ? "Malaga" : province;
+}
+
+function decodeDescriptionText(value: string): string {
+  const decodedNumericEntities = value.replace(
+    /&#(?:x([\da-f]+)|(\d+));/gi,
+    (entity, hexValue, decimalValue) => {
+      const codePoint = Number.parseInt(hexValue ?? decimalValue, hexValue ? 16 : 10);
+      if (!Number.isFinite(codePoint)) return entity;
+
+      try {
+        return String.fromCodePoint(codePoint);
+      } catch {
+        return entity;
+      }
+    },
+  );
+
+  return decodedNumericEntities
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&quot;/gi, '"')
+    .replace(/&apos;/gi, "'")
+    .replace(/&amp;/gi, "&")
+    .replace(/\r\n?/g, "\n");
+}
+
+function normalizeDescriptions(value: unknown): unknown {
+  if (typeof value === "string") return decodeDescriptionText(value);
+  if (Array.isArray(value)) return value.map(normalizeDescriptions);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, item]) => [
+        key,
+        normalizeDescriptions(item),
+      ]),
+    );
+  }
+  return value;
+}
+
+function featureMeasurement(
+  features: string[],
+  pattern: RegExp,
+): number | null {
+  for (const feature of features) {
+    const match = feature.match(pattern);
+    if (match?.[1]) return toNumber(match[1]);
+  }
   return null;
 }
 
@@ -165,6 +227,82 @@ function buildRawPayload(property: any) {
     distance_airport: toText(property?.distance_airport),
     hospital_distance: toText(property?.hospital_distance),
     distance_beach: toText(property?.distance_beach),
+    location_detail: toText(property?.location_detail),
+    energy_rating: property?.energy_rating ?? null,
+  };
+}
+
+export function mapMetainmoProperty(property: any) {
+  const features = extractFeatures(property);
+  const distanceToSea =
+    toInteger(property.distance_beach) ??
+    toInteger(
+      featureMeasurement(
+        features,
+        /^Beach:\s*([\d.,]+)\s*Meters\b/i,
+      ),
+    );
+  const surfaceUsable =
+    toNumber(property.usable_living_area_m2) ??
+    featureMeasurement(
+      features,
+      /^Useable Build Space:\s*([\d.,]+)\s*Msq\.?\b/i,
+    );
+  const title =
+    toText(property?.name?.pl) ??
+    toText(property?.name?.en) ??
+    toText(property?.name) ??
+    null;
+
+  return {
+    source: "METAINMO",
+    external_id: buildMetainmoExternalId(property),
+    complex_id:
+      toText(property.complex_id) ??
+      toText(property.complex_url) ??
+      toText(property.complex) ??
+      null,
+
+    price: toNumber(property.price),
+    currency: toText(property.currency),
+    price_freq: toText(property.price_freq),
+    operation:
+      toText(property.price_freq) ??
+      (toText(property.type)?.toLowerCase() === "sale" ? "sale" : null),
+
+    part_ownership: toBoolean(property.part_ownership),
+    leasehold: toBoolean(property.leasehold),
+    new_build: true,
+
+    type: toText(property.type),
+    town: toText(property.town) ?? toText(property.city),
+    province: normalizeProvince(property.province ?? property.region),
+    country: toText(property.country) ?? "Spain",
+    ref: toText(property.ref),
+
+    surface_built: toNumber(property.surface_area?.built ?? property.surface_area),
+    surface_plot: toNumber(property.surface_area?.plot ?? property.plot_area),
+    surface_usable: surfaceUsable,
+
+    latitude: toNumber(property.location?.latitude ?? property.latitude),
+    longitude: toNumber(property.location?.longitude ?? property.longitude),
+
+    beds: toInteger(property.beds),
+    baths: toInteger(property.baths),
+    pool:
+      toBoolean(property.pool) ??
+      features.some((feature) => feature.toLowerCase().includes("pool")),
+
+    urls: normalizeUrlValue(property.url ?? {}),
+    descriptions: normalizeDescriptions(property.desc ?? {}),
+    features,
+    images: normalizeUrlValue(toArray(property.images?.image ?? property.images)),
+
+    date: toText(property.date) ?? toText(property.created),
+    updated_at: normalizeTimestamp(property.updated ?? property.date),
+    title,
+    distance_to_sea_m: distanceToSea,
+    raw_payload: buildRawPayload(property),
   };
 }
 
@@ -332,7 +470,7 @@ export default async function handler(
 
     if (metainmoImportInProgress) {
       return sendError(409, {
-        error: "Import Metainmo już trwa. Poczekaj na zakończenie obecnego procesu.",
+        error: "Import REDSP już trwa. Poczekaj na zakończenie obecnego procesu.",
       });
     }
 
@@ -345,8 +483,10 @@ export default async function handler(
     metainmoImportInProgress = true;
     lockAcquired = true;
 
-    sendProgress("download_xml", "Pobieram XML Metainmo...", 5);
-    const response = await fetch(process.env.METAINMO_XML_URL!);
+    sendProgress("download_xml", "Pobieram XML REDSP...", 5);
+    const response = await fetch(METAINMO_XML_URL, {
+      headers: { "cache-control": "no-cache" },
+    });
 
     if (!response.ok) {
       return sendError(500, { error: "Nie udało się pobrać XML" });
@@ -367,62 +507,7 @@ export default async function handler(
 
     sendProgress("map_records", "Mapuję rekordy z XML...", 28, properties.length, properties.length);
     // 🔹 mapowanie XML → struktura do Supabase
-    const mapped = properties.map((property: any) => {
-      const features = extractFeatures(property);
-      const title =
-        toText(property?.name?.pl) ??
-        toText(property?.name?.en) ??
-        toText(property?.name) ??
-        null;
-      const externalId = buildMetainmoExternalId(property);
-
-      return {
-        source: "METAINMO",
-        external_id: externalId,
-        complex_id:
-          toText(property.complex_id) ??
-          toText(property.complex_url) ??
-          toText(property.complex) ??
-          null,
-
-        price: toNumber(property.price),
-        currency: toText(property.currency),
-        price_freq: toText(property.price_freq),
-
-        part_ownership: toBoolean(property.part_ownership),
-        leasehold: toBoolean(property.leasehold),
-        new_build: true,
-
-        type: toText(property.type),
-        town: toText(property.town) ?? toText(property.city),
-        province: toText(property.province) ?? toText(property.region),
-        country: "Spain",
-        ref: toText(property.ref),
-
-        surface_built: toNumber(property.surface_area?.built ?? property.surface_area),
-        surface_plot: toNumber(property.surface_area?.plot ?? property.plot_area),
-
-        latitude: toNumber(property.location?.latitude ?? property.latitude),
-        longitude: toNumber(property.location?.longitude ?? property.longitude),
-
-        beds: toInteger(property.beds),
-        baths: toInteger(property.baths),
-        pool:
-          toBoolean(property.pool) ??
-          features.some((feature) => feature.toLowerCase().includes("pool")),
-
-        urls: normalizeUrlValue(property.url ?? {}),
-        descriptions: property.desc ?? {},
-        features,
-        images: normalizeUrlValue(toArray(property.images?.image ?? property.images)),
-
-        date: toText(property.date) ?? toText(property.created),
-        updated_at: normalizeTimestamp(property.updated ?? property.date),
-        title,
-        distance_to_sea_m: toInteger(property.distance_beach),
-        raw_payload: buildRawPayload(property),
-      };
-    });
+    const mapped = properties.map(mapMetainmoProperty);
 
     const {
       rows: uniqueMetainmoRows,

@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { FaRegUser } from "react-icons/fa";
 import { HomeMontserratSans as MontserratSans } from "../fonts/homeFonts";
 import Logotype from "../public/logotype_full_new.png";
 import { localePath, SiteLocale } from "@/lib/i18n";
@@ -244,6 +245,17 @@ export default function Header({
               {isEn ? "Contact" : "Kontakt"}
             </Link>
             <LanguageSwitcher />
+            <Link
+              href="/agentlogin"
+              aria-label={isEn ? "Agent account login" : "Logowanie do konta agenta"}
+              title={isEn ? "Agent account" : "Konto agenta"}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#b8954c] bg-white text-[18px] text-[#182334] shadow-sm transition hover:bg-[#182334] hover:text-white"
+            >
+              <FaRegUser aria-hidden="true" />
+              <span className="sr-only">
+                {isEn ? "Agent account" : "Konto agenta"}
+              </span>
+            </Link>
           </div>
 
           <button
@@ -316,6 +328,16 @@ export default function Header({
                 {item.label}
               </Link>
             ))}
+            <Link
+              href="/agentlogin"
+              onClick={closeMenu}
+              className="flex items-center gap-3 border-b border-[#e8ddca] py-4 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#27364a]"
+            >
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#b8954c] bg-white text-[#182334]">
+                <FaRegUser aria-hidden="true" />
+              </span>
+              {isEn ? "Agent account" : "Konto agenta"}
+            </Link>
             <LanguageSwitcher mobile />
 
             <div className="grid gap-3 pt-4 sm:grid-cols-2">

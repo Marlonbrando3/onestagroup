@@ -17,6 +17,7 @@ type PropertyProps = {
   property: any;
   onBrokenImages?: (externalId: string | number) => void;
   locale?: SiteLocale;
+  detailHrefOverride?: string;
 };
 
 function slugify(value: string): string {
@@ -57,6 +58,7 @@ export default function PropertyCard({
   property,
   onBrokenImages,
   locale = "pl",
+  detailHrefOverride,
 }: PropertyProps) {
   const [copiedShowed, setCopiedShowed] = useState(false);
   const isEn = locale === "en";
@@ -95,7 +97,7 @@ export default function PropertyCard({
     locale,
   );
 
-  const detailHref = {
+  const detailHref = detailHrefOverride || {
     pathname: paths.property(countrySlug, slug),
     query: { id: property?.external_id },
   };
@@ -103,8 +105,11 @@ export default function PropertyCard({
   const share = async () => {
     const shareUrl =
       typeof window !== "undefined"
-        ? `${window.location.origin}${paths.property(countrySlug, slug)}?id=${property?.external_id}`
-        : `${paths.property(countrySlug, slug)}?id=${property?.external_id}`;
+        ? detailHrefOverride
+          ? `${window.location.origin}${detailHrefOverride}`
+          : `${window.location.origin}${paths.property(countrySlug, slug)}?id=${property?.external_id}`
+        : detailHrefOverride ||
+          `${paths.property(countrySlug, slug)}?id=${property?.external_id}`;
 
     try {
       if (navigator.share) {

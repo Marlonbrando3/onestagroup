@@ -35,7 +35,7 @@ type MainTab = "dashboard" | "offers" | "add" | "imports";
 type AddTab = "data" | "images";
 type Market = "pierwotny" | "wtórny";
 type PropertyType = "apartament" | "bungalow" | "szeregówka" | "penthouse" | "dom";
-type SourceFilter = "all" | "Metainmo XML" | "Secondary XML" | "Onesta Base";
+type SourceFilter = "all" | "REDSP XML" | "Secondary XML" | "Onesta Base";
 
 type ListingForm = {
   country: string;
@@ -62,7 +62,7 @@ type EditableField = keyof ListingForm;
 type Listing = Omit<ListingForm, "distanceToSeaM" | "price"> & {
   id: string;
   ref: string;
-  source: "Metainmo XML" | "Secondary XML" | "Onesta Base";
+  source: "REDSP XML" | "Secondary XML" | "Onesta Base";
   distanceToSeaM: number | null;
   price: number | null;
   currency: string;
@@ -294,7 +294,7 @@ const initialListings: Listing[] = [
     title: "Apartament w nowej inwestycji",
     descriptionPl: "Jasny apartament blisko morza.",
     descriptionEn: "Bright apartment close to the sea.",
-    source: "Metainmo XML",
+    source: "REDSP XML",
     price: 299000,
     currency: "EUR",
     imageUrl: "/costablanca.webp",
@@ -621,20 +621,20 @@ function normalizePropertyType(value: unknown): PropertyType {
 function displaySourceFromProperty(source: unknown): Listing["source"] {
   if (source === "SECONDARY_XML") return "Secondary XML";
   if (source === "ONESTA_FTP") return "Onesta Base";
-  return "Metainmo XML";
+  return "REDSP XML";
 }
 
 function mapPropertyToListing(
   property: any,
-  source: "Metainmo XML" | "Secondary XML" | "Onesta Base" = displaySourceFromProperty(property?.source),
+  source: "REDSP XML" | "Secondary XML" | "Onesta Base" = displaySourceFromProperty(property?.source),
 ): Listing {
   const descriptionPl = textFromDescription(property.descriptions);
   const propertyImages = normalizeListingImages(property.images);
   const title =
     stripHtml(property.title || property.headerAdvertisement) ||
     `${normalizePropertyType(property.type)} ${property.town || ""}`.trim() ||
-    (source === "Metainmo XML"
-      ? "Oferta Metainmo"
+    (source === "REDSP XML"
+      ? "Oferta REDSP"
       : source === "Secondary XML"
         ? "Oferta Secondary MLS"
         : "Oferta Onesta Base");
@@ -905,7 +905,7 @@ export default function OnesariPage() {
   }, [importConfirmation]);
 
   useEffect(() => {
-    if (isCheckingAuth || mainTab !== "offers" || sourceFilter !== "Metainmo XML") return;
+    if (isCheckingAuth || mainTab !== "offers" || sourceFilter !== "REDSP XML") return;
 
     let isMounted = true;
     setIsMetainmoLoading(true);
@@ -924,7 +924,7 @@ export default function OnesariPage() {
         });
         const payload = await response.json();
         if (!response.ok) {
-          throw new Error(payload?.error || "Nie udało się pobrać Metainmo");
+          throw new Error(payload?.error || "Nie udało się pobrać REDSP");
         }
         return payload as { data: any[]; count: number };
       })
@@ -936,7 +936,7 @@ export default function OnesariPage() {
       })
       .catch((error: any) => {
         if (!isMounted) return;
-        setMetainmoError(error?.message || "Nie udało się pobrać Metainmo");
+        setMetainmoError(error?.message || "Nie udało się pobrać REDSP");
         setMetainmoListings([]);
         setMetainmoTotal(0);
       })
@@ -1042,7 +1042,7 @@ export default function OnesariPage() {
   const filteredListings = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     const baseListings =
-      sourceFilter === "Metainmo XML"
+      sourceFilter === "REDSP XML"
         ? metainmoListings
         : sourceFilter === "Secondary XML"
           ? secondaryListings
@@ -1053,7 +1053,7 @@ export default function OnesariPage() {
     return baseListings.filter((listing) => {
       if (
         sourceFilter !== "all" &&
-        sourceFilter !== "Metainmo XML" &&
+        sourceFilter !== "REDSP XML" &&
         sourceFilter !== "Secondary XML" &&
         sourceFilter !== "Onesta Base" &&
         listing.source !== sourceFilter
@@ -1114,7 +1114,7 @@ export default function OnesariPage() {
 
   const sourceFilters: Array<{ label: string; value: SourceFilter; count: number | null }> = [
     { label: "Wszystkie", value: "all", count: allSourcesCount },
-    { label: "Metainmo", value: "Metainmo XML", count: sourceCounts.metainmo },
+    { label: "REDSP", value: "REDSP XML", count: sourceCounts.metainmo },
     { label: "Secondary MLS", value: "Secondary XML", count: sourceCounts.secondary },
     { label: "Onesta Base", value: "Onesta Base", count: sourceCounts.onesta },
   ];
@@ -1122,7 +1122,7 @@ export default function OnesariPage() {
   const totalVisibleCount =
     sourceFilter === "all"
       ? (allTotal ?? allSourcesCount ?? 0)
-      : sourceFilter === "Metainmo XML"
+      : sourceFilter === "REDSP XML"
       ? (metainmoTotal ?? 0)
       : sourceFilter === "Secondary XML"
         ? (secondaryTotal ?? 0)
@@ -1132,8 +1132,8 @@ export default function OnesariPage() {
   const remoteSourceLabel =
     sourceFilter === "all"
       ? "Wszystkie"
-      : sourceFilter === "Metainmo XML"
-      ? "Metainmo"
+      : sourceFilter === "REDSP XML"
+      ? "REDSP"
       : sourceFilter === "Secondary XML"
         ? "Secondary MLS"
         : sourceFilter === "Onesta Base"
@@ -1142,7 +1142,7 @@ export default function OnesariPage() {
   const remoteSourcePage =
     sourceFilter === "all"
       ? allPage
-      : sourceFilter === "Metainmo XML"
+      : sourceFilter === "REDSP XML"
       ? metainmoPage
       : sourceFilter === "Secondary XML"
         ? secondaryPage
@@ -1150,7 +1150,7 @@ export default function OnesariPage() {
   const remoteSourceTotalPages =
     sourceFilter === "all"
       ? allTotalPages
-      : sourceFilter === "Metainmo XML"
+      : sourceFilter === "REDSP XML"
       ? metainmoTotalPages
       : sourceFilter === "Secondary XML"
         ? secondaryTotalPages
@@ -1158,7 +1158,7 @@ export default function OnesariPage() {
   const isRemoteSourceLoading =
     sourceFilter === "all"
       ? isAllLoading
-      : sourceFilter === "Metainmo XML"
+      : sourceFilter === "REDSP XML"
       ? isMetainmoLoading
       : sourceFilter === "Secondary XML"
         ? isSecondaryLoading
@@ -1166,7 +1166,7 @@ export default function OnesariPage() {
   const remoteSourceError =
     sourceFilter === "all"
       ? allError
-      : sourceFilter === "Metainmo XML"
+      : sourceFilter === "REDSP XML"
       ? metainmoError
       : sourceFilter === "Secondary XML"
         ? secondaryError
@@ -1898,7 +1898,7 @@ export default function OnesariPage() {
   function requestXmlImport(kind: ImportKind) {
     setImportConfirmation({
       kind,
-      label: kind === "metainmo" ? "Metainmo" : "Secondary MLS",
+      label: kind === "metainmo" ? "REDSP" : "Secondary MLS",
     });
   }
 
@@ -1973,7 +1973,7 @@ export default function OnesariPage() {
 
   function importSuccessMessage(kind: ImportKind, data: any) {
     return kind === "metainmo"
-      ? `Metainmo OK: XML ${data?.total_xml ?? 0}, zapisane ${
+      ? `REDSP OK: XML ${data?.total_xml ?? 0}, zapisane ${
           data?.total_saved ?? data?.total_after_dedupe ?? 0
         }, usunięte stare ${data?.total_deleted_stale ?? 0}.`
       : `Secondary MLS OK: XML ${data?.total_xml ?? 0}, zapisane ${
@@ -1982,7 +1982,7 @@ export default function OnesariPage() {
   }
 
   function markBackgroundImportQueued(kind: ImportKind, runId: string) {
-    const label = kind === "metainmo" ? "Metainmo" : "Secondary MLS";
+    const label = kind === "metainmo" ? "REDSP" : "Secondary MLS";
     const message = `${label}: import uruchomiony w tle na Netlify. Czekam na końcowy raport...`;
     setImportProgress((current) =>
       current && current.kind === kind
@@ -2103,12 +2103,12 @@ export default function OnesariPage() {
       stage: "start",
       message:
         kind === "metainmo"
-          ? "Uruchamiam import Metainmo..."
+          ? "Uruchamiam import REDSP..."
           : "Uruchamiam import Secondary MLS...",
     });
     setImportStatus(
       kind === "metainmo"
-        ? "Aktualizuję Metainmo..."
+        ? "Aktualizuję REDSP..."
         : "Aktualizuję Secondary MLS...",
     );
 
@@ -2181,12 +2181,12 @@ export default function OnesariPage() {
               ? {
                   ...current,
                   error: true,
-                  message: `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${errorMessage}`,
+                  message: `${kind === "metainmo" ? "REDSP" : "Secondary MLS"}: błąd - ${errorMessage}`,
                 }
               : current,
           );
           setImportStatus(
-            `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${errorMessage}`,
+            `${kind === "metainmo" ? "REDSP" : "Secondary MLS"}: błąd - ${errorMessage}`,
           );
           return;
         }
@@ -2199,12 +2199,12 @@ export default function OnesariPage() {
               ? {
                   ...current,
                   error: true,
-                  message: `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${errorMessage}`,
+                  message: `${kind === "metainmo" ? "REDSP" : "Secondary MLS"}: błąd - ${errorMessage}`,
                 }
               : current,
           );
           setImportStatus(
-            `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${errorMessage}`,
+            `${kind === "metainmo" ? "REDSP" : "Secondary MLS"}: błąd - ${errorMessage}`,
           );
           return;
         }
@@ -2241,7 +2241,7 @@ export default function OnesariPage() {
           data = { message: raw || "Odpowiedź bez JSON" };
         }
         setImportStatus(
-          `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${
+          `${kind === "metainmo" ? "REDSP" : "Secondary MLS"}: błąd - ${
             data?.error || data?.details || "nieznany błąd"
           }`,
         );
@@ -2250,7 +2250,7 @@ export default function OnesariPage() {
             ? {
                 ...current,
                 error: true,
-                message: `${kind === "metainmo" ? "Metainmo" : "Secondary MLS"}: błąd - ${
+                message: `${kind === "metainmo" ? "REDSP" : "Secondary MLS"}: błąd - ${
                   data?.error || data?.details || "nieznany błąd"
                 }`,
               }
@@ -2561,7 +2561,7 @@ export default function OnesariPage() {
                 onClick={() => {
                   setSourceFilter(filter.value);
                   if (filter.value === "all") setAllPage(1);
-                  if (filter.value === "Metainmo XML") setMetainmoPage(1);
+                  if (filter.value === "REDSP XML") setMetainmoPage(1);
                   if (filter.value === "Secondary XML") setSecondaryPage(1);
                   if (filter.value === "Onesta Base") setOnestaPage(1);
                   setMainTab("offers");
@@ -2616,7 +2616,7 @@ export default function OnesariPage() {
                     onClick={() => {
                       setSourceFilter(filter.value);
                       if (filter.value === "all") setAllPage(1);
-                      if (filter.value === "Metainmo XML") setMetainmoPage(1);
+                      if (filter.value === "REDSP XML") setMetainmoPage(1);
                       if (filter.value === "Secondary XML") setSecondaryPage(1);
                       if (filter.value === "Onesta Base") setOnestaPage(1);
                       setMainTab("offers");
@@ -2648,7 +2648,7 @@ export default function OnesariPage() {
                       onClick={() => requestXmlImport("metainmo")}
                     >
                       <FaSyncAlt className={importing === "metainmo" ? "spinning" : ""} />
-                      Aktualizuj Metainmo
+                      Aktualizuj REDSP
                     </button>
                     <button
                       className="importButton secondary"
@@ -2678,7 +2678,7 @@ export default function OnesariPage() {
                   </strong>
                 </article>
                 <article>
-                  <span>Metainmo XML</span>
+                  <span>REDSP XML</span>
                   <strong>
                     <CountValue
                       count={sourceCounts.metainmo}
@@ -2721,7 +2721,7 @@ export default function OnesariPage() {
 
               {notice ? <p className="onesariNotice">{notice}</p> : null}
               {sourceFilter === "all" ||
-              sourceFilter === "Metainmo XML" ||
+              sourceFilter === "REDSP XML" ||
               sourceFilter === "Secondary XML" ||
               sourceFilter === "Onesta Base" ? (
                 <div className="paginationMeta">
@@ -2734,7 +2734,7 @@ export default function OnesariPage() {
               ) : null}
               {remoteSourceError &&
               (sourceFilter === "all" ||
-                sourceFilter === "Metainmo XML" ||
+                sourceFilter === "REDSP XML" ||
                 sourceFilter === "Secondary XML" ||
                 sourceFilter === "Onesta Base") ? (
                 <p className="onesariError">{remoteSourceError}</p>
@@ -2979,7 +2979,7 @@ export default function OnesariPage() {
                 })}
               </section>
               {sourceFilter === "all" ||
-              sourceFilter === "Metainmo XML" ||
+              sourceFilter === "REDSP XML" ||
               sourceFilter === "Secondary XML" ||
               sourceFilter === "Onesta Base" ? (
                 <nav className="paginationBar" aria-label={`Paginacja ${remoteSourceLabel}`}>
@@ -2989,7 +2989,7 @@ export default function OnesariPage() {
                     onClick={() => {
                       if (sourceFilter === "all") {
                         setAllPage((page) => Math.max(1, page - 1));
-                      } else if (sourceFilter === "Metainmo XML") {
+                      } else if (sourceFilter === "REDSP XML") {
                         setMetainmoPage((page) => Math.max(1, page - 1));
                       } else if (sourceFilter === "Secondary XML") {
                         setSecondaryPage((page) => Math.max(1, page - 1));
@@ -3009,7 +3009,7 @@ export default function OnesariPage() {
                     onClick={() => {
                       if (sourceFilter === "all") {
                         setAllPage((page) => Math.min(allTotalPages, page + 1));
-                      } else if (sourceFilter === "Metainmo XML") {
+                      } else if (sourceFilter === "REDSP XML") {
                         setMetainmoPage((page) => Math.min(metainmoTotalPages, page + 1));
                       } else if (sourceFilter === "Secondary XML") {
                         setSecondaryPage((page) => Math.min(secondaryTotalPages, page + 1));
@@ -3040,7 +3040,7 @@ export default function OnesariPage() {
                   onClick={() => requestXmlImport("metainmo")}
                 >
                   <FaSyncAlt className={importing === "metainmo" ? "spinning" : ""} />
-                  Aktualizuj Metainmo
+                  Aktualizuj REDSP
                 </button>
                 <button
                   className="importButton secondary"

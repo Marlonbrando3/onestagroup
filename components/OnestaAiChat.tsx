@@ -13,8 +13,10 @@ const hiddenPathPrefixes = [
   "/crm",
   "/admin",
   "/onesari",
+  "/agent",
   "/login",
   "/logincrm",
+  "/agentlogin",
   "/signup",
 ];
 
