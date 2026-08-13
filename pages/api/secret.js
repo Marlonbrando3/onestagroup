@@ -1,1 +1,4 @@
-export const secret = '66f51407-e325-4aa1-9269-9b7be6d7a943'
+export default function handler(_req, res) {
+  res.setHeader("Cache-Control", "no-store");
+  return res.status(404).json({ error: "Not found" });
+}

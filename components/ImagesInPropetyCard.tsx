@@ -1,6 +1,6 @@
 import React from "react";
-import Image from "next/image";
 import { useState } from "react";
+import { propertyImageUrl } from "@/lib/propertyImages";
 
 type Property = {
   mainImage: any;
@@ -45,16 +45,14 @@ export default function ImagesInPropetyCard({ images, setImages }: Property) {
               : "h-full w-[92.5vw] sm:w-32 lg:w-[160px] border-orange-700/[0] sm:border-2 relative"
           }
         >
-          <Image
-            className="cursor-pointer object-cover"
-            src={prop.image}
-            // width={1000}
-            // height={500}
-            fill
+          <img
+            className="absolute inset-0 h-full w-full cursor-pointer object-cover"
+            src={propertyImageUrl(prop.image)}
             onClick={() => handleActiveImage(index + 1)}
-            // number={index + 1}
             alt="image"
-          ></Image>
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       ))}
     </div>

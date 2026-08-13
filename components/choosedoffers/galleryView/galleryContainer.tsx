@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from "react";
-import Image from "next/image";
 import Properties from "../../../public/properties.json";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
@@ -49,18 +48,16 @@ export default function GalleryContainer() {
       onClick={(e) => handleChoosingImage(index)}
       className="md:w-[186px] w-1/3 md:h-[100px] h-[79px] relative flex-none cursor-pointer"
     >
-      <Image
+      <img
         src={`https://img.asariweb.pl/thumbnail/${i.id}`}
         alt="nieruchomosci-w-hiszpanii"
-        fill
-        objectFit="cover"
-        placeholder="blur"
-        blurDataURL={`https://img.asariweb.pl/thumbnail/${choosedImage}`}
         className={`${
           i.id === choosedProperty[indexImage].id
             ? "border-orange-600"
             : "border-white"
-        } border-[3px] hover:border-orange-400 duration-200 rounded-md`}
+        } absolute inset-0 h-full w-full border-[3px] object-cover hover:border-orange-400 duration-200 rounded-md`}
+        loading="lazy"
+        decoding="async"
       />
     </div>
   ));
@@ -244,14 +241,12 @@ export default function GalleryContainer() {
             onTouchEnd={handleTouchEndBig}
             className="w-[100%] h-[80%] relative mb-[5px]"
           >
-            <Image
+            <img
               src={`https://img.asariweb.pl/normal/${choosedImage}`}
-              fill
-              objectFit="cover"
               alt="nieruchomosci-w-hiszpanii"
-              className="rounded-md slider_move"
-              placeholder="blur"
-              blurDataURL={`https://img.asariweb.pl/normal/${choosedImage}`}
+              className="absolute inset-0 h-full w-full rounded-md object-cover slider_move"
+              loading="eager"
+              decoding="async"
             />
           </div>
           {/* //slider mini */}

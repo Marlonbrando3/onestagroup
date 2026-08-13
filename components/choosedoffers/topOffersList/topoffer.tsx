@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Data from "../../../data/formData.json";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -26,12 +25,12 @@ export default function Topoffer({ handlePopUpClosing }: Data) {
             onClick={handlePopUpClosing}
           >
             <div className="w-full relative h-[200px]">
-              <Image
+              <img
                 src={`https://img.asariweb.pl/normal/${i.images[0].id}`}
                 alt="lala"
-                fill
-                objectFit="cover"
-                className="rounded-md"
+                className="absolute inset-0 h-full w-full rounded-md object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="px-[10px]">

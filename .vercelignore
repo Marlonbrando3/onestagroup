@@ -1,0 +1,9 @@
+# Lokalne kopie historii edytora nie są częścią aplikacji.
+.history
+
+# Jednorazowy wynik starego parsera XML (około 92 MB).
+parsed-output.json
+
+# Zakończone, ręczne migracje FTP nie trafiają do środowiska produkcyjnego.
+scripts/migrate_onesta_ftp_images_to_cloudinary.js
+scripts/migrate_onesta_ftp_images_to_cloudflare.js

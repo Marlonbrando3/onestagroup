@@ -185,7 +185,7 @@ export default function PropertyCard({
             </div>
           )}
 
-          <Link href={detailHref} className="block pr-9">
+          <Link href={detailHref} prefetch={false} className="block pr-9">
             <div className="flex items-start gap-1.5 text-xs text-[#5f6b7a]">
               <IoMdPin className="mt-[2px] h-4 w-4 shrink-0 text-[#b8954c]" />
               <div>
@@ -244,6 +244,7 @@ export default function PropertyCard({
           </div>
           <Link
             href={detailHref}
+            prefetch={false}
             className="shrink-0 border border-[#b8954c] bg-[#d6b36a] px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
           >
             {isEn ? "Details" : "Szczegóły"}

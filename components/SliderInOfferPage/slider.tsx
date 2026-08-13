@@ -1,12 +1,9 @@
-import React, { useState, useRef } from "react";
-import Image from "next/image";
-import { FaWindowClose } from "react-icons/fa";
 import { BsArrowRightSquareFill } from "react-icons/bs";
 import { BsArrowLeftSquareFill } from "react-icons/bs";
 import { FaArrowLeft } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
-import ContactOnPropertyCard from "../SearchEngine/ContactOnPropertyCard";
 import ContactInSlider from "../SearchEngine/ContactInSlider";
+import { propertyImageUrl } from "@/lib/propertyImages";
 
 type props = {
   images: any[];
@@ -25,15 +22,6 @@ export default function Slider({
   choosedImage,
   setChoosedImage,
 }: props) {
-  const [zoom, setZoom] = useState(1);
-  const [pos, setPos] = useState({ x: -140, y: 50 });
-  const movedRef = useRef(false);
-
-  const handleChangingImage = (e: any) => {
-    setChoosedImage(e);
-    console.log(e);
-  };
-
   const handleNextImage = (e: any) => {
     e.stopPropagation();
     if (choosedImage < images.length - 1) setChoosedImage(choosedImage + 1);
@@ -46,46 +34,18 @@ export default function Slider({
 
   const handleClosingSlider = () => {
     setShowSlider(false);
-    console.log("hide");
   };
 
-  const imagesData = images.map((i, key) => {
-    return (
-      <div
-        className={`${
-          parseInt(i["@_id"]) === choosedImage + 1
-            ? "border-yellow-500"
-            : "border-transparent"
-        } m-[2px] cursor-pointer h-[70px] w-[85px] relative border-[3px] hover:brightness-125`}
-        onClick={() => handleChangingImage(key)}
-        key={i["@_id"]}
-      >
-        <Image src={i.url} fill className="object-cover" alt="photo" />
-      </div>
-    );
-  });
+  if (!showSlider || !images.length) return null;
 
-  const handleZoom = () => {
-    setZoom(zoom === 1 ? 2 : 1);
-  };
-
-  const handleMouseMove = (e: any) => {
-    if (zoom === 1) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-    setPos({ x, y });
-  };
+  const activeImage = images[choosedImage] ?? images[0];
 
   return (
     <div
-      className={`${showSlider === true ? "opacity-100" : "opacity-0 pointer-events-none"} inset-0 w-full h-screen z-[100] fixed flex flex-wrap justify-center items-center transition-opacity`}
+      className="inset-0 w-full h-screen z-[100] fixed flex flex-wrap justify-center items-center transition-opacity"
     >
       <div
-        className={`${zoom === 2 ? "bg-white/[0.7]" : "z-[0]"} absolute w-full h-full `}
+        className="absolute z-0 h-full w-full"
       ></div>
       <div className="bg-[#00102E] w-[100%] h-[100%] flex flex-wrap justify-start relative shadow-[0_0_15px_rgba(0,0,0,0.4)]">
         <div
@@ -108,11 +68,7 @@ export default function Slider({
           </div>
         </div> */}
         <div className="flex w-full w-justify-between md:items-center items-start px-[20px]">
-          <div
-            className="md:w-[75%] w-full md:h-[90vh] h-[400px] mx-auto relative overflow-hidden"
-            // onMouseMove={handleMouseMove}
-            // onClick={handleZoom}
-          >
+          <div className="md:w-[75%] w-full md:h-[90vh] h-[400px] mx-auto relative overflow-hidden">
             {" "}
             <div className="my-auto">
               <BsArrowLeftSquareFill
@@ -120,19 +76,15 @@ export default function Slider({
                 onClick={(e) => handleBeforeImage(e)}
               />
             </div>
-            <Image
-              src={images[choosedImage].url}
-              fill
-              className="object-cover p-2 transition-transform duration-200"
-              alt="alt"
+            <img
+              src={propertyImageUrl(activeImage)}
+              className="absolute inset-0 h-full w-full object-contain p-2"
+              alt={`Zdjęcie nieruchomości ${choosedImage + 1}`}
               draggable={false}
-              style={{
-                transform: `scale(${zoom})`,
-                transformOrigin: `${pos.x}% ${pos.y}%`,
-              }}
-            ></Image>
+              decoding="async"
+            />
             <div className="absolute w-[110px] h-[35px] bottom-4 right-0 left-0 mx-auto rounded-2xl bg-white flex items-center justify-center text-[22px] font-[500]">
-              {choosedImage} z {images.length}
+              {choosedImage + 1} z {images.length}
             </div>
             <div className="my-auto">
               <BsArrowRightSquareFill

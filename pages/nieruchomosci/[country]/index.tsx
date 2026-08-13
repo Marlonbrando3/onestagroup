@@ -34,6 +34,8 @@ const PROPERTY_LIST_COLUMNS = [
   "distance_to_sea_m",
 ].join(",");
 
+const MAX_PUBLIC_PAGE = 250;
+
 interface Property {
   external_id: string | number;
   type: string;
@@ -316,7 +318,18 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 ) => {
   const { country } = context.params as { country: string };
   const countryOption = getPropertyCountryOption(country);
-  const page = Math.max(1, parseInt((context.query.page as string) || "1"));
+  const requestedPage = Number.parseInt(
+    String(
+      Array.isArray(context.query.page)
+        ? context.query.page[0]
+        : context.query.page || "1",
+    ),
+    10,
+  );
+  const page = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1;
+
+  if (page > MAX_PUBLIC_PAGE) return { notFound: true };
+
   const limit = 20;
   const from = (page - 1) * limit;
   const to = from + limit - 1;
@@ -468,13 +481,22 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 
   if (error) {
     console.error("Supabase query error:", error.message);
+    context.res.setHeader("Cache-Control", "private, no-store");
   }
 
   const totalCount = count ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+
+  if (page > totalPages) return { notFound: true };
+
   const currentPage = Math.min(page, totalPages);
 
-  console.log(totalCount);
+  if (!error) {
+    context.res.setHeader(
+      "Cache-Control",
+      "public, max-age=0, s-maxage=300, stale-while-revalidate=3600",
+    );
+  }
 
   return {
     props: {

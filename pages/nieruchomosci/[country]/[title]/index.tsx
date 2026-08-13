@@ -1,14 +1,12 @@
-import Image from "next/image";
 import { useRef } from "react";
 import { supabaseServer } from "@/lib/supabaseClient";
 import Head from "next/head";
 import Header from "../../../../components/Header";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Descryption from "../../../../components/Descryption";
 import Footer from "@/components/Footer";
-import { OutfitSans, TenorsSans, PlayfairSans } from "../../../../fonts/fonts";
+import { OutfitSans, PlayfairSans } from "../../../../fonts/fonts";
 import Form from "@/components/SearchEngine/IntresetedPopUp/form";
 import { IoClose } from "react-icons/io5";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
@@ -17,6 +15,26 @@ import Gallery from "@/components/SliderInOfferPage/gallery";
 import ContactInFooterMobile from "@/components/SearchEngine/ContactInFooterMobile";
 import { validTitleOrEmpty } from "@/lib/titlesDictionary";
 import { propertyTypeLabel, SiteLocale } from "@/lib/i18n";
+import { propertyImageUrl } from "@/lib/propertyImages";
+
+const PROPERTY_DETAIL_COLUMNS = [
+  "external_id",
+  "type",
+  "town",
+  "province",
+  "country",
+  "price",
+  "beds",
+  "baths",
+  "pool",
+  "images",
+  "title",
+  "features",
+  "latitude",
+  "longitude",
+  "description_pl:descriptions->>pl",
+  "description_en:descriptions->>en",
+].join(",");
 
 export default function Property({
   propertyFromSupabase,
@@ -60,28 +78,26 @@ export default function Property({
     });
   }
 
-  const handleShowingGallery = (e: any) => {
+  const handleShowingGallery = () => {
     setShowGallery(true);
-    // setChoosedImage(1);
   };
 
   const imagesMiniData = propertyFromSupabase.images
-    ?.slice(1, 7)
+    ?.slice(1, 5)
     .map((i: any, index: any) => {
       return (
         <div
           key={i["@_id"]}
           className="lg:w-[170px] lg:h-[176px] md:w-[121px] md:h-[122px] w-[15vw] h-[10vw] relative cursor-pointer hover:brightness-125 duration-100"
-          onClick={() => handleShowingGallery(i["@_id"])}
+          onClick={handleShowingGallery}
         >
-          <Image
-            src={i.url}
-            fill
-            objectFit="cover"
+          <img
+            src={propertyImageUrl(i)}
             alt="alt"
-            className="rounded-md"
-          ></Image>
-          ;
+            className="absolute inset-0 h-full w-full rounded-md object-cover"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       );
     });
@@ -117,23 +133,27 @@ export default function Property({
       <div
         className={`${OutfitSans.className} max-w-[1350px] flex flex-col mx-[5px] sm:mx-auto relative overflow-x-hidden mt-[80px] `}
       >
-        <Gallery
-          choosedImage={choosedImage}
-          setChoosedImage={setChoosedImage}
-          showSlider={showSlider}
-          setShowSlider={setShowSlider}
-          showGallery={showGallery}
-          setShowGallery={setShowGallery}
-          images={propertyFromSupabase.images}
-        />
-        <Slider
-          showSlider={showSlider}
-          choosedImage={choosedImage}
-          setChoosedImage={setChoosedImage}
-          setShowSlider={setShowSlider}
-          images={propertyFromSupabase.images}
-          propertyDetails={propertyFromSupabase}
-        />
+        {showGallery && !showSlider ? (
+          <Gallery
+            choosedImage={choosedImage}
+            setChoosedImage={setChoosedImage}
+            showSlider={showSlider}
+            setShowSlider={setShowSlider}
+            showGallery={showGallery}
+            setShowGallery={setShowGallery}
+            images={propertyFromSupabase.images}
+          />
+        ) : null}
+        {showSlider ? (
+          <Slider
+            showSlider={showSlider}
+            choosedImage={choosedImage}
+            setChoosedImage={setChoosedImage}
+            setShowSlider={setShowSlider}
+            images={propertyFromSupabase.images}
+            propertyDetails={propertyFromSupabase}
+          />
+        ) : null}
         <WhatsAppButton />
         <div
           ref={intrestedPopUp}
@@ -164,14 +184,15 @@ export default function Property({
             <div className="md:flex-1 md:h-[255px] lg:h-[360px] md:w-[60vw] h-[200px] overflow-hidden mx-[10px]">
               <div className="flex md:h-full sm:h-full h-[900px] w-full flex-col justify-between rounded-md overflow-hidden">
                 <div className="lg:w-full md:w-full md:h-[500px] h-[200px] w-[95vw] sm:block select-none relative mx-auto relative rounded-md cursor-pointer">
-                  <Image
-                    className="rounded-md"
-                    src={propertyFromSupabase.images[0].url}
-                    fill
-                    objectFit="cover"
+                  <img
+                    className="absolute inset-0 h-full w-full rounded-md object-cover"
+                    src={propertyImageUrl(propertyFromSupabase.images[0])}
                     alt="nieruchomosci-w-hiszpanii"
                     onClick={handleShowingGallery}
-                  ></Image>
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                  />
                 </div>
               </div>
             </div>
@@ -212,42 +233,53 @@ export default function Property({
 }
 
 export async function getServerSideProps(context: any) {
-  const id = context.query.id;
+  const id = String(context.query.id || "").trim();
+
+  if (!id || id.length > 180) return { notFound: true };
 
   if (!supabaseServer) {
-    return {
-      props: {
-        propertyFromSupabase: null,
-      },
-    };
+    return { notFound: true };
   }
 
   const { data, error } = await supabaseServer
     .from("properties")
-    .select("*")
-    .eq("external_id", String(id))
-    .single();
+    .select(PROPERTY_DETAIL_COLUMNS)
+    .eq("external_id", id)
+    .maybeSingle();
 
-  if (error) {
+  if (error || !data) {
     console.error(error);
+    return { notFound: true };
   }
 
-  let normalizedData = data;
-  if (data) {
-    try {
-      let images = data.images;
-      if (typeof images === "string") {
-        images = JSON.parse(images);
-      }
-      normalizedData.images = Array.isArray(images)
-        ? images
-        : images
-          ? [images]
-          : [];
-    } catch {
-      normalizedData.images = [];
+  const propertyRecord = data as unknown as Record<string, any>;
+  let normalizedImages = propertyRecord.images;
+  try {
+    if (typeof normalizedImages === "string") {
+      normalizedImages = JSON.parse(normalizedImages);
     }
+  } catch {
+    normalizedImages = [];
   }
+
+  const { description_pl, description_en, ...propertyData } = propertyRecord;
+  const normalizedData = {
+    ...propertyData,
+    images: Array.isArray(normalizedImages)
+      ? normalizedImages
+      : normalizedImages
+        ? [normalizedImages]
+        : [],
+    descriptions: {
+      pl: description_pl || "",
+      en: description_en || "",
+    },
+  };
+
+  context.res.setHeader(
+    "Cache-Control",
+    "public, max-age=0, s-maxage=900, stale-while-revalidate=86400",
+  );
 
   return {
     props: {

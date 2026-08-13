@@ -1,9 +1,9 @@
 // ResultsSlider.tsx
 import { useState, useRef, useMemo, useEffect } from "react";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
-import Image from "next/image";
 import Link from "next/link";
 import { localePath, SiteLocale } from "@/lib/i18n";
+import { propertyImageUrl } from "@/lib/propertyImages";
 
 type Images = {
   date: string | null;
@@ -34,7 +34,7 @@ export default function ResultsSlider({
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
-  const imagesArray = (() => {
+  const imagesArray = useMemo(() => {
     try {
       if (typeof images === "string") {
         const parsed = JSON.parse(images);
@@ -44,7 +44,7 @@ export default function ResultsSlider({
     } catch {
       return [];
     }
-  })();
+  }, [images]);
 
   const slides = useMemo(() => {
     const hasFtpProxyImages = imagesArray.some((img: any) => {
@@ -98,6 +98,7 @@ export default function ResultsSlider({
   const isEn = locale === "en";
   const isPrimary =
     market === "RYNEK PIERWOTNY" || market === "PRIMARY MARKET";
+  const activeSlide = slides[index] ?? slides[0];
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#e8ddca]">
@@ -141,55 +142,41 @@ export default function ResultsSlider({
         onTouchEnd={onTouchEnd}
         className="h-full w-full overflow-hidden"
       >
-        <div
-          className="flex h-full transition-transform duration-300"
-          style={{ transform: `translateX(-${index * 100}%)` }}
-        >
+        <div className="relative h-full">
           <div className="absolute flex items-center justify-center p-4 h-full w-full">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-yellow-300 border-t-orange-500" />
           </div>
-          {slides.map((slide) =>
-            slide.type === "more" ? (
+          {activeSlide ? (
+            activeSlide.type === "more" ? (
               <Link
-                key={slide.key}
                 href={{
                   pathname: paths.property(countrySlug, slug),
                   query: { id: propertyId },
                 }}
+                prefetch={false}
                 className="min-w-full h-full flex items-center justify-center bg-red-500/70 text-3xl text-white font-[700]"
               >
                 {isEn ? "More photos" : "Więcej zdjęć"}
               </Link>
             ) : (
               <Link
-                key={slide.key}
                 href={{
                   pathname: paths.property(countrySlug, slug),
                   query: { id: propertyId },
                 }}
-                className="min-w-full h-full relative"
+                prefetch={false}
+                className="relative block h-full w-full"
               >
-                {slide.url?.startsWith("/api/onesari/ftp-image") ? (
-                  <img
-                    className="h-full w-full object-cover"
-                    src={slide.url}
-                    alt="Zdjęcie nieruchomości"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <Image
-                    className="object-cover"
-                    src={slide.url || "/placeholder.jpg"}
-                    alt="Zdjęcie nieruchomości"
-                    fill
-                    loading="lazy"
-                    sizes="(max-width: 768px) 92vw, (max-width: 1280px) 44vw, 25vw"
-                  />
-                )}
+                <img
+                  className="h-full w-full object-cover"
+                  src={propertyImageUrl(activeSlide.url)}
+                  alt="Zdjęcie nieruchomości"
+                  loading="lazy"
+                  decoding="async"
+                />
               </Link>
-            ),
-          )}
+            )
+          ) : null}
         </div>
       </div>
     </div>

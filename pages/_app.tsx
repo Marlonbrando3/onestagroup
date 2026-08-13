@@ -3,7 +3,6 @@ import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useRef } from "react";
-import { MyContextProvider } from "@/components/context/myContext";
 import AnalitycsTools from "@/analitycs/analitycsTools";
 import OnestaAiChat from "@/components/OnestaAiChat";
 
@@ -22,10 +21,8 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <AnalitycsTools />
-      <MyContextProvider>
-        <Component {...pageProps} cookiesWindow={cookiesWindow} />
-        {router.pathname !== "/sale" && <OnestaAiChat />}
-      </MyContextProvider>
+      <Component {...pageProps} cookiesWindow={cookiesWindow} />
+      {router.pathname !== "/sale" && <OnestaAiChat />}
     </>
   );
 }

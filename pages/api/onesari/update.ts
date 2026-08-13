@@ -21,8 +21,15 @@ type EditableField =
   | "descriptionPl"
   | "descriptionEn";
 
+type PlacementField =
+  | "onestaFeatured"
+  | "onestaInvestment"
+  | "mapFeatured"
+  | "mapVille"
+  | "mapHandpicked";
+
 const propertySelect =
-  "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status";
+  "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status,onesta_featured,onesta_investment,map_featured,map_ville,map_handpicked";
 
 function nullableText(value: unknown) {
   const normalized = String(value ?? "").trim();
@@ -118,6 +125,24 @@ function isEditableField(value: unknown): value is EditableField {
     value === "descriptionEn"
   );
 }
+
+function isPlacementField(value: unknown): value is PlacementField {
+  return (
+    value === "onestaFeatured" ||
+    value === "onestaInvestment" ||
+    value === "mapFeatured" ||
+    value === "mapVille" ||
+    value === "mapHandpicked"
+  );
+}
+
+const placementDatabaseColumns: Record<PlacementField, string> = {
+  onestaFeatured: "onesta_featured",
+  onestaInvestment: "onesta_investment",
+  mapFeatured: "map_featured",
+  mapVille: "map_ville",
+  mapHandpicked: "map_handpicked",
+};
 
 function descriptionObject(value: unknown) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
@@ -218,7 +243,12 @@ export default async function handler(
   if (!id) {
     return res.status(400).json({ error: "Brak ID oferty" });
   }
-  if (!values && !Array.isArray(images) && !isEditableField(field)) {
+  if (
+    !values &&
+    !Array.isArray(images) &&
+    !isEditableField(field) &&
+    !isPlacementField(field)
+  ) {
     return res.status(400).json({ error: "Tego pola nie można edytować" });
   }
 
@@ -235,6 +265,8 @@ export default async function handler(
       }
     } else if (Array.isArray(images)) {
       updatePayload.images = normalizeImages(images);
+    } else if (isPlacementField(field)) {
+      updatePayload[placementDatabaseColumns[field]] = value === true;
     } else {
       await applyEditableField(id, updatePayload, field, value);
     }

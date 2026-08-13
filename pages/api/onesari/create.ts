@@ -45,7 +45,7 @@ type SavedImage = {
 };
 
 const propertySelect =
-  "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status";
+  "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status,onesta_featured,onesta_investment,map_featured,map_ville,map_handpicked";
 
 function isFormDataPayload(payload: FormData | Record<string, unknown>): payload is FormData {
   return typeof FormData !== "undefined" && payload instanceof FormData;

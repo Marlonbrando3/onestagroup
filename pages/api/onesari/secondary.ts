@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { canAccessOnesari, isOnesariEnabled, rejectDisabledOnesari } from "@/lib/onesariFeature";
+import { applyOnesariListingFilters } from "@/lib/onesariListingFilters";
 
 const PAGE_SIZE = 20;
 
@@ -34,13 +35,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  const { data, count, error } = await supabaseServer
+  let propertiesQuery = supabaseServer
     .from("properties")
     .select(
-      "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at",
+      "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,onesta_featured,onesta_investment,map_featured,map_ville,map_handpicked",
       { count: "exact" },
     )
-    .eq("source", "SECONDARY_XML")
+    .eq("source", "SECONDARY_XML");
+
+  propertiesQuery = applyOnesariListingFilters(propertiesQuery, req.query);
+
+  const { data, count, error } = await propertiesQuery
     .order("updated_at", { ascending: false })
     .range(from, to);
 

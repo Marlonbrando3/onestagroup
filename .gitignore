@@ -5,8 +5,6 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-/pages/nieruchomosci-w-hiszpanii-nowe/oferta-nieruchomosci-w-hiszpanii/index.tsx
-
 # testing
 /coverage
 

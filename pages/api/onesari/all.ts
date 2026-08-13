@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { canAccessOnesari, isOnesariEnabled, rejectDisabledOnesari } from "@/lib/onesariFeature";
+import { applyOnesariListingFilters } from "@/lib/onesariListingFilters";
 
 const PAGE_SIZE = 20;
 const SOURCES = ["METAINMO", "SECONDARY_XML", "ONESTA_FTP"];
@@ -39,13 +40,17 @@ export default async function handler(
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  const { data, count, error } = await supabaseServer
+  let propertiesQuery = supabaseServer
     .from("properties")
     .select(
-      "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status",
+      "id,external_id,ref,source,price,currency,type,town,province,country,developer,investment_name,surface_built,beds,baths,new_build,features,images,descriptions,date,updated_at,title,distance_to_sea_m,available_from,operation,status,onesta_featured,onesta_investment,map_featured,map_ville,map_handpicked",
       { count: "exact" },
     )
-    .in("source", SOURCES)
+    .in("source", SOURCES);
+
+  propertiesQuery = applyOnesariListingFilters(propertiesQuery, req.query);
+
+  const { data, count, error } = await propertiesQuery
     .order("updated_at", { ascending: false })
     .range(from, to);
 

@@ -10,7 +10,7 @@ export default function LoginCrm() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = async () => {
-    const emailValue = email.current.value;
+    const emailValue = email.current.value.trim();
     const { error } = await supabase.auth.signInWithPassword({
       email: emailValue,
       password: password.current.value,
@@ -27,8 +27,13 @@ export default function LoginCrm() {
       return;
     }
 
-    const redirect = typeof router.query.redirect === "string" ? router.query.redirect : "/crm";
-    router.push(redirect);
+    const requestedRedirect =
+      typeof router.query.redirect === "string" ? router.query.redirect : "/crm";
+    const safeRedirect =
+      requestedRedirect.startsWith("/") && !requestedRedirect.startsWith("//")
+        ? requestedRedirect
+        : "/crm";
+    router.push(safeRedirect);
   };
 
   return (

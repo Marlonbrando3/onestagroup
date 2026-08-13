@@ -1,5 +1,4 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import Image from "next/image";
 import Head from "next/head";
 import Data from "../../../data/formData.json";
 import { useRouter } from "next/router";
@@ -55,11 +54,12 @@ export default function Localization() {
                 </button>
               </div>
               <TransformComponent>
-                <Image
+                <img
                   src={`https://img.asariweb.pl/normal/${Localization[0].id}`}
                   alt="Opis obrazka"
-                  width={2600}
-                  height={2400}
+                  className="h-auto max-w-full"
+                  loading="lazy"
+                  decoding="async"
                 />
               </TransformComponent>
             </>

@@ -1,9 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { XMLParser } from "fast-xml-parser";
 import { supabaseServer } from "../../lib/supabaseClient";
+import {
+  canAccessOnesari,
+  isOnesariEnabled,
+  rejectDisabledOnesari,
+} from "../../lib/onesariFeature";
 
 export const config = {
-  maxDuration: 120,
+  maxDuration: 300,
 };
 
 const SECONDARY_XML_URL =
@@ -196,6 +201,34 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (!isOnesariEnabled()) {
+    return rejectDisabledOnesari(res);
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  if (!supabaseServer) {
+    return res.status(500).json({
+      error: "Brak SUPABASE_SERVICE_ROLE_KEY dla endpointu serwerowego",
+    });
+  }
+
+  const token = req.headers.authorization?.replace(/^Bearer\s+/i, "");
+  if (!token) {
+    return res.status(401).json({ error: "Brak tokenu dostępu" });
+  }
+
+  const { data: userData, error: userError } =
+    await supabaseServer.auth.getUser(token);
+  if (userError || !userData.user) {
+    return res.status(401).json({ error: "Brak dostępu" });
+  }
+  if (!canAccessOnesari(userData.user.email)) {
+    return res.status(403).json({ error: "Brak dostępu do Onesari" });
+  }
+
   let stage = "init";
   const streamMode = req.headers["x-import-progress"] === "1";
   let streamOpen = false;
@@ -250,19 +283,9 @@ export default async function handler(
   };
 
   try {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method not allowed" });
-    }
-
     if (secondaryImportInProgress) {
       return sendError(409, {
         error: "Import Secondary MLS już trwa. Poczekaj na zakończenie obecnego procesu.",
-      });
-    }
-
-    if (!supabaseServer) {
-      return res.status(500).json({
-        error: "Brak SUPABASE_SERVICE_ROLE_KEY dla endpointu serwerowego",
       });
     }
 

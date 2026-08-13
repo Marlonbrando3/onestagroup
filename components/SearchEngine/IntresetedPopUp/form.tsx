@@ -51,7 +51,6 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
       if (data === 200) {
         trackGoogleAdsContactConversion();
         sendButton.current.innerHTML = "Wysłano!";
-        // router.push("https://onesta.com.pl/form/thankyoupageform");
         // setPageNumber(2);
 
         setTimeout(() => {

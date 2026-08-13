@@ -3,7 +3,6 @@ import Properties from "../../../public/properties.json";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Data from "../../../data/formData.json";
-import Image from "next/image";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export default function Plans() {
@@ -85,11 +84,12 @@ export default function Plans() {
               </div>
               <TransformComponent>
                 <div className="md:w-[700px] w-[98vw] md:h-[480px] h-[370px] relative">
-                  <Image
+                  <img
                     src={`https://img.asariweb.pl/normal/${selectedPlan.id}`}
                     alt="Opis obrazka"
-                    fill
-                    objectFit="contain"
+                    className="absolute inset-0 h-full w-full object-contain"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
               </TransformComponent>

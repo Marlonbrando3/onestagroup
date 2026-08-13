@@ -17,7 +17,6 @@ const hiddenPathPrefixes = [
   "/login",
   "/logincrm",
   "/agentlogin",
-  "/signup",
 ];
 
 const initialMessages = {

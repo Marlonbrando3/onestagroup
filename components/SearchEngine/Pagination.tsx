@@ -51,6 +51,7 @@ export default function Pagination({ totalPages, currentPage }: Props) {
     <nav className="w-[90vw] max-w-[1300px] mx-auto mt-6 mb-8 flex items-center justify-center gap-2 flex-wrap">
       <Link
         href={buildHref(Math.max(1, safeCurrent - 1))}
+        prefetch={false}
         shallow={false}
         className={`px-3 py-2 border rounded ${
           safeCurrent === 1 ? "pointer-events-none opacity-50" : "bg-white"
@@ -68,6 +69,7 @@ export default function Pagination({ totalPages, currentPage }: Props) {
           <Link
             key={item}
             href={buildHref(item)}
+            prefetch={false}
             shallow={false}
             className={`px-3 py-1 border rounded-md ${
               item === safeCurrent
@@ -82,6 +84,7 @@ export default function Pagination({ totalPages, currentPage }: Props) {
 
       <Link
         href={buildHref(Math.min(safeTotal, safeCurrent + 1))}
+        prefetch={false}
         shallow={false}
         className={`px-3 py-2 border rounded ${
           safeCurrent === safeTotal

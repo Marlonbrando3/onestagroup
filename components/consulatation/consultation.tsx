@@ -65,7 +65,6 @@ export default function Consultation({
           handleConsultationPopUp();
           thankyoupopup.current.style.display = "none";
         }, 2000);
-        // router.push("https://onesta.com.pl/form/thankyoupageform");
         // setPageNumber(2);
 
         // setTimeout(() => {

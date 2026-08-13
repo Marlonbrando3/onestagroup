@@ -1,20 +1,25 @@
 import { verify } from "jsonwebtoken";
 import { getCookie } from "cookies-next";
-import { secret } from "./secret";
 
 export default function admin(req, res) {
-  const cookie = getCookie("auth", { req, res });
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-  verify(getCookie("auth", { req, res }), secret, function (err, decoded) {
-    if (decoded && !err) {
-      if (cookie === undefined) {
-        res.status(200).json({ msg: "uprawnienia przyznane" });
-      }
-    }
-    if (cookie !== undefined) {
-      res.status(300).json({ msg: "coockie istnieje" });
-    } else {
-      res.status(403).json({ msg: "coockie istnieje" });
-    }
-  });
+  const secret = process.env.PANEL_JWT_SECRET;
+  if (!secret) {
+    return res.status(503).json({ error: "Panel JWT nie jest skonfigurowany" });
+  }
+
+  const cookie = getCookie("auth", { req, res });
+  if (typeof cookie !== "string" || !cookie) {
+    return res.status(401).json({ error: "Brak sesji" });
+  }
+
+  try {
+    const decoded = verify(cookie, secret);
+    return res.status(200).json({ msg: "uprawnienia przyznane", user: decoded });
+  } catch {
+    return res.status(401).json({ error: "Nieprawidłowa sesja" });
+  }
 }

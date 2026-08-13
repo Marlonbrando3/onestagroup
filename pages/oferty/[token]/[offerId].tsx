@@ -22,6 +22,7 @@ import { propertyTypeLabel } from "@/lib/i18n";
 import { getCoastLabelFromProvince, getCountryLabel } from "@/lib/regionMap";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { validTitleOrEmpty } from "@/lib/titlesDictionary";
+import { propertyImageUrl } from "@/lib/propertyImages";
 import Logotype from "@/public/logotype_full_new.png";
 
 type PresentationOfferProps = {
@@ -187,7 +188,14 @@ export default function PresentationOfferPage({
 
           <section className={`grid overflow-hidden rounded-[22px] bg-[#ded6ca] shadow-[0_20px_55px_rgba(24,35,52,0.14)] ${galleryImages.length > 1 ? "h-[430px] gap-1 md:grid-cols-[1.7fr_1fr] lg:h-[570px]" : "h-[430px] lg:h-[570px]"}`}>
             <button type="button" onClick={() => setLightboxIndex(0)} className="group relative min-h-0 overflow-hidden bg-[#ddd4c5] text-left">
-              <Image src={galleryImages[0]} alt={`${title} — zdjęcie 1`} fill sizes="(max-width: 768px) 100vw, 68vw" className="object-cover transition duration-500 group-hover:scale-[1.02]" priority />
+              <img
+                src={propertyImageUrl(galleryImages[0], "/logotype_full_new.png")}
+                alt={`${title} — zdjęcie 1`}
+                className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
+              />
               <span className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-[9px] font-extrabold uppercase tracking-[0.1em] text-[#182334] shadow-lg">
                 <FaExpand aria-hidden="true" /> Otwórz galerię
               </span>
@@ -200,7 +208,13 @@ export default function PresentationOfferPage({
                   const remaining = galleryImages.length - 5;
                   return (
                     <button key={`${image}-${absoluteIndex}`} type="button" onClick={() => setLightboxIndex(absoluteIndex)} className="group relative min-h-0 overflow-hidden bg-[#ddd4c5]">
-                      <Image src={image} alt={`${title} — zdjęcie ${absoluteIndex + 1}`} fill sizes="34vw" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
+                      <img
+                        src={propertyImageUrl(image, "/logotype_full_new.png")}
+                        alt={`${title} — zdjęcie ${absoluteIndex + 1}`}
+                        className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                        loading="lazy"
+                        decoding="async"
+                      />
                       {absoluteIndex === 4 && remaining > 0 ? (
                         <span className="absolute inset-0 flex items-center justify-center bg-[#182334]/60 text-[20px] font-extrabold text-white">+{remaining}</span>
                       ) : null}
@@ -270,7 +284,13 @@ export default function PresentationOfferPage({
               </button>
             </div>
             <div className="relative flex-1">
-              <Image src={galleryImages[lightboxIndex]} alt={`${title} — zdjęcie ${lightboxIndex + 1}`} fill sizes="100vw" className="object-contain p-2" priority />
+              <img
+                src={propertyImageUrl(galleryImages[lightboxIndex], "/logotype_full_new.png")}
+                alt={`${title} — zdjęcie ${lightboxIndex + 1}`}
+                className="absolute inset-0 h-full w-full object-contain p-2"
+                loading="eager"
+                decoding="async"
+              />
               {galleryImages.length > 1 ? (
                 <>
                   <button type="button" onClick={previousImage} aria-label="Poprzednie zdjęcie" className="absolute left-1 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#182334] shadow-lg sm:left-5">

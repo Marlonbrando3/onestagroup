@@ -13,6 +13,8 @@ import {
 import {
   FaBath,
   FaBed,
+  FaChevronLeft,
+  FaChevronRight,
   FaChartBar,
   FaCheck,
   FaCloudUploadAlt,
@@ -30,6 +32,10 @@ import {
 } from "react-icons/fa";
 import { supabase } from "@/lib/supabaseClient";
 import { canAccessOnesari, isOnesariEnabled } from "@/lib/onesariFeature";
+import {
+  ONESARI_COAST_FILTERS,
+  ONESARI_COUNTRY_FILTERS,
+} from "@/lib/onesariListingFilters";
 
 type MainTab = "dashboard" | "offers" | "add" | "imports";
 type AddTab = "data" | "images";
@@ -58,6 +64,12 @@ type ListingForm = {
 };
 
 type EditableField = keyof ListingForm;
+type ListingPlacementField =
+  | "onestaFeatured"
+  | "onestaInvestment"
+  | "mapFeatured"
+  | "mapVille"
+  | "mapHandpicked";
 
 type Listing = Omit<ListingForm, "distanceToSeaM" | "price"> & {
   id: string;
@@ -70,6 +82,11 @@ type Listing = Omit<ListingForm, "distanceToSeaM" | "price"> & {
   images: ListingImage[];
   imagesCount: number;
   createdAt: string;
+  onestaFeatured: boolean;
+  onestaInvestment: boolean;
+  mapFeatured: boolean;
+  mapVille: boolean;
+  mapHandpicked: boolean;
 };
 
 type ImageDraft = {
@@ -160,6 +177,14 @@ type SourceCounts = {
   onesta: number | null;
 };
 
+type ListingFilterRequest = {
+  query: string;
+  country: string;
+  coast: string;
+  minPrice: string;
+  maxPrice: string;
+};
+
 type ImportKind = "metainmo" | "secondary";
 type ImportConfirmation = {
   kind: ImportKind;
@@ -188,6 +213,27 @@ const emptySourceCounts: SourceCounts = {
   secondary: null,
   onesta: null,
 };
+
+function useDebouncedValue<T>(value: T, delay = 350) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebouncedValue(value), delay);
+    return () => window.clearTimeout(timeout);
+  }, [delay, value]);
+
+  return debouncedValue;
+}
+
+function listingRequestUrl(path: string, page: number, filters: ListingFilterRequest) {
+  const params = new URLSearchParams({ page: String(page) });
+  if (filters.query.trim()) params.set("q", filters.query.trim());
+  if (filters.country) params.set("country", filters.country);
+  if (filters.coast) params.set("coast", filters.coast);
+  if (filters.minPrice.trim()) params.set("minPrice", filters.minPrice.trim());
+  if (filters.maxPrice.trim()) params.set("maxPrice", filters.maxPrice.trim());
+  return `${path}?${params.toString()}`;
+}
 
 const markets: Market[] = ["pierwotny", "wtórny"];
 const propertyTypes: PropertyType[] = [
@@ -256,6 +302,17 @@ const editDataFields: TextField[] = [
 
 const editDescriptionFields: TextField[] = ["descriptionPl", "descriptionEn"];
 
+const listingPlacementColumns: Array<{
+  field: ListingPlacementField;
+  label: string;
+}> = [
+  { field: "onestaFeatured", label: "Polecane" },
+  { field: "onestaInvestment", label: "Inwestycyjne" },
+  { field: "mapFeatured", label: "MAP – polecane" },
+  { field: "mapVille", label: "MAP – Ville" },
+  { field: "mapHandpicked", label: "MAP - handpicked" },
+];
+
 const emptyForm: ListingForm = {
   country: "Hiszpania",
   city: "",
@@ -308,6 +365,11 @@ const initialListings: Listing[] = [
     ],
     imagesCount: 8,
     createdAt: "2026-06-10",
+    onestaFeatured: false,
+    onestaInvestment: false,
+    mapFeatured: false,
+    mapVille: false,
+    mapHandpicked: false,
   },
   {
     ...emptyForm,
@@ -340,6 +402,11 @@ const initialListings: Listing[] = [
     ],
     imagesCount: 12,
     createdAt: "2026-06-10",
+    onestaFeatured: false,
+    onestaInvestment: false,
+    mapFeatured: false,
+    mapVille: false,
+    mapHandpicked: false,
   },
 ];
 
@@ -544,7 +611,7 @@ function textFromDescription(value: any) {
 }
 
 function displayImageUrlFromValue(value: unknown) {
-  const url =
+  const rawUrl =
     typeof value === "string"
       ? value
       : value && typeof value === "object"
@@ -558,11 +625,33 @@ function displayImageUrlFromValue(value: unknown) {
               "",
           )
         : "";
+  const url = rawUrl.trim();
 
-  if (url && url.startsWith("ftp://")) {
-    const fileName = decodeURIComponent(url.split("/").pop() || "");
-    if (fileName) return `/api/onesari/ftp-image?file=${encodeURIComponent(fileName)}`;
+  if (!url) return "";
+
+  if (url.startsWith("/_next/image?")) {
+    try {
+      const sourceUrl = new URL(url, "https://onesta.invalid").searchParams.get("url")?.trim();
+      if (
+        sourceUrl?.startsWith("ftp://") ||
+        sourceUrl?.startsWith("/api/onesari/ftp-image")
+      ) {
+        return "";
+      }
+      if (
+        sourceUrl &&
+        (sourceUrl.startsWith("https://") ||
+          sourceUrl.startsWith("http://") ||
+          sourceUrl.startsWith("/"))
+      ) {
+        return sourceUrl;
+      }
+    } catch {
+      return "";
+    }
   }
+
+  if (url.startsWith("ftp://") || url.startsWith("/api/onesari/ftp-image")) return "";
 
   return url;
 }
@@ -666,6 +755,11 @@ function mapPropertyToListing(
     images: propertyImages,
     imagesCount: propertyImages.length,
     createdAt: property.updated_at ? String(property.updated_at).slice(0, 10) : "",
+    onestaFeatured: property.onesta_featured === true,
+    onestaInvestment: property.onesta_investment === true,
+    mapFeatured: property.map_featured === true,
+    mapVille: property.map_ville === true,
+    mapHandpicked: property.map_handpicked === true,
   };
 }
 
@@ -725,6 +819,14 @@ export default function OnesariPage() {
   const [addTab, setAddTab] = useState<AddTab>("data");
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
   const [query, setQuery] = useState("");
+  const [countryFilter, setCountryFilter] = useState("");
+  const [coastFilter, setCoastFilter] = useState("");
+  const [minPriceFilter, setMinPriceFilter] = useState("");
+  const [maxPriceFilter, setMaxPriceFilter] = useState("");
+  const [arePlacementColumnsExpanded, setArePlacementColumnsExpanded] = useState(false);
+  const [savingPlacementListings, setSavingPlacementListings] = useState<
+    Record<string, boolean>
+  >({});
   const [dragActive, setDragActive] = useState(false);
   const [notice, setNotice] = useState("");
   const [importStatus, setImportStatus] = useState("");
@@ -779,6 +881,33 @@ export default function OnesariPage() {
   const [editTabs, setEditTabs] = useState<Record<string, AddTab>>({});
   const [editImageItems, setEditImageItems] = useState<Record<string, EditImageItem[]>>({});
   const [draggedEditImageId, setDraggedEditImageId] = useState<string | null>(null);
+  const debouncedQuery = useDebouncedValue(query);
+  const debouncedMinPrice = useDebouncedValue(minPriceFilter);
+  const debouncedMaxPrice = useDebouncedValue(maxPriceFilter);
+  const listingFilters = useMemo<ListingFilterRequest>(
+    () => ({
+      query: debouncedQuery,
+      country: countryFilter,
+      coast: coastFilter,
+      minPrice: debouncedMinPrice,
+      maxPrice: debouncedMaxPrice,
+    }),
+    [coastFilter, countryFilter, debouncedMaxPrice, debouncedMinPrice, debouncedQuery],
+  );
+  const availableCoastFilters = useMemo(
+    () =>
+      countryFilter
+        ? ONESARI_COAST_FILTERS.filter((option) => option.country === countryFilter)
+        : ONESARI_COAST_FILTERS,
+    [countryFilter],
+  );
+  const hasActiveListingFilters = Boolean(
+    query.trim() ||
+      countryFilter ||
+      coastFilter ||
+      minPriceFilter.trim() ||
+      maxPriceFilter.trim(),
+  );
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -793,6 +922,13 @@ export default function OnesariPage() {
       setIsCheckingAuth(false);
     });
   }, [router]);
+
+  useEffect(() => {
+    setAllPage(1);
+    setMetainmoPage(1);
+    setSecondaryPage(1);
+    setOnestaPage(1);
+  }, [listingFilters]);
 
   useEffect(() => {
     if (isCheckingAuth) return;
@@ -856,11 +992,14 @@ export default function OnesariPage() {
         const token = sessionData.session?.access_token;
         if (!token) throw new Error("Brak aktywnej sesji");
 
-        const response = await fetch(`/api/onesari/all?page=${allPage}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          listingRequestUrl("/api/onesari/all", allPage, listingFilters),
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload?.error || "Nie udało się pobrać ogłoszeń");
@@ -885,7 +1024,7 @@ export default function OnesariPage() {
     return () => {
       isMounted = false;
     };
-  }, [allPage, isCheckingAuth, mainTab, sourceFilter, sourceTotalsRefreshKey]);
+  }, [allPage, isCheckingAuth, listingFilters, mainTab, sourceFilter, sourceTotalsRefreshKey]);
 
   useEffect(() => {
     if (!importConfirmation) return;
@@ -917,11 +1056,14 @@ export default function OnesariPage() {
         const token = sessionData.session?.access_token;
         if (!token) throw new Error("Brak aktywnej sesji");
 
-        const response = await fetch(`/api/onesari/metainmo?page=${metainmoPage}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          listingRequestUrl("/api/onesari/metainmo", metainmoPage, listingFilters),
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload?.error || "Nie udało się pobrać REDSP");
@@ -932,7 +1074,6 @@ export default function OnesariPage() {
         if (!isMounted) return;
         setMetainmoListings((data || []).map((property) => mapPropertyToListing(property)));
         setMetainmoTotal(count ?? 0);
-        setSourceTotals((current) => ({ ...current, metainmo: count ?? 0 }));
       })
       .catch((error: any) => {
         if (!isMounted) return;
@@ -947,7 +1088,14 @@ export default function OnesariPage() {
     return () => {
       isMounted = false;
     };
-  }, [isCheckingAuth, mainTab, sourceFilter, metainmoPage, metainmoRefreshKey]);
+  }, [
+    isCheckingAuth,
+    listingFilters,
+    mainTab,
+    sourceFilter,
+    metainmoPage,
+    metainmoRefreshKey,
+  ]);
 
   useEffect(() => {
     if (isCheckingAuth || mainTab !== "offers" || sourceFilter !== "Secondary XML") return;
@@ -962,11 +1110,14 @@ export default function OnesariPage() {
         const token = sessionData.session?.access_token;
         if (!token) throw new Error("Brak aktywnej sesji");
 
-        const response = await fetch(`/api/onesari/secondary?page=${secondaryPage}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          listingRequestUrl("/api/onesari/secondary", secondaryPage, listingFilters),
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload?.error || "Nie udało się pobrać Secondary MLS");
@@ -977,7 +1128,6 @@ export default function OnesariPage() {
         if (!isMounted) return;
         setSecondaryListings((data || []).map((property) => mapPropertyToListing(property, "Secondary XML")));
         setSecondaryTotal(count ?? 0);
-        setSourceTotals((current) => ({ ...current, secondary: count ?? 0 }));
       })
       .catch((error: any) => {
         if (!isMounted) return;
@@ -992,7 +1142,14 @@ export default function OnesariPage() {
     return () => {
       isMounted = false;
     };
-  }, [isCheckingAuth, mainTab, sourceFilter, secondaryPage, secondaryRefreshKey]);
+  }, [
+    isCheckingAuth,
+    listingFilters,
+    mainTab,
+    sourceFilter,
+    secondaryPage,
+    secondaryRefreshKey,
+  ]);
 
   useEffect(() => {
     if (isCheckingAuth || mainTab !== "offers" || sourceFilter !== "Onesta Base") return;
@@ -1007,11 +1164,14 @@ export default function OnesariPage() {
         const token = sessionData.session?.access_token;
         if (!token) throw new Error("Brak aktywnej sesji");
 
-        const response = await fetch(`/api/onesari/onesta?page=${onestaPage}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          listingRequestUrl("/api/onesari/onesta", onestaPage, listingFilters),
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload?.error || "Nie udało się pobrać Onesta Base");
@@ -1022,7 +1182,6 @@ export default function OnesariPage() {
         if (!isMounted) return;
         setOnestaListings((data || []).map((property) => mapPropertyToListing(property, "Onesta Base")));
         setOnestaTotal(count ?? 0);
-        setSourceTotals((current) => ({ ...current, onesta: count ?? 0 }));
       })
       .catch((error: any) => {
         if (!isMounted) return;
@@ -1037,54 +1196,32 @@ export default function OnesariPage() {
     return () => {
       isMounted = false;
     };
-  }, [isCheckingAuth, mainTab, sourceFilter, onestaPage, onestaRefreshKey]);
+  }, [
+    isCheckingAuth,
+    listingFilters,
+    mainTab,
+    sourceFilter,
+    onestaPage,
+    onestaRefreshKey,
+  ]);
 
   const filteredListings = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    const baseListings =
-      sourceFilter === "REDSP XML"
-        ? metainmoListings
-        : sourceFilter === "Secondary XML"
-          ? secondaryListings
-          : sourceFilter === "Onesta Base"
-            ? onestaListings
-            : allListings;
-
-    return baseListings.filter((listing) => {
-      if (
-        sourceFilter !== "all" &&
-        sourceFilter !== "REDSP XML" &&
-        sourceFilter !== "Secondary XML" &&
-        sourceFilter !== "Onesta Base" &&
-        listing.source !== sourceFilter
-      ) {
-        return false;
-      }
-      if (!normalized) return true;
-      return [
-        listing.ref,
-        listing.title,
-        listing.city,
-        listing.country,
-        listing.coast,
-        listing.market,
-        listing.propertyType,
-        listing.source,
-        listing.features.join(" "),
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalized);
-    });
-  }, [allListings, metainmoListings, onestaListings, query, secondaryListings, sourceFilter]);
+    return sourceFilter === "REDSP XML"
+      ? metainmoListings
+      : sourceFilter === "Secondary XML"
+        ? secondaryListings
+        : sourceFilter === "Onesta Base"
+          ? onestaListings
+          : allListings;
+  }, [allListings, metainmoListings, onestaListings, secondaryListings, sourceFilter]);
 
   const sourceCounts = useMemo(
     () => ({
-      metainmo: metainmoTotal ?? sourceTotals.metainmo,
-      secondary: secondaryTotal ?? sourceTotals.secondary,
-      onesta: onestaTotal ?? sourceTotals.onesta,
+      metainmo: sourceTotals.metainmo,
+      secondary: sourceTotals.secondary,
+      onesta: sourceTotals.onesta,
     }),
-    [metainmoTotal, onestaTotal, secondaryTotal, sourceTotals],
+    [sourceTotals],
   );
 
   const metainmoTotalPages = Math.max(
@@ -1178,6 +1315,14 @@ export default function OnesariPage() {
     setNotice("");
   }
 
+  function clearListingFilters() {
+    setQuery("");
+    setCountryFilter("");
+    setCoastFilter("");
+    setMinPriceFilter("");
+    setMaxPriceFilter("");
+  }
+
   function updateCountry(country: string) {
     const coastOptions = coastOptionsByCountry[country] || [];
     setForm((current) => ({
@@ -1210,6 +1355,53 @@ export default function OnesariPage() {
     setMetainmoListings(replace);
     setSecondaryListings(replace);
     setOnestaListings(replace);
+  }
+
+  async function saveListingPlacement(
+    listing: Listing,
+    field: ListingPlacementField,
+    value: boolean,
+  ) {
+    const optimisticListing = { ...listing, [field]: value };
+    replaceListing(optimisticListing);
+    setSavingPlacementListings((current) => ({ ...current, [listing.id]: true }));
+    setNotice("");
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Brak aktywnej sesji");
+
+      const response = await fetch("/api/onesari/update", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: listing.id,
+          field,
+          value,
+        }),
+      });
+      const data = await readJsonResponse<{ property?: any; error?: string }>(
+        response,
+        "Nie udało się zapisać oznaczenia",
+      );
+      if (!response.ok) {
+        throw new Error(responseError(response, data, "Nie udało się zapisać oznaczenia"));
+      }
+      if (!data.property) throw new Error("Supabase nie zwrócił zapisanej oferty");
+
+      replaceListing(mapPropertyToListing(data.property));
+      const label = listingPlacementColumns.find((column) => column.field === field)?.label;
+      setNotice(`${label || "Oznaczenie"} zapisane dla oferty ${listing.ref}.`);
+    } catch (error: any) {
+      replaceListing(listing);
+      setNotice(error?.message || "Nie udało się zapisać oznaczenia.");
+    } finally {
+      setSavingPlacementListings((current) => ({ ...current, [listing.id]: false }));
+    }
   }
 
   function openListingEditor(listing: Listing) {
@@ -1914,47 +2106,7 @@ export default function OnesariPage() {
     runXmlImport(kind);
   }
 
-  function scheduleBackgroundImportRefresh(kind: ImportKind) {
-    if (typeof window === "undefined") return;
-
-    const refresh = () => {
-      setSourceTotalsRefreshKey((current) => current + 1);
-      if (kind === "metainmo") {
-        setMetainmoRefreshKey((current) => current + 1);
-      } else {
-        setSecondaryRefreshKey((current) => current + 1);
-      }
-    };
-
-    [30000, 90000, 180000, 360000, 600000].forEach((delayMs) => {
-      window.setTimeout(refresh, delayMs);
-    });
-  }
-
-  function createImportRunId() {
-    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-      return crypto.randomUUID();
-    }
-
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
-      const value = Math.floor(Math.random() * 16);
-      const digit = char === "x" ? value : (value & 0x3) | 0x8;
-      return digit.toString(16);
-    });
-  }
-
-  function getXmlImportEndpoint(kind: ImportKind, runId: string) {
-    const isLocalhost =
-      typeof window !== "undefined" &&
-      ["localhost", "127.0.0.1"].includes(window.location.hostname);
-
-    if (!isLocalhost) {
-      const endpoint = kind === "metainmo"
-        ? "/.netlify/functions/metainmoToSupabase-background"
-        : "/.netlify/functions/secondaryToSupabase-background";
-      return `${endpoint}?runId=${encodeURIComponent(runId)}`;
-    }
-
+  function getXmlImportEndpoint(kind: ImportKind) {
     return kind === "metainmo"
       ? "/api/metainmoToSupabase"
       : "/api/secondaryToSupabase";
@@ -1981,119 +2133,8 @@ export default function OnesariPage() {
         }, usunięte stare ${data?.total_deleted_sec ?? 0}.`;
   }
 
-  function markBackgroundImportQueued(kind: ImportKind, runId: string) {
-    const label = kind === "metainmo" ? "REDSP" : "Secondary MLS";
-    const message = `${label}: import uruchomiony w tle na Netlify. Czekam na końcowy raport...`;
-    setImportProgress((current) =>
-      current && current.kind === kind
-        ? {
-            ...current,
-            percent: 25,
-            stage: "background",
-            message,
-          }
-        : current,
-    );
-    setImportStatus(message);
-    scheduleBackgroundImportRefresh(kind);
-    pollBackgroundImportStatus(kind, runId);
-  }
-
-  async function pollBackgroundImportStatus(
-    kind: ImportKind,
-    runId: string,
-    attempt = 0,
-  ) {
-    if (attempt > 180) {
-      setImportStatus("Import nadal działa w tle. Odśwież /onesari za chwilę.");
-      setImporting(null);
-      return;
-    }
-
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData.session?.access_token;
-      if (!token) throw new Error("Brak aktywnej sesji");
-
-      const response = await fetch(
-        `/api/onesari/import-status?id=${encodeURIComponent(runId)}`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      const payload = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(payload?.error || "Nie udało się pobrać statusu importu");
-      }
-
-      const run = payload?.importRun;
-      if (!run) throw new Error("Brak statusu importu");
-
-      const message = String(run.message || "");
-      setImportProgress((current) =>
-        current && current.kind === kind
-          ? {
-              ...current,
-              percent: Number(run.progressPercent ?? current.percent ?? 25),
-              processed:
-                typeof run.processed === "number" ? run.processed : current.processed,
-              total: typeof run.total === "number" ? run.total : current.total,
-              stage: String(run.status || "background"),
-              message: message || current.message,
-              error: run.status === "failed",
-            }
-          : current,
-      );
-      if (message) setImportStatus(message);
-
-      if (run.status === "completed") {
-        const data = run.result || {};
-        const finalMessage = importSuccessMessage(kind, data);
-        setImportProgress((current) =>
-          current && current.kind === kind
-            ? {
-                ...current,
-                percent: 100,
-                processed:
-                  typeof current.total === "number" ? current.total : current.processed,
-                stage: "completed",
-                message: finalMessage,
-              }
-            : current,
-        );
-        setImportStatus(finalMessage);
-        refreshImportedSource(kind);
-        setImporting(null);
-        return;
-      }
-
-      if (run.status === "failed") {
-        const errorMessage = run.error || run.message || "Import nie powiódł się.";
-        setImportProgress((current) =>
-          current && current.kind === kind
-            ? {
-                ...current,
-                percent: 100,
-                error: true,
-                stage: "failed",
-                message: errorMessage,
-              }
-            : current,
-        );
-        setImportStatus(errorMessage);
-        setImporting(null);
-        return;
-      }
-    } catch (error: any) {
-      setImportStatus(error?.message || "Czekam na status importu...");
-    }
-
-    window.setTimeout(() => pollBackgroundImportStatus(kind, runId, attempt + 1), 5000);
-  }
-
   async function runXmlImport(kind: ImportKind) {
-    const runId = createImportRunId();
-    const endpoint = getXmlImportEndpoint(kind, runId);
-    let keepImportingForBackground = false;
+    const endpoint = getXmlImportEndpoint(kind);
     setImporting(kind);
     setImportProgress({
       kind,
@@ -2113,18 +2154,19 @@ export default function OnesariPage() {
     );
 
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) {
+        throw new Error("Brak aktywnej sesji. Zaloguj się ponownie.");
+      }
+
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "x-import-progress": "1",
         },
       });
-
-      if (response.status === 202) {
-        keepImportingForBackground = true;
-        markBackgroundImportQueued(kind, runId);
-        return;
-      }
 
       if (response.body) {
         const reader = response.body.getReader();
@@ -2270,9 +2312,7 @@ export default function OnesariPage() {
           : current,
       );
     } finally {
-      if (!keepImportingForBackground) {
-        setImporting(null);
-      }
+      setImporting(null);
     }
   }
 
@@ -2709,15 +2749,86 @@ export default function OnesariPage() {
                 </article>
               </section>
 
-              <label className="searchBox">
-                <FaSearch />
-                <input
-                  aria-label="Szukaj ogłoszeń"
-                  placeholder="Szukaj po tytule, mieście, rynku, źródle..."
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                />
-              </label>
+              <section className="listingFiltersPanel" aria-label="Filtry ogłoszeń">
+                <div className="listingSearchRow">
+                  <label className="searchBox">
+                    <FaSearch />
+                    <input
+                      aria-label="Szukaj ogłoszeń"
+                      placeholder="Szukaj po tytule, mieście, wybrzeżu lub numerze REF..."
+                      value={query}
+                      onChange={(event) => setQuery(event.target.value)}
+                    />
+                  </label>
+                  <button
+                    className="clearFiltersButton"
+                    disabled={!hasActiveListingFilters}
+                    type="button"
+                    onClick={clearListingFilters}
+                  >
+                    <FaTimes /> Wyczyść filtry
+                  </button>
+                </div>
+
+                <div className="listingFilterGrid">
+                  <label className="listingFilterField">
+                    <span>Państwo</span>
+                    <select
+                      value={countryFilter}
+                      onChange={(event) => {
+                        setCountryFilter(event.target.value);
+                        setCoastFilter("");
+                      }}
+                    >
+                      <option value="">Wszystkie państwa</option>
+                      {ONESARI_COUNTRY_FILTERS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label className="listingFilterField">
+                    <span>Wybrzeże</span>
+                    <select
+                      value={coastFilter}
+                      onChange={(event) => setCoastFilter(event.target.value)}
+                    >
+                      <option value="">Wszystkie wybrzeża</option>
+                      {availableCoastFilters.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label className="listingFilterField">
+                    <span>Cena od (EUR)</span>
+                    <input
+                      inputMode="numeric"
+                      min="0"
+                      placeholder="np. 150 000"
+                      type="number"
+                      value={minPriceFilter}
+                      onChange={(event) => setMinPriceFilter(event.target.value)}
+                    />
+                  </label>
+
+                  <label className="listingFilterField">
+                    <span>Cena do (EUR)</span>
+                    <input
+                      inputMode="numeric"
+                      min="0"
+                      placeholder="np. 500 000"
+                      type="number"
+                      value={maxPriceFilter}
+                      onChange={(event) => setMaxPriceFilter(event.target.value)}
+                    />
+                  </label>
+                </div>
+              </section>
 
               {notice ? <p className="onesariNotice">{notice}</p> : null}
               {sourceFilter === "all" ||
@@ -2740,13 +2851,47 @@ export default function OnesariPage() {
                 <p className="onesariError">{remoteSourceError}</p>
               ) : null}
 
-              <section className="listingTable" aria-label="Lista ogłoszeń">
+              <div className="listingColumnsToolbar">
+                <div>
+                  <strong>Miejsca publikacji</strong>
+                  <span>
+                    {arePlacementColumnsExpanded
+                      ? "Kolumny są rozwinięte — tabelę możesz przewijać poziomo."
+                      : "Rozwiń kolumny, aby oznaczać charakter i miejsce wyświetlania ofert."}
+                  </span>
+                </div>
+                <button
+                  aria-expanded={arePlacementColumnsExpanded}
+                  aria-controls="onesari-listing-table"
+                  className="placementColumnsToggle"
+                  type="button"
+                  onClick={() => setArePlacementColumnsExpanded((current) => !current)}
+                >
+                  {arePlacementColumnsExpanded ? <FaChevronLeft /> : <FaChevronRight />}
+                  {arePlacementColumnsExpanded ? "Zwiń kolumny" : "Rozwiń kolumny"}
+                </button>
+              </div>
+
+              <section
+                className={`listingTable ${
+                  arePlacementColumnsExpanded ? "placementColumnsExpanded" : ""
+                }`}
+                id="onesari-listing-table"
+                aria-label="Lista ogłoszeń"
+              >
                 <div className="listingHeader">
                   <span>Ref / zdjęcie</span>
                   <span>Opis</span>
                   <span>Cena</span>
                   <span>Rynek</span>
                   <span>Źródło</span>
+                  {arePlacementColumnsExpanded
+                    ? listingPlacementColumns.map((column) => (
+                        <span className="placementHeader" key={column.field}>
+                          {column.label}
+                        </span>
+                      ))
+                    : null}
                   <span>Obrazy</span>
                   <span>Edycja</span>
                 </div>
@@ -2787,6 +2932,32 @@ export default function OnesariPage() {
                         </strong>
                         <span className="pill">{listing.market}</span>
                         <span className="sourcePill">{listing.source}</span>
+                        {arePlacementColumnsExpanded
+                          ? listingPlacementColumns.map((column) => (
+                              <label
+                                className="placementCheckbox"
+                                key={column.field}
+                                title={`${column.label}: oferta ${listing.ref}`}
+                              >
+                                <input
+                                  aria-label={`${column.label}: oferta ${listing.ref}`}
+                                  checked={listing[column.field]}
+                                  disabled={Boolean(savingPlacementListings[listing.id])}
+                                  type="checkbox"
+                                  onChange={(event) =>
+                                    saveListingPlacement(
+                                      listing,
+                                      column.field,
+                                      event.target.checked,
+                                    )
+                                  }
+                                />
+                                <span aria-hidden="true">
+                                  <FaCheck />
+                                </span>
+                              </label>
+                            ))
+                          : null}
                         <span className="imageCounter">
                           <FaImages /> {listing.imagesCount}
                         </span>
@@ -2977,6 +3148,13 @@ export default function OnesariPage() {
                     </div>
                   );
                 })}
+                {!isRemoteSourceLoading && !filteredListings.length ? (
+                  <div className="listingEmptyState">
+                    <FaSearch />
+                    <strong>Brak ofert spełniających wybrane kryteria</strong>
+                    <span>Zmień zakres ceny albo wyczyść część filtrów.</span>
+                  </div>
+                ) : null}
               </section>
               {sourceFilter === "all" ||
               sourceFilter === "REDSP XML" ||
@@ -3642,6 +3820,7 @@ export default function OnesariPage() {
         }
 
         .sourceGrid article,
+        .listingFiltersPanel,
         .listingTable,
         .offerForm,
         .importsPanel {
@@ -3710,7 +3889,6 @@ export default function OnesariPage() {
           border-radius: 8px;
           display: flex;
           gap: 10px;
-          max-width: 760px;
           min-height: 44px;
           padding: 0 14px;
         }
@@ -3721,6 +3899,79 @@ export default function OnesariPage() {
           min-height: 42px;
           outline: 0;
           width: 100%;
+        }
+
+        .listingFiltersPanel {
+          display: grid;
+          gap: 14px;
+          padding: 16px;
+        }
+
+        .listingSearchRow {
+          display: grid;
+          gap: 12px;
+          grid-template-columns: minmax(280px, 1fr) auto;
+        }
+
+        .listingFilterGrid {
+          display: grid;
+          gap: 12px;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .listingFilterField {
+          color: #344054;
+          display: grid;
+          font-size: 12px;
+          font-weight: 900;
+          gap: 6px;
+          min-width: 0;
+        }
+
+        .listingFilterField input,
+        .listingFilterField select {
+          background: #ffffff;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          color: #17202a;
+          font: inherit;
+          font-size: 13px;
+          min-height: 42px;
+          outline: 0;
+          padding: 0 12px;
+          width: 100%;
+        }
+
+        .listingFilterField input:focus,
+        .listingFilterField select:focus,
+        .searchBox:focus-within {
+          border-color: #216e63;
+          box-shadow: 0 0 0 3px rgba(33, 110, 99, 0.12);
+        }
+
+        .clearFiltersButton {
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          color: #344054;
+          display: inline-flex;
+          font-size: 13px;
+          font-weight: 900;
+          gap: 8px;
+          justify-content: center;
+          min-height: 44px;
+          padding: 0 14px;
+        }
+
+        .clearFiltersButton:hover:not(:disabled) {
+          border-color: #9acdc4;
+          color: #155149;
+        }
+
+        .clearFiltersButton:disabled {
+          cursor: default;
+          opacity: 0.45;
         }
 
         .onesariNotice {
@@ -3761,6 +4012,74 @@ export default function OnesariPage() {
           overflow: hidden;
         }
 
+        .listingEmptyState {
+          align-items: center;
+          border-top: 1px solid #d8dee7;
+          color: #667085;
+          display: flex;
+          flex-direction: column;
+          gap: 7px;
+          justify-content: center;
+          min-height: 180px;
+          padding: 28px;
+          text-align: center;
+        }
+
+        .listingEmptyState > :global(svg) {
+          color: #9acdc4;
+          font-size: 28px;
+        }
+
+        .listingEmptyState strong {
+          color: #17202a;
+        }
+
+        .listingEmptyState span {
+          font-size: 13px;
+        }
+
+        .listingColumnsToolbar {
+          align-items: center;
+          display: flex;
+          gap: 16px;
+          justify-content: space-between;
+        }
+
+        .listingColumnsToolbar > div {
+          display: grid;
+          gap: 3px;
+        }
+
+        .listingColumnsToolbar strong {
+          color: #17202a;
+          font-size: 14px;
+        }
+
+        .listingColumnsToolbar span {
+          color: #667085;
+          font-size: 12px;
+          font-weight: 700;
+        }
+
+        .placementColumnsToggle {
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #9acdc4;
+          border-radius: 8px;
+          color: #155149;
+          display: inline-flex;
+          flex: 0 0 auto;
+          font-size: 13px;
+          font-weight: 900;
+          gap: 8px;
+          min-height: 40px;
+          padding: 0 14px;
+        }
+
+        .placementColumnsToggle:hover {
+          background: #edf8f5;
+        }
+
         .listingItem {
           border-top: 1px solid #d8dee7;
         }
@@ -3773,6 +4092,21 @@ export default function OnesariPage() {
           padding: 14px 16px;
         }
 
+        .listingTable.placementColumnsExpanded {
+          overflow-x: auto;
+          overscroll-behavior-x: contain;
+        }
+
+        .listingTable.placementColumnsExpanded .listingHeader,
+        .listingTable.placementColumnsExpanded .listingRow {
+          grid-template-columns: minmax(280px, 1.15fr) minmax(250px, 1fr) 112px 96px 132px repeat(5, 112px) 72px 76px;
+        }
+
+        .listingTable.placementColumnsExpanded .listingHeader,
+        .listingTable.placementColumnsExpanded .listingItem {
+          min-width: 1772px;
+        }
+
         .listingHeader {
           background: #f9fafb;
           color: #667085;
@@ -3781,10 +4115,15 @@ export default function OnesariPage() {
           text-transform: uppercase;
         }
 
-        .listingHeader span:nth-child(6),
-        .listingHeader span:nth-child(7) {
+        .listingHeader span:nth-last-child(-n + 2),
+        .placementHeader {
           justify-self: center;
           text-align: center;
+        }
+
+        .placementHeader {
+          align-self: center;
+          line-height: 1.25;
         }
 
         .listingRow {
@@ -3804,6 +4143,50 @@ export default function OnesariPage() {
           align-items: center;
           display: flex;
           gap: 10px;
+        }
+
+        .placementCheckbox {
+          align-items: center;
+          cursor: pointer;
+          display: inline-flex;
+          justify-self: center;
+          position: relative;
+        }
+
+        .placementCheckbox input {
+          height: 1px;
+          opacity: 0;
+          pointer-events: none;
+          position: absolute;
+          width: 1px;
+        }
+
+        .placementCheckbox span {
+          align-items: center;
+          background: #ffffff;
+          border: 2px solid #cbd5e1;
+          border-radius: 6px;
+          color: transparent;
+          display: inline-flex;
+          height: 24px;
+          justify-content: center;
+          transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+          width: 24px;
+        }
+
+        .placementCheckbox input:checked + span {
+          background: #216e63;
+          border-color: #216e63;
+          color: #ffffff;
+        }
+
+        .placementCheckbox input:focus-visible + span {
+          box-shadow: 0 0 0 3px rgba(33, 110, 99, 0.2);
+        }
+
+        .placementCheckbox input:disabled + span {
+          cursor: wait;
+          opacity: 0.55;
         }
 
         .listingDescription {
@@ -4713,7 +5096,13 @@ export default function OnesariPage() {
             min-width: 1160px;
           }
 
+          .listingTable.placementColumnsExpanded .listingHeader,
+          .listingTable.placementColumnsExpanded .listingItem {
+            min-width: 1772px;
+          }
+
           .fieldGrid,
+          .listingFilterGrid,
           .listingEditGrid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
@@ -4727,6 +5116,8 @@ export default function OnesariPage() {
 
           .onesariTopbar,
           .formTabs,
+          .listingColumnsToolbar,
+          .listingSearchRow,
           .paginationMeta,
           .paginationBar,
           .saveBar {
@@ -4742,9 +5133,18 @@ export default function OnesariPage() {
           .sourceGrid,
           .importActions,
           .fieldGrid,
+          .listingFilterGrid,
           .listingEditGrid,
           .textareaGrid {
             grid-template-columns: 1fr;
+          }
+
+          .listingSearchRow {
+            grid-template-columns: 1fr;
+          }
+
+          .clearFiltersButton {
+            width: 100%;
           }
 
           .wide {
@@ -4758,6 +5158,21 @@ export default function OnesariPage() {
           .listingRow {
             grid-template-columns: 1fr;
             min-width: 0;
+          }
+
+          .listingTable.placementColumnsExpanded .listingHeader {
+            display: grid;
+          }
+
+          .listingTable.placementColumnsExpanded .listingHeader,
+          .listingTable.placementColumnsExpanded .listingRow {
+            grid-template-columns: minmax(280px, 1.15fr) minmax(250px, 1fr) 112px 96px 132px repeat(5, 112px) 72px 76px;
+          }
+
+          .listingTable.placementColumnsExpanded .listingHeader,
+          .listingTable.placementColumnsExpanded .listingItem,
+          .listingTable.placementColumnsExpanded .listingRow {
+            min-width: 1772px;
           }
 
           .importsHeader {

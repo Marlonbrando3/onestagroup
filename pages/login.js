@@ -1,7 +1,6 @@
 import { supabase } from "../lib/supabaseClient";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
-import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
@@ -48,13 +47,16 @@ export default function Login() {
       <input
         ref={email}
         name="email"
-        type="mail"
+        type="email"
+        autoComplete="email"
         className="border-2 rounded-md mb-3 h-10"
       ></input>
       <label id="pass">Hasło</label>
       <input
         ref={password}
         name="pass"
+        type="password"
+        autoComplete="current-password"
         className="border-2 rounded-md h-10"
       ></input>
       <button
@@ -65,12 +67,6 @@ export default function Login() {
       >
         Zaloguj się
       </button>
-      <div className="text-center text-sm mt-3">
-        Nie masz konta?{" "}
-        <Link href="/signup" className="text-blue-500 font-semibold">
-          Zarejestruj się
-        </Link>
-      </div>
     </div>
   );
 }
