@@ -18,6 +18,7 @@ type PropertyProps = {
   onBrokenImages?: (externalId: string | number) => void;
   locale?: SiteLocale;
   detailHrefOverride?: string;
+  imagePriority?: boolean;
 };
 
 function slugify(value: string): string {
@@ -59,6 +60,7 @@ export default function PropertyCard({
   onBrokenImages,
   locale = "pl",
   detailHrefOverride,
+  imagePriority = false,
 }: PropertyProps) {
   const [copiedShowed, setCopiedShowed] = useState(false);
   const isEn = locale === "en";
@@ -164,6 +166,8 @@ export default function PropertyCard({
           propertyId={property?.external_id}
           propertyTitle={listingTitle}
           slug={slug}
+          detailHrefOverride={detailHrefOverride}
+          imagePriority={imagePriority}
           onAllImagesFailed={() => onBrokenImages?.(property?.external_id)}
         />
       </div>

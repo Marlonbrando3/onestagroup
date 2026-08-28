@@ -26,3 +26,13 @@ export function propertyImageUrl(
 
   return fallback;
 }
+
+export function optimizedPropertyImageUrl(image: unknown): string {
+  const sourceUrl = propertyImageUrl(image);
+
+  if (sourceUrl.startsWith("https://") || sourceUrl.startsWith("http://")) {
+    return `/api/property-image?url=${encodeURIComponent(sourceUrl)}`;
+  }
+
+  return sourceUrl;
+}

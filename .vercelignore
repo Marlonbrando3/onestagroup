@@ -1,6 +1,14 @@
 # Lokalne kopie historii edytora nie są częścią aplikacji.
 .history
 
+# Stare funkcje tła Netlify nie są używane przez wdrożenie Vercel.
+netlify
+
+# Lokalne wartości środowiskowe nigdy nie są częścią paczki wdrożeniowej.
+.env
+.env.local
+.env.*.local
+
 # Jednorazowy wynik starego parsera XML (około 92 MB).
 parsed-output.json
 

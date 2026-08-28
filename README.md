@@ -35,6 +35,31 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Projekt korzysta z natywnego buildu Next.js na Vercelu i Node.js 24. Nie ustawiaj
+w dashboardzie własnego Output Directory ani statycznego eksportu.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Zaloguj CLI i połącz katalog z projektem:
+
+   ```bash
+   npx vercel@latest login
+   npx vercel@latest link
+   ```
+
+2. Dodaj wartości z `.env.example` w `Project Settings > Environment Variables`.
+   Trzy zmienne Supabase są wymagane. Pozostałe włączają wskazane integracje.
+   Sekretów nie wpisuj do `vercel.json` i nie commituj plików `.env`.
+
+3. Sprawdź preview, a następnie opublikuj produkcję:
+
+   ```bash
+   npx vercel@latest
+   npx vercel@latest --prod
+   ```
+
+### Property image optimization
+
+Karty na stronach wyszukiwania używają `next/image`, responsywnego `srcset`,
+AVIF/WebP i jakości 70. Zewnętrzne źródła przechodzą przez
+`/api/property-image`, który dopuszcza tylko hosty z
+`lib/propertyImageSources.ts`. Po dodaniu nowego feedu jego host i protokół
+trzeba dopisać do tej listy.

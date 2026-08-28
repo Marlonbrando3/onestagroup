@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useRef } from "react";
 import AnalitycsTools from "@/analitycs/analitycsTools";
-import OnestaAiChat from "@/components/OnestaAiChat";
 
 export default function App({ Component, pageProps }: AppProps) {
   const cookiesWindow = useRef<any>();
@@ -22,7 +21,6 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <AnalitycsTools />
       <Component {...pageProps} cookiesWindow={cookiesWindow} />
-      {router.pathname !== "/sale" && <OnestaAiChat />}
     </>
   );
 }

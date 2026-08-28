@@ -2,8 +2,9 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
 import Link from "next/link";
+import Image from "next/image";
 import { localePath, SiteLocale } from "@/lib/i18n";
-import { propertyImageUrl } from "@/lib/propertyImages";
+import { optimizedPropertyImageUrl } from "@/lib/propertyImages";
 
 type Images = {
   date: string | null;
@@ -16,6 +17,8 @@ type Images = {
   propertyTitle: string;
   slug: string;
   locale?: SiteLocale;
+  detailHrefOverride?: string;
+  imagePriority?: boolean;
   onAllImagesFailed?: () => void;
 };
 
@@ -26,8 +29,11 @@ export default function ResultsSlider({
   countrySlug,
   deliveryDate,
   date,
+  propertyTitle,
   slug,
   locale = "pl",
+  detailHrefOverride,
+  imagePriority = false,
   onAllImagesFailed: _onAllImagesFailed,
 }: Images) {
   const [index, setIndex] = useState(0);
@@ -96,6 +102,10 @@ export default function ResultsSlider({
   };
   const paths = localePath[locale];
   const isEn = locale === "en";
+  const detailHref = detailHrefOverride || {
+    pathname: paths.property(countrySlug, slug),
+    query: { id: propertyId },
+  };
   const isPrimary =
     market === "RYNEK PIERWOTNY" || market === "PRIMARY MARKET";
   const activeSlide = slides[index] ?? slides[0];
@@ -149,10 +159,7 @@ export default function ResultsSlider({
           {activeSlide ? (
             activeSlide.type === "more" ? (
               <Link
-                href={{
-                  pathname: paths.property(countrySlug, slug),
-                  query: { id: propertyId },
-                }}
+                href={detailHref}
                 prefetch={false}
                 className="min-w-full h-full flex items-center justify-center bg-red-500/70 text-3xl text-white font-[700]"
               >
@@ -160,19 +167,24 @@ export default function ResultsSlider({
               </Link>
             ) : (
               <Link
-                href={{
-                  pathname: paths.property(countrySlug, slug),
-                  query: { id: propertyId },
-                }}
+                href={detailHref}
                 prefetch={false}
                 className="relative block h-full w-full"
               >
-                <img
-                  className="h-full w-full object-cover"
-                  src={propertyImageUrl(activeSlide.url)}
-                  alt="Zdjęcie nieruchomości"
-                  loading="lazy"
-                  decoding="async"
+                <Image
+                  fill
+                  className="object-cover"
+                  src={optimizedPropertyImageUrl(activeSlide.url)}
+                  alt={
+                    isEn
+                      ? `${propertyTitle} - property photo`
+                      : `${propertyTitle} - zdjęcie nieruchomości`
+                  }
+                  sizes="(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
+                  quality={70}
+                  {...(imagePriority && index === 0
+                    ? { preload: true }
+                    : { loading: "lazy" as const })}
                 />
               </Link>
             )

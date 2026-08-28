@@ -99,11 +99,12 @@ export default function SearchResults(props: any) {
           ? Array.from({ length: 6 }).map((_, i) => (
               <PropertyCardSkeleton key={`sk-${i}`} />
             ))
-          : properties.map((property: any) => (
+          : properties.map((property: any, index: number) => (
               <PropertyCard
                 key={property.external_id}
                 property={property}
                 locale={locale}
+                imagePriority={index === 0}
               />
             ))}
       </div>
