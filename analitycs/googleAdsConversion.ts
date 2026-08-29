@@ -1,3 +1,5 @@
+import { hasCookieYesConsent } from "@/lib/cookieConsent";
+
 const CONTACT_CONVERSION_ID = "AW-11239400043/aO2VCNT92LYcEOvEru8p";
 
 type GoogleAdsWindow = Window & {
@@ -7,6 +9,7 @@ type GoogleAdsWindow = Window & {
 
 export function trackGoogleAdsContactConversion(url?: string) {
   if (typeof window === "undefined") return false;
+  if (!hasCookieYesConsent("advertisement")) return false;
 
   const googleWindow = window as GoogleAdsWindow;
   googleWindow.dataLayer = googleWindow.dataLayer || [];

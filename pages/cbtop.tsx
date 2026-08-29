@@ -28,9 +28,11 @@ import {
 } from "@/lib/cbTopOffers";
 import {
   captureCbTopTrackingToken,
+  requestCbTopUrgentContact,
   trackCbTopInteraction,
   type CbTopTrackingContext,
 } from "@/lib/cbTopTracking";
+import { subscribeToCookieYesConsent } from "@/lib/cookieConsent";
 import { propertyTypeLabel } from "@/lib/i18n";
 import { optimizedPropertyImageUrl } from "@/lib/propertyImages";
 import { getCoastLabelFromProvince, getCountryLabel } from "@/lib/regionMap";
@@ -897,11 +899,35 @@ export default function CbTopPage({ offers, socialImage }: CbTopPageProps) {
   const [pageFormStatus, setPageFormStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
+  const [urgentContactStatus, setUrgentContactStatus] = useState<
+    | "idle"
+    | "sending"
+    | "success"
+    | "missing_tracking"
+    | "error"
+  >("idle");
   const detailCache = useRef(new Map<string, AgentOffer>());
   const modalOpen = Boolean(activeOffer);
 
   useEffect(() => {
-    captureCbTopTrackingToken();
+    let consentSyncTimer: number | undefined;
+    const syncTrackingConsent = () => {
+      const result = captureCbTopTrackingToken();
+      if (result === "captured") {
+        trackCbTopInteraction({ event: "sms_link_open" });
+      }
+    };
+
+    syncTrackingConsent();
+    const unsubscribe = subscribeToCookieYesConsent(() => {
+      window.clearTimeout(consentSyncTimer);
+      consentSyncTimer = window.setTimeout(syncTrackingConsent, 0);
+    });
+
+    return () => {
+      window.clearTimeout(consentSyncTimer);
+      unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -1006,6 +1032,25 @@ export default function CbTopPage({ offers, socialImage }: CbTopPageProps) {
     } catch {
       setPageFormStatus("error");
     }
+  };
+
+  const requestUrgentContact = async () => {
+    if (
+      urgentContactStatus === "sending" ||
+      urgentContactStatus === "success"
+    ) {
+      return;
+    }
+
+    setUrgentContactStatus("sending");
+    const result = await requestCbTopUrgentContact();
+    if (result.ok) {
+      setUrgentContactStatus("success");
+      return;
+    }
+    setUrgentContactStatus(
+      result.reason === "missing_tracking" ? "missing_tracking" : "error",
+    );
   };
 
   return (
@@ -1356,6 +1401,65 @@ export default function CbTopPage({ offers, socialImage }: CbTopPageProps) {
                   </>
                 )}
                 <WhatsAppContactLink context="page_footer" />
+              </div>
+            </div>
+          </section>
+
+          <section className="relative mt-6 overflow-hidden rounded-[24px] border border-[#d9c38f] bg-[#efe4d0] px-7 py-8 sm:px-10 sm:py-9">
+            <div className="absolute -right-14 -top-20 h-52 w-52 rounded-full border border-[#b8954c]/20" />
+            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="max-w-[760px]">
+                <p className="text-[8px] font-extrabold uppercase tracking-[0.16em] text-[#9b7a36]">
+                  Kontakt w kilka minut
+                </p>
+                <h2
+                  className={`${HomePlayfairSans.className} mt-2 text-[29px] font-semibold leading-tight text-[#182334] sm:text-[36px]`}
+                >
+                  Jesteś gotowy do rozmowy teraz?
+                </h2>
+                <p className="mt-3 text-[11px] leading-5 text-slate-600 sm:text-[12px]">
+                  Kliknij poniżej. Zadzwonimy do Ciebie w ciągu kilku minut.
+                </p>
+              </div>
+
+              <div className="w-full shrink-0 lg:w-auto lg:min-w-[310px]">
+                {urgentContactStatus === "success" ? (
+                  <div
+                    className="flex min-h-[52px] items-center justify-center gap-2 rounded-full bg-[#182334] px-7 text-center text-[10px] font-extrabold uppercase tracking-[0.1em] text-white"
+                    role="status"
+                  >
+                    <FiCheckCircle className="h-4 w-4" aria-hidden="true" />
+                    Prośba wysłana — zaraz zadzwonimy
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={requestUrgentContact}
+                    disabled={urgentContactStatus === "sending"}
+                    className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-[#182334] px-7 text-[10px] font-extrabold uppercase tracking-[0.1em] text-white shadow-[0_12px_28px_rgba(24,35,52,0.18)] transition hover:-translate-y-0.5 hover:bg-[#9b7a36] disabled:cursor-wait disabled:opacity-70"
+                  >
+                    {urgentContactStatus === "sending" ? (
+                      <>
+                        <span className="cbtop-form-loader h-4 w-4 rounded-full border-2 border-white/25 border-t-white" />
+                        Wysyłanie prośby
+                      </>
+                    ) : (
+                      <>
+                        <FiPhone aria-hidden="true" /> Zadzwońcie do mnie teraz
+                      </>
+                    )}
+                  </button>
+                )}
+
+                {urgentContactStatus === "missing_tracking" ? (
+                  <p className="mt-3 text-center text-[9px] font-semibold leading-4 text-red-700" role="alert">
+                    Otwórz tę stronę ponownie z linku otrzymanego w SMS-ie.
+                  </p>
+                ) : urgentContactStatus === "error" ? (
+                  <p className="mt-3 text-center text-[9px] font-semibold leading-4 text-red-700" role="alert">
+                    Nie udało się wysłać prośby. Spróbuj ponownie za chwilę.
+                  </p>
+                ) : null}
               </div>
             </div>
           </section>

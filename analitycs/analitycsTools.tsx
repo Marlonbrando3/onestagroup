@@ -1,103 +1,107 @@
 "use client";
 
-import Script from "next/script";
+import { useEffect, useRef } from "react";
+import {
+  cookieYesConsentState,
+  subscribeToCookieYesConsent,
+  type CookieYesConsentState,
+} from "@/lib/cookieConsent";
+
+type ConsentWindow = Window & {
+  fbq?: ((...args: unknown[]) => void) & {
+    callMethod?: (...args: unknown[]) => void;
+    queue?: unknown[];
+    loaded?: boolean;
+    version?: string;
+  };
+  _fbq?: unknown;
+  hj?: ((...args: unknown[]) => void) & { q?: unknown[] };
+  _hjSettings?: { hjid: number; hjsv: number };
+};
+
+const FACEBOOK_SCRIPT_ID = "onesta-facebook-pixel-script";
+const HOTJAR_SCRIPT_ID = "onesta-hotjar-script";
+
+function enableFacebookPixel() {
+  const consentWindow = window as ConsentWindow;
+  if (consentWindow.fbq) {
+    consentWindow.fbq("consent", "grant");
+    return;
+  }
+
+  const fbq = function (...args: unknown[]) {
+    if (fbq.callMethod) fbq.callMethod(...args);
+    else fbq.queue?.push(args);
+  } as NonNullable<ConsentWindow["fbq"]>;
+  fbq.queue = [];
+  fbq.loaded = true;
+  fbq.version = "2.0";
+  consentWindow.fbq = fbq;
+  consentWindow._fbq = fbq;
+
+  fbq("consent", "grant");
+  fbq("init", "178665974358939");
+  fbq("track", "PageView");
+
+  if (!document.getElementById(FACEBOOK_SCRIPT_ID)) {
+    const script = document.createElement("script");
+    script.id = FACEBOOK_SCRIPT_ID;
+    script.async = true;
+    script.src = "https://connect.facebook.net/en_US/fbevents.js";
+    document.head.appendChild(script);
+  }
+}
+
+function revokeFacebookPixel() {
+  (window as ConsentWindow).fbq?.("consent", "revoke");
+}
+
+function enableHotjar() {
+  const consentWindow = window as ConsentWindow;
+  if (document.getElementById(HOTJAR_SCRIPT_ID)) return;
+
+  consentWindow.hj =
+    consentWindow.hj ||
+    (function (...args: unknown[]) {
+      (consentWindow.hj!.q = consentWindow.hj!.q || []).push(args);
+    } as NonNullable<ConsentWindow["hj"]>);
+  consentWindow._hjSettings = { hjid: 3555670, hjsv: 6 };
+
+  const script = document.createElement("script");
+  script.id = HOTJAR_SCRIPT_ID;
+  script.async = true;
+  script.src = `https://static.hotjar.com/c/hotjar-${consentWindow._hjSettings.hjid}.js?sv=${consentWindow._hjSettings.hjsv}`;
+  document.head.appendChild(script);
+}
 
 export default function AnalitycsTools() {
-  return (
-    <>
-      {/* Facebook Pixel */}
-      <Script id="facebook-pixel" strategy="afterInteractive">
-        {`
-          (function () {
-            var loaded = false;
-            var run = function () {
-              if (loaded) return;
-              loaded = true;
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '178665974358939');
-              fbq('track', 'PageView');
-            };
-            var events = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'mousemove'];
-            var start = function () {
-              events.forEach(function(eventName) {
-                window.removeEventListener(eventName, start, true);
-              });
-              run();
-            };
-            events.forEach(function(eventName) {
-              window.addEventListener(eventName, start, { once: true, passive: true, capture: true });
-            });
-          })();
-        `}
-      </Script>
+  const previousConsent = useRef<CookieYesConsentState | null>(null);
 
-      {/* Google Tag Manager */}
-      <Script id="gtm" strategy="afterInteractive">
-        {`
-          (function(w,d,s,l,i){
-            w[l]=w[l]||[];
-            var loaded = false;
-            var run = function () {
-              if (loaded) return;
-              loaded = true;
-              w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
-              var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-              j.async=true;
-              j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-              f.parentNode.insertBefore(j,f);
-            };
-            var events = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'mousemove'];
-            var start = function () {
-              events.forEach(function(eventName) {
-                window.removeEventListener(eventName, start, true);
-              });
-              run();
-            };
-            events.forEach(function(eventName) {
-              window.addEventListener(eventName, start, { once: true, passive: true, capture: true });
-            });
-          })(window,document,'script','dataLayer','GTM-NKPS7M7Z');
-        `}
-      </Script>
+  useEffect(() => {
+    const applyConsent = (state: CookieYesConsentState) => {
+      const advertisementAccepted = state.accepted.includes("advertisement");
+      const analyticsAccepted = state.accepted.includes("analytics");
+      const previous = previousConsent.current;
 
-      {/* Hotjar - start after first interaction to avoid Lighthouse console noise */}
-      <Script id="hotjar" strategy="afterInteractive">
-        {`
-          (function () {
-            var loaded = false;
-            var run = function () {
-              if (loaded) return;
-              loaded = true;
-              (function(h,o,t,j,a,r){
-                  h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                  h._hjSettings={hjid:3555670,hjsv:6};
-                  a=o.getElementsByTagName('head')[0];
-                  r=o.createElement('script');r.async=1;
-                  r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                  a.appendChild(r);
-              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-            };
-            var events = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'mousemove'];
-            var start = function () {
-              events.forEach(function(eventName) {
-                window.removeEventListener(eventName, start, true);
-              });
-              run();
-            };
-            events.forEach(function(eventName) {
-              window.addEventListener(eventName, start, { once: true, passive: true, capture: true });
-            });
-          })();
-        `}
-      </Script>
-    </>
-  );
+      if (advertisementAccepted) enableFacebookPixel();
+      else revokeFacebookPixel();
+      if (analyticsAccepted) enableHotjar();
+
+      const revokedAfterAcceptance =
+        Boolean(previous) &&
+        ((previous!.accepted.includes("advertisement") &&
+          !advertisementAccepted) ||
+          (previous!.accepted.includes("analytics") && !analyticsAccepted));
+      previousConsent.current = state;
+
+      if (revokedAfterAcceptance) {
+        window.location.reload();
+      }
+    };
+
+    applyConsent(cookieYesConsentState());
+    return subscribeToCookieYesConsent(applyConsent);
+  }, []);
+
+  return null;
 }

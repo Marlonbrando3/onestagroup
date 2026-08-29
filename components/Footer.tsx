@@ -156,12 +156,20 @@ export default function Footer({ locale = "pl" }: { locale?: SiteLocale }) {
               ? "Onesta Group Sp. z o.o. All rights reserved."
               : "Onesta Group Sp. z o.o. Wszystkie prawa zastrzeżone."}
           </p>
-          <Link
-            href={localePath[locale].privacy}
-            className="transition hover:text-[#d6b36a]"
-          >
-            {isEn ? "Privacy policy" : "Polityka prywatności"}
-          </Link>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link
+              href={localePath[locale].privacy}
+              className="transition hover:text-[#d6b36a]"
+            >
+              {isEn ? "Privacy policy" : "Polityka prywatności"}
+            </Link>
+            <button
+              type="button"
+              className="cky-banner-element text-left uppercase tracking-[0.14em] transition hover:text-[#d6b36a]"
+            >
+              {isEn ? "Cookie settings" : "Ustawienia cookies"}
+            </button>
+          </div>
         </div>
       </div>
     </footer>
