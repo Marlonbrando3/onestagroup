@@ -6,6 +6,7 @@ import {
 export type CbTopTrackingEvent =
   | "sms_link_open"
   | "property_open"
+  | "property_like"
   | "contact_form_submit"
   | "whatsapp_click"
   | "phone_click"
@@ -128,6 +129,49 @@ export function trackCbTopInteraction(payload: CbTopTrackingPayload) {
   }).catch(() => {
     // Tracking must never interrupt navigation or contact actions.
   });
+}
+
+export async function reportCbTopPropertyLike(offerId: string) {
+  if (typeof window === "undefined" || !/^[a-z0-9_-]{1,80}$/i.test(offerId)) {
+    return { ok: false as const, reason: "missing_tracking" as const };
+  }
+
+  let token = "";
+  try {
+    token = window.sessionStorage.getItem(TRACKING_TOKEN_KEY) || "";
+  } catch {
+    // An explicit preference can use the link token held only in memory.
+  }
+  if (!validToken(token)) token = pendingLeadToken;
+
+  const endpoint = trackingEndpoint();
+  if (!validToken(token) || !endpoint) {
+    return { ok: false as const, reason: "missing_tracking" as const };
+  }
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      mode: "cors",
+      keepalive: true,
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      body: JSON.stringify({
+        token,
+        event: "property_like",
+        context: "property_modal",
+        offerId,
+      }),
+    });
+    const payload = (await response.json().catch(() => null)) as
+      | { ok?: boolean }
+      | null;
+    if (!response.ok || !payload?.ok) {
+      return { ok: false as const, reason: "request_failed" as const };
+    }
+    return { ok: true as const };
+  } catch {
+    return { ok: false as const, reason: "request_failed" as const };
+  }
 }
 
 export async function requestCbTopUrgentContact() {

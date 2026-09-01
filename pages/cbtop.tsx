@@ -17,7 +17,7 @@ import {
 } from "react-icons/fi";
 import { IoBedOutline } from "react-icons/io5";
 import { PiBathtubLight } from "react-icons/pi";
-import { FaSwimmingPool } from "react-icons/fa";
+import { FaSwimmingPool, FaThumbsUp } from "react-icons/fa";
 import { RiWhatsappFill } from "react-icons/ri";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
@@ -28,6 +28,7 @@ import {
 } from "@/lib/cbTopOffers";
 import {
   captureCbTopTrackingToken,
+  reportCbTopPropertyLike,
   requestCbTopUrgentContact,
   trackCbTopInteraction,
   type CbTopTrackingContext,
@@ -355,10 +356,14 @@ function WhatsAppContactLink({
 function PropertyModal({
   offer,
   status,
+  liked,
+  onLike,
   onClose,
 }: {
   offer: AgentOffer;
   status: DetailStatus;
+  liked: boolean;
+  onLike: () => void;
   onClose: () => void;
 }) {
   const [imageIndex, setImageIndex] = useState(0);
@@ -482,14 +487,35 @@ function PropertyModal({
         aria-modal="true"
         aria-labelledby="cbtop-modal-title"
       >
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-3 top-3 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-[#182334] shadow-lg transition hover:bg-[#182334] hover:text-white sm:right-5 sm:top-5"
-          aria-label="Zamknij szczegóły oferty"
-        >
-          <FiX className="h-5 w-5" />
-        </button>
+        <div className="absolute right-3 top-3 z-30 flex items-center gap-2 sm:right-5 sm:top-5">
+          <button
+            type="button"
+            onClick={onLike}
+            disabled={liked}
+            aria-pressed={liked}
+            className={`flex h-11 w-[148px] items-center justify-center gap-2 rounded-full px-3 text-[9px] font-extrabold uppercase tracking-[0.08em] text-white shadow-lg transition ${
+              liked
+                ? "cursor-default bg-[#1877F2] ring-2 ring-white/70"
+                : "bg-[#1877F2] hover:bg-[#0f65d8]"
+            }`}
+            aria-label={
+              liked
+                ? "Ta oferta została polubiona"
+                : `Podoba mi się oferta ${offer.external_id}`
+            }
+          >
+            <FaThumbsUp className="h-4 w-4" aria-hidden="true" />
+            <span>{liked ? "Polubiono" : "Podoba mi się"}</span>
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-[#182334] shadow-lg transition hover:bg-[#182334] hover:text-white"
+            aria-label="Zamknij szczegóły oferty"
+          >
+            <FiX className="h-5 w-5" />
+          </button>
+        </div>
 
         <div className="grid h-full min-h-0 lg:grid-cols-[minmax(0,1.12fr)_minmax(430px,0.88fr)]">
           <div className="relative h-[42vh] min-h-[310px] overflow-hidden bg-[#141f2e] lg:h-full lg:min-h-0">
@@ -889,6 +915,9 @@ function PropertyModal({
 
 export default function CbTopPage({ offers, socialImage }: CbTopPageProps) {
   const [activeOffer, setActiveOffer] = useState<AgentOffer | null>(null);
+  const [likedOfferIds, setLikedOfferIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const [detailStatus, setDetailStatus] = useState<DetailStatus>("idle");
   const [pageContactForm, setPageContactForm] = useState({
     fullName: "",
@@ -991,6 +1020,18 @@ export default function CbTopPage({ offers, socialImage }: CbTopPageProps) {
     const cached = detailCache.current.get(String(offer.external_id));
     setActiveOffer(cached || offer);
     setDetailStatus(cached ? "ready" : "loading");
+  };
+
+  const likeOffer = (offer: AgentOffer) => {
+    const offerId = String(offer.external_id);
+    if (likedOfferIds.has(offerId)) return;
+
+    setLikedOfferIds((current) => {
+      const next = new Set(current);
+      next.add(offerId);
+      return next;
+    });
+    void reportCbTopPropertyLike(offerId);
   };
 
   const submitPageContactForm = async (
@@ -1497,6 +1538,8 @@ export default function CbTopPage({ offers, socialImage }: CbTopPageProps) {
         <PropertyModal
           offer={activeOffer}
           status={detailStatus}
+          liked={likedOfferIds.has(String(activeOffer.external_id))}
+          onLike={() => likeOffer(activeOffer)}
           onClose={() => setActiveOffer(null)}
         />
       ) : null}
