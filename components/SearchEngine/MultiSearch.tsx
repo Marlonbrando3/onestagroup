@@ -66,7 +66,7 @@ export function MultiSelect({
       {/* BUTTON */}
       <div
         onClick={() => setOpen((prev) => !prev)}
-        className="flex h-full w-full cursor-pointer flex-col justify-center bg-white px-3 duration-200 hover:bg-[#fbf8f2]"
+        className="flex h-full w-full cursor-pointer flex-col justify-center rounded-xl bg-white px-3 duration-200 hover:bg-[#fbf8f2]"
       >
         <label className="mb-1 text-xs font-semibold text-[#5f6b7a]">
           {label}
@@ -83,7 +83,7 @@ export function MultiSelect({
             <div
               className={`absolute top-[calc(100%+5px)] left-0 ${
                 isPropertyTypeSelect ? "w-[400px]" : "w-[200px]"
-              } z-10 border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-xl`}
+              } z-10 rounded-[18px] border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-xl`}
             >
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
                 {label}
@@ -96,7 +96,7 @@ export function MultiSelect({
                     className="flex min-w-0 cursor-pointer items-center gap-3 text-sm font-medium text-[#334155]"
                   >
                     <div
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center border ${
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border ${
                         value.includes(item)
                           ? "border-[#182334] bg-[#182334]"
                           : "border-[#d7c8ad] bg-white"
@@ -125,7 +125,7 @@ export function MultiSelect({
                 />
 
                 {/* content */}
-                <div className="relative w-[90vw] max-w-[400px] border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-xl">
+                <div className="relative w-[90vw] max-w-[400px] rounded-[22px] border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-xl">
                   <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
                     {label}
                   </p>
@@ -137,7 +137,7 @@ export function MultiSelect({
                         className="flex min-w-0 cursor-pointer items-center gap-3 text-sm font-medium text-[#334155]"
                       >
                         <div
-                          className={`flex h-5 w-5 shrink-0 items-center justify-center border ${
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border ${
                             value.includes(item)
                               ? "border-[#182334] bg-[#182334]"
                               : "border-[#d7c8ad] bg-white"

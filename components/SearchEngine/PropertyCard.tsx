@@ -163,13 +163,13 @@ export default function PropertyCard({
         label: isEn ? "Bedrooms" : "Sypialnie",
         value: formatValue(property?.beds, "—"),
         Icon: IoBedOutline,
-        largeIcon: true,
+        displayLabel: undefined,
       },
       {
         label: isEn ? "Bathrooms" : "Łazienki",
         value: formatValue(property?.baths, "—"),
         Icon: PiBathtubLight,
-        largeIcon: true,
+        displayLabel: undefined,
       },
       {
         label: isEn ? "sq m" : "m²",
@@ -177,7 +177,7 @@ export default function PropertyCard({
           ? String(property.surface_built)
           : "—",
         Icon: BiArea,
-        largeIcon: false,
+        displayLabel: "m²",
       },
       {
         label: isEn ? "pool" : "basen",
@@ -190,7 +190,7 @@ export default function PropertyCard({
               ? "No"
               : "Nie",
         Icon: FaSwimmingPool,
-        largeIcon: false,
+        displayLabel: undefined,
       },
     ];
 
@@ -238,23 +238,23 @@ export default function PropertyCard({
           </h2>
 
           <div className="mt-5 grid grid-cols-4 border-y border-[#ebe4da] py-3">
-            {cardStats.map(({ label, value, Icon, largeIcon }) => (
+            {cardStats.map(({ label, value, Icon, displayLabel }) => (
               <div
                 key={label}
                 className="flex min-w-0 flex-col items-center border-r border-[#ebe4da] px-1 last:border-r-0"
                 title={label}
               >
                 <Icon
-                  className={`${largeIcon ? "h-7 w-7" : "h-4 w-4"} text-[#b8954c]`}
+                  className="h-7 w-7 text-[#b8954c]"
                   aria-hidden="true"
                 />
                 <p className="mt-1.5 truncate text-[12px] font-extrabold text-[#26364b]">
                   {value}
-                  {!largeIcon ? (
+                  {displayLabel ? (
                     <>
                       {" "}
                       <span className="text-[8px] font-bold text-slate-400">
-                        {label}
+                        {displayLabel}
                       </span>
                     </>
                   ) : null}

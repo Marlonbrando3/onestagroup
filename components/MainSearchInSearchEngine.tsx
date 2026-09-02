@@ -179,12 +179,12 @@ function MarketSelect({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full overflow-hidden whitespace-nowrap bg-white text-left font-semibold text-[#182334]"
+        className="w-full overflow-hidden rounded-lg whitespace-nowrap bg-white text-left font-semibold text-[#182334]"
       >
         {current}
       </button>
       {open && (
-        <div className="absolute left-0 top-[calc(100%+12px)] z-30 w-full min-w-[180px] overflow-hidden border border-[#e5dac7] bg-[#f7f3ec] shadow-xl lg:w-[190px]">
+        <div className="absolute left-0 top-[calc(100%+12px)] z-30 w-full min-w-[180px] overflow-hidden rounded-[18px] border border-[#e5dac7] bg-[#f7f3ec] shadow-xl lg:w-[190px]">
           {[allLabel, ...options].map((opt) => (
             <button
               key={opt}
@@ -219,7 +219,7 @@ function CountrySelect({
   const isEn = locale === "en";
   return (
     <label
-      className={`flex h-11 w-full items-stretch text-sm font-semibold text-[#182334] ${className}`}
+      className={`flex h-11 w-full items-stretch overflow-hidden rounded-[16px] text-sm font-semibold text-[#182334] ${className}`}
     >
       <span className="flex min-w-[78px] items-center justify-center border border-r-0 border-[#c9aa63] bg-[#d6b36a] px-3 uppercase tracking-[0.14em]">
         {isEn ? "Country" : "Kraj"}
@@ -589,7 +589,7 @@ export default function Home({
     <>
       {countryTransition.active ? (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-[#182334]/45 px-6 backdrop-blur-[2px]">
-          <div className="grid min-w-[240px] justify-items-center gap-4 border border-[#e5dac7] bg-white px-8 py-7 text-center shadow-2xl">
+          <div className="grid min-w-[240px] justify-items-center gap-4 rounded-[22px] border border-[#e5dac7] bg-white px-8 py-7 text-center shadow-2xl">
             <span className="h-9 w-9 animate-spin rounded-full border-4 border-[#e5dac7] border-t-[#b8954c]" />
             <div>
               <p className="text-lg font-bold text-[#182334]">
@@ -617,7 +617,7 @@ export default function Home({
         <button
           ref={mobileTriggerButtonRef}
           onClick={() => setMobileModalOpen(true)}
-          className={`flex items-center gap-3 border border-[#d7c8ad] bg-white p-4 text-[#5f6b7a] shadow-lg transition hover:border-[#b8954c] hover:shadow-xl ${
+          className={`flex items-center gap-3 rounded-[22px] border border-[#d7c8ad] bg-white p-4 text-[#5f6b7a] shadow-lg transition hover:border-[#b8954c] hover:shadow-xl ${
             isMobilePinned
               ? "fixed top-[88px] left-1/2 -translate-x-1/2 z-[35] w-[90vw] max-w-[1330px]"
               : "w-full relative"
@@ -642,7 +642,7 @@ export default function Home({
 
       <div
         id="search-wrapper"
-        className={`${OutfitSans.className} mx-auto tracking-[1.2px] w-[90vw] max-w-[1330px] lg:sticky lg:top-[100px] lg:z-30 mb-[30px] mt-0 lg:-mt-[70px]`}
+        className={`${OutfitSans.className} mx-auto tracking-[1.2px] w-[90vw] max-w-[1330px] lg:relative lg:z-30 mb-[30px] mt-0 lg:-mt-[70px]`}
       >
         <div className="mb-3 hidden lg:flex">
           <CountrySelect
@@ -654,11 +654,11 @@ export default function Home({
         </div>
 
         {/* DESKTOP SEARCH BAR */}
-        <div className="hidden border border-[#e5dac7] bg-white shadow-xl lg:flex lg:h-20 lg:flex-row lg:gap-0 text-sm">
+        <div className="hidden rounded-[22px] border border-[#e5dac7] bg-white shadow-xl lg:flex lg:h-20 lg:flex-row lg:gap-0 text-sm">
           {/* LOCATION */}
           <div className="h-full w-full border-[#e5dac7] pl-4 lg:flex-[4.20] lg:border-r">
             <LocationSearch
-              className="w-full h-full"
+              className="h-full w-full rounded-l-[21px] rounded-r-none"
               countrySlug={selectedCountry.slug}
               value={filters.locations}
               onChange={(val: LocationItem[]) => updateFilter("locations", val)}
@@ -723,10 +723,10 @@ export default function Home({
           </div>
 
           {/* SEARCH BUTTON */}
-          <div className="flex h-full w-full items-center justify-center bg-[#fbf8f2] px-3 lg:w-auto">
+          <div className="flex h-full w-full items-center justify-center rounded-r-[21px] bg-[#fbf8f2] px-3 lg:w-auto">
             <button
               onClick={handleSearch}
-              className="flex h-12 w-12 items-center justify-center border border-[#b8954c] bg-[#d6b36a] text-[#182334] transition-colors hover:border-[#182334] hover:bg-[#182334] hover:text-white"
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-[#b8954c] bg-[#d6b36a] text-[#182334] transition-colors hover:border-[#182334] hover:bg-[#182334] hover:text-white"
               aria-label="Search"
             >
               <svg
@@ -749,9 +749,9 @@ export default function Home({
         {/* MOBILE MODAL */}
         {mobileModalOpen && (
           <div className="fixed inset-0 z-50 bg-black/50 lg:hidden">
-            <div className="fixed bottom-0 left-0 right-0 max-h-[90vh] overflow-y-auto border-t border-[#e5dac7] bg-[#f7f3ec]">
+            <div className="fixed bottom-0 left-0 right-0 max-h-[90vh] overflow-y-auto rounded-t-[24px] border-t border-[#e5dac7] bg-[#f7f3ec]">
               {/* HEADER */}
-              <div className="sticky top-0 flex items-center justify-between border-b border-[#e5dac7] bg-[#f7f3ec] p-4">
+              <div className="sticky top-0 flex items-center justify-between rounded-t-[24px] border-b border-[#e5dac7] bg-[#f7f3ec] p-4">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#9b7a36]">
                     {isEn ? "Filters" : "Filtry"}
@@ -762,7 +762,7 @@ export default function Home({
                 </div>
                 <button
                   onClick={() => setMobileModalOpen(false)}
-                  className="flex h-10 w-10 items-center justify-center bg-white text-2xl text-[#5f6b7a] hover:text-[#182334]"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-2xl text-[#5f6b7a] hover:text-[#182334]"
                 >
                   ✕
                 </button>
@@ -865,7 +865,7 @@ export default function Home({
                     handleSearch();
                     setMobileModalOpen(false);
                   }}
-                  className="mt-6 w-full border border-[#b8954c] bg-[#d6b36a] py-3 font-semibold uppercase tracking-[0.12em] text-[#182334] transition-colors hover:border-[#182334] hover:bg-[#182334] hover:text-white"
+                  className="mt-6 w-full rounded-full border border-[#b8954c] bg-[#d6b36a] py-3 font-semibold uppercase tracking-[0.12em] text-[#182334] transition-colors hover:border-[#182334] hover:bg-[#182334] hover:text-white"
                 >
                   {isEn ? "Search" : "Szukaj"}
                 </button>

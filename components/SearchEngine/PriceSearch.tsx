@@ -179,7 +179,7 @@ export default function PriceSelect({ value, onChange, locale = "pl" }: Props) {
     <div ref={ref} className="w-full h-full lg:relative">
       <div
         onClick={() => setOpen((prev) => !prev)}
-        className="flex h-full w-full cursor-pointer flex-col justify-center bg-white px-3 transition hover:bg-[#fbf8f2]"
+        className="flex h-full w-full cursor-pointer flex-col justify-center rounded-xl bg-white px-3 transition hover:bg-[#fbf8f2]"
       >
         <label className="mb-1 text-xs font-semibold text-[#5f6b7a]">
           {isEn ? "Price range" : "Zakres cenowy"}
@@ -193,7 +193,7 @@ export default function PriceSelect({ value, onChange, locale = "pl" }: Props) {
       </div>
 
       {open && (
-        <div className="absolute -top-[250px] left-0 right-0 z-[9999] mx-auto w-[95vw] border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-2xl lg:top-[60px] lg:-left-[340px] lg:right-auto lg:w-[500px] lg:p-6">
+        <div className="absolute -top-[250px] left-0 right-0 z-[9999] mx-auto w-[95vw] rounded-[22px] border border-[#e5dac7] bg-[#f7f3ec] p-5 shadow-2xl lg:top-[60px] lg:-left-[340px] lg:right-auto lg:w-[500px] lg:p-6">
           <div className="flex flex-col gap-6">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
@@ -208,10 +208,10 @@ export default function PriceSelect({ value, onChange, locale = "pl" }: Props) {
 
             <div
               ref={sliderRef}
-              className="relative h-[6px] bg-[#e2d4bd]"
+              className="relative h-[6px] rounded-full bg-[#e2d4bd]"
             >
               <div
-                className="absolute h-[6px] bg-[#b8954c]"
+                className="absolute h-[6px] rounded-full bg-[#b8954c]"
                 style={{
                   left: `${percent(local.min)}%`,
                   width: `${percent(local.max) - percent(local.min)}%`,
@@ -220,7 +220,7 @@ export default function PriceSelect({ value, onChange, locale = "pl" }: Props) {
               <div
                 onMouseDown={startDrag("min")}
                 onTouchStart={startTouchDrag("min")}
-                className="absolute -top-[7px] h-5 w-5 cursor-pointer border-2 border-white bg-[#182334] shadow-md touch-none"
+                className="absolute -top-[7px] h-5 w-5 cursor-pointer touch-none rounded-full border-2 border-white bg-[#182334] shadow-md"
                 style={{
                   left: `${percent(local.min)}%`,
                   transform: "translateX(-50%)",
@@ -229,7 +229,7 @@ export default function PriceSelect({ value, onChange, locale = "pl" }: Props) {
               <div
                 onMouseDown={startDrag("max")}
                 onTouchStart={startTouchDrag("max")}
-                className="absolute -top-[7px] h-5 w-5 cursor-pointer border-2 border-white bg-[#182334] shadow-md touch-none"
+                className="absolute -top-[7px] h-5 w-5 cursor-pointer touch-none rounded-full border-2 border-white bg-[#182334] shadow-md"
                 style={{
                   left: `${percent(local.max)}%`,
                   transform: "translateX(-50%)",
@@ -257,7 +257,7 @@ export default function PriceSelect({ value, onChange, locale = "pl" }: Props) {
                   onKeyDown={(event) => {
                     if (event.key === "Enter") event.currentTarget.blur();
                   }}
-                  className="mt-2 h-11 w-full border border-[#d7c8ad] bg-white px-3 text-sm font-semibold text-[#182334] outline-none"
+                  className="mt-2 h-11 w-full rounded-xl border border-[#d7c8ad] bg-white px-3 text-sm font-semibold text-[#182334] outline-none"
                 />
               </div>
               <div>
@@ -279,7 +279,7 @@ export default function PriceSelect({ value, onChange, locale = "pl" }: Props) {
                   onKeyDown={(event) => {
                     if (event.key === "Enter") event.currentTarget.blur();
                   }}
-                  className="mt-2 h-11 w-full border border-[#d7c8ad] bg-white px-3 text-sm font-semibold text-[#182334] outline-none"
+                  className="mt-2 h-11 w-full rounded-xl border border-[#d7c8ad] bg-white px-3 text-sm font-semibold text-[#182334] outline-none"
                 />
               </div>
             </div>
@@ -287,13 +287,13 @@ export default function PriceSelect({ value, onChange, locale = "pl" }: Props) {
             <div className="flex gap-3">
               <button
                 onClick={() => applyCommittedRange({ min: 0, max: maxLimit })}
-                className="h-11 border border-[#d7c8ad] bg-white px-5 text-xs font-bold uppercase tracking-[0.14em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
+                className="h-11 rounded-xl border border-[#d7c8ad] bg-white px-5 text-xs font-bold uppercase tracking-[0.14em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
               >
                 Reset
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="h-11 flex-1 border border-[#b8954c] bg-[#d6b36a] px-5 text-xs font-bold uppercase tracking-[0.14em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
+                className="h-11 flex-1 rounded-full border border-[#b8954c] bg-[#d6b36a] px-5 text-xs font-bold uppercase tracking-[0.14em] text-[#182334] transition hover:border-[#182334] hover:bg-[#182334] hover:text-white"
               >
                 Zamknij
               </button>

@@ -270,11 +270,12 @@ function PropertyCard({
               Icon={BiArea}
               value={offer.surface_built ? `${offer.surface_built}` : "—"}
               label="m²"
+              largeIcon
             />
             <CardFact
               Icon={FaSwimmingPool}
               value={offer.pool ? "Tak" : "Nie"}
-              label="basen"
+              largeIcon
             />
           </div>
 

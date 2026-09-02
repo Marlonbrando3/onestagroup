@@ -172,15 +172,15 @@ export default function LocationSearch({
   return (
     <div
       ref={ref}
-      className={`relative flex h-full w-[300px] ${className ?? ""}`}
+      className={`relative flex h-full w-[300px] rounded-xl ${className ?? ""}`}
     >
-      <div className="relative flex h-full w-full flex-col justify-center overflow-hidden bg-white pr-3 transition hover:bg-[#fbf8f2]">
+      <div className="relative flex h-full w-full flex-col justify-center overflow-hidden rounded-[inherit] bg-white pr-3 transition hover:bg-[#fbf8f2]">
         <div className="mb-1 flex items-center justify-between">
           <label className="text-sm font-semibold text-[#5f6b7a] md:text-xs">
             {isEn ? "Location" : "Lokalizacja"}
           </label>
           {(isLimitReached || limitMessage) && (
-            <p className="whitespace-nowrap bg-[#182334] px-2 py-1 text-[10px] font-semibold text-white">
+            <p className="whitespace-nowrap rounded-full bg-[#182334] px-2 py-1 text-[10px] font-semibold text-white">
               {isEn
                 ? `You can select up to ${MAX_LOCATIONS} locations`
                 : `Możesz wybrać maksymalnie ${MAX_LOCATIONS} lokalizacji`}
@@ -191,7 +191,7 @@ export default function LocationSearch({
           {value.map((loc) => (
             <div
               key={loc.id}
-              className={`flex items-center gap-1 border border-[#d7c8ad] bg-[#f7f3ec] text-[#182334] ${
+              className={`flex items-center gap-1 rounded-full border border-[#d7c8ad] bg-[#f7f3ec] text-[#182334] ${
                 value.length > 1
                   ? "px-1.5 py-0.5 text-xs"
                   : "px-2 py-1 text-sm"
@@ -236,7 +236,7 @@ export default function LocationSearch({
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute top-[75px] z-50 mt-2 max-h-60 w-full overflow-y-auto border border-[#e5dac7] bg-[#f7f3ec] shadow-xl">
+        <div className="absolute top-[75px] z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-[18px] border border-[#e5dac7] bg-[#f7f3ec] shadow-xl">
           {results.map((item, idx) => (
             <div
               key={item.id}
