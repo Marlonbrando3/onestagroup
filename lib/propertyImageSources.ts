@@ -10,6 +10,7 @@ const PROPERTY_IMAGE_PROTOCOLS_BY_HOST = new Map<string, ReadonlySet<string>>([
   ["casas-connect.es", new Set(["https:"])],
   ["casaspanishhomes.com", new Set(["https:"])],
   ["casaswilson.com", new Set(["https:"])],
+  ["cdn.resales-online.com", new Set(["https:"])],
   ["cjrealestate.eu", new Set(["https:"])],
   ["cweflengroup.com", new Set(["https:"])],
   ["datasources.medlandspain.net", new Set(["https:"])],
