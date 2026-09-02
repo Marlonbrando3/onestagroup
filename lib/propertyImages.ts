@@ -1,4 +1,5 @@
 const FALLBACK_PROPERTY_IMAGE = "/placeholder.jpg";
+const PROPERTY_IMAGE_PROXY_VERSION = "2";
 
 export function propertyImageUrl(
   image: unknown,
@@ -31,7 +32,7 @@ export function optimizedPropertyImageUrl(image: unknown): string {
   const sourceUrl = propertyImageUrl(image);
 
   if (sourceUrl.startsWith("https://") || sourceUrl.startsWith("http://")) {
-    return `/api/property-image?url=${encodeURIComponent(sourceUrl)}`;
+    return `/api/property-image?url=${encodeURIComponent(sourceUrl)}&v=${PROPERTY_IMAGE_PROXY_VERSION}`;
   }
 
   return sourceUrl;
