@@ -59,6 +59,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  // Netlify's CDN must keep a separate cache entry for every upstream image.
+  // Without this explicit variation, different `url` values can reuse the
+  // first cached response from this shared API route.
+  res.setHeader("Netlify-Vary", "query=url");
+
   if (req.method !== "GET" && req.method !== "HEAD") {
     res.setHeader("Allow", "GET, HEAD");
     return res.status(405).json({ error: "Method not allowed" });
