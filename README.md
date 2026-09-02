@@ -33,33 +33,35 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Deploy on Netlify
 
-Projekt korzysta z natywnego buildu Next.js na Vercelu i Node.js 24. Nie ustawiaj
-w dashboardzie własnego Output Directory ani statycznego eksportu.
+Projekt korzysta z oficjalnego adaptera OpenNext na Netlify i Node.js 24.
+Konfiguracja buildu znajduje się w `netlify.toml`. Nie włączaj statycznego
+eksportu, ponieważ aplikacja korzysta z SSR, API Routes i funkcji tła.
 
 1. Zaloguj CLI i połącz katalog z projektem:
 
    ```bash
-   npx vercel@latest login
-   npx vercel@latest link
+   npx netlify-cli@latest login
+   npx netlify-cli@latest link
    ```
 
-2. Dodaj wartości z `.env.example` w `Project Settings > Environment Variables`.
-   Trzy zmienne Supabase są wymagane. Pozostałe włączają wskazane integracje.
-   Sekretów nie wpisuj do `vercel.json` i nie commituj plików `.env`.
+2. Dodaj wartości z `.env.example` w `Project configuration > Environment
+   variables`. Zmienne Supabase są wymagane. Pozostałe włączają wskazane
+   integracje. Sekretów nie wpisuj do `netlify.toml` i nie commituj plików
+   `.env`.
 
 3. Sprawdź preview, a następnie opublikuj produkcję:
 
    ```bash
-   npx vercel@latest
-   npx vercel@latest --prod
+   npx netlify-cli@latest deploy --build
+   npx netlify-cli@latest deploy --build --prod
    ```
 
 ### Property image optimization
 
 Karty na stronach wyszukiwania używają `next/image`, responsywnego `srcset`,
-AVIF/WebP i jakości 70. Zewnętrzne źródła przechodzą przez
-`/api/property-image`, który dopuszcza tylko hosty z
-`lib/propertyImageSources.ts`. Po dodaniu nowego feedu jego host i protokół
-trzeba dopisać do tej listy.
+AVIF/WebP i jakości 70. Adapter obsługuje je przez Netlify Image CDN.
+Zewnętrzne źródła przechodzą przez `/api/property-image`, który dopuszcza tylko
+hosty z `lib/propertyImageSources.ts`. Po dodaniu nowego feedu jego host i
+protokół trzeba dopisać do tej listy.

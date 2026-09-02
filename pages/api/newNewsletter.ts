@@ -139,7 +139,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         consentTextHash,
         sourceUrl,
         tokenExpiresAt,
-        applicationVersion: process.env.VERCEL_GIT_COMMIT_SHA || "local",
+        applicationVersion:
+          process.env.COMMIT_REF ||
+          process.env.VERCEL_GIT_COMMIT_SHA ||
+          "local",
       },
     });
 
