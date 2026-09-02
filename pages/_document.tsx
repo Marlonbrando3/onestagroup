@@ -4,7 +4,9 @@ import Script from "next/script";
 export default function Document() {
   return (
     <Html lang="en">
-      <Head></Head>
+      <Head>
+        <link rel="icon" type="image/png" href="/logotype_Onesta.png" />
+      </Head>
       <body className="antialiased">
         <Script id="google-tag-manager" strategy="beforeInteractive">
           {`

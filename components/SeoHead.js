@@ -38,7 +38,6 @@ export default function SeoHead({
       )}
       <meta name="robots" content="index, follow" />
       <link rel="canonical" href={canonicalUrl} />
-      <link rel="shortcut icon" href="/favicon.ico" />
       <meta
         name="viewport"
         content="initial-scale=1.0, width=device-width, minimum-scale=1"

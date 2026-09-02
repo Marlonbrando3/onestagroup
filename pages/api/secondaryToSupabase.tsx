@@ -14,6 +14,7 @@ export const config = {
 const SECONDARY_XML_URL =
   "https://www.propmls.com/property-export/26t676x0545/export_1.xml";
 const SECONDARY_TABLE = "properties";
+const SECONDARY_MIN_PRICE_EUR = 150_000;
 const SECONDARY_CHUNK_SIZE = 100;
 const SECONDARY_WRITE_DELAY_MS = 0;
 const SECONDARY_DELETE_CHUNK_SIZE = 200;
@@ -41,6 +42,11 @@ function detectProperties(parsed: any): any[] {
   if (node?.property) return toArray(node.property);
   if (node?.listing) return toArray(node.listing);
   return [];
+}
+
+function getSecondaryPrice(property: any): number {
+  const price = Number(property?.price ?? 0);
+  return Number.isFinite(price) ? price : 0;
 }
 
 function normalizeUrlString(value: string): string {
@@ -348,12 +354,23 @@ export default async function handler(
       });
     }
 
+    const eligibleProperties = properties.filter(
+      (property: any) => getSecondaryPrice(property) >= SECONDARY_MIN_PRICE_EUR,
+    );
+    const skippedBelowMinPrice = properties.length - eligibleProperties.length;
+
     stage = "map_records";
-    sendProgress(stage, "Mapuję rekordy z XML...", 30, properties.length, properties.length);
+    sendProgress(
+      stage,
+      `Mapuję oferty od ${SECONDARY_MIN_PRICE_EUR.toLocaleString("pl-PL")} EUR...`,
+      30,
+      eligibleProperties.length,
+      eligibleProperties.length,
+    );
     const idCollisions: Record<string, number> = {};
     let duplicateIdRows = 0;
 
-    const mapped = properties.map((property: any, index: number) => {
+    const mapped = eligibleProperties.map((property: any, index: number) => {
       const rawId =
         property?.id ??
         property?.ref ??
@@ -374,7 +391,7 @@ export default async function handler(
         source: "SECONDARY_XML",
         external_id: externalId,
         ref: String(rawId),
-        price: Number(property?.price ?? 0) || 0,
+        price: getSecondaryPrice(property),
         currency: property?.currency ?? null,
         type: property?.type ?? null,
         town: property?.town ?? property?.city ?? null,
@@ -448,6 +465,8 @@ export default async function handler(
       message: "Export secondary XML do properties zakończony",
       total_xml: properties.length,
       total_mapped: mapped.length,
+      total_skipped_below_min_price: skippedBelowMinPrice,
+      min_price_eur: SECONDARY_MIN_PRICE_EUR,
       total_saved: insertedRows,
       total_deleted_sec: deletedRows,
       duplicate_id_rows: duplicateIdRows,

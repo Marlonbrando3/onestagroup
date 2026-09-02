@@ -183,7 +183,7 @@ export default function AsariCrm() {
         return;
       }
       alert(
-        `Secondary MLS OK\nPobrane z XML: ${data?.total_xml ?? 0}\nZmapowane rekordy: ${data?.total_mapped ?? 0}\nKolizje ID: ${data?.duplicate_id_rows ?? 0}\nUsunięte stare SEC: ${data?.total_deleted_sec ?? 0}\nZapisane do properties: ${data?.total_saved ?? 0}`,
+        `Secondary MLS OK\nPobrane z XML: ${data?.total_xml ?? 0}\nZmapowane rekordy: ${data?.total_mapped ?? 0}\nPominięte poniżej ${data?.min_price_eur ?? 150000} EUR: ${data?.total_skipped_below_min_price ?? 0}\nKolizje ID: ${data?.duplicate_id_rows ?? 0}\nUsunięte stare SEC: ${data?.total_deleted_sec ?? 0}\nZapisane do properties: ${data?.total_saved ?? 0}`,
       );
       console.log("Secondary MLS update OK:", data);
     } catch (err: any) {

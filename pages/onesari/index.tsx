@@ -817,7 +817,10 @@ export default function OnesariPage() {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [mainTab, setMainTab] = useState<MainTab>("dashboard");
   const [addTab, setAddTab] = useState<AddTab>("data");
-  const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
+  const [sourceFilter, setSourceFilter] = useState<SourceFilter>("Onesta Base");
+  const [sourceConfirmation, setSourceConfirmation] =
+    useState<SourceFilter | null>(null);
+  const [sourceConfirmCountdown, setSourceConfirmCountdown] = useState(0);
   const [query, setQuery] = useState("");
   const [countryFilter, setCountryFilter] = useState("");
   const [coastFilter, setCoastFilter] = useState("");
@@ -1042,6 +1045,23 @@ export default function OnesariPage() {
 
     return () => window.clearInterval(interval);
   }, [importConfirmation]);
+
+  useEffect(() => {
+    if (!sourceConfirmation) return;
+
+    setSourceConfirmCountdown(3);
+    const interval = window.setInterval(() => {
+      setSourceConfirmCountdown((current) => {
+        if (current <= 1) {
+          window.clearInterval(interval);
+          return 0;
+        }
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [sourceConfirmation]);
 
   useEffect(() => {
     if (isCheckingAuth || mainTab !== "offers" || sourceFilter !== "REDSP XML") return;
@@ -1321,6 +1341,39 @@ export default function OnesariPage() {
     setCoastFilter("");
     setMinPriceFilter("");
     setMaxPriceFilter("");
+  }
+
+  function activateSource(nextSource: SourceFilter) {
+    setSourceFilter(nextSource);
+    if (nextSource === "all") setAllPage(1);
+    if (nextSource === "REDSP XML") setMetainmoPage(1);
+    if (nextSource === "Secondary XML") setSecondaryPage(1);
+    if (nextSource === "Onesta Base") setOnestaPage(1);
+    setMainTab("offers");
+  }
+
+  function requestSource(nextSource: SourceFilter) {
+    setSourceConfirmCountdown(3);
+    setSourceConfirmation(nextSource);
+  }
+
+  function cancelSourceRequest() {
+    setSourceConfirmation(null);
+    setSourceConfirmCountdown(0);
+  }
+
+  function useOnestaBaseInstead() {
+    setSourceConfirmation(null);
+    setSourceConfirmCountdown(0);
+    activateSource("Onesta Base");
+  }
+
+  function confirmSource() {
+    if (!sourceConfirmation || sourceConfirmCountdown > 0) return;
+    const nextSource = sourceConfirmation;
+    setSourceConfirmation(null);
+    setSourceConfirmCountdown(0);
+    activateSource(nextSource);
   }
 
   function updateCountry(country: string) {
@@ -2130,6 +2183,8 @@ export default function OnesariPage() {
         }, usunięte stare ${data?.total_deleted_stale ?? 0}.`
       : `Secondary MLS OK: XML ${data?.total_xml ?? 0}, zapisane ${
           data?.total_saved ?? 0
+        }, pominięte poniżej ${data?.min_price_eur ?? 150000} EUR: ${
+          data?.total_skipped_below_min_price ?? 0
         }, usunięte stare ${data?.total_deleted_sec ?? 0}.`;
   }
 
@@ -2572,7 +2627,7 @@ export default function OnesariPage() {
             <button
               className={mainTab === "offers" ? "active" : ""}
               type="button"
-              onClick={() => setMainTab("offers")}
+              onClick={() => activateSource("Onesta Base")}
             >
               <FaListUl /> Ogłoszenia
             </button>
@@ -2598,14 +2653,7 @@ export default function OnesariPage() {
                 className={sourceFilter === filter.value ? "active" : ""}
                 key={filter.value}
                 type="button"
-                onClick={() => {
-                  setSourceFilter(filter.value);
-                  if (filter.value === "all") setAllPage(1);
-                  if (filter.value === "REDSP XML") setMetainmoPage(1);
-                  if (filter.value === "Secondary XML") setSecondaryPage(1);
-                  if (filter.value === "Onesta Base") setOnestaPage(1);
-                  setMainTab("offers");
-                }}
+                onClick={() => requestSource(filter.value)}
               >
                 <span>{filter.label}</span>
                 <b>
@@ -2653,14 +2701,7 @@ export default function OnesariPage() {
                     className="sourceCardButton"
                     key={filter.value}
                     type="button"
-                    onClick={() => {
-                      setSourceFilter(filter.value);
-                      if (filter.value === "all") setAllPage(1);
-                      if (filter.value === "REDSP XML") setMetainmoPage(1);
-                      if (filter.value === "Secondary XML") setSecondaryPage(1);
-                      if (filter.value === "Onesta Base") setOnestaPage(1);
-                      setMainTab("offers");
-                    }}
+                    onClick={() => requestSource(filter.value)}
                   >
                     <span>{filter.label}</span>
                     <strong>
@@ -3528,6 +3569,48 @@ export default function OnesariPage() {
           )}
         </section>
       </main>
+
+      {sourceConfirmation ? (
+        <div className="confirmOverlay" role="dialog" aria-modal="true">
+          <section className="confirmModal sourceConfirmModal">
+            <div>
+              <p>Potwierdzenie źródła</p>
+              <h2>Czy jesteś pewien, że tego potrzebujesz?</h2>
+              <span>
+                Wybrane źródło: {sourceFilters.find(
+                  (filter) => filter.value === sourceConfirmation,
+                )?.label}. Pobranie wyników uruchomi dodatkowe zapytanie.
+              </span>
+            </div>
+            <div className="confirmActions">
+              <button
+                className="secondaryButton sourceCancelButton"
+                type="button"
+                onClick={cancelSourceRequest}
+              >
+                Nie, nie potrzebuję
+              </button>
+              <button
+                className="secondaryButton"
+                type="button"
+                onClick={useOnestaBaseInstead}
+              >
+                Nie, potrzebuję tylko ofert z bazy Onesta
+              </button>
+              <button
+                className="confirmButton"
+                disabled={sourceConfirmCountdown > 0}
+                type="button"
+                onClick={confirmSource}
+              >
+                {sourceConfirmCountdown > 0
+                  ? `Tak, naprawdę tego potrzebuję — za ${sourceConfirmCountdown}s`
+                  : "Tak, naprawdę tego potrzebuję"}
+              </button>
+            </div>
+          </section>
+        </div>
+      ) : null}
 
       {importConfirmation ? (
         <div className="confirmOverlay" role="dialog" aria-modal="true">
@@ -4775,6 +4858,27 @@ export default function OnesariPage() {
           justify-content: flex-end;
         }
 
+        .sourceConfirmModal {
+          max-width: 640px;
+          width: min(100%, 640px);
+        }
+
+        .sourceConfirmModal .confirmActions button {
+          flex: 1;
+          height: auto;
+          line-height: 1.35;
+          padding: 12px 16px;
+        }
+
+        .sourceConfirmModal .confirmActions {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .sourceConfirmModal .sourceCancelButton {
+          grid-column: 1 / -1;
+        }
+
         .confirmButton {
           background: #b45309;
           border: 0;
@@ -5126,8 +5230,21 @@ export default function OnesariPage() {
           }
 
           .onesariPrimary,
-          .secondaryButton {
+          .secondaryButton,
+          .confirmButton {
             width: 100%;
+          }
+
+          .confirmActions {
+            flex-direction: column;
+          }
+
+          .sourceConfirmModal .confirmActions {
+            grid-template-columns: 1fr;
+          }
+
+          .sourceConfirmModal .sourceCancelButton {
+            grid-column: auto;
           }
 
           .sourceGrid,
