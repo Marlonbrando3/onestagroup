@@ -22,6 +22,21 @@ type Images = {
   onAllImagesFailed?: () => void;
 };
 
+function photoCountLabel(count: number, isEnglish: boolean) {
+  if (isEnglish) return `${count} ${count === 1 ? "photo" : "photos"}`;
+
+  const lastDigit = count % 10;
+  const lastTwoDigits = count % 100;
+  const noun =
+    lastDigit >= 2 &&
+    lastDigit <= 4 &&
+    !(lastTwoDigits >= 12 && lastTwoDigits <= 14)
+      ? "zdjęcia"
+      : "zdjęć";
+
+  return `${count} ${noun}`;
+}
+
 export default function ResultsSlider({
   propertyId,
   images,
@@ -34,10 +49,12 @@ export default function ResultsSlider({
   locale = "pl",
   detailHrefOverride,
   imagePriority = false,
-  onAllImagesFailed: _onAllImagesFailed,
+  onAllImagesFailed,
 }: Images) {
   const [index, setIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [loadedSlides, setLoadedSlides] = useState<Set<string>>(() => new Set());
+  const [failedSlides, setFailedSlides] = useState<Set<string>>(() => new Set());
   const viewportRef = useRef<HTMLDivElement>(null);
 
   const imagesArray = useMemo(() => {
@@ -53,37 +70,53 @@ export default function ResultsSlider({
   }, [images]);
 
   const slides = useMemo(() => {
-    const hasFtpProxyImages = imagesArray.some((img: any) => {
-      const url = typeof img === "string" ? img : img?.url;
-      return typeof url === "string" && url.startsWith("/api/onesari/ftp-image");
-    });
-    const visibleImages = hasFtpProxyImages ? imagesArray.slice(0, 1) : imagesArray.slice(0, 3);
-    const base: Array<{ key: string; type: "image" | "more"; url: string }> =
-      visibleImages.map((img: any, i: number) => ({
-        key: `img-${i}`,
-        type: "image" as const,
+    const validImages = imagesArray
+      .map((img: any, imageIndex: number) => ({
+        key: `img-${imageIndex}`,
         url: typeof img === "string" ? img : img?.url,
+      }))
+      .filter((image) => typeof image.url === "string" && image.url.trim());
+    const hasFtpProxyImages = validImages.some((image) =>
+      image.url.startsWith("/api/onesari/ftp-image"),
+    );
+    const visibleImages = hasFtpProxyImages
+      ? validImages.slice(0, 1)
+      : validImages.slice(0, 3);
+    const base: Array<{ key: string; type: "image" | "more"; url: string }> =
+      visibleImages.map((image) => ({
+        key: image.key,
+        type: "image" as const,
+        url: image.url,
       }));
 
-    if (!hasFtpProxyImages && imagesArray.length > 3) {
-      base.push({ key: "more", type: "more", url: "" });
+    if (!hasFtpProxyImages && validImages.length > visibleImages.length) {
+      base.push({
+        key: "more",
+        type: "more",
+        url: validImages[visibleImages.length]?.url || visibleImages[0]?.url || "",
+      });
     }
 
-    return base;
+    return { items: base, totalImages: validImages.length };
   }, [imagesArray]);
 
   useEffect(() => {
-    if (index > slides.length - 1) setIndex(0);
-  }, [slides.length, index]);
+    if (index > slides.items.length - 1) setIndex(0);
+  }, [slides.items.length, index]);
+
+  useEffect(() => {
+    setLoadedSlides(new Set());
+    setFailedSlides(new Set());
+  }, [images]);
 
   const next = () => {
-    if (slides.length <= 1) return;
-    setIndex((prev) => (prev + 1) % slides.length);
+    if (slides.items.length <= 1) return;
+    setIndex((prev) => (prev + 1) % slides.items.length);
   };
 
   const prev = () => {
-    if (slides.length <= 1) return;
-    setIndex((prev) => (prev - 1 + slides.length) % slides.length);
+    if (slides.items.length <= 1) return;
+    setIndex((prev) => (prev - 1 + slides.items.length) % slides.items.length);
   };
 
   const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -108,7 +141,36 @@ export default function ResultsSlider({
   };
   const isPrimary =
     market === "RYNEK PIERWOTNY" || market === "PRIMARY MARKET";
-  const activeSlide = slides[index] ?? slides[0];
+  const activeSlide = slides.items[index] ?? slides.items[0];
+  const nextSlide = slides.items[(index + 1) % slides.items.length];
+  const totalPhotosLabel = photoCountLabel(slides.totalImages, isEn);
+  const showImageLoader =
+    activeSlide?.type === "image" && !loadedSlides.has(activeSlide.key);
+
+  const markSlideLoaded = (key: string) => {
+    setLoadedSlides((current) => {
+      if (current.has(key)) return current;
+      const nextLoaded = new Set(current);
+      nextLoaded.add(key);
+      return nextLoaded;
+    });
+  };
+
+  const markSlideFailed = (key: string) => {
+    markSlideLoaded(key);
+    setFailedSlides((current) => {
+      const nextFailed = new Set(current);
+      nextFailed.add(key);
+      const imageSlides = slides.items.filter((slide) => slide.type === "image");
+      if (
+        imageSlides.length > 0 &&
+        imageSlides.every((slide) => nextFailed.has(slide.key))
+      ) {
+        onAllImagesFailed?.();
+      }
+      return nextFailed;
+    });
+  };
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#e8ddca]">
@@ -122,11 +184,12 @@ export default function ResultsSlider({
         </div>
       )}
 
-      {slides.length > 1 && (
+      {slides.items.length > 1 && (
         <button
           type="button"
           onClick={prev}
-          className="absolute left-0 z-10 flex h-full w-12 items-center justify-center opacity-100 transition md:opacity-0 md:group-hover:opacity-100"
+          aria-label={isEn ? "Previous photo" : "Poprzednie zdjęcie"}
+          className="absolute left-0 z-20 flex h-full w-12 items-center justify-center opacity-100 transition md:opacity-0 md:group-hover:opacity-100"
         >
           <div className="grid h-9 w-9 place-items-center bg-white/90 shadow-sm">
             <FaChevronLeft className="h-4 w-4 text-[#182334]" />
@@ -134,11 +197,12 @@ export default function ResultsSlider({
         </button>
       )}
 
-      {slides.length > 1 && (
+      {slides.items.length > 1 && (
         <button
           type="button"
           onClick={next}
-          className="absolute right-0 z-10 flex h-full w-12 items-center justify-center opacity-100 transition md:opacity-0 md:group-hover:opacity-100"
+          aria-label={isEn ? "Next photo" : "Kolejne zdjęcie"}
+          className="absolute right-0 z-20 flex h-full w-12 items-center justify-center opacity-100 transition md:opacity-0 md:group-hover:opacity-100"
         >
           <div className="grid h-9 w-9 place-items-center bg-white/90 shadow-sm">
             <FaChevronRight className="h-4 w-4 text-[#182334]" />
@@ -152,18 +216,54 @@ export default function ResultsSlider({
         onTouchEnd={onTouchEnd}
         className="h-full w-full overflow-hidden"
       >
-        <div className="relative h-full">
-          <div className="absolute flex items-center justify-center p-4 h-full w-full">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-yellow-300 border-t-orange-500" />
-          </div>
+        <div className="relative h-full bg-[#e8ddca]">
+          {showImageLoader && (
+            <div
+              className="absolute inset-0 z-[1] flex items-center justify-center bg-[#e8ddca]"
+              aria-label={isEn ? "Loading photo" : "Ładowanie zdjęcia"}
+              role="status"
+            >
+              <span className="h-8 w-8 animate-spin rounded-full border-2 border-[#b8954c]/25 border-t-[#9b7a36]" />
+            </div>
+          )}
           {activeSlide ? (
             activeSlide.type === "more" ? (
               <Link
                 href={detailHref}
                 prefetch={false}
-                className="min-w-full h-full flex items-center justify-center bg-red-500/70 text-3xl text-white font-[700]"
+                aria-label={
+                  isEn
+                    ? `View all ${totalPhotosLabel}`
+                    : `Zobacz wszystkie zdjęcia (${slides.totalImages})`
+                }
+                className="group/more relative flex h-full min-w-full items-center justify-center overflow-hidden bg-[#182334] text-white"
               >
-                {isEn ? "More photos" : "Więcej zdjęć"}
+                {activeSlide.url && (
+                  <Image
+                    fill
+                    className="object-cover transition duration-700 group-hover/more:scale-[1.04]"
+                    src={optimizedPropertyImageUrl(activeSlide.url)}
+                    alt=""
+                    sizes="(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
+                    quality={70}
+                    onLoad={() => markSlideLoaded(activeSlide.key)}
+                    onError={() => markSlideFailed(activeSlide.key)}
+                  />
+                )}
+                <span className="absolute inset-0 bg-gradient-to-t from-[#111827]/95 via-[#111827]/70 to-[#111827]/35" />
+                <span className="relative flex flex-col items-center px-14 text-center">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#e2c477]">
+                    {isEn ? "Full gallery" : "Pełna galeria"}
+                  </span>
+                  <strong className="mt-2 text-[22px] leading-tight sm:text-2xl">
+                    {isEn
+                      ? `View all ${totalPhotosLabel}`
+                      : `Zobacz wszystkie ${totalPhotosLabel}`}
+                  </strong>
+                  <span className="mt-4 border border-white/45 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] backdrop-blur-sm transition group-hover/more:border-[#e2c477] group-hover/more:bg-[#b8954c]">
+                    {isEn ? "Open listing" : "Otwórz ogłoszenie"}
+                  </span>
+                </span>
               </Link>
             ) : (
               <Link
@@ -182,6 +282,8 @@ export default function ResultsSlider({
                   }
                   sizes="(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
                   quality={70}
+                  onLoad={() => markSlideLoaded(activeSlide.key)}
+                  onError={() => markSlideFailed(activeSlide.key)}
                   {...(imagePriority && index === 0
                     ? { preload: true }
                     : { loading: "lazy" as const })}
@@ -189,6 +291,28 @@ export default function ResultsSlider({
               </Link>
             )
           ) : null}
+
+          {nextSlide?.url &&
+            nextSlide.key !== activeSlide?.key &&
+            loadedSlides.has(activeSlide.key) &&
+            !loadedSlides.has(nextSlide.key) &&
+            !failedSlides.has(nextSlide.key) && (
+              <div
+                className="pointer-events-none absolute inset-0 -z-10 opacity-0"
+                aria-hidden="true"
+              >
+                <Image
+                  fill
+                  src={optimizedPropertyImageUrl(nextSlide.url)}
+                  alt=""
+                  sizes="(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
+                  quality={70}
+                  loading="eager"
+                  onLoad={() => markSlideLoaded(nextSlide.key)}
+                  onError={() => markSlideFailed(nextSlide.key)}
+                />
+              </div>
+            )}
         </div>
       </div>
     </div>
