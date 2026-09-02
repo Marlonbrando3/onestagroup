@@ -1,6 +1,7 @@
 // ResultsSlider.tsx
 import { useState, useRef, useMemo, useEffect } from "react";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
+import { FiMapPin } from "react-icons/fi";
 import Link from "next/link";
 import Image from "next/image";
 import { localePath, SiteLocale } from "@/lib/i18n";
@@ -13,12 +14,14 @@ type Images = {
   countrySlug: string;
   deliveryDate: any;
   region: any;
+  town?: string | null;
   propertyId: string | number;
   propertyTitle: string;
   slug: string;
   locale?: SiteLocale;
   detailHrefOverride?: string;
   imagePriority?: boolean;
+  appearance?: "default" | "cbtop";
   onAllImagesFailed?: () => void;
 };
 
@@ -44,11 +47,14 @@ export default function ResultsSlider({
   countrySlug,
   deliveryDate,
   date,
+  region,
+  town,
   propertyTitle,
   slug,
   locale = "pl",
   detailHrefOverride,
   imagePriority = false,
+  appearance = "default",
   onAllImagesFailed,
 }: Images) {
   const [index, setIndex] = useState(0);
@@ -144,6 +150,7 @@ export default function ResultsSlider({
   const activeSlide = slides.items[index] ?? slides.items[0];
   const nextSlide = slides.items[(index + 1) % slides.items.length];
   const totalPhotosLabel = photoCountLabel(slides.totalImages, isEn);
+  const isCbtopAppearance = appearance === "cbtop";
   const showImageLoader =
     activeSlide?.type === "image" && !loadedSlides.has(activeSlide.key);
 
@@ -173,12 +180,22 @@ export default function ResultsSlider({
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#e8ddca]">
-      <div className="absolute left-3 top-3 z-10 bg-white/95 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#9b7a36] shadow-sm">
+    <div
+      className={`relative h-full w-full overflow-hidden ${
+        isCbtopAppearance ? "bg-[#dcd5ca]" : "bg-[#e8ddca]"
+      }`}
+    >
+      <div
+        className={`absolute z-10 bg-white/95 px-3 py-2 font-bold uppercase shadow-sm ${
+          isCbtopAppearance
+            ? "left-4 top-4 rounded-full text-[9px] tracking-[0.14em] text-[#182334]"
+            : "left-3 top-3 text-[11px] tracking-[0.12em] text-[#9b7a36]"
+        }`}
+      >
         {market}
       </div>
 
-      {isPrimary && deliveryDate && (
+      {!isCbtopAppearance && isPrimary && deliveryDate && (
         <div className="absolute bottom-3 left-3 z-10 bg-white/95 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#334155] shadow-sm">
           {isEn ? "Updated" : "Data aktualizacji"} {String(date || "").slice(0, 10)}
         </div>
@@ -191,8 +208,14 @@ export default function ResultsSlider({
           aria-label={isEn ? "Previous photo" : "Poprzednie zdjęcie"}
           className="absolute left-0 z-20 flex h-full w-12 items-center justify-center opacity-100 transition md:opacity-0 md:group-hover:opacity-100"
         >
-          <div className="grid h-9 w-9 place-items-center bg-white/90 shadow-sm">
-            <FaChevronLeft className="h-4 w-4 text-[#182334]" />
+          <div
+            className={`grid h-9 w-9 place-items-center shadow-sm ${
+              isCbtopAppearance
+                ? "rounded-full border border-white/25 bg-[#101b2b]/60 text-white backdrop-blur-sm"
+                : "bg-white/90 text-[#182334]"
+            }`}
+          >
+            <FaChevronLeft className="h-4 w-4" />
           </div>
         </button>
       )}
@@ -204,8 +227,14 @@ export default function ResultsSlider({
           aria-label={isEn ? "Next photo" : "Kolejne zdjęcie"}
           className="absolute right-0 z-20 flex h-full w-12 items-center justify-center opacity-100 transition md:opacity-0 md:group-hover:opacity-100"
         >
-          <div className="grid h-9 w-9 place-items-center bg-white/90 shadow-sm">
-            <FaChevronRight className="h-4 w-4 text-[#182334]" />
+          <div
+            className={`grid h-9 w-9 place-items-center shadow-sm ${
+              isCbtopAppearance
+                ? "rounded-full border border-white/25 bg-[#101b2b]/60 text-white backdrop-blur-sm"
+                : "bg-white/90 text-[#182334]"
+            }`}
+          >
+            <FaChevronRight className="h-4 w-4" />
           </div>
         </button>
       )}
@@ -216,10 +245,16 @@ export default function ResultsSlider({
         onTouchEnd={onTouchEnd}
         className="h-full w-full overflow-hidden"
       >
-        <div className="relative h-full bg-[#e8ddca]">
+        <div
+          className={`relative h-full ${
+            isCbtopAppearance ? "bg-[#dcd5ca]" : "bg-[#e8ddca]"
+          }`}
+        >
           {showImageLoader && (
             <div
-              className="absolute inset-0 z-[1] flex items-center justify-center bg-[#e8ddca]"
+              className={`absolute inset-0 z-[1] flex items-center justify-center ${
+                isCbtopAppearance ? "bg-[#dcd5ca]" : "bg-[#e8ddca]"
+              }`}
               aria-label={isEn ? "Loading photo" : "Ładowanie zdjęcia"}
               role="status"
             >
@@ -244,7 +279,11 @@ export default function ResultsSlider({
                     className="object-cover transition duration-700 group-hover/more:scale-[1.04]"
                     src={optimizedPropertyImageUrl(activeSlide.url)}
                     alt=""
-                    sizes="(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
+                    sizes={
+                      isCbtopAppearance
+                        ? "(max-width: 767px) 92vw, (max-width: 1199px) 44vw, 390px"
+                        : "(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
+                    }
                     quality={70}
                     onLoad={() => markSlideLoaded(activeSlide.key)}
                     onError={() => markSlideFailed(activeSlide.key)}
@@ -273,14 +312,22 @@ export default function ResultsSlider({
               >
                 <Image
                   fill
-                  className="object-cover"
+                  className={`object-cover ${
+                    isCbtopAppearance
+                      ? "transition duration-700 group-hover:scale-[1.035]"
+                      : ""
+                  }`}
                   src={optimizedPropertyImageUrl(activeSlide.url)}
                   alt={
                     isEn
                       ? `${propertyTitle} - property photo`
                       : `${propertyTitle} - zdjęcie nieruchomości`
                   }
-                  sizes="(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
+                  sizes={
+                    isCbtopAppearance
+                      ? "(max-width: 767px) 92vw, (max-width: 1199px) 44vw, 390px"
+                      : "(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
+                  }
                   quality={70}
                   onLoad={() => markSlideLoaded(activeSlide.key)}
                   onError={() => markSlideFailed(activeSlide.key)}
@@ -305,7 +352,11 @@ export default function ResultsSlider({
                   fill
                   src={optimizedPropertyImageUrl(nextSlide.url)}
                   alt=""
-                  sizes="(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
+                  sizes={
+                    isCbtopAppearance
+                      ? "(max-width: 767px) 92vw, (max-width: 1199px) 44vw, 390px"
+                      : "(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
+                  }
                   quality={70}
                   loading="eager"
                   onLoad={() => markSlideLoaded(nextSlide.key)}
@@ -313,6 +364,28 @@ export default function ResultsSlider({
                 />
               </div>
             )}
+
+          {isCbtopAppearance && activeSlide?.type === "image" ? (
+            <>
+              <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-[#101b2b]/65 via-transparent to-[#101b2b]/10" />
+              <div className="pointer-events-none absolute bottom-4 left-4 right-4 z-10 flex items-end justify-between gap-3 text-white">
+                <div>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#f3d891]">
+                    {region || (isEn ? "Coast" : "Wybrzeże")}
+                  </p>
+                  <p className="mt-1 flex items-center gap-1.5 text-[13px] font-bold">
+                    <FiMapPin aria-hidden="true" />
+                    {town || (isEn ? "Property" : "Nieruchomość")}
+                  </p>
+                </div>
+                {slides.totalImages > 1 ? (
+                  <span className="rounded-full border border-white/25 bg-[#101b2b]/55 px-3 py-2 text-[9px] font-bold backdrop-blur-sm">
+                    {totalPhotosLabel}
+                  </span>
+                ) : null}
+              </div>
+            </>
+          ) : null}
         </div>
       </div>
     </div>

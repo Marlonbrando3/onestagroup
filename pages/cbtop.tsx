@@ -259,12 +259,12 @@ function PropertyCard({
             <CardFact
               Icon={IoBedOutline}
               value={offer.beds ?? "—"}
-              label="syp."
+              largeIcon
             />
             <CardFact
               Icon={PiBathtubLight}
               value={offer.baths ?? "—"}
-              label="łaz."
+              largeIcon
             />
             <CardFact
               Icon={BiArea}
@@ -301,17 +301,29 @@ function CardFact({
   Icon,
   value,
   label,
+  largeIcon = false,
 }: {
   Icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
   value: string | number;
-  label: string;
+  label?: string;
+  largeIcon?: boolean;
 }) {
   return (
     <div className="flex min-w-0 flex-col items-center border-r border-[#ebe4da] px-1 last:border-r-0">
-      <Icon className="h-4 w-4 text-[#b8954c]" aria-hidden={true} />
+      <Icon
+        className={`${largeIcon ? "h-7 w-7" : "h-4 w-4"} text-[#b8954c]`}
+        aria-hidden={true}
+      />
       <p className="mt-1.5 truncate text-[12px] font-extrabold text-[#26364b]">
-        {value}{" "}
-        <span className="text-[8px] font-bold text-slate-400">{label}</span>
+        {value}
+        {label ? (
+          <>
+            {" "}
+            <span className="text-[8px] font-bold text-slate-400">
+              {label}
+            </span>
+          </>
+        ) : null}
       </p>
     </div>
   );

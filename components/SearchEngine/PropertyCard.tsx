@@ -6,9 +6,14 @@ import { PiBathtubLight } from "react-icons/pi";
 import { FaSwimmingPool } from "react-icons/fa";
 import { BiArea } from "react-icons/bi";
 import { MdIosShare } from "react-icons/md";
+import { FiArrowRight } from "react-icons/fi";
 import ResultsSlider from "./ResultsSlider";
 import { validTitleOrEmpty } from "../../lib/titlesDictionary";
-import { HomeRedHatDisplayFont as Red_Hat_DisplayFont } from "@/fonts/homeFonts";
+import {
+  HomeMontserratSans,
+  HomePlayfairSans,
+  HomeRedHatDisplayFont as Red_Hat_DisplayFont,
+} from "@/fonts/homeFonts";
 import { getCoastLabelFromProvince } from "@/lib/regionMap";
 import { localePath, propertyTypeLabel, SiteLocale } from "@/lib/i18n";
 import { getPropertyCountryOption } from "@/lib/propertyCountries";
@@ -19,6 +24,7 @@ type PropertyProps = {
   locale?: SiteLocale;
   detailHrefOverride?: string;
   imagePriority?: boolean;
+  appearance?: "default" | "cbtop";
 };
 
 function slugify(value: string): string {
@@ -61,6 +67,7 @@ export default function PropertyCard({
   locale = "pl",
   detailHrefOverride,
   imagePriority = false,
+  appearance = "default",
 }: PropertyProps) {
   const [copiedShowed, setCopiedShowed] = useState(false);
   const isEn = locale === "en";
@@ -149,6 +156,136 @@ export default function PropertyCard({
       Icon: BiArea,
     },
   ];
+
+  if (appearance === "cbtop") {
+    const cardStats = [
+      {
+        label: isEn ? "Bedrooms" : "Sypialnie",
+        value: formatValue(property?.beds, "—"),
+        Icon: IoBedOutline,
+        largeIcon: true,
+      },
+      {
+        label: isEn ? "Bathrooms" : "Łazienki",
+        value: formatValue(property?.baths, "—"),
+        Icon: PiBathtubLight,
+        largeIcon: true,
+      },
+      {
+        label: isEn ? "sq m" : "m²",
+        value: property?.surface_built
+          ? String(property.surface_built)
+          : "—",
+        Icon: BiArea,
+        largeIcon: false,
+      },
+      {
+        label: isEn ? "pool" : "basen",
+        value:
+          property?.pool === true
+            ? isEn
+              ? "Yes"
+              : "Tak"
+            : isEn
+              ? "No"
+              : "Nie",
+        Icon: FaSwimmingPool,
+        largeIcon: false,
+      },
+    ];
+
+    return (
+      <article
+        className={`${HomeMontserratSans.className} group flex h-full flex-col overflow-hidden rounded-[22px] border border-[#e2d8ca] bg-white shadow-[0_10px_35px_rgba(24,35,52,0.07)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_60px_rgba(24,35,52,0.14)]`}
+      >
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#dcd5ca]">
+          <ResultsSlider
+            date={property?.updated_at}
+            region={locationLabel || property?.province}
+            town={property?.town}
+            countrySlug={countrySlug}
+            locale={locale}
+            images={property?.images}
+            market={market}
+            deliveryDate={property?.vacantFromDate}
+            propertyId={property?.external_id}
+            propertyTitle={listingTitle}
+            slug={slug}
+            detailHrefOverride={detailHrefOverride}
+            imagePriority={imagePriority}
+            appearance="cbtop"
+            onAllImagesFailed={() => onBrokenImages?.(property?.external_id)}
+          />
+        </div>
+
+        <Link
+          href={detailHref}
+          prefetch={false}
+          className="flex flex-1 flex-col px-5 pb-5 pt-5 text-left"
+          aria-label={
+            isEn
+              ? `Open property details: ${listingTitle}`
+              : `Otwórz szczegóły: ${listingTitle}`
+          }
+        >
+          <p className="text-[9px] font-extrabold uppercase tracking-[0.14em] text-[#9b7a36]">
+            {propertyType} · ref. {property?.external_id}
+          </p>
+          <h2
+            className={`${HomePlayfairSans.className} mt-2 line-clamp-2 min-h-[58px] text-[25px] font-semibold leading-[1.12] tracking-[-0.02em] text-[#182334]`}
+          >
+            {listingTitle}
+          </h2>
+
+          <div className="mt-5 grid grid-cols-4 border-y border-[#ebe4da] py-3">
+            {cardStats.map(({ label, value, Icon, largeIcon }) => (
+              <div
+                key={label}
+                className="flex min-w-0 flex-col items-center border-r border-[#ebe4da] px-1 last:border-r-0"
+                title={label}
+              >
+                <Icon
+                  className={`${largeIcon ? "h-7 w-7" : "h-4 w-4"} text-[#b8954c]`}
+                  aria-hidden="true"
+                />
+                <p className="mt-1.5 truncate text-[12px] font-extrabold text-[#26364b]">
+                  {value}
+                  {!largeIcon ? (
+                    <>
+                      {" "}
+                      <span className="text-[8px] font-bold text-slate-400">
+                        {label}
+                      </span>
+                    </>
+                  ) : null}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-auto flex items-end justify-between gap-4 pt-5">
+            <div>
+              <p className="text-[8px] font-extrabold uppercase tracking-[0.14em] text-slate-400">
+                {property?.new_build
+                  ? isEn
+                    ? "Price from"
+                    : "Cena od"
+                  : isEn
+                    ? "Price"
+                    : "Cena"}
+              </p>
+              <p className="mt-1 text-[23px] font-extrabold tracking-[-0.03em] text-[#9b7a36]">
+                {formatPrice(property?.price)}
+              </p>
+            </div>
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#182334] text-white transition duration-300 group-hover:bg-[#d6b66f] group-hover:text-[#182334]">
+              <FiArrowRight aria-hidden="true" />
+            </span>
+          </div>
+        </Link>
+      </article>
+    );
+  }
 
   return (
     <article

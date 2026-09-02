@@ -94,7 +94,7 @@ export default function SearchResults(props: any) {
           </select>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-7 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {loader
           ? Array.from({ length: 6 }).map((_, i) => (
               <PropertyCardSkeleton key={`sk-${i}`} />
@@ -105,6 +105,7 @@ export default function SearchResults(props: any) {
                 property={property}
                 locale={locale}
                 imagePriority={index === 0}
+                appearance="cbtop"
               />
             ))}
       </div>
