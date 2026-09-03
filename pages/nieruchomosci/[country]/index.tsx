@@ -14,6 +14,11 @@ import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
 import { getPropertyCountryOption } from "@/lib/propertyCountries";
 import { SiteLocale, countryLabel } from "@/lib/i18n";
+import {
+  expandLocationSelection,
+  getLocationCountry,
+  type LocationEntry,
+} from "@/lib/locations";
 
 const PROPERTY_LIST_COLUMNS = [
   "external_id",
@@ -54,14 +59,6 @@ interface Property {
   country: string;
   distance_to_sea_m: number | null;
 }
-
-type LocationEntry = {
-  id: string;
-  name: string;
-  type: "coast" | "province" | "town" | "city";
-  parentId: string | null;
-  country?: string;
-};
 
 interface PageProps {
   properties: Property[];
@@ -279,18 +276,6 @@ export default function ListingsPage(props: PageProps) {
   );
 }
 
-function getLocationCountry(location: LocationEntry) {
-  return location.country || "hiszpania";
-}
-
-function getAllDescendants(id: string, allLocations: LocationEntry[]): string[] {
-  const children = allLocations.filter((l) => l.parentId === id);
-  return [
-    id,
-    ...children.flatMap((child) => getAllDescendants(child.id, allLocations)),
-  ];
-}
-
 function parseCsvParam(val: unknown): string[] {
   if (!val) return [];
   const raw = Array.isArray(val) ? val.join(",") : String(val);
@@ -385,28 +370,20 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   const countryLocations = (locationsData as LocationEntry[]).filter(
     (entry) => getLocationCountry(entry) === countryOption.slug,
   );
-  const expandedIds = [
-    ...new Set(
-      locationParam.flatMap((id) =>
-        countryLocations.some((entry) => entry.id === id)
-          ? getAllDescendants(id, countryLocations)
-          : [],
-      ),
-    ),
-  ];
+  const expandedLocations = expandLocationSelection(
+    locationParam,
+    countryLocations,
+  );
 
-  const selectedTowns = expandedIds
-    .map((id) => countryLocations.find((l) => l.id === id))
+  const selectedTowns = expandedLocations
     .filter((l) => l?.type === "town" || l?.type === "city")
     .map((l) => l!.name);
 
-  const selectedProvinces = expandedIds
-    .map((id) => countryLocations.find((l) => l.id === id))
+  const selectedProvinces = expandedLocations
     .filter((l) => l?.type === "province")
     .map((l) => l!.name);
 
-  const selectedCoasts = expandedIds
-    .map((id) => countryLocations.find((l) => l.id === id))
+  const selectedCoasts = expandedLocations
     .filter((l) => l?.type === "coast")
     .map((l) => l!.name);
 

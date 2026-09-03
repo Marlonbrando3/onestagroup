@@ -1,26 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import data from "@/data/locations.json";
-
-type Location = {
-  id: string;
-  name: string;
-  type: "coast" | "province" | "town" | "city";
-  parentId: string | null;
-  country?: string;
-  value?: any;
-};
+import {
+  getCanonicalLocations,
+  getLocationCountry,
+  normalizeLocationName,
+  type LocationEntry,
+} from "@/lib/locations";
 
 type Props = {
-  value: Location[];
-  onChange: (val: Location[]) => void;
+  value: LocationEntry[];
+  onChange: (val: LocationEntry[]) => void;
   className?: string;
   countrySlug?: string;
   locale?: "pl" | "en";
 };
-
-function getLocationCountry(location: Location) {
-  return location.country || "hiszpania";
-}
 
 export default function LocationSearch({
   value,
@@ -31,7 +24,7 @@ export default function LocationSearch({
 }: Props) {
   const isEn = locale === "en";
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Location[]>([]);
+  const [results, setResults] = useState<LocationEntry[]>([]);
   const [open, setOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [limitMessage, setLimitMessage] = useState("");
@@ -40,11 +33,17 @@ export default function LocationSearch({
   const MAX_LOCATIONS = 6;
   const isLimitReached = value.length >= MAX_LOCATIONS;
 
-  const countryLocations = (data as Location[]).filter(
-    (location) => getLocationCountry(location) === countrySlug,
+  const countryLocations = useMemo(
+    () =>
+      getCanonicalLocations(
+        (data as LocationEntry[]).filter(
+          (location) => getLocationCountry(location) === countrySlug,
+        ),
+      ),
+    [countrySlug],
   );
 
-  const getHierarchy = (loc: Location, all: Location[]) => {
+  const getHierarchy = (loc: LocationEntry, all: LocationEntry[]) => {
     const res = [loc];
     let current = loc;
 
@@ -68,7 +67,7 @@ export default function LocationSearch({
 
     setQuery(valueInput);
 
-    const q = valueInput.toLowerCase();
+    const q = normalizeLocationName(valueInput);
 
     if (!q) {
       setResults([]);
@@ -76,8 +75,8 @@ export default function LocationSearch({
       return;
     }
 
-    const matches = countryLocations.filter((l) =>
-      l.name.toLowerCase().includes(q),
+    const matches = countryLocations.filter((location) =>
+      normalizeLocationName(location.name).includes(q),
     );
 
     const expanded = matches.flatMap((m) => getHierarchy(m, countryLocations));
@@ -92,7 +91,7 @@ export default function LocationSearch({
     setHighlightedIndex(unique.length ? 0 : -1);
   };
 
-  const addLocation = (loc: Location) => {
+  const addLocation = (loc: LocationEntry) => {
     if (value.find((s) => s.id === loc.id)) return;
 
     if (isLimitReached) {

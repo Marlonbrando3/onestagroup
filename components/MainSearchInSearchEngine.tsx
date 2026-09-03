@@ -7,19 +7,18 @@ import PriceSelect from "./SearchEngine/PriceSearch";
 import locationsData from "@/data/locations.json";
 import { typeDictionarySingular } from "@/lib/titlesDictionary";
 import {
+  getCanonicalLocationsByIds,
+  getLocationCountry,
+  type LocationEntry,
+} from "@/lib/locations";
+import {
   getPropertyCountryOption,
   normalizeCountrySlug,
   PROPERTY_COUNTRY_OPTIONS,
 } from "@/lib/propertyCountries";
 import { SiteLocale, localePath } from "@/lib/i18n";
 
-type LocationItem = {
-  id: string;
-  name: string;
-  type: "coast" | "province" | "town" | "city";
-  parentId: string | null;
-  country?: string;
-};
+type LocationItem = LocationEntry;
 
 type PriceRange = { min: number; max: number };
 
@@ -43,10 +42,6 @@ type Props = {
 
 const DEFAULT_PRICE: PriceRange = { min: 0, max: 5000000 };
 const NUMBER_OPTIONS = ["1", "2", "3", "4", "5"];
-
-function getLocationCountry(location: LocationItem) {
-  return location.country || "hiszpania";
-}
 
 const TYPE_LABEL_TO_DB_VALUES: Record<string, string[]> = {
   Apartament: [
@@ -472,13 +467,12 @@ export default function Home({
     const priceMin = parseNum(router.query.priceMin) ?? DEFAULT_PRICE.min;
     const priceMax = parseNum(router.query.priceMax) ?? DEFAULT_PRICE.max;
     const locationIds = parseCsv(router.query.location);
-    const locations = locationIds
-      .map((id) => (locationsData as any[]).find((l) => l.id === id))
-      .filter(
-        (location): location is LocationItem =>
-          Boolean(location) &&
-          getLocationCountry(location as LocationItem) === selectedCountry.slug,
-      );
+    const locations = getCanonicalLocationsByIds(
+      locationIds,
+      (locationsData as LocationEntry[]).filter(
+        (location) => getLocationCountry(location) === selectedCountry.slug,
+      ),
+    );
     const marketFromUrlRaw = Array.isArray(router.query.market)
       ? router.query.market[0]
       : String(router.query.market ?? "");
