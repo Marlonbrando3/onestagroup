@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import PropertyCard from "@/components/SearchEngine/PropertyCard";
 import { HomeMontserratSans } from "@/fonts/homeFonts";
 import type { AgentOffer } from "@/lib/agentOffers";
+import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
 
 type PublicOfferListProps = {
@@ -88,11 +89,13 @@ export default function PublicOfferList({
         ) : null}
 
         <section className="mx-auto mt-8 grid w-11/12 max-w-7xl gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {offers.map((offer) => (
+          {offers.map((offer, index) => (
             <PropertyCard
               key={offer.external_id}
               property={{ ...offer, vacantFromDate: offer.available_from }}
               detailHrefOverride={`/oferty/${token}/${encodeURIComponent(String(offer.external_id))}`}
+              appearance="cbtop"
+              imagePriority={index === 0}
             />
           ))}
         </section>
@@ -110,10 +113,25 @@ export default function PublicOfferList({
 export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = async (
   context,
 ) => {
+  context.res.setHeader(
+    "Cache-Control",
+    "private, no-store, max-age=0, must-revalidate",
+  );
+
   if (!supabaseServer) return { notFound: true };
 
-  const token = String(context.params?.token || "").trim();
-  if (!/^[A-Za-z0-9_-]{20,64}$/.test(token)) return { notFound: true };
+  const requestedToken = String(context.params?.token || "").trim();
+  const token = await resolvePublicOfferListToken(requestedToken);
+  if (!token) return { notFound: true };
+
+  if (token !== requestedToken) {
+    return {
+      redirect: {
+        destination: `/oferty/${encodeURIComponent(token)}`,
+        permanent: false,
+      },
+    };
+  }
 
   const { data, error } = await supabaseServer
     .from("agent_offer_lists")

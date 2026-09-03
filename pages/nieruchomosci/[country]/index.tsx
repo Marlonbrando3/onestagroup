@@ -316,6 +316,15 @@ function escapeLikeValue(value: string): string {
 export const getServerSideProps: GetServerSideProps<PageProps> = async (
   context,
 ) => {
+  // Search results depend on the query string. Netlify's shared cache can reuse
+  // one filtered response for a different filter combination, so this route
+  // must be rendered per request.
+  context.res.setHeader(
+    "Cache-Control",
+    "private, no-store, max-age=0, must-revalidate",
+  );
+  context.res.setHeader("Netlify-CDN-Cache-Control", "no-store");
+
   const { country } = context.params as { country: string };
   const countryOption = getPropertyCountryOption(country);
   const requestedPage = Number.parseInt(
@@ -481,7 +490,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 
   if (error) {
     console.error("Supabase query error:", error.message);
-    context.res.setHeader("Cache-Control", "private, no-store");
   }
 
   const totalCount = count ?? 0;
@@ -490,13 +498,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   if (page > totalPages) return { notFound: true };
 
   const currentPage = Math.min(page, totalPages);
-
-  if (!error) {
-    context.res.setHeader(
-      "Cache-Control",
-      "public, max-age=0, s-maxage=300, stale-while-revalidate=3600",
-    );
-  }
 
   return {
     props: {

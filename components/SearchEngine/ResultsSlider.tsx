@@ -7,6 +7,8 @@ import Image from "next/image";
 import { localePath, SiteLocale } from "@/lib/i18n";
 import { optimizedPropertyImageUrl } from "@/lib/propertyImages";
 
+const OPTIMIZED_IMAGE_TIMEOUT_MS = 8_000;
+
 type Images = {
   date: string | null;
   images: any;
@@ -61,6 +63,7 @@ export default function ResultsSlider({
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [loadedSlides, setLoadedSlides] = useState<Set<string>>(() => new Set());
   const [failedSlides, setFailedSlides] = useState<Set<string>>(() => new Set());
+  const [directSlides, setDirectSlides] = useState<Set<string>>(() => new Set());
   const viewportRef = useRef<HTMLDivElement>(null);
 
   const imagesArray = useMemo(() => {
@@ -113,6 +116,7 @@ export default function ResultsSlider({
   useEffect(() => {
     setLoadedSlides(new Set());
     setFailedSlides(new Set());
+    setDirectSlides(new Set());
   }, [images]);
 
   const next = () => {
@@ -178,6 +182,48 @@ export default function ResultsSlider({
       return nextFailed;
     });
   };
+
+  const retrySlideDirectly = (key: string) => {
+    setDirectSlides((current) => {
+      if (current.has(key)) return current;
+      const nextDirect = new Set(current);
+      nextDirect.add(key);
+      return nextDirect;
+    });
+  };
+
+  const handleSlideError = (key: string) => {
+    if (!directSlides.has(key)) {
+      retrySlideDirectly(key);
+      return;
+    }
+
+    markSlideFailed(key);
+  };
+
+  const markCompleteImage = (key: string, image: HTMLImageElement | null) => {
+    if (image?.complete && image.naturalWidth > 0) {
+      markSlideLoaded(key);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      !activeSlide ||
+      activeSlide.type !== "image" ||
+      loadedSlides.has(activeSlide.key) ||
+      failedSlides.has(activeSlide.key) ||
+      directSlides.has(activeSlide.key)
+    ) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      retrySlideDirectly(activeSlide.key);
+    }, OPTIMIZED_IMAGE_TIMEOUT_MS);
+
+    return () => window.clearTimeout(timeout);
+  }, [activeSlide, directSlides, failedSlides, loadedSlides]);
 
   return (
     <div
@@ -252,7 +298,7 @@ export default function ResultsSlider({
         >
           {showImageLoader && (
             <div
-              className={`absolute inset-0 z-[1] flex items-center justify-center ${
+              className={`pointer-events-none absolute inset-0 z-0 flex items-center justify-center ${
                 isCbtopAppearance ? "bg-[#dcd5ca]" : "bg-[#e8ddca]"
               }`}
               aria-label={isEn ? "Loading photo" : "Ładowanie zdjęcia"}
@@ -271,7 +317,7 @@ export default function ResultsSlider({
                     ? `View all ${totalPhotosLabel}`
                     : `Zobacz wszystkie zdjęcia (${slides.totalImages})`
                 }
-                className="group/more relative flex h-full min-w-full items-center justify-center overflow-hidden bg-[#182334] text-white"
+                className="group/more relative z-[1] flex h-full min-w-full items-center justify-center overflow-hidden bg-[#182334] text-white"
               >
                 {activeSlide.url && (
                   <Image
@@ -285,8 +331,13 @@ export default function ResultsSlider({
                         : "(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
                     }
                     quality={70}
+                    ref={(image) =>
+                      markCompleteImage(activeSlide.key, image)
+                    }
+                    onLoadCapture={() => markSlideLoaded(activeSlide.key)}
                     onLoad={() => markSlideLoaded(activeSlide.key)}
-                    onError={() => markSlideFailed(activeSlide.key)}
+                    onError={() => handleSlideError(activeSlide.key)}
+                    unoptimized={directSlides.has(activeSlide.key)}
                   />
                 )}
                 <span className="absolute inset-0 bg-gradient-to-t from-[#111827]/95 via-[#111827]/70 to-[#111827]/35" />
@@ -308,7 +359,7 @@ export default function ResultsSlider({
               <Link
                 href={detailHref}
                 prefetch={false}
-                className="relative block h-full w-full"
+                className="relative z-[1] block h-full w-full"
               >
                 <Image
                   fill
@@ -329,8 +380,11 @@ export default function ResultsSlider({
                       : "(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
                   }
                   quality={70}
+                  ref={(image) => markCompleteImage(activeSlide.key, image)}
+                  onLoadCapture={() => markSlideLoaded(activeSlide.key)}
                   onLoad={() => markSlideLoaded(activeSlide.key)}
-                  onError={() => markSlideFailed(activeSlide.key)}
+                  onError={() => handleSlideError(activeSlide.key)}
+                  unoptimized={directSlides.has(activeSlide.key)}
                   {...(imagePriority && index === 0
                     ? { preload: true }
                     : { loading: "lazy" as const })}
@@ -359,8 +413,11 @@ export default function ResultsSlider({
                   }
                   quality={70}
                   loading="eager"
+                  ref={(image) => markCompleteImage(nextSlide.key, image)}
+                  onLoadCapture={() => markSlideLoaded(nextSlide.key)}
                   onLoad={() => markSlideLoaded(nextSlide.key)}
-                  onError={() => markSlideFailed(nextSlide.key)}
+                  onError={() => handleSlideError(nextSlide.key)}
+                  unoptimized={directSlides.has(nextSlide.key)}
                 />
               </div>
             )}

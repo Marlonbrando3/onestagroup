@@ -19,6 +19,7 @@ import { IoBedOutline } from "react-icons/io5";
 import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
 import { AGENT_OFFER_COLUMNS, type AgentOffer } from "@/lib/agentOffers";
 import { propertyTypeLabel } from "@/lib/i18n";
+import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { getCoastLabelFromProvince, getCountryLabel } from "@/lib/regionMap";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { validTitleOrEmpty } from "@/lib/titlesDictionary";
@@ -377,12 +378,27 @@ function descriptionValue(value: unknown): string {
 export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = async (
   context,
 ) => {
+  context.res.setHeader(
+    "Cache-Control",
+    "private, no-store, max-age=0, must-revalidate",
+  );
+
   if (!supabaseServer) return { notFound: true };
 
-  const token = String(context.params?.token || "").trim();
+  const requestedToken = String(context.params?.token || "").trim();
   const offerId = String(context.params?.offerId || "").trim();
-  if (!/^[A-Za-z0-9_-]{20,64}$/.test(token) || !offerId) {
-    return { notFound: true };
+  if (!offerId) return { notFound: true };
+
+  const token = await resolvePublicOfferListToken(requestedToken);
+  if (!token) return { notFound: true };
+
+  if (token !== requestedToken) {
+    return {
+      redirect: {
+        destination: `/oferty/${encodeURIComponent(token)}/${encodeURIComponent(offerId)}`,
+        permanent: false,
+      },
+    };
   }
 
   const { data: presentation, error } = await supabaseServer
