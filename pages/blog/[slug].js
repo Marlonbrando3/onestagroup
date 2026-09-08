@@ -143,7 +143,7 @@ export default function BlogPost({ post, mdxSource, relatedPosts }) {
         </header>
 
         <div className="mx-auto mt-12 grid w-10/12 max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,820px)_380px] xl:gap-10">
-          <article className="blog-article ">
+          <article className="blog-article">
             <MDXRemote {...mdxSource} components={{ Link, Image }} />
           </article>
 
