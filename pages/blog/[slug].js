@@ -142,22 +142,15 @@ export default function BlogPost({ post, mdxSource, relatedPosts }) {
           </div>
         </header>
 
-        <div className="mx-auto mt-12 grid w-10/12 max-w-7xl gap-10 xl:grid-cols-[minmax(0,820px)_420px]">
+        <div className="mx-auto mt-12 grid w-10/12 max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,820px)_380px] xl:gap-10">
           <article className="blog-article ">
             <MDXRemote {...mdxSource} components={{ Link, Image }} />
           </article>
 
-          <aside className="space-y-6">
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-5">
-              <h2 className="text-lg font-semibold text-gray-950">
-                Porozmawiaj o zakupie
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-gray-600">
-                Jesli chcesz porownac regiony albo sprawdzic konkretne oferty,
-                zostaw kontakt. Wrocimy z uporzadkowanymi kolejnymi krokami.
-              </p>
+          <aside className="blog-contact-column">
+            <div className="blog-contact-sticky">
+              <ContactFormBlogPost temat={`Wpis blogowy: ${post.title}`} />
             </div>
-            <ContactFormBlogPost />
           </aside>
         </div>
 

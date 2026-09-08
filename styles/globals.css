@@ -117,6 +117,22 @@ body {
   padding: 1rem 1.25rem;
 }
 
+.blog-contact-column {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .blog-contact-column {
+    align-self: stretch;
+    position: relative;
+  }
+
+  .blog-contact-sticky {
+    position: sticky;
+    top: 108px;
+  }
+}
+
 @media (max-width: 768px) {
   .blog-article {
     font-size: 16px;
