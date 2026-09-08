@@ -18,3 +18,5 @@ create index if not exists onesari_import_runs_kind_updated_at_idx
 
 create index if not exists onesari_import_runs_status_idx
   on public.onesari_import_runs (status);
+
+alter table public.onesari_import_runs enable row level security;

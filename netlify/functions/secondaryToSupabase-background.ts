@@ -48,7 +48,8 @@ export async function handler(event: any) {
   const req: any = {
     method: "POST",
     headers: {
-      authorization: event?.headers?.authorization || "",
+      authorization:
+        event?.headers?.authorization || event?.headers?.Authorization || "",
     },
   };
 
