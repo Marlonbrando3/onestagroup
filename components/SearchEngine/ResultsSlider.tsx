@@ -201,12 +201,6 @@ export default function ResultsSlider({
     markSlideFailed(key);
   };
 
-  const markCompleteImage = (key: string, image: HTMLImageElement | null) => {
-    if (image?.complete && image.naturalWidth > 0) {
-      markSlideLoaded(key);
-    }
-  };
-
   useEffect(() => {
     if (
       !activeSlide ||
@@ -331,9 +325,6 @@ export default function ResultsSlider({
                         : "(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
                     }
                     quality={70}
-                    ref={(image) =>
-                      markCompleteImage(activeSlide.key, image)
-                    }
                     onLoadCapture={() => markSlideLoaded(activeSlide.key)}
                     onLoad={() => markSlideLoaded(activeSlide.key)}
                     onError={() => handleSlideError(activeSlide.key)}
@@ -380,7 +371,6 @@ export default function ResultsSlider({
                       : "(max-width: 767px) 90vw, (max-width: 1023px) 30vw, 305px"
                   }
                   quality={70}
-                  ref={(image) => markCompleteImage(activeSlide.key, image)}
                   onLoadCapture={() => markSlideLoaded(activeSlide.key)}
                   onLoad={() => markSlideLoaded(activeSlide.key)}
                   onError={() => handleSlideError(activeSlide.key)}
@@ -413,7 +403,6 @@ export default function ResultsSlider({
                   }
                   quality={70}
                   loading="eager"
-                  ref={(image) => markCompleteImage(nextSlide.key, image)}
                   onLoadCapture={() => markSlideLoaded(nextSlide.key)}
                   onLoad={() => markSlideLoaded(nextSlide.key)}
                   onError={() => handleSlideError(nextSlide.key)}
