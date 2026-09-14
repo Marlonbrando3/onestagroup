@@ -1,0 +1,9 @@
+# Mediterranean property banner
+
+Generated with the built-in image generation tool for the decorative country-listing banner. This is a fictional Mediterranean scene, not a photographed listing or a specific destination.
+
+Asset: `public/mediterranean-property-banner.webp`
+
+## Final prompt
+
+Create an original photorealistic architectural editorial photograph for the decorative panoramic banner of Onesta, a premium Mediterranean property search website. Wide landscape 3:1 composition, ideally 3072x1024. A refined contemporary Mediterranean coastal neighbourhood viewed from a beautiful limestone terrace: warm ivory low-rise villas with understated pergolas and glass balconies on the left, a gently curving coastal residential hillside receding through the middle, expansive calm blue Mediterranean sea on the right. A small olive tree and restrained native planting frame the extreme left, never obstructing the view. Natural late-afternoon sunlight, pale warm stone, muted olive greens, deep soft blue sea, elegant quiet aspirational mood, believable lived-in architecture, realistic photographic texture and proportions, sophisticated European real-estate editorial photography, no heavy orange filter, no exaggerated mansion or resort. CRITICAL COMPOSITION: this image will be cropped to a very shallow 9:1 strip through its vertical centre. Keep the recognizable villa facades, terrace edge, coastline and sea horizon all within the central 30 percent of image height; top and bottom are expendable plain sky and terrace foreground. Wide panoramic lens without distortion; distant architecture modest in scale so buildings fit inside the central horizontal band. A coherent single scene, not a collage. Fictional Mediterranean location suitable for both Spain and Cyprus, no identifiable landmark, no claim of a specific property for sale. No people, no text, no logos, no watermarks, no UI elements.

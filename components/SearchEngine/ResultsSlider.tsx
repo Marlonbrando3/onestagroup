@@ -13,6 +13,7 @@ type Images = {
   date: string | null;
   images: any;
   market: string;
+  recommended?: boolean;
   countrySlug: string;
   deliveryDate: any;
   region: any;
@@ -46,6 +47,7 @@ export default function ResultsSlider({
   propertyId,
   images,
   market,
+  recommended = false,
   countrySlug,
   deliveryDate,
   date,
@@ -226,13 +228,30 @@ export default function ResultsSlider({
       }`}
     >
       <div
-        className={`absolute z-10 bg-white/95 px-3 py-2 font-bold uppercase shadow-sm ${
+        className={`pointer-events-none absolute z-10 flex flex-wrap items-center gap-2 font-bold uppercase ${
           isCbtopAppearance
-            ? "left-4 top-4 rounded-full text-[9px] tracking-[0.14em] text-[#182334]"
-            : "left-3 top-3 text-[11px] tracking-[0.12em] text-[#9b7a36]"
+            ? "left-4 right-4 top-4 text-[9px] tracking-[0.14em]"
+            : "left-3 right-3 top-3 text-[11px] tracking-[0.12em]"
         }`}
       >
-        {market}
+        <span
+          className={`bg-white/95 px-3 py-2 shadow-sm ${
+            isCbtopAppearance
+              ? "rounded-full text-[#182334]"
+              : "text-[#9b7a36]"
+          }`}
+        >
+          {market}
+        </span>
+        {recommended && (
+          <span
+            className={`bg-[#d6b66f] px-3 py-2 text-[#182334] shadow-sm ${
+              isCbtopAppearance ? "rounded-full" : ""
+            }`}
+          >
+            {isEn ? "Recommended" : "Rekomendowana"}
+          </span>
+        )}
       </div>
 
       {!isCbtopAppearance && isPrimary && deliveryDate && (

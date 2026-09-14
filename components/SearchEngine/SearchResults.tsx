@@ -10,7 +10,7 @@ export default function SearchResults(props: any) {
 
   const { properties, loader, setLoader, count, locale = "pl" } = props;
   const isEn = locale === "en";
-  const [sort, setSort] = useState<string>("price_asc");
+  const [sort, setSort] = useState<string>("recommended");
 
   const handleShareResults = async () => {
     try {
@@ -32,7 +32,10 @@ export default function SearchResults(props: any) {
 
   useEffect(() => {
     if (router.isReady) {
-      const sortParam = (router.query.sort as string) || "price_asc";
+      const sortParam =
+        router.query.sort === "price_asc" || router.query.sort === "price_desc"
+          ? router.query.sort
+          : "recommended";
       setSort(sortParam);
     }
   }, [router.isReady, router.query.sort]);
@@ -42,7 +45,7 @@ export default function SearchResults(props: any) {
     setSort(newSort);
     setLoader(true);
 
-    const query = { ...router.query, sort: newSort };
+    const query = { ...router.query, sort: newSort, page: "1" };
 
     router.push(
       {
@@ -85,6 +88,9 @@ export default function SearchResults(props: any) {
             onChange={handleSortChange}
             className="h-11 border border-[#d7c8ad] bg-white px-3 text-[14px] font-semibold text-[#182334] outline-none transition focus:border-[#b8954c]"
           >
+            <option value="recommended">
+              {isEn ? "Recommended" : "Rekomendowane"}
+            </option>
             <option value="price_asc">
               {isEn ? "Lowest price first" : "Od najniższej ceny"}
             </option>

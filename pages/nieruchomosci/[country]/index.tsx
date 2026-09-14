@@ -30,6 +30,7 @@ const PROPERTY_LIST_COLUMNS = [
   "baths",
   "images",
   "new_build",
+  "onesta_featured",
   "surface_built",
   "pool",
   "vacantFromDate:available_from",
@@ -51,6 +52,7 @@ interface Property {
   baths: number;
   images: string[];
   new_build: boolean;
+  onesta_featured: boolean;
   surface_built: number;
   pool: boolean;
   headerAdvertisement: string;
@@ -324,7 +326,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 
   if (page > MAX_PUBLIC_PAGE) return { notFound: true };
 
-  const limit = 20;
+  const limit = 21;
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
@@ -387,14 +389,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     .filter((l) => l?.type === "coast")
     .map((l) => l!.name);
 
-  let orderColumn = "price";
-  let orderAscending = true;
-
-  if (sort === "price_desc") {
-    orderColumn = "price";
-    orderAscending = false;
-  }
-
   if (!supabaseServer) {
     return {
       props: {
@@ -403,7 +397,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
         totalCount: 0,
         totalPages: 0,
         currentPage: 1,
-        perPage: 18,
+        perPage: limit,
         query: context.query as Record<string, string | string[]>,
       },
     };
@@ -417,9 +411,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     .not("images", "is", null)
     .neq("images", "[]")
     .in("country", countryOption.dbValues)
-    .in("new_build", marketType !== null ? [marketType] : [true, false])
-    .order(orderColumn, { ascending: orderAscending })
-    .range(from, to);
+    .in("new_build", marketType !== null ? [marketType] : [true, false]);
 
   if (typeList.length === 1) {
     query = query.ilike("type", typeList[0]);
@@ -462,6 +454,19 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   } else if (provincesParam?.length) {
     query = query.in("province", provincesParam);
   }
+
+  // Rank the full filtered result set before pagination.
+  if (sort !== "price_asc" && sort !== "price_desc") {
+    query = query.order("onesta_featured", {
+      ascending: false,
+      nullsFirst: false,
+    });
+  }
+
+  query = query
+    .order("price", { ascending: sort !== "price_desc" })
+    .order("id", { ascending: true })
+    .range(from, to);
 
   const { data: properties, count, error } = await query;
 

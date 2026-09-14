@@ -207,6 +207,7 @@ export default function PropertyCard({
             locale={locale}
             images={property?.images}
             market={market}
+            recommended={property?.onesta_featured === true}
             deliveryDate={property?.vacantFromDate}
             propertyId={property?.external_id}
             propertyTitle={listingTitle}
@@ -299,6 +300,7 @@ export default function PropertyCard({
           locale={locale}
           images={property?.images}
           market={market}
+          recommended={property?.onesta_featured === true}
           deliveryDate={property?.vacantFromDate}
           propertyId={property?.external_id}
           propertyTitle={listingTitle}
