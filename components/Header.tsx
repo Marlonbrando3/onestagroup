@@ -249,7 +249,7 @@ export default function Header({
             <Link
               href="#contact"
               scroll={false}
-              className="flex h-11 items-center whitespace-nowrap rounded-full border border-[#d7c8ad] bg-white px-5 text-[12px] font-bold uppercase tracking-[0.12em] text-[#182334] transition hover:border-[#182334]"
+              className="whitespace-nowrap px-4 py-3 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#334155] transition hover:text-[#9b7a36]"
             >
               {isEn ? "Contact" : "Kontakt"}
             </Link>
@@ -376,7 +376,7 @@ export default function Header({
                 href="#contact"
                 scroll={false}
                 onClick={closeMenu}
-                className="flex h-12 items-center justify-center rounded-full border border-[#d7c8ad] bg-white px-5 text-[12px] font-bold uppercase tracking-[0.12em] text-[#182334]"
+                className="flex h-12 items-center justify-center px-5 text-[12px] font-bold uppercase tracking-[0.12em] text-[#182334]"
               >
                 {isEn ? "Contact" : "Kontakt"}
               </Link>

@@ -643,7 +643,7 @@ export default function Home({
         <button
           ref={mobileTriggerButtonRef}
           onClick={() => setMobileModalOpen(true)}
-          className={`flex items-center gap-3 rounded-[22px] border border-[#d7c8ad] bg-white p-4 text-[#5f6b7a] shadow-lg transition hover:border-[#b8954c] hover:shadow-xl ${
+          className={`flex items-center gap-3 rounded-[16px] border border-[#d7c8ad] bg-white p-4 text-[#5f6b7a] shadow-lg transition hover:border-[#b8954c] hover:shadow-xl ${
             isMobilePinned
               ? "fixed top-[88px] left-1/2 -translate-x-1/2 z-[35] w-[90vw] max-w-[1330px]"
               : "w-full relative"
@@ -680,11 +680,11 @@ export default function Home({
         </div>
 
         {/* DESKTOP SEARCH BAR */}
-        <div className="hidden rounded-[22px] border border-[#e5dac7] bg-white shadow-xl lg:flex lg:h-20 lg:flex-row lg:gap-0 text-sm">
+        <div className="hidden rounded-[16px] border border-[#e5dac7] bg-white shadow-xl lg:flex lg:h-20 lg:flex-row lg:gap-0 text-sm">
           {/* LOCATION */}
           <div className="h-full w-full border-[#e5dac7] pl-4 lg:flex-[4.20] lg:border-r">
             <LocationSearch
-              className="h-full w-full rounded-l-[21px] rounded-r-none"
+              className="h-full w-full rounded-l-[15px] rounded-r-none"
               countrySlug={selectedCountry.slug}
               value={filters.locations}
               onChange={(val: LocationItem[]) => updateFilter("locations", val)}
@@ -749,7 +749,7 @@ export default function Home({
           </div>
 
           {/* SEARCH BUTTON */}
-          <div className="flex h-full w-full items-center justify-center rounded-r-[21px] bg-[#fbf8f2] px-3 lg:w-auto">
+          <div className="flex h-full w-full items-center justify-center rounded-r-[15px] bg-[#fbf8f2] px-3 lg:w-auto">
             <button
               onClick={handleSearch}
               className="flex h-12 w-12 items-center justify-center rounded-full border border-[#b8954c] bg-[#d6b36a] text-[#182334] transition-colors hover:border-[#182334] hover:bg-[#182334] hover:text-white"

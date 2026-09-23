@@ -50,7 +50,7 @@ export default function SearchInput({
     >
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="relative mt-[20px] flex h-auto w-full flex-col items-stretch justify-center rounded-[22px] px-3 md:px-4 lg:mt-0 lg:flex-row lg:items-center lg:bg-gray-100/[0.3] lg:px-0"
+        className="relative mt-[20px] flex h-auto w-full flex-col items-stretch justify-center rounded-[16px] px-3 md:px-4 lg:mt-0 lg:flex-row lg:items-center lg:bg-gray-100/[0.3] lg:px-0"
       >
         <div className="h-auto flex-col items-center w-full mx-auto">
           <MainSearchInSearchEngine

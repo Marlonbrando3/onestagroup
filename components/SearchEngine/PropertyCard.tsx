@@ -176,7 +176,7 @@ export default function PropertyCard({
 
     return (
       <article
-        className={`${HomeMontserratSans.className} group flex h-full flex-col overflow-hidden rounded-[22px] border border-[#e2d8ca] bg-white shadow-[0_10px_35px_rgba(24,35,52,0.07)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_60px_rgba(24,35,52,0.14)]`}
+        className={`${HomeMontserratSans.className} group flex h-full flex-col overflow-hidden rounded-[16px] border border-[#e2d8ca] bg-white shadow-[0_10px_35px_rgba(24,35,52,0.07)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_60px_rgba(24,35,52,0.14)]`}
       >
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#dcd5ca]">
           <ResultsSlider

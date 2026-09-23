@@ -173,7 +173,7 @@ export default function LocationSearch({
       ref={ref}
       className={`relative flex h-full w-[300px] rounded-xl ${className ?? ""}`}
     >
-      <div className="relative flex h-full w-full flex-col justify-center overflow-hidden rounded-[inherit] bg-white pr-3 transition hover:bg-[#fbf8f2]">
+      <div className="relative flex h-full w-full flex-col justify-center overflow-hidden rounded-[inherit] bg-white pr-3">
         <div className="mb-1 flex items-center justify-between">
           <label className="text-sm font-semibold text-[#5f6b7a] md:text-xs">
             {isEn ? "Location" : "Lokalizacja"}

@@ -27,6 +27,7 @@ import ContactFormMain from "../../../components/ContactFormMain";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
+import SpainCatalogContent from "@/components/SpainCatalogContent";
 import { getPropertyCountryOption } from "@/lib/propertyCountries";
 import { SiteLocale, countryLabel } from "@/lib/i18n";
 import {
@@ -235,7 +236,7 @@ export default function ListingsPage(props: PageProps) {
     : region
       ? isEn
         ? `Property for sale on the ${region.name}`
-        : `Nieruchomości na ${region.name}`
+        : `Nieruchomości na ${region.name} na sprzedaż`
       : baseMeta.h1;
   const description =
     city?.intro[locale] || region?.copy[locale].intro || baseMeta.description;
@@ -248,6 +249,8 @@ export default function ListingsPage(props: PageProps) {
     : baseMeta.title;
   const path = catalogPath(String(country), locale, region?.slug, city?.slug);
   const canonical = canonicalCatalog(path, props.query);
+  const isSpainLanding =
+    country === "hiszpania" && !region && !city && locale === "pl";
   const breadcrumbs = [
     { name: isEn ? "Home" : "Strona główna", path: isEn ? "/en" : "/" },
     { name: baseMeta.h1, path: catalogPath(String(country), locale) },
@@ -306,9 +309,26 @@ export default function ListingsPage(props: PageProps) {
           <h1 className="max-w-4xl text-3xl font-semibold leading-tight md:text-4xl lg:text-[42px] lg:drop-shadow-sm">
             {h1}
           </h1>
-          <p className="mt-3 max-w-4xl leading-7 text-[#4a5568] lg:text-white/90 lg:drop-shadow-sm">
-            {description}
-          </p>
+          {isSpainLanding ? (
+            <p className="mt-3 w-full text-sm leading-5 text-[#4a5568] lg:text-white/90 lg:drop-shadow-sm">
+              Szukasz nieruchomości w Hiszpanii? W Onesta znajdziesz{" "}
+              <strong>
+                apartamenty, mieszkania, domy i wille na sprzedaż
+              </strong>{" "}
+              w najpopularniejszych regionach hiszpańskiego wybrzeża, między
+              innymi na Costa Blanca, Costa del Sol, Costa Cálida i Costa de
+              Almería. Prezentujemy oferty z rynku pierwotnego i wtórnego oraz
+              pomagamy przejść przez cały proces zakupu — od wyboru odpowiedniej
+              lokalizacji i nieruchomości, przez prezentacje i formalności, aż do
+              finalizacji transakcji i odbioru nieruchomości. Skorzystaj z
+              filtrów poniżej, aby wybrać region, typ nieruchomości, liczbę
+              sypialni i budżet.
+            </p>
+          ) : (
+            <p className="mt-3 max-w-4xl leading-7 text-[#4a5568] lg:text-white/90 lg:drop-shadow-sm">
+              {description}
+            </p>
+          )}
         </header>
       </MiniHomeView>
       <RecommendedOffersPopup
@@ -316,19 +336,21 @@ export default function ListingsPage(props: PageProps) {
         isOpen={showOffersPopup}
         onClose={() => setShowOffersPopup(false)}
       />
-      <SearchEngine
-        loader={loader}
-        setLoader={setLoader}
-        handleShowMobileFilters={handleShowMobileFilters}
-        searchEngine={searchEngine}
-        mobileButtonSearchEngine={mobileButtonSearchEngine}
-        count={props.totalCount}
-        {...props}
-        properties={propertiesState}
-        isMobileFiltersOpen={isMobileFiltersOpen}
-        setIsMobileFiltersOpen={setIsMobileFiltersOpen}
-        locale={locale}
-      />
+      <div id="oferty" className="scroll-mt-24">
+        <SearchEngine
+          loader={loader}
+          setLoader={setLoader}
+          handleShowMobileFilters={handleShowMobileFilters}
+          searchEngine={searchEngine}
+          mobileButtonSearchEngine={mobileButtonSearchEngine}
+          count={props.totalCount}
+          {...props}
+          properties={propertiesState}
+          isMobileFiltersOpen={isMobileFiltersOpen}
+          setIsMobileFiltersOpen={setIsMobileFiltersOpen}
+          locale={locale}
+        />
+      </div>
 
       <div ref={lastElementRef} style={{ height: 50 }} />
 
@@ -340,14 +362,16 @@ export default function ListingsPage(props: PageProps) {
         </div>
       )}
 
-      {country === "hiszpania" && (
+      {isSpainLanding ? (
+        <SpainCatalogContent onConsultation={handleConsultationPopUp} />
+      ) : country === "hiszpania" ? (
         <SeoLocationContent
           regionSlug={region?.slug}
           citySlug={city?.slug}
           locale={locale}
           onConsultation={handleConsultationPopUp}
         />
-      )}
+      ) : null}
       <ContactFormMain locale={locale} />
       <Footer locale={locale} />
     </div>

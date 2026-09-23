@@ -1,7 +1,7 @@
 // PropertyCardSkeleton.tsx
 export default function PropertyCardSkeleton() {
   return (
-    <div className="w-full overflow-hidden rounded-[22px] border border-[#e2d8ca] bg-white shadow-[0_10px_35px_rgba(24,35,52,0.07)]">
+    <div className="w-full overflow-hidden rounded-[16px] border border-[#e2d8ca] bg-white shadow-[0_10px_35px_rgba(24,35,52,0.07)]">
       <div className="w-full aspect-[4/3] skeleton-shimmer" />
 
       <div className="space-y-4 px-5 pb-5 pt-5">

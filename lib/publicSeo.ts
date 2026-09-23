@@ -119,7 +119,7 @@ export function countryMetadata(country: string, locale: SiteLocale = "pl") {
       ? "Explore apartments and houses for sale in Spain on the Costa Blanca, Costa del Sol, Costa Cálida and Almería coast. Get buying support from Onesta."
       : "Explore apartments and houses for sale in Cyprus. Compare locations, prices and property features, with support from Onesta throughout your purchase."
     : spain
-      ? "Przeglądaj apartamenty i domy w Hiszpanii: Costa Blanca, Costa del Sol, Costa Cálida i Almería. Porównaj oferty i skorzystaj z pomocy przy zakupie."
+      ? "Nieruchomości w Hiszpanii na sprzedaż: apartamenty, mieszkania, domy i wille na Costa Blanca, Costa del Sol, Costa Cálida i Costa de Almería. Sprawdź aktualne oferty."
       : "Przeglądaj apartamenty i domy na Cyprze. Porównaj lokalizacje, ceny i parametry ofert. Skorzystaj ze wsparcia Onesta przy wyborze i zakupie.";
   return { h1, title: `${h1} | Onesta`, description };
 }

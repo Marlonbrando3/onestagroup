@@ -66,7 +66,7 @@ export function MultiSelect({
       {/* BUTTON */}
       <div
         onClick={() => setOpen((prev) => !prev)}
-        className="flex h-full w-full cursor-pointer flex-col justify-center rounded-xl bg-white px-3 duration-200 hover:bg-[#fbf8f2]"
+        className="flex h-full w-full cursor-pointer flex-col justify-center rounded-xl bg-white px-3"
       >
         <label className="mb-1 text-xs font-semibold text-[#5f6b7a]">
           {label}
