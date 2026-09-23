@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Head from "next/head";
+import { IoChevronForward } from "react-icons/io5";
 import { SITE_URL } from "@/lib/publicSeo";
 export type Crumb = { name: string; path: string };
 export default function SeoBreadcrumbs({
@@ -31,19 +32,20 @@ export default function SeoBreadcrumbs({
       </Head>
       <nav
         aria-label="Breadcrumb"
-        className={`flex flex-wrap gap-2 py-3 text-sm text-[#5f6b7a] ${className}`}
+        className={`flex flex-wrap items-center gap-2 py-3 text-sm text-[#788391] ${className}`}
       >
         {items.map((item, i) => (
-          <span key={item.path}>
+          <span key={item.path} className="inline-flex items-center gap-2">
             {i > 0 && (
-              <span aria-hidden="true" className="mr-2">
-                /
-              </span>
+              <IoChevronForward
+                aria-hidden="true"
+                className="h-3.5 w-3.5 shrink-0 opacity-55"
+              />
             )}
             <Link
               href={item.path}
               aria-current={i === items.length - 1 ? "page" : undefined}
-              className="underline underline-offset-4"
+              className="no-underline transition-colors hover:text-[#182334]"
             >
               {item.name}
             </Link>

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { HomeMontserratSans as MontserratSans } from "../fonts/homeFonts";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
-export default function ContactFormMain({ locale = "pl" }) {
+export default function ContactFormMain({ locale = "pl", contained = false }) {
   const router = useRouter();
   const submitButton = useRef();
   const isEn = locale === "en";
@@ -93,7 +93,7 @@ export default function ContactFormMain({ locale = "pl" }) {
   return (
     <div
       id="contact"
-      className={`${MontserratSans.className} overflow-hidden bg-[#111827] shadow-2xl`}
+      className={`${MontserratSans.className} overflow-hidden bg-[#111827] shadow-2xl ${contained ? "mx-auto mb-12 w-[90vw] max-w-[1180px] md:mb-16" : ""}`}
     >
       <div className="grid lg:grid-cols-[0.82fr_1.18fr]">
         <aside className="relative min-h-[360px] p-8 text-white lg:p-10">
@@ -200,7 +200,7 @@ export default function ContactFormMain({ locale = "pl" }) {
                 type="checkbox"
                 required
                 checked={consents.privacy}
-                className="mt-1 h-5 w-5 accent-[#b8954c]"
+                className="mt-1 h-5 w-5 shrink-0 accent-[#b8954c]"
                 onChange={(e) =>
                   setConsents({ ...consents, privacy: e.target.checked })
                 }
@@ -218,7 +218,7 @@ export default function ContactFormMain({ locale = "pl" }) {
               <input
                 type="checkbox"
                 checked={consents.marketing}
-                className="mt-1 h-5 w-5 accent-[#b8954c]"
+                className="mt-1 h-5 w-5 shrink-0 accent-[#b8954c]"
                 onChange={(e) =>
                   setConsents({ ...consents, marketing: e.target.checked })
                 }

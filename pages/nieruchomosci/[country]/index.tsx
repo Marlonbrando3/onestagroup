@@ -28,6 +28,7 @@ import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
 import SpainCatalogContent from "@/components/SpainCatalogContent";
+import { Red_Hat_DisplayFont } from "@/fonts/fonts";
 import { getPropertyCountryOption } from "@/lib/propertyCountries";
 import { SiteLocale, countryLabel } from "@/lib/i18n";
 import {
@@ -263,7 +264,15 @@ export default function ListingsPage(props: PageProps) {
   if (city) breadcrumbs.push({ name: city.name, path });
 
   return (
-    <div className="bg-gray-100/[0.3] w-full overflow-x-clip">
+    <div
+      className={`${isSpainLanding ? `${Red_Hat_DisplayFont.className} spain-catalog-font` : ""} w-full overflow-x-clip bg-gray-100/[0.3]`}
+    >
+      <style jsx global>{`
+        .spain-catalog-font,
+        .spain-catalog-font * {
+          font-family: ${Red_Hat_DisplayFont.style.fontFamily} !important;
+        }
+      `}</style>
       <SeoHead
         title={
           props.currentPage > 1
@@ -304,7 +313,7 @@ export default function ListingsPage(props: PageProps) {
         <header>
           <SeoBreadcrumbs
             items={breadcrumbs}
-            className="hidden lg:flex lg:text-white/80 [&_a]:transition-colors lg:[&_a:hover]:text-white"
+            className="hidden lg:flex lg:text-white/60 lg:[&_a:hover]:text-white/90"
           />
           <h1 className="max-w-4xl text-3xl font-semibold leading-tight md:text-4xl lg:text-[42px] lg:drop-shadow-sm">
             {h1}
@@ -372,7 +381,7 @@ export default function ListingsPage(props: PageProps) {
           onConsultation={handleConsultationPopUp}
         />
       ) : null}
-      <ContactFormMain locale={locale} />
+      <ContactFormMain locale={locale} contained={isSpainLanding} />
       <Footer locale={locale} />
     </div>
   );
