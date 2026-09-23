@@ -1,0 +1,334 @@
+{
+  "matrix": [
+    {
+      "url": "/",
+      "title": "Nieruchomości za granicą: Hiszpania i Cypr | Onesta",
+      "h1": "Nieruchomości za granicą — Hiszpania i Cypr",
+      "canonical": "https://onesta.com.pl/",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en",
+      "title": "Property in Spain and Cyprus | Onesta",
+      "h1": "Property for sale in Spain and Cyprus",
+      "canonical": "https://onesta.com.pl/en",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/abc",
+      "title": "Zakup nieruchomości w Hiszpanii — pytania | Onesta",
+      "h1": "Pytania i odpowiedzi o zakupie nieruchomości w Hiszpanii",
+      "canonical": "https://onesta.com.pl/abc",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/blog/nieruchomosci-costa-blanca",
+      "title": "Nieruchomości Costa Blanca — przewodnik po regionie | Onesta Group",
+      "h1": "Nieruchomości Costa Blanca — przewodnik po regionie",
+      "canonical": "https://onesta.com.pl/blog/nieruchomosci-costa-blanca",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania",
+      "title": "Nieruchomości w Hiszpanii na sprzedaż | Onesta",
+      "h1": "Nieruchomości w Hiszpanii na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/cypr",
+      "title": "Nieruchomości na Cyprze na sprzedaż | Onesta",
+      "h1": "Nieruchomości na Cyprze na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/cypr",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania",
+      "title": "Property for sale in Spain | Onesta",
+      "h1": "Property for sale in Spain",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/en/properties/cypr",
+      "title": "Property for sale in Cyprus | Onesta",
+      "h1": "Property for sale in Cyprus",
+      "canonical": "https://onesta.com.pl/en/properties/cypr",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-blanca",
+      "title": "Nieruchomości Costa Blanca na sprzedaż | Onesta",
+      "h1": "Nieruchomości na Costa Blanca",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-blanca",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-blanca",
+      "title": "Property for sale on the Costa Blanca | Onesta",
+      "h1": "Property for sale on the Costa Blanca",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-blanca",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-del-sol",
+      "title": "Nieruchomości Costa del Sol na sprzedaż | Onesta",
+      "h1": "Nieruchomości na Costa del Sol",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-del-sol",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-del-sol",
+      "title": "Property for sale on the Costa del Sol | Onesta",
+      "h1": "Property for sale on the Costa del Sol",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-del-sol",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-calida",
+      "title": "Nieruchomości Costa Cálida na sprzedaż | Onesta",
+      "h1": "Nieruchomości na Costa Cálida",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-calida",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-calida",
+      "title": "Property for sale on the Costa Cálida | Onesta",
+      "h1": "Property for sale on the Costa Cálida",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-calida",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-de-almeria",
+      "title": "Nieruchomości Costa de Almería na sprzedaż | Onesta",
+      "h1": "Nieruchomości na Costa de Almería",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-de-almeria",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-de-almeria",
+      "title": "Property for sale on the Costa de Almería | Onesta",
+      "h1": "Property for sale on the Costa de Almería",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-de-almeria",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-blanca/torrevieja",
+      "title": "Nieruchomości w Torrevieja na sprzedaż | Onesta",
+      "h1": "Nieruchomości w Torrevieja na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-blanca/torrevieja",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-blanca/torrevieja",
+      "title": "Property for sale in Torrevieja | Onesta",
+      "h1": "Property for sale in Torrevieja",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-blanca/torrevieja",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-blanca/guardamar-del-segura",
+      "title": "Nieruchomości w Guardamar del Segura na sprzedaż | Onesta",
+      "h1": "Nieruchomości w Guardamar del Segura na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-blanca/guardamar-del-segura",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-blanca/guardamar-del-segura",
+      "title": "Property for sale in Guardamar del Segura | Onesta",
+      "h1": "Property for sale in Guardamar del Segura",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-blanca/guardamar-del-segura",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-del-sol/estepona",
+      "title": "Nieruchomości w Estepona na sprzedaż | Onesta",
+      "h1": "Nieruchomości w Estepona na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-del-sol/estepona",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-del-sol/estepona",
+      "title": "Property for sale in Estepona | Onesta",
+      "h1": "Property for sale in Estepona",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-del-sol/estepona",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-del-sol/mijas",
+      "title": "Nieruchomości w Mijas na sprzedaż | Onesta",
+      "h1": "Nieruchomości w Mijas na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-del-sol/mijas",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-del-sol/mijas",
+      "title": "Property for sale in Mijas | Onesta",
+      "h1": "Property for sale in Mijas",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-del-sol/mijas",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-calida/san-pedro-del-pinatar",
+      "title": "Nieruchomości w San Pedro del Pinatar na sprzedaż | Onesta",
+      "h1": "Nieruchomości w San Pedro del Pinatar na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-calida/san-pedro-del-pinatar",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-calida/san-pedro-del-pinatar",
+      "title": "Property for sale in San Pedro del Pinatar | Onesta",
+      "h1": "Property for sale in San Pedro del Pinatar",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-calida/san-pedro-del-pinatar",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-de-almeria/vera",
+      "title": "Nieruchomości w Vera na sprzedaż | Onesta",
+      "h1": "Nieruchomości w Vera na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-de-almeria/vera",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/costa-de-almeria/vera",
+      "title": "Property for sale in Vera | Onesta",
+      "h1": "Property for sale in Vera",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/costa-de-almeria/vera",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania?page=2",
+      "title": "Nieruchomości w Hiszpanii na sprzedaż — strona 2 | Onesta",
+      "h1": "Nieruchomości w Hiszpanii na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania?page=2",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-blanca?page=2",
+      "title": "Nieruchomości Costa Blanca na sprzedaż — strona 2 | Onesta",
+      "h1": "Nieruchomości na Costa Blanca",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-blanca?page=2",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/costa-de-almeria/vera?page=2",
+      "title": "Nieruchomości w Vera na sprzedaż — strona 2 | Onesta",
+      "h1": "Nieruchomości w Vera na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/costa-de-almeria/vera?page=2",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/apartament-w-torrevieja?id=MTI-3263-115-10-115&utm_source=seo-test",
+      "title": "Apartament w Torrevieja, 36 m² · MTI-3263-115-10-115 | Onesta",
+      "h1": "Apartament w Torrevieja",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/apartament-w-torrevieja?id=MTI-3263-115-10-115",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/apartament-w-torrevieja?id=MTI-3226-115-10-115&utm_source=seo-test",
+      "title": "Apartament w Torrevieja, 61 m² · MTI-3226-115-10-115 | Onesta",
+      "h1": "Apartament w Torrevieja",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/apartament-w-torrevieja?id=MTI-3226-115-10-115",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/apartament-w-torrevieja?id=MTI-3226-115-10-115&utm_source=seo-test",
+      "title": "Apartament w Torrevieja, 61 m² · MTI-3226-115-10-115 | Onesta",
+      "h1": "Apartament w Torrevieja",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/apartament-w-torrevieja?id=MTI-3226-115-10-115",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/apartament-w-torrevieja?id=MTI-3263-115-10-115&utm_source=seo-test",
+      "title": "Apartament w Torrevieja, 36 m² · MTI-3263-115-10-115 | Onesta",
+      "h1": "Apartament w Torrevieja",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/apartament-w-torrevieja?id=MTI-3263-115-10-115",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania?bedsMin=0&bedsMax=0",
+      "title": "Nieruchomości w Hiszpanii na sprzedaż | Onesta",
+      "h1": "Nieruchomości w Hiszpanii na sprzedaż",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania?bedsMax=0&bedsMin=0",
+      "robots": "noindex, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/cypr/willa-przy-plazy-z-niezakloconym-widokiem-na-morze?id=OW-84%2F15982%2FODS",
+      "title": "Willa przy plaży z niezakłóconym widokiem na morze, 204 m² · OW-84/15982/ODS | Onesta",
+      "h1": "Willa przy plaży z niezakłóconym widokiem na morze",
+      "canonical": "https://onesta.com.pl/nieruchomosci/cypr/willa-przy-plazy-z-niezakloconym-widokiem-na-morze?id=OW-84%2F15982%2FODS",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/nieruchomosci/hiszpania/apartament-w-orihuela?id=ASR-14827463",
+      "title": "Apartament w Orihuela, 89 m² · ASR-14827463 | Onesta",
+      "h1": "Apartament w Orihuela",
+      "canonical": "https://onesta.com.pl/nieruchomosci/hiszpania/apartament-w-orihuela?id=ASR-14827463",
+      "robots": "index, follow",
+      "lang": "pl"
+    },
+    {
+      "url": "/en/properties/hiszpania/apartment-in-orihuela?id=ASR-14827463",
+      "title": "Apartment in Orihuela, 89 m² · ASR-14827463 | Onesta",
+      "h1": "Apartment in Orihuela",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/apartment-in-orihuela?id=ASR-14827463",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/en/properties/hiszpania/apartment-in-torre-pacheco?id=SEC-746-317-11-616",
+      "title": "Apartment in Torre Pacheco · SEC-746-317-11-616 | Onesta",
+      "h1": "Apartment in Torre Pacheco",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/apartment-in-torre-pacheco?id=SEC-746-317-11-616",
+      "robots": "index, follow",
+      "lang": "en"
+    },
+    {
+      "url": "/en/properties/hiszpania/apartment-in-daya-nueva?id=MTI-32-115-10-115",
+      "title": "Apartment in Daya Nueva, 108 m² · MTI-32-115-10-115 | Onesta",
+      "h1": "Apartment in Daya Nueva",
+      "canonical": "https://onesta.com.pl/en/properties/hiszpania/apartment-in-daya-nueva?id=MTI-32-115-10-115",
+      "robots": "index, follow",
+      "lang": "en"
+    }
+  ],
+  "sitemapUrls": 8946,
+  "offers": 8898
+}

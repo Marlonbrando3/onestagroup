@@ -1,0 +1,68 @@
+[
+  {
+    "name": "home",
+    "version": "before",
+    "score": 0.68,
+    "LCP": 8728.348199999997,
+    "CLS": 2.199261786233525e-05,
+    "TBT": 18,
+    "TTFB": 16,
+    "fetchTime": "2026-09-23T04:06:23.917Z",
+    "lighthouseVersion": "13.5.0"
+  },
+  {
+    "name": "home",
+    "version": "after",
+    "score": 0.94,
+    "LCP": 2858.325,
+    "CLS": 2.199261786233525e-05,
+    "TBT": 18.5,
+    "TTFB": 3,
+    "fetchTime": "2026-09-23T04:06:35.061Z",
+    "lighthouseVersion": "13.5.0"
+  },
+  {
+    "name": "catalog",
+    "version": "before",
+    "score": 0.71,
+    "LCP": 7931.034149999998,
+    "CLS": 0.0008800541022878745,
+    "TBT": 24.5,
+    "TTFB": 206,
+    "fetchTime": "2026-09-23T04:06:45.429Z",
+    "lighthouseVersion": "13.5.0"
+  },
+  {
+    "name": "catalog",
+    "version": "after",
+    "score": 0.71,
+    "LCP": 7922.068875,
+    "CLS": 9.84467300864402e-05,
+    "TBT": 17.5,
+    "TTFB": 159,
+    "fetchTime": "2026-09-23T04:06:56.876Z",
+    "lighthouseVersion": "13.5.0"
+  },
+  {
+    "name": "offer",
+    "version": "before",
+    "score": 0.7,
+    "LCP": 11028.098974999997,
+    "CLS": 8.655701864750386e-05,
+    "TBT": 31.5,
+    "TTFB": 123,
+    "fetchTime": "2026-09-23T04:07:08.546Z",
+    "lighthouseVersion": "13.5.0"
+  },
+  {
+    "name": "offer",
+    "version": "after",
+    "score": 0.84,
+    "LCP": 4054.9084000000003,
+    "CLS": 0.0002401397743072386,
+    "TBT": 38,
+    "TTFB": 145,
+    "fetchTime": "2026-09-23T04:11:56.564Z",
+    "lighthouseVersion": "13.5.0"
+  }
+]

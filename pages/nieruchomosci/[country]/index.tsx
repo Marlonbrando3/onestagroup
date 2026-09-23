@@ -1,3 +1,18 @@
+import { publicListings } from "@/lib/publicListings";
+import SeoHead from "@/components/SeoHead";
+import SeoBreadcrumbs from "@/components/SeoBreadcrumbs";
+import SeoLocationContent from "@/components/SeoLocationContent";
+import { findRegion, findCity } from "@/lib/seoLocations";
+import {
+  catalogPath,
+  canonicalCatalog,
+  countryMetadata,
+  hasFilters,
+  publicCountry,
+  noStore,
+  preservedQuery,
+  FILTER_KEYS,
+} from "@/lib/publicSeo";
 import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
@@ -40,8 +55,6 @@ const PROPERTY_LIST_COLUMNS = [
   "distance_to_sea_m",
 ].join(",");
 
-const MAX_PUBLIC_PAGE = 250;
-
 interface Property {
   external_id: string | number;
   type: string;
@@ -71,6 +84,8 @@ interface PageProps {
   perPage: number;
   query: Record<string, string | string[]>;
   locale?: SiteLocale;
+  regionSlug?: string;
+  citySlug?: string;
 }
 
 export default function ListingsPage(props: PageProps) {
@@ -210,29 +225,68 @@ export default function ListingsPage(props: PageProps) {
         : "Filtry";
   };
 
-  const localizedCountry =
-    countryLabel[locale][String(country)] || (isEn ? props.country : props.country);
-  const title = isEn
-    ? `Properties in ${localizedCountry} | Onesta Group`
-    : `Nieruchomości ${props.country.toUpperCase()}`;
+  const region = findRegion(props.regionSlug);
+  const city = findCity(props.regionSlug, props.citySlug);
+  const baseMeta = countryMetadata(String(country), locale);
+  const h1 = city
+    ? isEn
+      ? `Property for sale in ${city.name}`
+      : `Nieruchomości w ${city.name} na sprzedaż`
+    : region
+      ? isEn
+        ? `Property for sale on the ${region.name}`
+        : `Nieruchomości na ${region.name}`
+      : baseMeta.h1;
+  const description =
+    city?.intro[locale] || region?.copy[locale].intro || baseMeta.description;
+  const title = region
+    ? city
+      ? `${h1} | Onesta`
+      : isEn
+        ? `${h1} | Onesta`
+        : `Nieruchomości ${region.name} na sprzedaż | Onesta`
+    : baseMeta.title;
+  const path = catalogPath(String(country), locale, region?.slug, city?.slug);
+  const canonical = canonicalCatalog(path, props.query);
+  const breadcrumbs = [
+    { name: isEn ? "Home" : "Strona główna", path: isEn ? "/en" : "/" },
+    { name: baseMeta.h1, path: catalogPath(String(country), locale) },
+  ];
+  if (region)
+    breadcrumbs.push({
+      name: region.name,
+      path: catalogPath(String(country), locale, region.slug),
+    });
+  if (city) breadcrumbs.push({ name: city.name, path });
 
   return (
     <div className="bg-gray-100/[0.3] w-full overflow-x-clip">
-      <Head>
-        <title>{title}</title>
-        <meta
-          name="description"
-          content={
-            isEn
-              ? `Browse selected overseas properties in ${localizedCountry}. Onesta Group supports buyers from selection to formalities and handover.`
-              : `Sprawdź aktualne oferty nieruchomości: ${props.country}.`
-          }
-        />
-      </Head>
+      <SeoHead
+        title={
+          props.currentPage > 1
+            ? `${title.replace(" | Onesta", "")} — ${isEn ? "page" : "strona"} ${props.currentPage} | Onesta`
+            : title
+        }
+        description={description}
+        canonical={canonical}
+        robots={hasFilters(props.query) ? "noindex, follow" : "index, follow"}
+        alternates={{
+          pl: canonicalCatalog(
+            catalogPath(String(country), "pl", region?.slug, city?.slug),
+            props.query,
+          ),
+          en: canonicalCatalog(
+            catalogPath(String(country), "en", region?.slug, city?.slug),
+            props.query,
+          ),
+        }}
+      />
       <WhatsAppButton />
       <Consultation
         handleConsultationPopUp={handleConsultationPopUp}
         ConsultationsShowed={consultationOpen}
+        locale={locale}
+        contextLabel={[region?.name, city?.name].filter(Boolean).join(" / ")}
       />
       <Header
         handleConsultationPopUp={handleConsultationPopUp}
@@ -243,8 +297,22 @@ export default function ListingsPage(props: PageProps) {
         locale={locale}
       />
       <div className="pt-[74px] xl:pt-[82px]" />
-      <MiniHomeView />
+      <MiniHomeView>
+        <header>
+          <SeoBreadcrumbs
+            items={breadcrumbs}
+            className="hidden lg:flex lg:text-white/80 [&_a]:transition-colors lg:[&_a:hover]:text-white"
+          />
+          <h1 className="max-w-4xl text-3xl font-semibold leading-tight md:text-4xl lg:text-[42px] lg:drop-shadow-sm">
+            {h1}
+          </h1>
+          <p className="mt-3 max-w-4xl leading-7 text-[#4a5568] lg:text-white/90 lg:drop-shadow-sm">
+            {description}
+          </p>
+        </header>
+      </MiniHomeView>
       <RecommendedOffersPopup
+        locale={locale}
         isOpen={showOffersPopup}
         onClose={() => setShowOffersPopup(false)}
       />
@@ -272,6 +340,14 @@ export default function ListingsPage(props: PageProps) {
         </div>
       )}
 
+      {country === "hiszpania" && (
+        <SeoLocationContent
+          regionSlug={region?.slug}
+          citySlug={city?.slug}
+          locale={locale}
+          onConsultation={handleConsultationPopUp}
+        />
+      )}
       <ContactFormMain locale={locale} />
       <Footer locale={locale} />
     </div>
@@ -303,28 +379,49 @@ function escapeLikeValue(value: string): string {
 export const getServerSideProps: GetServerSideProps<PageProps> = async (
   context,
 ) => {
-  // Search results depend on the query string. Netlify's shared cache can reuse
-  // one filtered response for a different filter combination, so this route
-  // must be rendered per request.
-  context.res.setHeader(
-    "Cache-Control",
-    "private, no-store, max-age=0, must-revalidate",
-  );
-  context.res.setHeader("Netlify-CDN-Cache-Control", "no-store");
-
-  const { country } = context.params as { country: string };
-  const countryOption = getPropertyCountryOption(country);
-  const requestedPage = Number.parseInt(
-    String(
-      Array.isArray(context.query.page)
-        ? context.query.page[0]
-        : context.query.page || "1",
-    ),
-    10,
-  );
-  const page = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1;
-
-  if (page > MAX_PUBLIC_PAGE) return { notFound: true };
+  noStore(context.res);
+  const {
+    country,
+    title: regionSlug,
+    city: citySlug,
+  } = context.params as { country: string; title?: string; city?: string };
+  const countryOption = publicCountry(country);
+  if (!countryOption || countryOption.slug !== country)
+    return { notFound: true };
+  const regionScope = regionSlug ? findRegion(regionSlug) : undefined;
+  const cityScope = citySlug ? findCity(regionSlug, citySlug) : undefined;
+  if (
+    (regionSlug && (!regionScope || country !== "hiszpania")) ||
+    (citySlug && !cityScope)
+  )
+    return { notFound: true };
+  const rawPage = context.query.page;
+  if (
+    rawPage !== undefined &&
+    (typeof rawPage !== "string" || !/^[1-9]\d*$/.test(rawPage))
+  )
+    return { notFound: true };
+  const page = Number(rawPage || 1);
+  if (
+    !Number.isSafeInteger(page) ||
+    page > Math.floor(Number.MAX_SAFE_INTEGER / 21)
+  )
+    return { notFound: true };
+  const locale: SiteLocale = context.resolvedUrl.startsWith("/en/")
+    ? "en"
+    : "pl";
+  if (rawPage === "1")
+    return {
+      redirect: {
+        destination: preservedQuery(
+          catalogPath(country, locale, regionSlug, citySlug),
+          context.query,
+          ["page"],
+        ),
+        permanent: true,
+      },
+    };
+  if (!validFilters(context.query)) return { notFound: true };
 
   const limit = 21;
   const from = (page - 1) * limit;
@@ -372,6 +469,12 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   const countryLocations = (locationsData as LocationEntry[]).filter(
     (entry) => getLocationCountry(entry) === countryOption.slug,
   );
+  if (
+    locationParam.some(
+      (id) => !countryLocations.some((entry) => entry.id === id),
+    )
+  )
+    return { notFound: true };
   const expandedLocations = expandLocationSelection(
     locationParam,
     countryLocations,
@@ -389,29 +492,24 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     .filter((l) => l?.type === "coast")
     .map((l) => l!.name);
 
-  if (!supabaseServer) {
-    return {
-      props: {
-        properties: [],
-        country: countryOption.label,
-        totalCount: 0,
-        totalPages: 0,
-        currentPage: 1,
-        perPage: limit,
-        query: context.query as Record<string, string | string[]>,
-      },
-    };
-  }
+  if (!supabaseServer) throw new Error("Property database unavailable");
 
-  let query = supabaseServer
-    .from("properties")
-    .select(PROPERTY_LIST_COLUMNS, { count: "exact" })
+  let query = publicListings(
+    supabaseServer
+      .from("properties")
+      .select(PROPERTY_LIST_COLUMNS, { count: "exact" }),
+    countryOption.dbValues,
+  )
     .gte("price", priceFrom)
-    .lte("price", priceTo)
-    .not("images", "is", null)
-    .neq("images", "[]")
-    .in("country", countryOption.dbValues)
-    .in("new_build", marketType !== null ? [marketType] : [true, false]);
+    .lte("price", priceTo);
+  if (marketType !== null) query = query.eq("new_build", marketType === "true");
+
+  if (regionScope)
+    query = query
+      .in("province", regionScope.provinces)
+      .in("town", cityScope ? cityScope.aliases : regionScope.towns);
+  if (locationParam.length && !expandedLocations.length)
+    return { notFound: true };
 
   if (typeList.length === 1) {
     query = query.ilike("type", typeList[0]);
@@ -439,7 +537,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     const townLikeClauses = selectedTowns
       .map((t) => escapeLikeValue(t))
       .filter(Boolean)
-      .map((t) => `town.ilike.%${t}%`);
+      .map((t) => `town.ilike.${t}`);
 
     const regionNames = [...selectedProvinces, ...selectedCoasts];
 
@@ -470,14 +568,15 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 
   const { data: properties, count, error } = await query;
 
-  if (error) {
-    console.error("Supabase query error:", error.message);
-  }
+  // PostgREST reports a requested range beyond the last row as HTTP 416.
+  if (error?.code === "PGRST103") return { notFound: true };
+  if (error) throw new Error("Property catalogue query failed");
 
   const totalCount = count ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
-  if (page > totalPages) return { notFound: true };
+  if (page > totalPages || (totalCount === 0 && hasFilters(context.query)))
+    return { notFound: true };
 
   const currentPage = Math.min(page, totalPages);
 
@@ -485,6 +584,8 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     props: {
       properties: (properties ?? []) as unknown as Property[],
       country: countryOption.label,
+      ...(regionScope ? { regionSlug: regionScope.slug } : {}),
+      ...(cityScope ? { citySlug: cityScope.slug } : {}),
       totalCount,
       totalPages,
       currentPage,
@@ -493,3 +594,43 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     },
   };
 };
+
+function validFilters(query: Record<string, any>) {
+  for (const [key, value] of Object.entries(query)) {
+    if (
+      ["country", "title", "city", "page"].includes(key) ||
+      /^(utm_[a-z_]+|gclid|fbclid|msclkid|_gl)$/.test(key)
+    )
+      continue;
+    if (
+      !FILTER_KEYS.includes(key) ||
+      typeof value !== "string" ||
+      value.length > 500
+    )
+      return false;
+    if (["baths", "beds"].includes(key) && !/^\d+(,\d+)*$/.test(value))
+      return false;
+    if (
+      /^(price|beds|baths)(Min|Max)$/.test(key) &&
+      (!/^\d+(\.\d+)?$/.test(value) || !Number.isFinite(Number(value)))
+    )
+      return false;
+    if (
+      key === "sort" &&
+      !["recommended", "price_asc", "price_desc"].includes(value)
+    )
+      return false;
+    if (key === "market" && !["true", "false"].includes(value)) return false;
+    if (key === "type" && !/^[a-zA-Z ,/-]+$/.test(value)) return false;
+    if (key === "location" && !/^[a-zA-Z0-9_, -]+$/.test(value)) return false;
+  }
+  for (const key of ["price", "beds", "baths"]) {
+    if (
+      query[key + "Min"] !== undefined &&
+      query[key + "Max"] !== undefined &&
+      Number(query[key + "Min"]) > Number(query[key + "Max"])
+    )
+      return false;
+  }
+  return true;
+}

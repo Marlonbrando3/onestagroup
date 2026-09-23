@@ -1,3 +1,5 @@
+import SeoHead from "@/components/SeoHead";
+import SeoLocationContent from "@/components/SeoLocationContent";
 import React, { useState } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
@@ -76,8 +78,14 @@ const process = [
 ];
 
 const stats = [
-  { value: "90%", label: "of the best market opportunities through partner access." },
-  { value: "100%", label: "primary-market access through cooperation with developers." },
+  {
+    value: "90%",
+    label: "of the best market opportunities through partner access.",
+  },
+  {
+    value: "100%",
+    label: "primary-market access through cooperation with developers.",
+  },
   { value: "1", label: "clear process from selection to handover." },
 ];
 
@@ -129,15 +137,25 @@ export default function EnglishHomePage() {
 
   return (
     <>
+      <SeoHead
+        title="Property in Spain and Cyprus | Onesta"
+        description="Explore property in Spain and Cyprus. Compare locations and listings with Onesta and get support from property selection through the buying process."
+        canonical="/en"
+        alternates={{ pl: "/", en: "/en" }}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "@id": "https://onesta.com.pl/#organization",
+          name: "Onesta Group",
+          url: "https://onesta.com.pl",
+          logo: "https://onesta.com.pl/logotype_full_new.png",
+        }}
+      />
       <Head>
-        <title>Overseas properties in Spain and Cyprus | Onesta Group</title>
         <meta
-          name="description"
-          content="Onesta Group guides buyers through overseas property purchase: offer selection, market analysis, viewings, formalities, handover and rental management."
+          property="og:image"
+          content="https://onesta.com.pl/onesta_og_img.png"
         />
-        <link rel="alternate" hrefLang="pl" href="https://onesta.com.pl/" />
-        <link rel="alternate" hrefLang="en" href="https://onesta.com.pl/en" />
-        <meta property="og:image" content="https://onesta.com.pl/onesta_og_img.png" />
       </Head>
 
       <main
@@ -150,10 +168,7 @@ export default function EnglishHomePage() {
             ConsultationsShowed={consultationOpen}
           />
         )}
-        <Header
-          locale="en"
-          handleConsultationPopUp={handleConsultationPopUp}
-        />
+        <Header locale="en" handleConsultationPopUp={handleConsultationPopUp} />
 
         <section className="relative bg-[#fbf8f2] pt-[92px] lg:min-h-[760px]">
           <div className="absolute inset-x-0 bottom-0 h-32" />
@@ -163,7 +178,7 @@ export default function EnglishHomePage() {
               <h1
                 className={`${PlayfairSans.className} -mt-[50px] max-w-4xl text-5xl font-semibold leading-[1.04] text-[#182334] md:text-5xl`}
               >
-                Overseas property bought wisely and safely.
+                Property for sale in Spain and Cyprus
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-6 text-[#4a5568] md:text-md">
                 We help you choose property in Spain, Cyprus and other warm
@@ -206,6 +221,7 @@ export default function EnglishHomePage() {
               <div className="relative min-h-[440px] overflow-hidden bg-white shadow-2xl lg:min-h-[560px] -mt-[200px] lg:block hidden">
                 <Image
                   src="/mini_bg_about_us.webp"
+                  priority
                   fill
                   sizes="(min-width: 1024px) 52vw, 90vw"
                   className="object-cover"
@@ -413,7 +429,10 @@ export default function EnglishHomePage() {
             <div className="grid gap-4 sm:grid-cols-2">
               {[
                 ["Viewings", "Selected offers compared with the market."],
-                ["Locations", "Cities, districts, beaches, access and services."],
+                [
+                  "Locations",
+                  "Cities, districts, beaches, access and services.",
+                ],
                 ["Costs", "Maintenance, taxes, community fees and furnishing."],
                 ["Decision", "A clear reservation and formalities plan."],
               ].map(([title, text]) => (
@@ -522,6 +541,7 @@ export default function EnglishHomePage() {
           <ContactFormMain locale="en" />
         </section>
 
+        <SeoLocationContent locale="en" />
         <Footer locale="en" />
       </main>
     </>

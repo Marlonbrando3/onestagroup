@@ -49,7 +49,7 @@ export default function Form({ intrestedPopUp, OfferNumber }: Ref) {
       const data = await res.status;
 
       if (data === 200) {
-        trackGoogleAdsContactConversion();
+        trackGoogleAdsContactConversion(undefined, String(OfferNumber));
         sendButton.current.innerHTML = "Wysłano!";
         // setPageNumber(2);
 

@@ -7,7 +7,10 @@ type GoogleAdsWindow = Window & {
   gtag?: (...args: unknown[]) => void;
 };
 
-export function trackGoogleAdsContactConversion(url?: string) {
+export function trackGoogleAdsContactConversion(
+  url?: string,
+  propertyId?: string,
+) {
   if (typeof window === "undefined") return false;
   if (!hasCookieYesConsent("advertisement")) return false;
 
@@ -22,6 +25,7 @@ export function trackGoogleAdsContactConversion(url?: string) {
 
   googleWindow.dataLayer.push({
     event: "google_ads_contact_conversion",
+    ...(propertyId ? { property_id: propertyId } : {}),
   });
 
   const callback = () => {
@@ -32,6 +36,7 @@ export function trackGoogleAdsContactConversion(url?: string) {
 
   googleWindow.gtag("event", "conversion", {
     send_to: CONTACT_CONVERSION_ID,
+    ...(propertyId ? { property_id: propertyId } : {}),
     value: 50.0,
     currency: "PLN",
     event_callback: callback,

@@ -233,7 +233,7 @@ export default function Header() {
                       onClick={handleClearData}
                       href={{
                         pathname: "/nieruchomosci/[country]",
-                        query: { country: "hiszpania", page: 1 },
+                        query: { country: "hiszpania" },
                       }}
                       className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
                       ref={MouseOnSpain}
@@ -267,7 +267,7 @@ export default function Header() {
                     <Link
                       href={{
                         pathname: "/nieruchomosci/[country]",
-                        query: { country: "cypr", page: 1 },
+                        query: { country: "cypr" },
                       }}
                       className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
                       data-name="MouseOnCypr"

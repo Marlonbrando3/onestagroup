@@ -7,10 +7,12 @@ import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion
 
 type Props = {
   propertyRef: any;
+  locale?: "pl" | "en";
 };
 
-export default function ContactInSlider({ propertyRef }: Props) {
+export default function ContactInSlider({ propertyRef, locale = "pl" }: Props) {
   const router = useRouter();
+  const isEn = locale === "en";
 
   const { id } = router.query;
 
@@ -18,7 +20,9 @@ export default function ContactInSlider({ propertyRef }: Props) {
   const [Phone, setPhone] = useState();
   const [Mail, setMail] = useState();
   const [massege, setMessage] = useState(
-    "Zainteresowało mnie to ogłoszenie.\nProszę o kontakt w celu przekazania szczegółów lub ustalenia terminu spotkania. Nr. ogłoszenia ",
+    isEn
+      ? "I am interested in this property. Please contact me about listing ref. "
+      : "Zainteresowało mnie to ogłoszenie.\nProszę o kontakt w celu przekazania szczegółów lub ustalenia terminu spotkania. Nr. ogłoszenia ",
   );
 
   const submitButton: any = useRef();
@@ -41,7 +45,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
   const handleSendingProperty = async (e: any) => {
     e.preventDefault();
     let query = JSON.stringify({
-      id,
+      id: propertyRef,
       name: Name,
       phone: Phone,
       mail: Mail,
@@ -58,14 +62,18 @@ export default function ContactInSlider({ propertyRef }: Props) {
     const results = await res.json();
 
     if (results.status === 200) {
-      trackGoogleAdsContactConversion();
-      submitButton.current.innerHTML = "Wysłano";
+      trackGoogleAdsContactConversion(undefined, String(propertyRef));
+      submitButton.current.innerHTML = isEn ? "Sent" : "Wysłano";
       submitButton.current.style.backgroundColor = "green";
     } else {
-      submitButton.current.innerHTML = "Błąd, spróbuj jeszcze raz";
+      submitButton.current.innerHTML = isEn
+        ? "Error, please try again"
+        : "Błąd, spróbuj jeszcze raz";
       submitButton.current.style.backgroundColor = "red";
       setTimeout(() => {
-        submitButton.current.innerHTML = "Wyślij ponownie";
+        submitButton.current.innerHTML = isEn
+          ? "Send again"
+          : "Wyślij ponownie";
         submitButton.current.style.backgroundColor = "yellow";
       }, 1500);
     }
@@ -73,10 +81,14 @@ export default function ContactInSlider({ propertyRef }: Props) {
   return (
     <div className={`${OutfitSans.className} h-auto`}>
       <div className=" bg-white rounded-md p-4 h-[480px] hidden lg:block z-40 bg-whie-300/[1]">
-        <p className="font-[500] pb-4 text-[20px]"> Jestem zainteresowany</p>
+        <p className="font-[500] pb-4 text-[20px]">
+          {isEn ? "I am interested" : "Jestem zainteresowany"}
+        </p>
         <p className="font-[300] pb-4 text-[16px] leading-[18px]">
           {" "}
-          Skontaktuj się z nami wypełniając formularz kontaktowy
+          {isEn
+            ? "Contact us using the form below"
+            : "Skontaktuj się z nami wypełniając formularz kontaktowy"}
         </p>
 
         <form
@@ -87,16 +99,16 @@ export default function ContactInSlider({ propertyRef }: Props) {
             onChange={handleChangingForm}
             name="name"
             value={Name}
-            placeholder="Imię (wymagane)"
+            placeholder={isEn ? "Name (required)" : "Imię (wymagane)"}
             className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
             required
           ></input>
           <input
             name="phone"
-            type="number"
+            type="tel"
             value={Phone}
             onChange={handleChangingForm}
-            placeholder="Numer telefonu"
+            placeholder={isEn ? "Phone number" : "Numer telefonu"}
             className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
             required
           ></input>
@@ -105,7 +117,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
             type="email"
             value={Mail}
             onChange={handleChangingForm}
-            placeholder="Adres emial"
+            placeholder={isEn ? "Email address" : "Adres email"}
             className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
             required
           ></input>
@@ -120,7 +132,7 @@ export default function ContactInSlider({ propertyRef }: Props) {
             className="bg-yellow-600 rounded-md text-white font-bold h-[40px] flex items-center justify-center "
           >
             <MdOutlineSend className="mr-[10px]" />
-            WYŚLIJ WIADOMOŚĆ
+            {isEn ? "SEND MESSAGE" : "WYŚLIJ WIADOMOŚĆ"}
           </button>
         </form>
       </div>

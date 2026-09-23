@@ -1,9 +1,10 @@
 import { Html, Head, Main, NextScript } from "next/document";
 import Script from "next/script";
 
-export default function Document() {
+export default function Document(props: any) {
+  const path = props.__NEXT_DATA__?.page || "";
   return (
-    <Html lang="en">
+    <Html lang={path === "/en" || path.startsWith("/en/") ? "en" : "pl"}>
       <Head>
         <link rel="icon" type="image/png" href="/logotype_Onesta.png" />
       </Head>

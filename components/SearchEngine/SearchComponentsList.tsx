@@ -30,7 +30,9 @@ export default function SearchInput({
 }: FunctionProps) {
   const router = useRouter();
   const isEn = locale === "en";
-  const propertiesHref = isEn ? "/en/properties/hiszpania" : "/nieruchomosci/hiszpania";
+  const propertiesHref = isEn
+    ? "/en/properties/hiszpania"
+    : "/nieruchomosci/hiszpania";
 
   const { country } = router.query;
 
@@ -48,7 +50,7 @@ export default function SearchInput({
     >
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="relative mt-[20px] flex h-auto w-full flex-col items-stretch justify-center rounded-[22px] px-3 md:px-4 lg:flex-row lg:items-center lg:bg-gray-100/[0.3] lg:px-0"
+        className="relative mt-[20px] flex h-auto w-full flex-col items-stretch justify-center rounded-[22px] px-3 md:px-4 lg:mt-0 lg:flex-row lg:items-center lg:bg-gray-100/[0.3] lg:px-0"
       >
         <div className="h-auto flex-col items-center w-full mx-auto">
           <MainSearchInSearchEngine
@@ -59,21 +61,9 @@ export default function SearchInput({
             mobileButtonSearchEngine={mobileButtonSearchEngine}
             locale={locale}
           />
-          <div className=" w-[90vw] max-w-[1300px] z-10 relative flex items-center mx-auto -mt-[20px] text-[14px]">
-            <Link href={isEn ? "/en" : "/"}>{isEn ? "Home" : "Strona startowa"}</Link>
-            <MdKeyboardArrowRight className="md:mx-[10px] h-[20px] w-[20px] text-gray-400" />
-            <Link href="#">{isEn ? "Properties" : "Nieruchomości"}</Link>
-            <MdKeyboardArrowRight className="md:mx-[10px] h-[20px] w-[20px] text-gray-400" />{" "}
-            <Link href={propertiesHref} className="capitalize">
-              {country}
-            </Link>
-          </div>
-          <p className="mx-auto w-[90vw] max-w-[1300px] text-[28px] mt-[10px]">
-            {isEn ? "Properties" : "Nieruchomości"}
-            {country === "hiszpania" && (isEn ? " in Spain" : " w Hiszpanii")}
-            {country === "cypr" && (isEn ? " in Cyprus" : " na Cyprze")}{" "}
-            {isEn ? "- offers" : "- oferty"}
-          </p>
+          <h2 className="mx-auto w-[90vw] max-w-[1300px] text-[28px] mt-[10px]">
+            {isEn ? "Property listings" : "Oferty nieruchomości"}
+          </h2>
         </div>
       </form>
 

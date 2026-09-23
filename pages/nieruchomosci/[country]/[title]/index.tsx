@@ -1,3 +1,20 @@
+import PropertyDetailImage from "@/components/PropertyDetailImage";
+import { publicAvailability } from "@/lib/publicListings";
+import ListingsPage, {
+  getServerSideProps as getListingsProps,
+} from "@/pages/nieruchomosci/[country]";
+import { findRegion, regionForProperty, SEO_CITIES } from "@/lib/seoLocations";
+import SeoHead from "@/components/SeoHead";
+import SeoBreadcrumbs from "@/components/SeoBreadcrumbs";
+import {
+  catalogPath,
+  propertyPath,
+  propertyTitle,
+  propertyMetadata,
+  publicCountry,
+  noStore,
+  preservedQuery,
+} from "@/lib/publicSeo";
 import { useRef } from "react";
 import { supabaseServer } from "@/lib/supabaseClient";
 import Head from "next/head";
@@ -24,6 +41,8 @@ const PROPERTY_DETAIL_COLUMNS = [
   "province",
   "country",
   "price",
+  "surface_built",
+  "new_build",
   "beds",
   "baths",
   "pool",
@@ -36,7 +55,18 @@ const PROPERTY_DETAIL_COLUMNS = [
   "description_en:descriptions->>en",
 ].join(",");
 
-export default function Property({
+export default function PublicDetailPage(props: any) {
+  return props.regionSlug ? (
+    <ListingsPage {...props} />
+  ) : (
+    <Property
+      key={`${props.propertyFromSupabase.external_id}:${props.locale || "pl"}`}
+      {...props}
+    />
+  );
+}
+
+function Property({
   propertyFromSupabase,
   locale = "pl",
 }: {
@@ -59,16 +89,40 @@ export default function Property({
   let showedImage: any | undefined;
   const { title } = router.query;
 
-  const typeLabel =
-    propertyTypeLabel[locale][propertyFromSupabase?.type] ||
-    (isEn ? "Property" : "Nieruchomość");
-  const generatedTitle = isEn
-    ? `${typeLabel} in ${propertyFromSupabase?.town || "Spain"}`
-    : `${typeLabel} w ${propertyFromSupabase?.town || "Hiszpanii"}`;
-  const listingTitle =
-    validTitleOrEmpty(propertyFromSupabase?.title) ||
-    validTitleOrEmpty(propertyFromSupabase?.headerAdvertisement) ||
-    generatedTitle;
+  const listingTitle = propertyTitle(propertyFromSupabase, locale);
+  const metadata = propertyMetadata(propertyFromSupabase, locale);
+  const country = publicCountry(propertyFromSupabase.country)!;
+  const canonical = propertyPath(propertyFromSupabase, locale)!;
+  const region = regionForProperty(propertyFromSupabase);
+  const city =
+    region &&
+    SEO_CITIES.find(
+      (c) =>
+        c.region === region.slug &&
+        c.aliases.includes(propertyFromSupabase.town),
+    );
+  const breadcrumbs = [
+    { name: isEn ? "Home" : "Strona główna", path: isEn ? "/en" : "/" },
+    {
+      name: isEn
+        ? country.slug === "cypr"
+          ? "Cyprus"
+          : "Spain"
+        : country.label,
+      path: catalogPath(country.slug, locale),
+    },
+  ];
+  if (region)
+    breadcrumbs.push({
+      name: region.name,
+      path: catalogPath(country.slug, locale, region.slug),
+    });
+  if (city)
+    breadcrumbs.push({
+      name: city.name,
+      path: catalogPath(country.slug, locale, region!.slug, city.slug),
+    });
+  breadcrumbs.push({ name: listingTitle, path: canonical });
 
   if (images !== undefined) {
     images?.filter((img) => {
@@ -91,12 +145,10 @@ export default function Property({
           className="lg:w-[170px] lg:h-[176px] md:w-[121px] md:h-[122px] w-[15vw] h-[10vw] relative cursor-pointer hover:brightness-125 duration-100"
           onClick={handleShowingGallery}
         >
-          <img
-            src={propertyImageUrl(i)}
-            alt="alt"
-            className="absolute inset-0 h-full w-full rounded-md object-cover"
-            loading="lazy"
-            decoding="async"
+          <PropertyDetailImage
+            key={propertyImageUrl(i)}
+            image={i}
+            alt={`${listingTitle} — ${index + 2}`}
           />
         </div>
       );
@@ -108,16 +160,15 @@ export default function Property({
 
   return (
     <>
+      <SeoHead
+        {...metadata}
+        canonical={canonical}
+        alternates={{
+          pl: propertyPath(propertyFromSupabase, "pl"),
+          en: propertyPath(propertyFromSupabase, "en"),
+        }}
+      />
       <Head>
-        <title>{listingTitle} | Onesta Group</title>
-        <meta
-          name="description"
-          content={
-            isEn
-              ? `${listingTitle}. View details, photos and contact Onesta Group about this overseas property.`
-              : `${listingTitle}. Sprawdź szczegóły oferty nieruchomości z Onesta Group.`
-          }
-        />
         <link rel="shortcut icon" href="/logotype.png" />
         <meta
           name="viewport"
@@ -135,6 +186,8 @@ export default function Property({
       >
         {showGallery && !showSlider ? (
           <Gallery
+            locale={locale}
+            title={listingTitle}
             choosedImage={choosedImage}
             setChoosedImage={setChoosedImage}
             showSlider={showSlider}
@@ -146,6 +199,7 @@ export default function Property({
         ) : null}
         {showSlider ? (
           <Slider
+            locale={locale}
             showSlider={showSlider}
             choosedImage={choosedImage}
             setChoosedImage={setChoosedImage}
@@ -167,31 +221,36 @@ export default function Property({
             />
             <Form
               intrestedPopUp={intrestedPopUp}
-              OfferNumber={propertyData[0]?.listingId}
+              OfferNumber={propertyFromSupabase.external_id}
             />
           </div>
         </div>
-        <Header locale={locale} />
+        <Header
+          locale={locale}
+          languagePaths={{
+            pl: propertyPath(propertyFromSupabase, "pl")!,
+            en: propertyPath(propertyFromSupabase, "en")!,
+          }}
+        />
         {/* <MiniHomeViewOffer /> */}
         <div className="lg:w-full md:w-[95vw] w-full pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
-          <div
+          <SeoBreadcrumbs items={breadcrumbs} />
+          <h1
             className={`${PlayfairSans.className} pb-[20px] font-[500] tracking-[0.6px] scale-x-[0.9] scale-y-[1.04] md:-ml-[55px] md:text-[36px] text-[32px] leading-[34px]`}
           >
             {listingTitle}
-          </div>
+          </h1>
           <div className="flex flex-col md:flex-row items-center justify-center">
             {/* MAIN GALLERY IMAGE */}
             <div className="md:flex-1 md:h-[255px] lg:h-[360px] md:w-[60vw] h-[200px] overflow-hidden mx-[10px]">
               <div className="flex md:h-full sm:h-full h-[900px] w-full flex-col justify-between rounded-md overflow-hidden">
                 <div className="lg:w-full md:w-full md:h-[500px] h-[200px] w-[95vw] sm:block select-none relative mx-auto relative rounded-md cursor-pointer">
-                  <img
-                    className="absolute inset-0 h-full w-full rounded-md object-cover"
-                    src={propertyImageUrl(propertyFromSupabase.images[0])}
-                    alt="nieruchomosci-w-hiszpanii"
+                  <PropertyDetailImage
+                    key={propertyImageUrl(propertyFromSupabase.images?.[0])}
+                    image={propertyFromSupabase.images?.[0]}
+                    alt={listingTitle}
+                    main
                     onClick={handleShowingGallery}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
                   />
                 </div>
               </div>
@@ -217,7 +276,7 @@ export default function Property({
           bathrooms={propertyFromSupabase.baths}
           distance={propertyData[0]?.distance}
           pool={propertyFromSupabase.pool}
-          propertyId={propertyData[0]?.id}
+          propertyId={propertyFromSupabase.external_id}
           propertyRef={propertyFromSupabase.external_id}
           propertyPrice={propertyFromSupabase.price}
           propertType={propertyFromSupabase.type}
@@ -233,24 +292,40 @@ export default function Property({
 }
 
 export async function getServerSideProps(context: any) {
-  const id = String(context.query.id || "").trim();
-
-  if (!id || id.length > 180) return { notFound: true };
-
-  if (!supabaseServer) {
+  if (
+    !context.query.id &&
+    context.params.country === "hiszpania" &&
+    findRegion(context.params.title)
+  )
+    return getListingsProps(context);
+  noStore(context.res);
+  const locale: SiteLocale = context.resolvedUrl?.startsWith("/en/")
+    ? "en"
+    : "pl";
+  const id = context.query.id;
+  if (typeof id !== "string" || !id.trim() || id.length > 180)
     return { notFound: true };
-  }
-
-  const { data, error } = await supabaseServer
-    .from("properties")
-    .select(PROPERTY_DETAIL_COLUMNS)
+  if (!supabaseServer) throw new Error("Property database unavailable");
+  const { data, error } = await publicAvailability(
+    supabaseServer.from("properties").select(PROPERTY_DETAIL_COLUMNS),
+  )
     .eq("external_id", id)
     .maybeSingle();
-
-  if (error || !data) {
-    console.error(error);
-    return { notFound: true };
-  }
+  if (error) throw new Error("Property lookup failed");
+  if (!data) return { notFound: true };
+  const destination = propertyPath(data, locale);
+  if (!destination) return { notFound: true };
+  const requestedPath =
+    catalogPath(String(context.params.country), locale) +
+    "/" +
+    context.params.title;
+  if (requestedPath !== destination.split("?")[0])
+    return {
+      redirect: {
+        destination: preservedQuery(destination, context.query),
+        permanent: true,
+      },
+    };
 
   const propertyRecord = data as unknown as Record<string, any>;
   let normalizedImages = propertyRecord.images;
@@ -275,11 +350,6 @@ export async function getServerSideProps(context: any) {
       en: description_en || "",
     },
   };
-
-  context.res.setHeader(
-    "Cache-Control",
-    "public, max-age=0, s-maxage=900, stale-while-revalidate=86400",
-  );
 
   return {
     props: {

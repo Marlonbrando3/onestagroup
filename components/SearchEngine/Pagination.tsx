@@ -22,10 +22,12 @@ export default function Pagination({ totalPages, currentPage }: Props) {
 
   if (safeTotal <= 1) return null;
 
-  const buildHref = (page: number) => ({
-    pathname: router.pathname,
-    query: { ...router.query, page },
-  });
+  const buildHref = (page: number) => {
+    const query = { ...router.query };
+    if (page === 1) delete query.page;
+    else query.page = String(page);
+    return { pathname: router.pathname, query };
+  };
 
   const getItems = (): (number | "...")[] => {
     if (safeTotal <= 7)

@@ -1,0 +1,138 @@
+{
+  "results": [
+    {
+      "route": "/",
+      "title": "Nieruchomości za granicą: Hiszpania i Cypr | Onesta",
+      "h1": [
+        "Nieruchomości za granicą — Hiszpania i Cypr"
+      ],
+      "lang": "pl",
+      "canon": [
+        "https://onesta.com.pl/"
+      ],
+      "descriptions": 1,
+      "overflow": false
+    },
+    {
+      "route": "/en",
+      "title": "Property in Spain and Cyprus | Onesta",
+      "h1": [
+        "Property for sale in Spain and Cyprus"
+      ],
+      "lang": "en",
+      "canon": [
+        "https://onesta.com.pl/en"
+      ],
+      "descriptions": 1,
+      "overflow": false
+    },
+    {
+      "route": "/nieruchomosci/hiszpania",
+      "title": "Nieruchomości w Hiszpanii na sprzedaż | Onesta",
+      "h1": [
+        "Nieruchomości w Hiszpanii na sprzedaż"
+      ],
+      "lang": "pl",
+      "canon": [
+        "https://onesta.com.pl/nieruchomosci/hiszpania"
+      ],
+      "descriptions": 1,
+      "overflow": false
+    },
+    {
+      "route": "/nieruchomosci/cypr",
+      "title": "Nieruchomości na Cyprze na sprzedaż | Onesta",
+      "h1": [
+        "Nieruchomości na Cyprze na sprzedaż"
+      ],
+      "lang": "pl",
+      "canon": [
+        "https://onesta.com.pl/nieruchomosci/cypr"
+      ],
+      "descriptions": 1,
+      "overflow": false
+    },
+    {
+      "route": "/nieruchomosci/hiszpania/costa-blanca",
+      "title": "Nieruchomości Costa Blanca na sprzedaż | Onesta",
+      "h1": [
+        "Nieruchomości na Costa Blanca"
+      ],
+      "lang": "pl",
+      "canon": [
+        "https://onesta.com.pl/nieruchomosci/hiszpania/costa-blanca"
+      ],
+      "descriptions": 1,
+      "overflow": false
+    },
+    {
+      "route": "/nieruchomosci/hiszpania/costa-de-almeria/vera",
+      "title": "Nieruchomości w Vera na sprzedaż | Onesta",
+      "h1": [
+        "Nieruchomości w Vera na sprzedaż"
+      ],
+      "lang": "pl",
+      "canon": [
+        "https://onesta.com.pl/nieruchomosci/hiszpania/costa-de-almeria/vera"
+      ],
+      "descriptions": 1,
+      "overflow": false
+    },
+    {
+      "route": "/en/properties/hiszpania/costa-del-sol",
+      "title": "Property for sale on the Costa del Sol | Onesta",
+      "h1": [
+        "Property for sale on the Costa del Sol"
+      ],
+      "lang": "en",
+      "canon": [
+        "https://onesta.com.pl/en/properties/hiszpania/costa-del-sol"
+      ],
+      "descriptions": 1,
+      "overflow": false
+    },
+    {
+      "route": "/blog/nieruchomosci-costa-blanca",
+      "title": "Nieruchomości Costa Blanca — przewodnik po regionie | Onesta Group",
+      "h1": [
+        "Nieruchomości Costa Blanca — przewodnik po regionie"
+      ],
+      "lang": "pl",
+      "canon": [
+        "https://onesta.com.pl/blog/nieruchomosci-costa-blanca"
+      ],
+      "descriptions": 1,
+      "overflow": false
+    },
+    {
+      "route": "/abc",
+      "title": "Zakup nieruchomości w Hiszpanii — pytania | Onesta",
+      "h1": [
+        "Pytania i odpowiedzi o zakupie nieruchomości w Hiszpanii"
+      ],
+      "lang": "pl",
+      "canon": [
+        "https://onesta.com.pl/abc"
+      ],
+      "descriptions": 1,
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "propertyHref": "/nieruchomosci/hiszpania/apartament-w-torrevieja?id=MTI-3263-115-10-115",
+  "form": {
+    "id": "MTI-3263-115-10-115",
+    "ref": "MTI-3263-115-10-115"
+  },
+  "consultationContext": "[Costa Cálida] ",
+  "verifiedInteractions": [
+    "property forms: two same-slug IDs",
+    "one conversion event with property ID",
+    "English consultation with coast context",
+    "English TOP 10 consent payload",
+    "SPA PL to EN: identity and document language",
+    "English gallery open/photo/close and mocked gallery form ID",
+    "sorting resets pagination and preserves city scope",
+    "same-template client navigation resets prior record form state"
+  ]
+}

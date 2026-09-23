@@ -7,6 +7,7 @@ import { propertyImageUrl } from "@/lib/propertyImages";
 
 type props = {
   images: any[];
+  locale?: "pl" | "en";
   propertyDetails: any;
   showSlider: any;
   setShowSlider: any;
@@ -21,6 +22,7 @@ export default function Slider({
   setShowSlider,
   choosedImage,
   setChoosedImage,
+  locale = "pl",
 }: props) {
   const handleNextImage = (e: any) => {
     e.stopPropagation();
@@ -42,18 +44,21 @@ export default function Slider({
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={locale === "en" ? "Property photos" : "Zdjęcia nieruchomości"}
       className="inset-0 w-full h-screen z-[100] fixed flex flex-wrap justify-center items-center transition-opacity"
     >
-      <div
-        className="absolute z-0 h-full w-full"
-      ></div>
+      <div className="absolute z-0 h-full w-full"></div>
       <div className="bg-[#00102E] w-[100%] h-[100%] flex flex-wrap justify-start relative shadow-[0_0_15px_rgba(0,0,0,0.4)]">
         <div
           className="h-[50px] w-screen text-[16px] leading-[44px] pl-[20px] font-[300] flex items-center cursor-pointer text-white"
           onClick={handleClosingSlider}
         >
           <FaArrowLeft />
-          <p className="inline pl-[10px]">powrót do galerii</p>
+          <p className="inline pl-[10px]">
+            {locale === "en" ? "Back to gallery" : "Powrót do galerii"}
+          </p>
         </div>
         <IoIosClose
           className="absolute right-3 top-1 w-[40px] h-[40px] text-black cursor-pointer"
@@ -79,12 +84,12 @@ export default function Slider({
             <img
               src={propertyImageUrl(activeImage)}
               className="absolute inset-0 h-full w-full object-contain p-2"
-              alt={`Zdjęcie nieruchomości ${choosedImage + 1}`}
+              alt={`${locale === "en" ? "Property photo" : "Zdjęcie nieruchomości"} ${choosedImage + 1}`}
               draggable={false}
               decoding="async"
             />
             <div className="absolute w-[110px] h-[35px] bottom-4 right-0 left-0 mx-auto rounded-2xl bg-white flex items-center justify-center text-[22px] font-[500]">
-              {choosedImage + 1} z {images.length}
+              {choosedImage + 1} {locale === "en" ? "of" : "z"} {images.length}
             </div>
             <div className="my-auto">
               <BsArrowRightSquareFill
@@ -94,7 +99,10 @@ export default function Slider({
             </div>
           </div>
           <div className="w-[300px] h-auto hidden md:block">
-            <ContactInSlider propertyRef={propertyDetails.external_id} />
+            <ContactInSlider
+              propertyRef={propertyDetails.external_id}
+              locale={locale}
+            />
           </div>
         </div>
       </div>

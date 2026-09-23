@@ -1,3 +1,5 @@
+import SeoHead from "@/components/SeoHead";
+import SeoLocationContent from "@/components/SeoLocationContent";
 import React, { useState } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
@@ -41,7 +43,7 @@ const markets = [
   {
     title: "Dominikana",
     text: "Kierunek dla klientów szukających tropikalnego stylu życia, mocnego potencjału najmu wakacyjnego i nieruchomości blisko oceanu.",
-    href: "/nieruchomosci/dominikana",
+    href: "/aboutus",
     image: "/dominican.png",
   },
   {
@@ -90,7 +92,7 @@ const stats = [
   {
     value: "100%",
     label:
-      "ofert z rynku pierowotnego dzięki współpracy ze wszystkimi deweloeprami",
+      "ofert z rynku pierwotnego dzięki współpracy ze wszystkimi deweloperami",
   },
   {
     value: "1",
@@ -135,12 +137,21 @@ export default function FirstView() {
 
   return (
     <>
+      <SeoHead
+        title="Nieruchomości za granicą: Hiszpania i Cypr | Onesta"
+        description="Poznaj nieruchomości w Hiszpanii i na Cyprze. Onesta pomaga porównać oferty, wybrać lokalizację i przejść przez proces zakupu. Umów konsultację."
+        canonical="/"
+        alternates={{ pl: "/", en: "/en" }}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "@id": "https://onesta.com.pl/#organization",
+          name: "Onesta Group",
+          url: "https://onesta.com.pl",
+          logo: "https://onesta.com.pl/logotype_full_new.png",
+        }}
+      />
       <Head>
-        <title>Nieruchomości w Hiszpanii i za granicą | Onesta Group</title>
-        <meta
-          name="description"
-          content="Onesta Group prowadzi klientów przez zakup nieruchomości za granicą: selekcja ofert, analiza rynku, prezentacje, formalności, odbiór i zarządzanie najmem."
-        />
         <meta
           name="keywords"
           content="nieruchomości Hiszpania, nieruchomości w Hiszpanii, apartamenty w Hiszpanii, polska agencja nieruchomości w Hiszpanii, nieruchomości Portugalia, nieruchomości Chorwacja"
@@ -181,7 +192,7 @@ export default function FirstView() {
               <h1
                 className={`${PlayfairSans.className} -mt-[50px] max-w-4xl text-5xl font-semibold leading-[1.04] text-[#182334] md:text-5xl`}
               >
-                Nieruchomości za granicą kupowane mądrze i bezpiecznie.
+                Nieruchomości za granicą — Hiszpania i Cypr
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-6 text-[#4a5568] md:text-md">
                 Pomagamy wybrać nieruchomość w Hiszpanii i innych ciepłych
@@ -224,6 +235,7 @@ export default function FirstView() {
               <div className="relative min-h-[440px] overflow-hidden bg-white shadow-2xl lg:min-h-[560px] -mt-[200px] lg:block hidden">
                 <Image
                   src="/mini_bg_about_us.webp"
+                  priority
                   fill
                   sizes="(min-width: 1024px) 52vw, 90vw"
                   className="object-cover"
@@ -305,15 +317,23 @@ export default function FirstView() {
           </div>
         </section>
 
-        <section id="newsletter" className="border-y border-[#e5dac7] bg-[#efe8dc] py-20 md:py-24">
+        <section
+          id="newsletter"
+          className="border-y border-[#e5dac7] bg-[#efe8dc] py-20 md:py-24"
+        >
           <div className="mx-auto grid w-11/12 max-w-7xl items-center gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#9b7a36]">Newsletter Onesta</p>
-              <h2 className={`${PlayfairSans.className} mt-4 text-4xl font-semibold leading-tight md:text-5xl`}>
+              <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#9b7a36]">
+                Newsletter Onesta
+              </p>
+              <h2
+                className={`${PlayfairSans.className} mt-4 text-4xl font-semibold leading-tight md:text-5xl`}
+              >
                 Najważniejsze informacje bez informacyjnego szumu.
               </h2>
               <p className="mt-5 max-w-xl text-base leading-8 text-[#5f6b7a]">
-                Poradniki, formalności, analizy rynków i praktyczne wskazówki dla osób rozważających zakup nieruchomości za granicą.
+                Poradniki, formalności, analizy rynków i praktyczne wskazówki
+                dla osób rozważających zakup nieruchomości za granicą.
               </p>
             </div>
             <NewsletterSignupForm />
@@ -557,6 +577,7 @@ export default function FirstView() {
           <ContactFormMain />
         </section>
 
+        <SeoLocationContent locale="pl" />
         <Footer />
       </main>
     </>

@@ -4,6 +4,8 @@ import { propertyImageUrl } from "@/lib/propertyImages";
 
 type props = {
   showGallery: any;
+  locale?: "pl" | "en";
+  title?: string;
   setShowGallery: any;
   images: any[];
   showSlider: any;
@@ -19,6 +21,8 @@ export default function Gallery({
   showSlider,
   setShowSlider,
   setChoosedImage,
+  locale = "pl",
+  title = "",
 }: props) {
   const handleShowingSlider = (index: number) => {
     setShowSlider(true);
@@ -34,7 +38,7 @@ export default function Gallery({
       >
         <img
           src={propertyImageUrl(i)}
-          alt="alt"
+          alt={`${title} — ${index + 1}`}
           className="absolute inset-0 h-full w-full rounded-md object-cover"
           loading="lazy"
           decoding="async"
@@ -53,6 +57,11 @@ export default function Gallery({
   return (
     <>
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={
+          locale === "en" ? "Property gallery" : "Galeria nieruchomości"
+        }
         className="inset-0 w-full h-[100dvh] z-[100] fixed top-[0px] bottom-0 my-auto flex flex-wrap justify-center items-start transition-opacity mx-auto bg-white gap-8 overflow-x-hidden shadow-[0_0px_10px_0_rgba(0,0,0,0.3)]"
       >
         <div
@@ -61,12 +70,13 @@ export default function Gallery({
         >
           <div className="w-full h-[40px] text-[18px] flex items-center md:pl-[50px] pl-[10px] bg-white sticky bg-white z-[110] top-0 ">
             <FaArrowLeft />
-            <p
+            <button
+              type="button"
               className="ml-[10px] cursor-pointer"
               onClick={handleClosingGallery}
             >
-              powrót do ogłoszenia
-            </p>
+              {locale === "en" ? "Back to listing" : "Powrót do ogłoszenia"}
+            </button>
           </div>
           {imagesMiniData}
         </div>

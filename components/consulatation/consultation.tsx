@@ -8,12 +8,19 @@ import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion
 type data = {
   handleConsultationPopUp: any;
   ConsultationsShowed: any;
+  locale?: "pl" | "en";
+  contextLabel?: string;
 };
 export default function Consultation({
   handleConsultationPopUp,
   ConsultationsShowed,
+  locale = "pl",
+  contextLabel = "",
 }: data) {
   const router = useRouter();
+  const isEn = locale === "en";
+  const [error, setError] = useState("");
+  const [sending, setSending] = useState(false);
   const { offer } = router.query;
 
   const [name, setName] = useState();
@@ -40,6 +47,9 @@ export default function Consultation({
 
   const handleSendingForm = async (e: any) => {
     e.preventDefault();
+    if (sending) return;
+    setSending(true);
+    setError("");
 
     try {
       let res = await fetch("/api/consultation", {
@@ -52,7 +62,7 @@ export default function Consultation({
           name,
           phone,
           email,
-          msg,
+          msg: contextLabel ? `[${contextLabel}] ${msg}` : msg,
         }),
       });
 
@@ -70,14 +80,28 @@ export default function Consultation({
         // setTimeout(() => {
         //   intrestedPopUp.current.style.display = "none";
         // }, 2000);
+      } else {
+        setError(
+          isEn
+            ? "Could not send your request. Please try again."
+            : "Nie udało się wysłać zgłoszenia. Spróbuj ponownie.",
+        );
       }
-    } catch (err) {
-      console.log(err);
+    } catch {
+      setError(
+        isEn
+          ? "Connection error. Please try again."
+          : "Błąd połączenia. Spróbuj ponownie.",
+      );
+    } finally {
+      setSending(false);
     }
   };
 
   const fieldClass =
     "h-11 w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] px-4 text-[#182334] outline-none transition placeholder:text-[#8a94a3] focus:border-[#b8954c]";
+
+  if (!ConsultationsShowed) return null;
 
   return (
     <div
@@ -99,15 +123,19 @@ export default function Consultation({
         >
           <FaRegCheckCircle className="mb-10 h-24 w-24 text-green-600" />
           <p className="px-6 text-center text-[18px] font-[800] text-[#182334]">
-            Dziękujemy!<br></br>Wkrótce się z Tobą skontaktujemy.
+            {isEn
+              ? "Thank you! We will contact you soon."
+              : "Dziękujemy! Wkrótce się z Tobą skontaktujemy."}
             <br></br>
-            <span className="block">Do usłyszenia!</span>
+            <span className="block">
+              {isEn ? "Speak soon!" : "Do usłyszenia!"}
+            </span>
           </p>
           <div
             className="mt-16 cursor-pointer text-sm font-bold uppercase tracking-wide text-[#9b7a36]"
             onClick={handleConsultationPopUp}
           >
-            Zamknij okno
+            {isEn ? "Close window" : "Zamknij okno"}
           </div>
         </div>
 
@@ -117,23 +145,33 @@ export default function Consultation({
           <div className="relative flex h-full flex-col justify-between">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#d6b36a]">
-                Bezpłatna konsultacja
+                {isEn ? "Free consultation" : "Bezpłatna konsultacja"}
               </p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-[34px]">
-                30 minut konkretnej rozmowy o Twoim zakupie.
+                {isEn
+                  ? "A 30-minute conversation about your purchase."
+                  : "30 minut konkretnej rozmowy o Twoim zakupie."}
               </h2>
               <p className="mt-4 text-sm leading-6 text-white/76">
-                Sprawdzimy cel, budżet, kraj i etap decyzji. Po rozmowie będziesz
-                wiedzieć, czy i jak możemy realnie pomóc.
+                {isEn
+                  ? "We will discuss your goals, budget, country and buying plans so you can decide how we can help."
+                  : "Sprawdzimy cel, budżet, kraj i etap decyzji. Po rozmowie będziesz wiedzieć, czy i jak możemy realnie pomóc."}
               </p>
             </div>
 
             <div className="mt-6 space-y-2 text-sm text-white/82">
-              {[
-                "wstępna selekcja kierunku",
-                "omówienie ryzyk i kosztów",
-                "kolejny krok bez presji sprzedażowej",
-              ].map((item) => (
+              {(isEn
+                ? [
+                    "initial location shortlist",
+                    "discussion of risks and costs",
+                    "next steps without sales pressure",
+                  ]
+                : [
+                    "wstępna selekcja kierunku",
+                    "omówienie ryzyk i kosztów",
+                    "kolejny krok bez presji sprzedażowej",
+                  ]
+              ).map((item) => (
                 <div key={item} className="flex gap-3">
                   <FaRegCheckCircle className="mt-1 shrink-0 text-[#d6b36a]" />
                   <span>{item}</span>
@@ -145,13 +183,17 @@ export default function Consultation({
 
         <div className="bg-white p-6 md:p-7 lg:p-8">
           <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#b8954c]">
-            Formularz
+            {isEn ? "Contact form" : "Formularz"}
           </p>
           <h3 className="mt-2 text-2xl font-bold leading-tight text-[#182334]">
-            Skorzystaj z 30 minutowej konsultacji.
+            {isEn
+              ? "Arrange a 30-minute consultation."
+              : "Skorzystaj z 30 minutowej konsultacji."}
           </h3>
           <p className="mt-3 text-sm leading-6 text-[#5f6b7a]">
-            Sprawdź, jak możemy Ci pomóc.
+            {isEn
+              ? "Find out how we can help."
+              : "Sprawdź, jak możemy Ci pomóc."}
           </p>
 
           <div className="mt-5 grid gap-3">
@@ -159,28 +201,34 @@ export default function Consultation({
               onChange={handleChangingValue}
               name="name"
               className={fieldClass}
-              placeholder="Imię i nazwisko"
+              placeholder={isEn ? "Full name" : "Imię i nazwisko"}
+              aria-label={isEn ? "Full name" : "Imię i nazwisko"}
               required
             ></input>
             <input
               onChange={handleChangingValue}
               name="phone"
+              type="tel"
               className={fieldClass}
-              placeholder="Numer kontaktowy"
+              placeholder={isEn ? "Phone number" : "Numer kontaktowy"}
+              aria-label={isEn ? "Phone number" : "Numer kontaktowy"}
               required
             ></input>
             <input
               onChange={handleChangingValue}
               name="email"
+              type="email"
               className={fieldClass}
-              placeholder="Adres email"
+              placeholder={isEn ? "Email address" : "Adres email"}
+              aria-label={isEn ? "Email address" : "Adres email"}
               required
             ></input>
             <textarea
               onChange={handleChangingValue}
               name="msg"
               className="min-h-[88px] w-full rounded-md border border-[#d8c8ad] bg-[#fbf8f2] p-4 text-[#182334] outline-none transition placeholder:text-[#8a94a3] focus:border-[#b8954c]"
-              placeholder="Twoja wiadomość"
+              placeholder={isEn ? "Your message" : "Twoja wiadomość"}
+              aria-label={isEn ? "Your message" : "Twoja wiadomość"}
             ></textarea>
           </div>
 
@@ -191,16 +239,18 @@ export default function Consultation({
               required
             ></input>
             <p className="flex-1 pl-3">
-              Zapoznałem się i akceptuję{" "}
+              {isEn
+                ? "I have read and accept the "
+                : "Zapoznałem się i akceptuję "}
               <a
                 href="/polityka-prywatnosci"
                 className="underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                politykę prywatności
+                {isEn ? "privacy policy" : "politykę prywatności"}
               </a>
-              . (wymagane)
+              {isEn ? ". (required)" : ". (wymagane)"}
             </p>
           </div>
           <div className="mt-3 flex text-[12px] leading-5 text-[#475569]">
@@ -209,13 +259,19 @@ export default function Consultation({
               className="mt-1 h-5 w-5 shrink-0 cursor-pointer accent-[#b8954c]"
             ></input>
             <p className="flex-1 pl-3">
-              Wyrażam zgodę na przetwarzanie moich danych osobowych przez Onesta
-              Group Sp. z o.o. w celach marketingowych, w tym na kontakt mailowy
-              w celu przedstawienia ofert nieruchomości.
+              {isEn
+                ? "I consent to the processing of my personal data by Onesta Group Sp. z o.o. for marketing purposes, including email contact to present property offers."
+                : "Wyrażam zgodę na przetwarzanie moich danych osobowych przez Onesta Group Sp. z o.o. w celach marketingowych, w tym na kontakt mailowy w celu przedstawienia ofert nieruchomości."}
             </p>
           </div>
-          <button className="mt-5 h-11 w-full rounded-md bg-[#182334] px-7 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#b8954c] md:w-auto">
-            <p ref={sendButton}>Wyślij zgłoszenie</p>
+          {error && <p role="alert">{error}</p>}
+          <button
+            disabled={sending}
+            className="mt-5 h-11 w-full rounded-md bg-[#182334] px-7 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#b8954c] md:w-auto"
+          >
+            <p ref={sendButton}>
+              {isEn ? "Send request" : "Wyślij zgłoszenie"}
+            </p>
           </button>
         </div>
       </form>

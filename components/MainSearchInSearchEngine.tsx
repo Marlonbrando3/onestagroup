@@ -205,13 +205,45 @@ function CountrySelect({
   onChange,
   className = "",
   locale = "pl",
+  variant = "default",
 }: {
   value: string;
   onChange: (slug: string) => void;
   className?: string;
   locale?: SiteLocale;
+  variant?: "default" | "tab";
 }) {
   const isEn = locale === "en";
+  if (variant === "tab") {
+    return (
+      <div
+        role="group"
+        aria-label={isEn ? "Country" : "Kraj"}
+        className={`flex gap-1 tracking-normal ${className}`}
+      >
+        {["hiszpania", "cypr"].map((slug) => {
+          const country = getPropertyCountryOption(slug);
+          const isActive = value === slug;
+          return (
+            <button
+              key={slug}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => onChange(slug)}
+              className={`h-6 rounded-t-lg border border-b-0 px-4 py-0 text-[15.3px] leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#b8954c] ${
+                isActive
+                  ? "border-[#c9aa63] bg-[#d6b36a] font-semibold text-[#182334]"
+                  : "border-[#e5dac7] bg-[#f7f3ec] font-medium text-[#5f6b7a] hover:bg-white hover:text-[#182334]"
+              }`}
+            >
+              {isEn ? (slug === "hiszpania" ? "Spain" : "Cyprus") : country.label}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <label
       className={`flex h-11 w-full items-stretch overflow-hidden rounded-[16px] text-sm font-semibold text-[#182334] ${className}`}
@@ -303,6 +335,7 @@ export default function Home({
 
   const buildQueryFromFilters = (next: FiltersState) => {
     const q: Record<string, string> = {};
+    if (router.query.sort) q.sort = String(router.query.sort);
 
     if (router.query.region) {
       q.region = Array.isArray(router.query.region)
@@ -376,7 +409,7 @@ export default function Home({
 
     router.push(
       {
-        pathname: paths.properties(country),
+        pathname: router.asPath.split("?")[0],
         query,
       },
       undefined,
@@ -437,9 +470,8 @@ export default function Home({
       new Set(
         parseCsv(router.query.type).map(
           (db) =>
-            (isEn ? TYPE_DB_TO_LABEL_EN : TYPE_DB_TO_LABEL)[
-              db.toLowerCase()
-            ] ?? db,
+            (isEn ? TYPE_DB_TO_LABEL_EN : TYPE_DB_TO_LABEL)[db.toLowerCase()] ??
+            db,
         ),
       ),
     );
@@ -636,13 +668,13 @@ export default function Home({
 
       <div
         id="search-wrapper"
-        className={`${OutfitSans.className} mx-auto tracking-[1.2px] w-[90vw] max-w-[1330px] lg:relative lg:z-30 mb-[30px] mt-0 lg:-mt-[70px]`}
+        className={`${OutfitSans.className} mx-auto tracking-[1.2px] w-[90vw] max-w-[1330px] lg:relative lg:z-30 mb-[30px] mt-0 lg:-mt-[44px]`}
       >
-        <div className="mb-3 hidden lg:flex">
+        <div className="ml-[22px] hidden lg:flex">
           <CountrySelect
             value={displayedCountrySlug}
             onChange={handleCountryChange}
-            className="max-w-[240px]"
+            variant="tab"
             locale={locale}
           />
         </div>

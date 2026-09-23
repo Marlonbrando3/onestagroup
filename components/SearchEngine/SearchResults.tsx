@@ -45,7 +45,11 @@ export default function SearchResults(props: any) {
     setSort(newSort);
     setLoader(true);
 
-    const query = { ...router.query, sort: newSort, page: "1" };
+    const query: Record<string, string | string[] | undefined> = {
+      ...router.query,
+      sort: newSort,
+    };
+    delete query.page;
 
     router.push(
       {

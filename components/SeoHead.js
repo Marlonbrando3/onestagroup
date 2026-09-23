@@ -1,3 +1,4 @@
+/** @typedef {Object} SeoProps */
 import Head from "next/head";
 import { siteConfig } from "@/lib/siteConfig";
 
@@ -13,16 +14,19 @@ function absoluteUrl(path) {
   return `${siteConfig.url}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+/** @param {{title?: string, description?: string, canonical?: string, image?: string, type?: string, publishedTime?: string, modifiedTime?: string, keywords?: string[], jsonLd?: any, robots?: string, alternates?: Record<string, string | null>}} props */
 export default function SeoHead({
   title,
   description,
   canonical,
-  image,
+  image = undefined,
   type = "website",
-  publishedTime,
-  modifiedTime,
+  publishedTime = undefined,
+  modifiedTime = undefined,
   keywords = [],
-  jsonLd,
+  jsonLd = undefined,
+  robots = "index, follow",
+  alternates = undefined,
 }) {
   const pageTitle = title || siteConfig.defaultTitle;
   const pageDescription = description || siteConfig.defaultDescription;
@@ -36,8 +40,17 @@ export default function SeoHead({
       {keywords.length > 0 && (
         <meta name="keywords" content={keywords.join(", ")} />
       )}
-      <meta name="robots" content="index, follow" />
+      <meta name="robots" content={robots} />
       <link rel="canonical" href={canonicalUrl} />
+      {alternates &&
+        Object.entries(alternates).map(([lang, path]) => (
+          <link
+            key={lang}
+            rel="alternate"
+            hrefLang={lang}
+            href={absoluteUrl(path)}
+          />
+        ))}
       <meta
         name="viewport"
         content="initial-scale=1.0, width=device-width, minimum-scale=1"

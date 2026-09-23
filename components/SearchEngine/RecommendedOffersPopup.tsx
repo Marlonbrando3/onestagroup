@@ -21,12 +21,18 @@ interface FormData {
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  locale?: "pl" | "en";
 }
 
 const inputClassName =
   "mt-2 h-12 w-full border border-[#d8c8ad] bg-[#fbf8f2] px-4 text-[15px] text-[#182334] outline-none transition placeholder:text-[#9aa2ad] focus:border-[#b8954c] focus:ring-2 focus:ring-[#b8954c]/15";
 
-export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
+export default function RecommendedOffersPopup({
+  isOpen,
+  onClose,
+  locale = "pl",
+}: Props) {
+  const t = (pl: string, en: string) => (locale === "en" ? en : pl);
   const [step, setStep] = useState<PopupStep>("initial");
   const [formData, setFormData] = useState<FormData>({
     budgetMax: "",
@@ -76,13 +82,19 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
   };
 
   const validateForm = (): string | null => {
-    if (!formData.email.trim()) return "Email jest wymagany";
-    if (!formData.email.includes("@")) return "Podaj prawidłowy adres email";
-    if (!formData.budgetMax.trim()) return "Budżet jest wymagany";
+    if (!formData.email.trim())
+      return t("Email jest wymagany", "Email is required");
+    if (!formData.email.includes("@"))
+      return t("Podaj prawidłowy adres email", "Enter a valid email address");
+    if (!formData.budgetMax.trim())
+      return t("Budżet jest wymagany", "Budget is required");
     if (isNaN(Number(formData.budgetMax)) || Number(formData.budgetMax) <= 0)
-      return "Podaj prawidłową kwotę";
+      return t("Podaj prawidłową kwotę", "Enter a valid amount");
     if (!formData.rodoConsent)
-      return "Musisz zaakceptować politykę prywatności";
+      return t(
+        "Musisz zaakceptować politykę prywatności",
+        "You must accept the privacy policy",
+      );
     return null;
   };
 
@@ -107,7 +119,10 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Błąd wysyłania");
+        setError(
+          (locale === "pl" && data.error) ||
+            t("Błąd wysyłania", "Could not send your request"),
+        );
         return;
       }
 
@@ -123,7 +138,12 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
         });
       }, 2000);
     } catch (submissionError) {
-      setError("Błąd połączenia. Spróbuj ponownie.");
+      setError(
+        t(
+          "Błąd połączenia. Spróbuj ponownie.",
+          "Connection error. Please try again.",
+        ),
+      );
       console.error(submissionError);
     } finally {
       setLoading(false);
@@ -150,7 +170,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
           ref={closeButtonRef}
           type="button"
           onClick={closePopup}
-          aria-label="Zamknij okno"
+          aria-label={t("Zamknij okno", "Close window")}
           className="absolute right-3 top-3 z-30 grid h-10 w-10 place-items-center border border-white/25 bg-white/95 text-[#182334] shadow-sm transition hover:bg-[#f3eee5] focus:outline-none focus:ring-2 focus:ring-[#d6b36a] md:right-5 md:top-5"
         >
           <IoClose className="h-6 w-6" />
@@ -166,25 +186,35 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                 Onesta Selection
               </p>
               <h3 className="mt-3 max-w-[310px] text-[27px] font-semibold leading-[1.1] sm:text-[31px]">
-                Oferty dopasowane do Ciebie, nie do algorytmu.
+                {t(
+                  "Oferty dopasowane do Ciebie, nie do algorytmu.",
+                  "Property choices tailored to your plans.",
+                )}
               </h3>
               <p className="mt-4 max-w-[320px] text-sm leading-6 text-white/78">
-                Przejrzymy rynek i wybierzemy nieruchomości, które naprawdę
-                odpowiadają Twoim planom.
+                {t(
+                  "Przejrzymy rynek i wybierzemy nieruchomości, które naprawdę odpowiadają Twoim planom.",
+                  "We will review the market and select properties that fit your plans.",
+                )}
               </p>
             </div>
 
             <div className="mt-6 hidden space-y-3 text-sm text-white/82 md:block">
-              {["selekcja TOP 10", "sprawdzone lokalizacje", "bez zobowiązań"].map(
-                (item) => (
-                  <div key={item} className="flex items-center gap-3">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center border border-[#d6b36a]/60 bg-[#d6b36a]/10 text-[#e2c477]">
-                      <IoCheckmark className="h-4 w-4" />
-                    </span>
-                    <span>{item}</span>
-                  </div>
-                ),
-              )}
+              {(locale === "en"
+                ? ["TOP 10 shortlist", "selected locations", "no obligation"]
+                : [
+                    "selekcja TOP 10",
+                    "sprawdzone lokalizacje",
+                    "bez zobowiązań",
+                  ]
+              ).map((item) => (
+                <div key={item} className="flex items-center gap-3">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center border border-[#d6b36a]/60 bg-[#d6b36a]/10 text-[#e2c477]">
+                    <IoCheckmark className="h-4 w-4" />
+                  </span>
+                  <span>{item}</span>
+                </div>
+              ))}
             </div>
           </div>
         </aside>
@@ -193,20 +223,22 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
           {step === "initial" ? (
             <>
               <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
-                Bezpłatne rekomendacje
+                {t("Bezpłatne rekomendacje", "Free recommendations")}
               </p>
               <h2
                 id={titleId}
                 className="mt-3 text-[32px] font-bold leading-[1.06] tracking-[-0.035em] text-[#182334] sm:text-[40px]"
               >
-                Nie wiesz, co wybrać?
+                {t("Nie wiesz, co wybrać?", "Not sure what to choose?")}
               </h2>
               <p
                 id={descriptionId}
                 className="mt-4 max-w-[460px] text-[15px] leading-6 text-[#5f6b7a] sm:text-base"
               >
-                Podaj budżet i adres e-mail. Przygotujemy zestaw 10 ofert,
-                od których warto zacząć.
+                {t(
+                  "Podaj budżet i adres e-mail. Przygotujemy zestaw 10 ofert, od których warto zacząć.",
+                  "Tell us your budget and email address. We will prepare a shortlist of 10 properties to get you started.",
+                )}
               </p>
 
               <div className="mt-8 space-y-3">
@@ -215,7 +247,12 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                   onClick={() => setStep("form")}
                   className="group flex h-14 w-full items-center justify-between bg-[#b8954c] px-5 text-left font-bold text-white transition hover:bg-[#9b7a36] focus:outline-none focus:ring-2 focus:ring-[#b8954c] focus:ring-offset-2"
                 >
-                  <span>Chcę otrzymać TOP 10 ofert</span>
+                  <span>
+                    {t(
+                      "Chcę otrzymać TOP 10 ofert",
+                      "Send me the TOP 10 properties",
+                    )}
+                  </span>
                   <IoArrowForward className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </button>
                 <button
@@ -223,13 +260,18 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                   onClick={closePopup}
                   className="h-12 w-full border border-[#d8c8ad] bg-white px-5 font-semibold text-[#5f6b7a] transition hover:border-[#b8954c] hover:bg-[#fbf8f2] hover:text-[#182334] focus:outline-none focus:ring-2 focus:ring-[#b8954c]/30"
                 >
-                  Tylko przeglądam
+                  {t("Tylko przeglądam", "Just browsing")}
                 </button>
               </div>
 
               <div className="mt-6 flex items-center gap-2 text-xs leading-5 text-[#7c8796]">
                 <IoShieldCheckmarkOutline className="h-4 w-4 shrink-0 text-[#9b7a36]" />
-                <span>Bez spamu. Kontaktujemy się wyłącznie w sprawie ofert.</span>
+                <span>
+                  {t(
+                    "Bez spamu. Kontaktujemy się wyłącznie w sprawie ofert.",
+                    "No spam. We will only contact you about properties.",
+                  )}
+                </span>
               </div>
             </>
           ) : (
@@ -242,25 +284,39 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                 }}
                 className="mb-5 w-fit text-xs font-bold uppercase tracking-[0.14em] text-[#9b7a36] hover:text-[#182334]"
               >
-                ← Wróć
+                {t("← Wróć", "← Back")}
               </button>
               <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
-                Twój punkt wyjścia
+                {t("Twój punkt wyjścia", "Your starting point")}
               </p>
               <h2
                 id={titleId}
                 className="mt-2 text-[30px] font-bold leading-tight tracking-[-0.03em] text-[#182334]"
               >
-                Przygotujmy Twoją listę.
+                {t(
+                  "Przygotujmy Twoją listę.",
+                  "Let us prepare your shortlist.",
+                )}
               </h2>
-              <p id={descriptionId} className="mt-2 text-sm leading-6 text-[#5f6b7a]">
-                Wystarczą dwie informacje. Resztą zajmiemy się my.
+              <p
+                id={descriptionId}
+                className="mt-2 text-sm leading-6 text-[#5f6b7a]"
+              >
+                {t(
+                  "Wystarczą dwie informacje. Resztą zajmiemy się my.",
+                  "Just two details. We will take care of the rest.",
+                )}
               </p>
 
               {success && (
                 <div className="mt-5 flex items-start gap-3 border border-[#b8d9c7] bg-[#eff8f3] p-4 text-sm text-[#24633f]">
                   <IoCheckmark className="mt-0.5 h-5 w-5 shrink-0" />
-                  <span>Dziękujemy! Wkrótce otrzymasz rekomendacje.</span>
+                  <span>
+                    {t(
+                      "Dziękujemy! Wkrótce otrzymasz rekomendacje.",
+                      "Thank you! Your recommendations will follow soon.",
+                    )}
+                  </span>
                 </div>
               )}
 
@@ -275,7 +331,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
 
               <form onSubmit={handleSubmit} className="mt-5 space-y-4">
                 <label className="block text-sm font-semibold text-[#344054]">
-                  Maksymalny budżet (€)
+                  {t("Maksymalny budżet (€)", "Maximum budget (€)")}
                   <input
                     type="number"
                     name="budgetMax"
@@ -283,14 +339,14 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                     onChange={handleInputChange}
                     min="1"
                     inputMode="numeric"
-                    placeholder="np. 350 000"
+                    placeholder={t("np. 350 000", "e.g. 350,000")}
                     required
                     className={inputClassName}
                   />
                 </label>
 
                 <label className="block text-sm font-semibold text-[#344054]">
-                  Adres e-mail
+                  {t("Adres e-mail", "Email address")}
                   <span className="relative block">
                     <IoMailOutline className="pointer-events-none absolute left-4 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-[#9b7a36]" />
                     <input
@@ -299,7 +355,7 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                       value={formData.email}
                       onChange={handleInputChange}
                       autoComplete="email"
-                      placeholder="twoj@email.pl"
+                      placeholder={t("twoj@email.pl", "you@example.com")}
                       required
                       className={`${inputClassName} pl-11`}
                     />
@@ -317,14 +373,14 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                       className="mt-0.5 h-4 w-4 shrink-0 accent-[#b8954c]"
                     />
                     <span>
-                      Akceptuję{" "}
+                      {t("Akceptuję ", "I accept the ")}
                       <a
                         href="https://onesta.com.pl/polityka-prywatnosci"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-semibold text-[#9b7a36] underline underline-offset-2"
                       >
-                        politykę prywatności
+                        {t("politykę prywatności", "privacy policy")}
                       </a>
                       . <span className="text-[#9b2922]">*</span>
                     </span>
@@ -339,8 +395,10 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                       className="mt-0.5 h-4 w-4 shrink-0 accent-[#b8954c]"
                     />
                     <span>
-                      Zgadzam się na kontakt marketingowy w celu przedstawienia
-                      ofert nieruchomości.
+                      {t(
+                        "Zgadzam się na kontakt marketingowy w celu przedstawienia ofert nieruchomości.",
+                        "I agree to marketing contact to present property offers.",
+                      )}
                     </span>
                   </label>
                 </div>
@@ -353,7 +411,12 @@ export default function RecommendedOffersPopup({ isOpen, onClose }: Props) {
                   {loading && (
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                   )}
-                  {loading ? "Wysyłanie…" : "Wyślij i odbierz TOP 10"}
+                  {loading
+                    ? t("Wysyłanie…", "Sending…")
+                    : t(
+                        "Wyślij i odbierz TOP 10",
+                        "Send and receive the TOP 10",
+                      )}
                 </button>
               </form>
             </>

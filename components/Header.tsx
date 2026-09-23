@@ -13,6 +13,7 @@ type HeaderProps = {
   handleShowOffersPopup?: () => void;
   loadLoader?: () => void;
   locale?: SiteLocale;
+  languagePaths?: Partial<Record<SiteLocale, string>>;
 };
 
 const ConsultationPopup = dynamic(
@@ -24,6 +25,7 @@ export default function Header({
   handleConsultationPopUp,
   handleShowOffersPopup,
   locale = "pl",
+  languagePaths,
 }: HeaderProps) {
   const router = useRouter();
   const isHomepage = router.pathname === "/" || router.pathname === "/en";
@@ -47,7 +49,7 @@ export default function Header({
         { label: "About us", href: paths.about },
         { label: "Investor trip", href: paths.investorTrip },
       ]
-      : [
+    : [
         { label: "O nas", href: "/aboutus" },
         { label: "Blog", href: "/blog" },
         { label: "Newsletter", href: "/newsletter" },
@@ -77,6 +79,7 @@ export default function Header({
   };
 
   const buildLanguageHref = (targetLocale: SiteLocale) => {
+    if (languagePaths?.[targetLocale]) return languagePaths[targetLocale]!;
     const [pathname, query = ""] = (router.asPath || "/").split("?");
     const suffix = query ? `?${query}` : "";
 
@@ -107,7 +110,11 @@ export default function Header({
   ];
 
   const LanguageSwitcher = ({ mobile = false }: { mobile?: boolean }) => (
-    <div className={mobile ? "border-b border-[#e8ddca] py-4" : "group relative py-2"}>
+    <div
+      className={
+        mobile ? "border-b border-[#e8ddca] py-4" : "group relative py-2"
+      }
+    >
       {mobile ? (
         <>
           <p className="mb-3 text-[13px] font-extrabold uppercase tracking-[0.12em] text-[#9b7a36]">
@@ -163,6 +170,7 @@ export default function Header({
     <>
       {consultationOpen && (
         <ConsultationPopup
+          locale={locale}
           handleConsultationPopUp={toggleLocalConsultation}
           ConsultationsShowed={consultationOpen}
         />
@@ -249,7 +257,9 @@ export default function Header({
             {isHomepage && (
               <Link
                 href="/agentlogin"
-                aria-label={isEn ? "Agent account login" : "Logowanie do konta agenta"}
+                aria-label={
+                  isEn ? "Agent account login" : "Logowanie do konta agenta"
+                }
                 title={isEn ? "Agent account" : "Konto agenta"}
                 className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#b8954c] bg-white text-[18px] text-[#182334] shadow-sm transition hover:bg-[#182334] hover:text-white"
               >

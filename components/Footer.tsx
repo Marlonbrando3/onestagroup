@@ -10,9 +10,7 @@ import { localePath, SiteLocale } from "@/lib/i18n";
 const menuItems = MenuData.menu.map((label, index) => {
   const rawHref = MenuData.links[index] || "/";
   const normalizedHref =
-    rawHref === "hiszpania?page=1"
-      ? "nieruchomosci/hiszpania?page=1"
-      : rawHref;
+    rawHref === "hiszpania?page=1" ? "nieruchomosci/hiszpania" : rawHref;
   const href = normalizedHref.startsWith("/")
     ? normalizedHref
     : `/${normalizedHref}`;
@@ -53,7 +51,7 @@ export default function Footer({ locale = "pl" }: { locale?: SiteLocale }) {
   }));
   const localizedMenuItems = isEn
     ? [
-      { label: "Home", href: "/en" },
+        { label: "Home", href: "/en" },
         { label: "About us", href: "/en/about-us" },
         { label: "Properties in Spain", href: "/en/properties/hiszpania" },
         { label: "Properties in Cyprus", href: "/en/properties/cypr" },
@@ -96,7 +94,9 @@ export default function Footer({ locale = "pl" }: { locale?: SiteLocale }) {
               href="https://www.facebook.com/profile.php?id=100071864003899"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={isEn ? "Onesta Group on Facebook" : "Onesta Group na Facebooku"}
+              aria-label={
+                isEn ? "Onesta Group on Facebook" : "Onesta Group na Facebooku"
+              }
               className="mt-3 inline-flex h-11 w-11 items-center justify-center border border-[#d7c8ad] bg-white text-[#182334] transition hover:border-[#182334] hover:text-[#9b7a36]"
             >
               <FaFacebookSquare className="h-6 w-6" />

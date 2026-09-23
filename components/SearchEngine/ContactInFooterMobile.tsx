@@ -48,7 +48,7 @@ export default function ContactInFooterMobile({
   const handleSendingProperty = async (e: any) => {
     e.preventDefault();
     let query = JSON.stringify({
-      id,
+      id: propertyRef,
       name: Name,
       phone: Phone,
       mail: Mail,
@@ -65,7 +65,7 @@ export default function ContactInFooterMobile({
     const results = await res.json();
 
     if (results.status === 200) {
-      trackGoogleAdsContactConversion();
+      trackGoogleAdsContactConversion(undefined, String(propertyRef));
       submitButton.current.innerHTML = isEn ? "Sent" : "Wysłano";
       submitButton.current.style.backgroundColor = "green";
     } else {
@@ -74,7 +74,9 @@ export default function ContactInFooterMobile({
         : "Błąd, spróbuj jeszcze raz";
       submitButton.current.style.backgroundColor = "red";
       setTimeout(() => {
-        submitButton.current.innerHTML = isEn ? "Send again" : "Wyślij ponownie";
+        submitButton.current.innerHTML = isEn
+          ? "Send again"
+          : "Wyślij ponownie";
         submitButton.current.style.backgroundColor = "yellow";
       }, 1500);
     }
@@ -117,7 +119,7 @@ export default function ContactInFooterMobile({
             type="email"
             value={Mail}
             onChange={handleChangingForm}
-            placeholder={isEn ? "Email address" : "Adres emial"}
+            placeholder={isEn ? "Email address" : "Adres email"}
             className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
             required
           ></input>

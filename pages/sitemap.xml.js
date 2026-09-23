@@ -1,63 +1,16 @@
-import { siteConfig } from "@/lib/siteConfig";
-
-function escapeXml(value) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
-}
-
-function buildUrl({ loc, lastmod, changefreq = "monthly", priority = "0.7" }) {
-  return `
-  <url>
-    <loc>${escapeXml(loc)}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-  </url>`;
-}
-
+import { sitemapEntries, sitemapXml, SITEMAP_SIZE } from "@/lib/publicSitemap";
+import { SITE_URL } from "@/lib/publicSeo";
 export async function getServerSideProps({ res }) {
-  const { getAllBlogPosts } = await import("@/lib/blog");
-
-  const staticUrls = [
-    {
-      loc: siteConfig.url,
-      lastmod: new Date().toISOString(),
-      changefreq: "weekly",
-      priority: "1.0",
-    },
-    {
-      loc: `${siteConfig.url}/blog`,
-      lastmod: new Date().toISOString(),
-      changefreq: "weekly",
-      priority: "0.8",
-    },
-  ];
-
-  const blogUrls = getAllBlogPosts().map((post) => ({
-    loc: `${siteConfig.url}/blog/${post.slug}`,
-    lastmod: new Date(post.updatedAt).toISOString(),
-    changefreq: "monthly",
-    priority: "0.7",
-  }));
-
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[...staticUrls, ...blogUrls].map(buildUrl).join("")}
-</urlset>`;
-
-  res.setHeader("Content-Type", "text/xml");
-  res.write(sitemap);
-  res.end();
-
-  return {
-    props: {},
-  };
+  const entries = await sitemapEntries();
+  const xml =
+    entries.length <= SITEMAP_SIZE
+      ? sitemapXml(entries)
+      : `<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${Array.from({ length: Math.ceil(entries.length / SITEMAP_SIZE) }, (_, i) => `<sitemap><loc>${SITE_URL}/sitemaps/${i + 1}.xml</loc></sitemap>`).join("")}</sitemapindex>`;
+  res.setHeader("Content-Type", "application/xml; charset=utf-8");
+  res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900");
+  res.end(xml);
+  return { props: {} };
 }
-
 export default function Sitemap() {
   return null;
 }

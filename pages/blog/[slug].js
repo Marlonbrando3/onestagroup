@@ -10,6 +10,10 @@ import SeoHead from "@/components/SeoHead";
 import { siteConfig } from "@/lib/siteConfig";
 
 export default function BlogPost({ post, mdxSource, relatedPosts }) {
+  const metaTitle = post.metaTitle || post.title;
+  const seoTitle = /\| Onesta(?: Group)?$/.test(metaTitle)
+    ? metaTitle
+    : `${metaTitle} | Onesta Group`;
   const canonical = `/blog/${post.slug}`;
   const articleUrl = `${siteConfig.url}${canonical}`;
   const imageUrl = post.image.startsWith("http")
@@ -46,7 +50,7 @@ export default function BlogPost({ post, mdxSource, relatedPosts }) {
         {
           "@type": "ListItem",
           position: 1,
-          name: "Strona glowna",
+          name: "Strona główna",
           item: siteConfig.url,
         },
         {
@@ -69,7 +73,7 @@ export default function BlogPost({ post, mdxSource, relatedPosts }) {
     <>
       <Newsletter />
       <SeoHead
-        title={`${post.metaTitle || post.title} | Onesta Group`}
+        title={seoTitle}
         description={post.description}
         canonical={canonical}
         image={post.image}
@@ -91,7 +95,7 @@ export default function BlogPost({ post, mdxSource, relatedPosts }) {
           <div className="mx-auto w-10/12 max-w-7xl">
             <nav className="text-sm text-gray-500" aria-label="Breadcrumb">
               <Link href="/" className="hover:text-orange-600">
-                Strona głowna
+                Strona główna
               </Link>
               <span className="px-2">/</span>
               <Link href="/blog" className="hover:text-orange-600">
@@ -202,7 +206,7 @@ export async function getStaticProps({ params }) {
   const { getBlogPost, getRelatedBlogPosts } = await import("@/lib/blog");
   const post = getBlogPost(params.slug);
 
-  if (!post) {
+  if (!post || post.status !== "published") {
     return {
       notFound: true,
     };

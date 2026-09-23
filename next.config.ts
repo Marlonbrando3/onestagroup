@@ -2,6 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   compress: true,
+  async redirects() {
+    return [
+      {
+        source: "/blog/nieruchomosci-costa-blanca-old",
+        destination: "/blog/nieruchomosci-costa-blanca",
+        permanent: true,
+      },
+      {
+        source: "/nieruchomosci/hiszpania/wszystkie-regiony",
+        destination: "/nieruchomosci/hiszpania",
+        permanent: true,
+      },
+    ];
+  },
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
   reactStrictMode: true,

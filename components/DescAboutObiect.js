@@ -302,13 +302,13 @@ export default function DescAboutObiect({
             <div className="text-[18px] flex items-center">
               <IoBed className="h-full w-[22px] text-yellow-500" />
               <p className="px-[7px]">
-                {bedrooms} {isEn ? "bedrooms" : "sypialnie"}
+                {isEn ? "Bedrooms:" : "Sypialnie:"} {bedrooms ?? "—"}
               </p>
             </div>
             <div className="text-[18px] flex  items-center">
               <FaBath className="h-full w-[22px] text-yellow-500" />
               <p className="px-[7px]">
-                {bathrooms} {isEn ? "bathrooms" : "łazienki"}
+                {isEn ? "Bathrooms:" : "Łazienki:"} {bathrooms ?? "—"}
               </p>
             </div>
             {pool === true && (
@@ -356,20 +356,20 @@ export default function DescAboutObiect({
           )}
           {!isEn && (
             <button
-            type="button"
-            onClick={handleShowEnglish}
-            className="text-[13px] md:text-[14px] px-3 py-1 rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-yellow-200 hover:text-gray-800 font-bold inline-flex items-center gap-2"
-          >
-            English description
-            <span
-              aria-hidden="true"
-              className="inline-block w-[18px] h-[12px] border border-gray-300 overflow-hidden rounded-[1px]"
+              type="button"
+              onClick={handleShowEnglish}
+              className="text-[13px] md:text-[14px] px-3 py-1 rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-yellow-200 hover:text-gray-800 font-bold inline-flex items-center gap-2"
             >
-              <span className="block w-full h-1/3 bg-[#012169]" />
-              <span className="block w-full h-1/3 bg-white" />
-              <span className="block w-full h-1/3 bg-[#C8102E]" />
-            </span>
-          </button>
+              Opis po angielsku
+              <span
+                aria-hidden="true"
+                className="inline-block w-[18px] h-[12px] border border-gray-300 overflow-hidden rounded-[1px]"
+              >
+                <span className="block w-full h-1/3 bg-[#012169]" />
+                <span className="block w-full h-1/3 bg-white" />
+                <span className="block w-full h-1/3 bg-[#C8102E]" />
+              </span>
+            </button>
           )}
         </div>
       </div>

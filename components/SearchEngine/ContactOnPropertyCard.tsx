@@ -52,7 +52,7 @@ export default function ContactOnPropertyCard({
     }
 
     let query = JSON.stringify({
-      id,
+      id: propertyRef,
       name: Name,
       phone: Phone,
       mail: Mail,
@@ -73,7 +73,7 @@ export default function ContactOnPropertyCard({
     const results = await res.json();
 
     if (results.status === 200) {
-      trackGoogleAdsContactConversion();
+      trackGoogleAdsContactConversion(undefined, String(propertyRef));
       submitButton.current.innerHTML = isEn ? "Sent" : "Wysłano";
       submitButton.current.style.backgroundColor = "green";
     } else {
@@ -82,7 +82,9 @@ export default function ContactOnPropertyCard({
         : "Błąd, spróbuj jeszcze raz";
       submitButton.current.style.backgroundColor = "red";
       setTimeout(() => {
-        submitButton.current.innerHTML = isEn ? "Send again" : "Wyślij ponownie";
+        submitButton.current.innerHTML = isEn
+          ? "Send again"
+          : "Wyślij ponownie";
         submitButton.current.style.backgroundColor = "yellow";
       }, 1500);
     }

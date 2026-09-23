@@ -1,3 +1,4 @@
+import { propertyPath, propertyTitle, slugify } from "@/lib/publicSeo";
 import Link from "next/link";
 import { useState } from "react";
 import { IoMdPin } from "react-icons/io";
@@ -27,17 +28,6 @@ type PropertyProps = {
   appearance?: "default" | "cbtop";
 };
 
-function slugify(value: string): string {
-  return String(value || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/ł/g, "l")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
-}
-
 function formatPrice(price: number | string | null | undefined) {
   const numeric = Number(price || 0);
   if (!numeric) return "Konsultacja";
@@ -54,10 +44,10 @@ function formatDistanceToSea(value: unknown, locale: SiteLocale) {
   if (!Number.isFinite(numeric) || numeric <= 0) return null;
 
   return (
-    <p className="text-gray-900 font-900 text-[13px]">
+    <span className="text-gray-900 font-900 text-[13px]">
       {Math.round(numeric).toLocaleString(locale === "en" ? "en-US" : "pl-PL")}{" "}
       m {locale === "en" ? "to the sea" : "do morza"}{" "}
-    </p>
+    </span>
   );
 }
 
@@ -92,13 +82,7 @@ export default function PropertyCard({
       : isEn
         ? "Property"
         : "Nieruchomość";
-  const generatedTitle = isEn
-    ? `${propertyType} in ${property?.town || "Spain"}`
-    : `${propertyType} w ${property?.town || "Hiszpanii"}`;
-  const listingTitle =
-    validTitleOrEmpty(property?.title) ||
-    validTitleOrEmpty(property?.headerAdvertisement) ||
-    generatedTitle;
+  const listingTitle = propertyTitle(property, locale);
   const slug = slugify(listingTitle);
   const locationLabel = getCoastLabelFromProvince(property?.province);
   const distanceToSeaLabel = formatDistanceToSea(
@@ -106,19 +90,16 @@ export default function PropertyCard({
     locale,
   );
 
-  const detailHref = detailHrefOverride || {
-    pathname: paths.property(countrySlug, slug),
-    query: { id: property?.external_id },
-  };
+  const detailHref =
+    detailHrefOverride ||
+    propertyPath(property, locale) ||
+    paths.properties(countrySlug);
 
   const share = async () => {
     const shareUrl =
       typeof window !== "undefined"
-        ? detailHrefOverride
-          ? `${window.location.origin}${detailHrefOverride}`
-          : `${window.location.origin}${paths.property(countrySlug, slug)}?id=${property?.external_id}`
-        : detailHrefOverride ||
-          `${paths.property(countrySlug, slug)}?id=${property?.external_id}`;
+        ? `${window.location.origin}${detailHref}`
+        : detailHref;
 
     try {
       if (navigator.share) {
@@ -147,7 +128,8 @@ export default function PropertyCard({
     },
     {
       label: isEn ? "Pool" : "Basen",
-      value: property?.pool === true ? (isEn ? "Yes" : "Tak") : isEn ? "No" : "Nie",
+      value:
+        property?.pool === true ? (isEn ? "Yes" : "Tak") : isEn ? "No" : "Nie",
       Icon: FaSwimmingPool,
     },
     {
@@ -173,9 +155,7 @@ export default function PropertyCard({
       },
       {
         label: isEn ? "sq m" : "m²",
-        value: property?.surface_built
-          ? String(property.surface_built)
-          : "—",
+        value: property?.surface_built ? String(property.surface_built) : "—",
         Icon: BiArea,
         displayLabel: "m²",
       },
@@ -232,11 +212,11 @@ export default function PropertyCard({
           <p className="text-[9px] font-extrabold uppercase tracking-[0.14em] text-[#9b7a36]">
             {propertyType} · ref. {property?.external_id}
           </p>
-          <h2
+          <h3
             className={`${HomePlayfairSans.className} mt-2 line-clamp-2 min-h-[58px] text-[25px] font-semibold leading-[1.12] tracking-[-0.02em] text-[#182334]`}
           >
             {listingTitle}
-          </h2>
+          </h3>
 
           <div className="mt-5 grid grid-cols-4 border-y border-[#ebe4da] py-3">
             {cardStats.map(({ label, value, Icon, displayLabel }) => (
@@ -245,10 +225,7 @@ export default function PropertyCard({
                 className="flex min-w-0 flex-col items-center border-r border-[#ebe4da] px-1 last:border-r-0"
                 title={label}
               >
-                <Icon
-                  className="h-7 w-7 text-[#b8954c]"
-                  aria-hidden="true"
-                />
+                <Icon className="h-7 w-7 text-[#b8954c]" aria-hidden="true" />
                 <p className="mt-1.5 truncate text-[12px] font-extrabold text-[#26364b]">
                   {value}
                   {displayLabel ? (
@@ -339,9 +316,9 @@ export default function PropertyCard({
               </div>
             </div>
 
-            <h2 className="mt-2 line-clamp-2 min-h-[42px] text-[17px] font-bold leading-[1.22] text-[#182334]">
+            <h3 className="mt-2 line-clamp-2 min-h-[42px] text-[17px] font-bold leading-[1.22] text-[#182334]">
               {listingTitle}
-            </h2>
+            </h3>
 
             <div className="mt-2 h-[40px]">
               {distanceToSeaLabel && (

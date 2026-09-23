@@ -9,6 +9,14 @@ export default function App({ Component, pageProps }: AppProps) {
   const cookiesWindow = useRef<any>();
   const router = useRouter();
 
+  // _document sets the initial SSR language; keep it correct after client navigation.
+  useEffect(() => {
+    document.documentElement.lang =
+      router.pathname === "/en" || router.pathname.startsWith("/en/")
+        ? "en"
+        : "pl";
+  }, [router.pathname]);
+
   useEffect(() => {
     // To blokuje automatyczny scroll Next.js przy przycisku "Wstecz"
     router.beforePopState((state) => {
