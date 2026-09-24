@@ -1,0 +1,63 @@
+.root { align-self: stretch; display: flex; align-items: center; }
+.root button, .mobile button { font: inherit; cursor: pointer; }
+.root :focus-visible, .mobile :focus-visible { outline: 2px solid #9b7a36; outline-offset: 3px; }
+.root .trigger { display: flex; align-items: center; gap: 9px; white-space: nowrap; border-radius: 999px; border: 1px solid #d7c8ad; background: #ffffffb3; padding: 12px 16px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #9b7a36; }
+.trigger:hover, .trigger[aria-expanded="true"] { border-color: #b8954c; background: white; }
+.trigger svg { transition: transform 180ms; }
+.trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+.panel { position: absolute; inset: 100% 0 auto; max-height: calc(100dvh - 82px); overflow-y: auto; overscroll-behavior: contain; border-block: 1px solid #e8ddca; background: #fbf8f2; box-shadow: 0 24px 36px #1823341a; }
+.panel[hidden] { display: none; }
+.container { width: 91.666667%; max-width: 1280px; margin-inline: auto; }
+.heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 23px; border-bottom: 1px solid #e8ddca; }
+.eyebrow { color: #9b7a36; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.title { margin-top: 7px; font-size: 27px; line-height: 1.25; font-weight: 600; letter-spacing: -.035em; }
+.close { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border: 1px solid #d7c8ad; border-radius: 50%; background: white; }
+.close:hover { color: #9b7a36; border-color: #b8954c; }
+.grid { display: grid; grid-template-columns: .78fr 1.1fr 2fr 1.15fr; padding-block: 28px; }
+.grid > * { min-width: 0; }
+.countries { padding-right: 22px; }
+.regions { padding-inline: 22px; border-inline: 1px solid #e8ddca; }
+.towns { padding-inline: 28px; }
+.types { padding-left: 24px; border-left: 1px solid #e8ddca; }
+.columnLabel { display: flex; gap: 9px; margin-bottom: 21px; color: #647080; font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.columnLabel > span { color: #9b7a36; }
+.root .country, .root .region { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; text-align: left; background: transparent; }
+.root .country { min-height: 49px; font-size: 21px; font-weight: 600; letter-spacing: -.025em; }
+.root .region { min-height: 41px; padding: 9px 10px; border-radius: 9px; font-size: 12px; line-height: 1.5; font-weight: 500; }
+.country > svg, .region > svg { flex-shrink: 0; opacity: 0; }
+.country[aria-pressed="true"], .region[aria-pressed="true"] { color: #9b7a36; }
+.country[aria-pressed="true"] > svg, .region[aria-pressed="true"] > svg { opacity: 1; }
+.region[aria-pressed="true"] { background: #b8954c12; }
+.country:hover, .region:hover { color: #9b7a36; }
+.allCountry { display: inline-flex; align-items: center; gap: 7px; margin-top: 25px; padding-bottom: 7px; border-bottom: 1px solid #d7c8ad; font-size: 11px; font-weight: 600; }
+.regionHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid #e8ddca; }
+.regionHeading > p { font-size: 20px; line-height: 1.5; font-weight: 600; letter-spacing: -.03em; }
+.regionHeading > a { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; color: #9b7a36; font-size: 10px; font-weight: 600; }
+.townLinks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; max-height: 350px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #d7c8ad transparent; }
+.townLinks, .typeLinks { padding: 8px 5px 5px; margin-inline: -5px; }
+.townLinks a, .typeLinks a { display: flex; align-items: center; justify-content: space-between; gap: 7px; min-height: 35px; padding-block: 8px; font-size: 11px; line-height: 1.6; font-weight: 500; }
+.townLinks a > svg, .typeLinks a > svg { flex-shrink: 0; opacity: 0; }
+.townLinks a:hover, .typeLinks a:hover, .townLinks a:focus-visible, .typeLinks a:focus-visible, .allCountry:hover { color: #9b7a36; }
+.townLinks a:hover > svg, .typeLinks a:hover > svg, .townLinks a:focus-visible > svg, .typeLinks a:focus-visible > svg { opacity: 1; }
+.typeCountries { display: flex; align-items: baseline; gap: 19px; padding-bottom: 14px; border-bottom: 1px solid #e8ddca; }
+.typeCountries > button { background: transparent; font-size: 18px; line-height: 30px; font-weight: 600; letter-spacing: -.025em; }
+.typeCountries > button[aria-pressed="true"], .typeCountries > button:hover { color: #9b7a36; }
+.mobile { padding-block: 16px; border-bottom: 1px solid #e8ddca; }
+.mobile > .eyebrow { margin-bottom: 12px; font-size: 13px; }
+.mobile summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 10px 4px; list-style: none; font-size: 14px; font-weight: 600; cursor: pointer; }
+.mobile summary::-webkit-details-marker { display: none; }
+.mobile summary > svg { flex-shrink: 0; transition: transform 180ms; }
+.mobile details[open] > summary { color: #9b7a36; }
+.mobile details[open] > summary > svg { transform: rotate(180deg); }
+.mobileCountry { margin: 4px 0 12px 4px; padding-left: 14px; border-left: 1px solid #e8ddca; }
+.mobileCountry summary { font-size: 12px; }
+.mobile a { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 10px 4px; font-size: 12px; line-height: 1.6; }
+.mobile a > svg { flex-shrink: 0; }
+.mobile a:hover, .mobileAll { color: #9b7a36; }
+.mobileTowns { max-height: 300px; overflow-y: auto; overscroll-behavior: contain; padding: 4px 8px; scrollbar-width: thin; }
+.mobileTowns a { border-bottom: 1px solid #e8ddca80; }
+.mobileTypes { margin-top: 10px; padding-top: 8px; border-top: 1px solid #e8ddca; }
+.mobileTypes > div { padding: 8px 4px; }
+.mobile .typeCountries > button { min-height: 44px; font-size: 16px; font-weight: 600; }
+@media (max-width: 1279px) { .panel { display: none; } }
+@media (prefers-reduced-motion: reduce) { .trigger svg, .mobile summary > svg { transition: none; } }
