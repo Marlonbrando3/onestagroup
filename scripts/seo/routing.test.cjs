@@ -56,7 +56,10 @@ function harness(rows, { failure = false } = {}) {
             (r.status == null || r.status === "AKTUALNA") &&
             (r.operation == null || ["sale", "SPRZEDAŻ"].includes(r.operation)),
         );
-      else throw new Error("Unsupported test predicate: " + expression);
+      else if (expression.split(",").every(v => v.startsWith("type.ilike."))) {
+        const types = expression.split(",").map(v => v.slice(11).toLowerCase());
+        this.rows = this.rows.filter(r => types.includes(r.type.toLowerCase()));
+      } else throw new Error("Unsupported test predicate: " + expression);
       return this;
     }
     order(k, { ascending = true } = {}) {
@@ -172,7 +175,9 @@ function ctx(
   return {
     query: { ...params, ...query },
     params,
-    resolvedUrl: "/nieruchomosci/hiszpania/" + (params.title || ""),
+    resolvedUrl: (params.city || query.id !== undefined || params.title === "apartament-w-torrevieja"
+      ? `/nieruchomosci/${params.country}${params.title ? "/" + params.title : ""}${params.city ? "/" + params.city : ""}`
+      : `/nieruchomosci/${params.country}${params.title ? "/" + params.title : ""}`) + (Object.keys(query).length ? "?" + new URLSearchParams(query) : ""),
     res: { setHeader: (k, v) => (headers[k] = v) },
     headers,
   };
@@ -266,7 +271,7 @@ test("region and city stay scoped across stable pagination; invalid routes and p
   assert.match(r.redirect.destination, /bedsMin=0/);
   assert.match(r.redirect.destination, /utm_source=test/);
 });
-test("canonical keeps pagination, scope and filters but excludes campaign tags", () => {
+test("canonical keeps pagination and scope but excludes UX filters and campaign tags", () => {
   const seo = harness(fixtures).load("lib/publicSeo");
   const canonical = seo.canonicalCatalog(
     "/nieruchomosci/hiszpania/costa-blanca",
@@ -274,7 +279,7 @@ test("canonical keeps pagination, scope and filters but excludes campaign tags",
   );
   const u = new URL(canonical);
   assert.equal(u.searchParams.get("page"), "2");
-  assert.equal(u.searchParams.get("bedsMin"), "0");
+  assert.equal(u.searchParams.get("bedsMin"), null);
   assert.equal(u.searchParams.has("utm_source"), false);
   assert.equal(u.searchParams.has("fbclid"), false);
   assert.equal(seo.hasFilters({ bedsMin: "0" }), true);
@@ -307,3 +312,5 @@ test("withdrawn properties and rentals are absent from catalogue and detail", as
   ).getServerSideProps(ctx({}, { country: "hiszpania" }));
   assert.equal(catalog.props.totalCount, fixtures.length);
 });
+
+module.exports = { harness, fixtures };

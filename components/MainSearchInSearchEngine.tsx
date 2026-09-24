@@ -1,3 +1,12 @@
+import {
+  buildCatalogUrl,
+  parseCatalogPath,
+  queryFromUrl,
+  effectiveCatalogQuery,
+  PROPERTY_TYPES,
+  typeForQuery,
+} from "@/lib/catalogRouting";
+import { findRegion } from "@/lib/seoLocations";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import { OutfitSans } from "@/fonts/fonts";
@@ -5,7 +14,6 @@ import { MultiSelect } from "./SearchEngine/MultiSearch";
 import LocationSearch from "./SearchEngine/LocationSearch";
 import PriceSelect from "./SearchEngine/PriceSearch";
 import locationsData from "@/data/locations.json";
-import { typeDictionarySingular } from "@/lib/titlesDictionary";
 import {
   getCanonicalLocationsByIds,
   getLocationCountry,
@@ -16,7 +24,7 @@ import {
   normalizeCountrySlug,
   PROPERTY_COUNTRY_OPTIONS,
 } from "@/lib/propertyCountries";
-import { SiteLocale, localePath } from "@/lib/i18n";
+import { SiteLocale } from "@/lib/i18n";
 
 type LocationItem = LocationEntry;
 
@@ -42,83 +50,6 @@ type Props = {
 
 const DEFAULT_PRICE: PriceRange = { min: 0, max: 5000000 };
 const NUMBER_OPTIONS = ["1", "2", "3", "4", "5"];
-
-const TYPE_LABEL_TO_DB_VALUES: Record<string, string[]> = {
-  Apartament: [
-    "apartment",
-    "Apartment",
-    "Quad House",
-    "Semi Detached",
-    "Apartment Penthouse",
-  ],
-  Penthouse: ["Penthouse", "Apartment Penthouse", "Penthouse Penthouse"],
-  Bungalow: ["bungalow", "Bungalow"],
-  Dom: [
-    "casas",
-    "Country House",
-    "Country House Penthouse",
-    "Town House",
-    "Town House Penthouse",
-    "townhouse",
-    "villa",
-    "Villa",
-    "Villa Penthouse",
-  ],
-  "Dom szeregowy": ["townhouse", "Town House"],
-  Posiadłość: ["Finca"],
-  Nieruchomość: ["shop", "null"],
-  Apartment: [
-    "apartment",
-    "Apartment",
-    "Quad House",
-    "Semi Detached",
-    "Apartment Penthouse",
-  ],
-  House: [
-    "casas",
-    "Country House",
-    "Country House Penthouse",
-    "Town House",
-    "Town House Penthouse",
-    "townhouse",
-    "villa",
-    "Villa",
-    "Villa Penthouse",
-  ],
-  Townhouse: ["townhouse", "Town House"],
-  Finca: ["Finca"],
-  Property: ["shop", "null"],
-};
-
-const TYPE_DB_TO_LABEL: Record<string, string> = Object.entries(
-  typeDictionarySingular,
-).reduce(
-  (acc, [dbType, label]) => {
-    acc[dbType.toLowerCase()] = label;
-    return acc;
-  },
-  {} as Record<string, string>,
-);
-const TYPE_DB_TO_LABEL_EN: Record<string, string> = {
-  apartment: "Apartment",
-  "apartment penthouse": "Penthouse",
-  bungalow: "Bungalow",
-  casas: "House",
-  "country house": "House",
-  "country house penthouse": "House",
-  finca: "Finca",
-  penthouse: "Penthouse",
-  "penthouse penthouse": "Penthouse",
-  "quad house": "Apartment",
-  "semi detached": "Apartment",
-  shop: "Property",
-  "town house": "Townhouse",
-  "town house penthouse": "House",
-  townhouse: "Townhouse",
-  villa: "House",
-  "villa penthouse": "House",
-  null: "Property",
-};
 
 const MARKET_OPTIONS = ["Pierwotny", "Wtórny"];
 const MARKET_OPTIONS_EN = ["Primary", "Resale"];
@@ -236,7 +167,11 @@ function CountrySelect({
                   : "border-[#e5dac7] bg-[#f7f3ec] font-medium text-[#5f6b7a] hover:bg-white hover:text-[#182334]"
               }`}
             >
-              {isEn ? (slug === "hiszpania" ? "Spain" : "Cyprus") : country.label}
+              {isEn
+                ? slug === "hiszpania"
+                  ? "Spain"
+                  : "Cyprus"
+                : country.label}
             </button>
           );
         })}
@@ -279,7 +214,6 @@ export default function Home({
 }: Props) {
   const router = useRouter();
   const isEn = locale === "en";
-  const paths = localePath[locale];
   const [mobileModalOpen, setMobileModalOpen] = useState(false);
   const [countryTransition, setCountryTransition] = useState({
     active: false,
@@ -301,11 +235,13 @@ export default function Home({
     price: DEFAULT_PRICE,
   });
 
-  const selectedCountry = getPropertyCountryOption(
-    Array.isArray(router.query.country)
-      ? router.query.country[0]
-      : router.query.country,
-  );
+  const activeRoute = parseCatalogPath(router.asPath);
+  const urlQuery = queryFromUrl(router.asPath);
+  const activeQuery = activeRoute
+    ? effectiveCatalogQuery(activeRoute, urlQuery)
+    : urlQuery;
+  const initialFilters = useRef<FiltersState | null>(null);
+  const selectedCountry = getPropertyCountryOption(activeRoute?.country);
   const displayedCountrySlug = countryTransition.active
     ? countryTransition.slug
     : selectedCountry.slug;
@@ -327,21 +263,26 @@ export default function Home({
 
   const toCsv = (arr: string[]) => arr.join(",");
 
-  const serializeQuery = (queryObj: Record<string, string>) =>
-    Object.entries(queryObj)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([k, v]) => `${k}=${v}`)
-      .join("&");
-
   const buildQueryFromFilters = (next: FiltersState) => {
-    const q: Record<string, string> = {};
-    if (router.query.sort) q.sort = String(router.query.sort);
-
-    if (router.query.region) {
-      q.region = Array.isArray(router.query.region)
-        ? router.query.region[0]
-        : String(router.query.region);
-    }
+    const q: Record<string, any> = { ...urlQuery };
+    for (const key of [
+      "page",
+      "region",
+      "location",
+      "type",
+      "market",
+      "beds",
+      "bedsMin",
+      "bedsMax",
+      "baths",
+      "bathsMin",
+      "bathsMax",
+      "priceMin",
+      "priceMax",
+      "minPrice",
+      "maxPrice",
+    ])
+      delete q[key];
 
     if (next.locations.length) {
       q.location = next.locations.map((l) => l.id).join(",");
@@ -349,7 +290,12 @@ export default function Home({
 
     if (next.type.length) {
       const dbTypes = next.type
-        .flatMap((label) => TYPE_LABEL_TO_DB_VALUES[label] ?? [])
+        .flatMap(
+          (label) =>
+            PROPERTY_TYPES.find((t) => t.label[locale] === label)?.dbValues ?? [
+              label,
+            ],
+        )
         .filter(Boolean);
       if (dbTypes.length) q.type = toCsv(dbTypes);
     }
@@ -378,45 +324,56 @@ export default function Home({
     if (next.price.max !== DEFAULT_PRICE.max)
       q.priceMax = String(next.price.max);
 
+    // Preserve exact imported values, ranges and aliases for controls the user
+    // has not edited. In particular, a raw legacy type must not expand to a group.
+    const fields = {
+      type: ["type"],
+      market: ["market"],
+      bedrooms: ["beds", "bedsMin", "bedsMax"],
+      bathrooms: ["baths", "bathsMin", "bathsMax"],
+      price: ["priceMin", "priceMax", "minPrice", "maxPrice"],
+    };
+    for (const [field, keys] of Object.entries(fields)) {
+      if (
+        initialFilters.current &&
+        JSON.stringify(next[field as keyof FiltersState]) ===
+          JSON.stringify(initialFilters.current[field as keyof FiltersState])
+      ) {
+        for (const key of keys) {
+          delete q[key];
+          if (urlQuery[key] !== undefined) q[key] = urlQuery[key];
+        }
+        if (field === "type" && activeRoute?.propertyType)
+          q.type = activeQuery.type;
+      }
+    }
+    if (
+      initialFilters.current &&
+      JSON.stringify(next.locations) ===
+        JSON.stringify(initialFilters.current.locations) &&
+      urlQuery.region
+    )
+      q.region = urlQuery.region;
     return q;
   };
 
   const pushFiltersToQuery = (next: FiltersState) => {
-    const country = normalizeCountrySlug(
-      Array.isArray(router.query.country)
-        ? router.query.country[0]
-        : router.query.country,
-    );
     const query = buildQueryFromFilters(next);
-    const nextSerialized = serializeQuery(query);
-    const currentComparableQuery: Record<string, string> = {};
-
-    Object.entries(router.query).forEach(([k, v]) => {
-      if (k === "country") return;
-      if (Array.isArray(v)) {
-        if (v.length) currentComparableQuery[k] = v.join(",");
-      } else if (v !== undefined && v !== null && String(v).length) {
-        currentComparableQuery[k] = String(v);
-      }
-    });
-
-    const currentSerialized = serializeQuery(currentComparableQuery);
-
-    if (currentSerialized === nextSerialized) {
+    const sameLocations = JSON.stringify(next.locations) === JSON.stringify(initialFilters.current?.locations);
+    const destination = buildCatalogUrl(
+      selectedCountry.slug,
+      query,
+      locale,
+      sameLocations && activeRoute ? { region: activeRoute.region, city: activeRoute.city } : {},
+    )!;
+    if (destination === router.asPath) {
       setLoader(false);
       return;
     }
-
-    router.push(
-      {
-        pathname: router.asPath.split("?")[0],
-        query,
-      },
-      undefined,
-      { shallow: false, scroll: false },
-    );
-
     setLoader(true);
+    void router
+      .push(destination, undefined, { shallow: false, scroll: false })
+      .catch(() => setLoader(false));
   };
 
   const handleCountryChange = (countrySlug: string) => {
@@ -439,14 +396,10 @@ export default function Home({
     });
 
     router
-      .push(
-        {
-          pathname: paths.properties(normalizedCountry),
-          query,
-        },
-        undefined,
-        { shallow: false, scroll: false },
-      )
+      .push(buildCatalogUrl(normalizedCountry, query, locale)!, undefined, {
+        shallow: false,
+        scroll: false,
+      })
       .catch(() => {
         setCountryTransition({ active: false, slug: "", label: "" });
         setLoader(false);
@@ -463,22 +416,23 @@ export default function Home({
   };
 
   useEffect(() => {
-    console.log("effec");
     if (!router.isReady) return;
 
-    const typeFromUrl = Array.from(
-      new Set(
-        parseCsv(router.query.type).map(
-          (db) =>
-            (isEn ? TYPE_DB_TO_LABEL_EN : TYPE_DB_TO_LABEL)[db.toLowerCase()] ??
-            db,
-        ),
-      ),
-    );
+    const selectedType = typeForQuery(activeQuery.type);
+    const typeFromUrl = selectedType
+      ? [selectedType.label[locale]]
+      : parseCsv(activeQuery.type).map((value) => {
+          const exact = PROPERTY_TYPES.find(
+            (t) =>
+              t.dbValues.length === 1 &&
+              t.dbValues[0].toLowerCase() === value.toLowerCase(),
+          );
+          return exact?.label[locale] || value;
+        });
 
-    const bedsFromList = parseCsv(router.query.beds);
-    const bedsMin = parseNum(router.query.bedsMin);
-    const bedsMax = parseNum(router.query.bedsMax);
+    const bedsFromList = parseCsv(activeQuery.beds);
+    const bedsMin = parseNum(activeQuery.bedsMin);
+    const bedsMax = parseNum(activeQuery.bedsMax);
     const bedrooms =
       bedsFromList.length > 0
         ? bedsFromList
@@ -486,9 +440,9 @@ export default function Home({
           ? [String(bedsMin)]
           : [];
 
-    const bathsFromList = parseCsv(router.query.baths);
-    const bathsMin = parseNum(router.query.bathsMin);
-    const bathsMax = parseNum(router.query.bathsMax);
+    const bathsFromList = parseCsv(activeQuery.baths);
+    const bathsMin = parseNum(activeQuery.bathsMin);
+    const bathsMax = parseNum(activeQuery.bathsMax);
     const bathrooms =
       bathsFromList.length > 0
         ? bathsFromList
@@ -496,48 +450,37 @@ export default function Home({
           ? [String(bathsMin)]
           : [];
 
-    const priceMin = parseNum(router.query.priceMin) ?? DEFAULT_PRICE.min;
-    const priceMax = parseNum(router.query.priceMax) ?? DEFAULT_PRICE.max;
-    const locationIds = parseCsv(router.query.location);
+    const priceMin = parseNum(activeQuery.priceMin) ?? DEFAULT_PRICE.min;
+    const priceMax = parseNum(activeQuery.priceMax) ?? DEFAULT_PRICE.max;
+    const locationIds = parseCsv(activeQuery.location);
+    const region = findRegion(activeRoute?.region);
+    if (region && !activeRoute?.city && !locationIds.length)
+      locationIds.push(region.locationId);
     const locations = getCanonicalLocationsByIds(
       locationIds,
       (locationsData as LocationEntry[]).filter(
         (location) => getLocationCountry(location) === selectedCountry.slug,
       ),
     );
-    const marketFromUrlRaw = Array.isArray(router.query.market)
-      ? router.query.market[0]
-      : String(router.query.market ?? "");
+    const marketFromUrlRaw = Array.isArray(activeQuery.market)
+      ? activeQuery.market[0]
+      : String(activeQuery.market ?? "");
     const marketLabel =
       (isEn ? MARKET_QUERY_TO_LABEL_EN : MARKET_QUERY_TO_LABEL)[
         marketFromUrlRaw
       ] ?? null;
 
-    setFilters((prev) => ({
-      ...prev,
+    const restored: FiltersState = {
       locations,
       type: typeFromUrl,
       market: marketLabel ? [marketLabel] : [],
       bedrooms,
       bathrooms,
       price: { min: priceMin, max: priceMax },
-    }));
-  }, [
-    router.isReady,
-    router.query.type,
-    router.query.beds,
-    router.query.bedsMin,
-    router.query.bedsMax,
-    router.query.baths,
-    router.query.bathsMin,
-    router.query.bathsMax,
-    router.query.priceMin,
-    router.query.priceMax,
-    router.query.location,
-    router.query.market,
-    router.query.country,
-    selectedCountry.slug,
-  ]);
+    };
+    initialFilters.current = restored;
+    setFilters(restored);
+  }, [router.isReady, router.asPath, locale]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -600,16 +543,14 @@ export default function Home({
     };
   }, [router.events, setLoader]);
 
-  const types = isEn
-    ? ["Apartment", "Penthouse", "Bungalow", "House", "Townhouse", "Finca"]
-    : [
-        "Apartament",
-        "Penthouse",
-        "Bungalow",
-        "Dom",
-        "Dom szeregowy",
-        "Posiadłość",
-      ];
+  const types = Array.from(
+    new Set([
+      ...PROPERTY_TYPES.filter((t) => t.slug !== "other").map(
+        (t) => t.label[locale],
+      ),
+      ...filters.type,
+    ]),
+  );
 
   return (
     <>

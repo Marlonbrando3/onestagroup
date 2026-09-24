@@ -1,3 +1,4 @@
+import { parseCatalogPath } from "@/lib/catalogRouting";
 import PropertyDetailImage from "@/components/PropertyDetailImage";
 import { publicAvailability } from "@/lib/publicListings";
 import ListingsPage, {
@@ -56,7 +57,7 @@ const PROPERTY_DETAIL_COLUMNS = [
 ].join(",");
 
 export default function PublicDetailPage(props: any) {
-  return props.regionSlug ? (
+  return props.catalogRoute ? (
     <ListingsPage {...props} />
   ) : (
     <Property
@@ -294,8 +295,7 @@ function Property({
 export async function getServerSideProps(context: any) {
   if (
     !context.query.id &&
-    context.params.country === "hiszpania" &&
-    findRegion(context.params.title)
+    parseCatalogPath(context.resolvedUrl)
   )
     return getListingsProps(context);
   noStore(context.res);
@@ -316,7 +316,7 @@ export async function getServerSideProps(context: any) {
   const destination = propertyPath(data, locale);
   if (!destination) return { notFound: true };
   const requestedPath =
-    catalogPath(String(context.params.country), locale) +
+    `${locale === "en" ? "/en/properties" : "/nieruchomosci"}/${context.params.country}` +
     "/" +
     context.params.title;
   if (requestedPath !== destination.split("?")[0])

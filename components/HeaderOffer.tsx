@@ -231,10 +231,7 @@ export default function HeaderOffer() {
                   >
                     <Link
                       onClick={handleClearData}
-                      href={{
-                        pathname: "/nieruchomosci/[country]",
-                        query: { country: "hiszpania" },
-                      }}
+                      href="/nieruchomosci/hiszpania"
                       className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
                       ref={MouseOnSpain}
                       data-name="MouseOnSpain"
@@ -246,10 +243,7 @@ export default function HeaderOffer() {
                     </Link>
                     <Link
                       onClick={handleClearData}
-                      href={{
-                        pathname: "/nieruchomosci/[country]",
-                        query: { country: "cypr" },
-                      }}
+                      href="/nieruchomosci/cypr"
                       className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
                     >
                       Nieruchomości Cypr

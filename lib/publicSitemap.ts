@@ -1,3 +1,4 @@
+import { seoCatalogRoutes, catalogRoutePath } from "./catalogRouting";
 import { supabaseServer } from "./supabaseClient";
 import { publicListings } from "./publicListings";
 import { catalogPath, propertyPath, SITE_URL } from "./publicSeo";
@@ -22,12 +23,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     loc: SITE_URL + path,
   }));
   for (const locale of ["pl", "en"] as const) {
-    for (const country of ["hiszpania", "cypr"])
-      entries.push({ loc: SITE_URL + catalogPath(country, locale) });
-    for (const region of SEO_REGIONS)
-      entries.push({
-        loc: SITE_URL + catalogPath("hiszpania", locale, region.slug),
-      });
+    for (const route of seoCatalogRoutes())
+      entries.push({ loc: SITE_URL + catalogRoutePath(route, locale) });
     for (const city of SEO_CITIES)
       entries.push({
         loc:

@@ -5,6 +5,9 @@ type Copy = { intro: string; advice: string; question: string; answer: string };
 export type SeoRegion = {
   slug: string;
   name: string;
+  country: string;
+  seoEnabled: boolean;
+  locationId: string;
   provinces: string[];
   towns: string[];
   copy: Record<SiteLocale, Copy>;
@@ -15,6 +18,9 @@ export type SeoRegion = {
 export const SEO_REGIONS: SeoRegion[] = [
   {
     slug: "costa-blanca",
+    country: "hiszpania",
+    seoEnabled: true,
+    locationId: "costa_blanca",
     name: "Costa Blanca",
     provinces: ["Alicante", "Alacant", "Costa Blanca"],
     towns: [
@@ -73,6 +79,9 @@ export const SEO_REGIONS: SeoRegion[] = [
   },
   {
     slug: "costa-del-sol",
+    country: "hiszpania",
+    seoEnabled: true,
+    locationId: "costa_del_sol",
     name: "Costa del Sol",
     provinces: ["Málaga", "Malaga", "Costa del Sol"],
     towns: [
@@ -125,6 +134,9 @@ export const SEO_REGIONS: SeoRegion[] = [
   },
   {
     slug: "costa-calida",
+    country: "hiszpania",
+    seoEnabled: true,
+    locationId: "costa_calida",
     name: "Costa Cálida",
     provinces: ["Murcia", "Costa Calida", "Costa Cálida"],
     towns: [
@@ -173,6 +185,9 @@ export const SEO_REGIONS: SeoRegion[] = [
   },
   {
     slug: "costa-de-almeria",
+    country: "hiszpania",
+    seoEnabled: true,
+    locationId: "costa_de_almeria",
     name: "Costa de Almería",
     provinces: ["Almería", "Almeria", "Costa de Almeria", "Costa de Almería"],
     towns: [

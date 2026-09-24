@@ -1,18 +1,27 @@
 export type PropertyCountryOption = {
   label: string;
+  englishLabel: string;
   slug: string;
   dbValues: string[];
+  seoSlug: string;
+  seoEnabled: boolean;
 };
 
 export const PROPERTY_COUNTRY_OPTIONS: PropertyCountryOption[] = [
   {
     label: "Cypr",
+    englishLabel: "Cyprus",
     slug: "cypr",
+    seoSlug: "cyprus",
+    seoEnabled: true,
     dbValues: ["Cypr", "CYPR", "cypr", "Cyprus", "CYPRUS", "cyprus"],
   },
   {
     label: "Hiszpania",
+    englishLabel: "Spain",
     slug: "hiszpania",
+    seoSlug: "spain",
+    seoEnabled: true,
     dbValues: [
       "Hiszpania",
       "HISZPANIA",
@@ -44,6 +53,7 @@ export function normalizeCountrySlug(value: string | null | undefined) {
     PROPERTY_COUNTRY_OPTIONS.find(
       (option) =>
         option.slug === raw ||
+        option.seoSlug === raw ||
         option.label
           .toLowerCase()
           .normalize("NFD")

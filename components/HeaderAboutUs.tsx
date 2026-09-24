@@ -231,10 +231,7 @@ export default function Header() {
                   >
                     <Link
                       onClick={handleClearData}
-                      href={{
-                        pathname: "/nieruchomosci/[country]",
-                        query: { country: "hiszpania" },
-                      }}
+                      href="/nieruchomosci/hiszpania"
                       className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
                       ref={MouseOnSpain}
                       data-name="MouseOnSpain"
@@ -265,10 +262,7 @@ export default function Header() {
                       Nieruchomości w Portugalii
                     </Link> */}
                     <Link
-                      href={{
-                        pathname: "/nieruchomosci/[country]",
-                        query: { country: "cypr" },
-                      }}
+                      href="/nieruchomosci/cypr"
                       className="p-2 text-black rounded-md w-full text-center group whitespace-nowrap"
                       data-name="MouseOnCypr"
                       // onMouseEnter={() => handleHover(MouseOnDominican)}

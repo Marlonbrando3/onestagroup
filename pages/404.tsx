@@ -18,8 +18,8 @@ export default function NotFound() {
         <nav className="flex flex-col gap-4 underline">
           <Link href="/nieruchomosci/hiszpania">Nieruchomości w Hiszpanii</Link>
           <Link href="/nieruchomosci/cypr">Nieruchomości na Cyprze</Link>
-          <Link href="/en/properties/hiszpania">Property in Spain</Link>
-          <Link href="/en/properties/cypr">Property in Cyprus</Link>
+          <Link href="/en/properties/spain">Property in Spain</Link>
+          <Link href="/en/properties/cyprus">Property in Cyprus</Link>
         </nav>
       </main>
     </>

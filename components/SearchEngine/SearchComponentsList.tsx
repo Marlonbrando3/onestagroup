@@ -31,7 +31,7 @@ export default function SearchInput({
   const router = useRouter();
   const isEn = locale === "en";
   const propertiesHref = isEn
-    ? "/en/properties/hiszpania"
+    ? "/en/properties/spain"
     : "/nieruchomosci/hiszpania";
 
   const { country } = router.query;

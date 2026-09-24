@@ -1,3 +1,4 @@
+import { queryFromUrl } from "@/lib/catalogRouting";
 import PropertyCard from "./PropertyCard";
 import { useEffect, useState } from "react";
 import { HomeRedHatDisplayFont as Red_Hat_DisplayFont } from "@/fonts/homeFonts";
@@ -46,14 +47,14 @@ export default function SearchResults(props: any) {
     setLoader(true);
 
     const query: Record<string, string | string[] | undefined> = {
-      ...router.query,
+      ...queryFromUrl(router.asPath),
       sort: newSort,
     };
     delete query.page;
 
     router.push(
       {
-        pathname: router.pathname,
+        pathname: router.asPath.split("?")[0],
         query,
       },
       undefined,

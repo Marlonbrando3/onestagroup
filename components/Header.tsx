@@ -1,3 +1,4 @@
+import { parseCatalogPath, catalogRoutePath } from "@/lib/catalogRouting";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -82,6 +83,9 @@ export default function Header({
     if (languagePaths?.[targetLocale]) return languagePaths[targetLocale]!;
     const [pathname, query = ""] = (router.asPath || "/").split("?");
     const suffix = query ? `?${query}` : "";
+    const catalogRoute = !router.query.id && parseCatalogPath(pathname);
+    if (catalogRoute)
+      return catalogRoutePath(catalogRoute, targetLocale) + suffix;
 
     if (targetLocale === "en") {
       if (pathname === "/" || pathname === "") return `/en${suffix}`;

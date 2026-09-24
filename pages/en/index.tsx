@@ -36,13 +36,13 @@ const markets = [
   {
     title: "Spain",
     text: "Costa Blanca, Costa del Sol and selected locations with strong rental and lifestyle potential.",
-    href: "/en/properties/hiszpania",
+    href: "/en/properties/spain",
     image: "/costablanca.webp",
   },
   {
     title: "Cyprus",
     text: "A Mediterranean market for clients who value a safe purchase process, good weather and straightforward ownership.",
-    href: "/en/properties/cypr",
+    href: "/en/properties/cyprus",
     image: "/cypr.png",
   },
 ];
@@ -187,7 +187,7 @@ export default function EnglishHomePage() {
               </p>
               <div className="mt-9 flex flex-wrap gap-4">
                 <Link
-                  href="/en/properties/hiszpania"
+                  href="/en/properties/spain"
                   className="inline-flex h-12 items-center gap-3 rounded-md bg-[#182334] px-6 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#b8954c]"
                 >
                   View offers <FaArrowRight />

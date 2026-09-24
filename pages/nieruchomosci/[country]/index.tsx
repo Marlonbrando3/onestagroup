@@ -1,20 +1,24 @@
+import {
+  buildCatalogUrl,
+  parseCatalogPath,
+  effectiveCatalogQuery,
+  catalogRoutePath,
+  type CatalogRoute,
+} from "@/lib/catalogRouting";
+import { landingContent, catalogBreadcrumbs } from "@/lib/catalogContent";
 import { publicListings } from "@/lib/publicListings";
 import SeoHead from "@/components/SeoHead";
 import SeoBreadcrumbs from "@/components/SeoBreadcrumbs";
 import SeoLocationContent from "@/components/SeoLocationContent";
 import { findRegion, findCity } from "@/lib/seoLocations";
 import {
-  catalogPath,
   canonicalCatalog,
-  countryMetadata,
   hasFilters,
   publicCountry,
   noStore,
-  preservedQuery,
   FILTER_KEYS,
 } from "@/lib/publicSeo";
 import { useState, useRef, useEffect } from "react";
-import Head from "next/head";
 import { GetServerSideProps } from "next";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
@@ -29,8 +33,7 @@ import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
 import SpainCatalogContent from "@/components/SpainCatalogContent";
 import { Red_Hat_DisplayFont } from "@/fonts/fonts";
-import { getPropertyCountryOption } from "@/lib/propertyCountries";
-import { SiteLocale, countryLabel } from "@/lib/i18n";
+import { SiteLocale } from "@/lib/i18n";
 import {
   expandLocationSelection,
   getLocationCountry,
@@ -88,11 +91,12 @@ interface PageProps {
   locale?: SiteLocale;
   regionSlug?: string;
   citySlug?: string;
+  catalogRoute: CatalogRoute;
 }
 
 export default function ListingsPage(props: PageProps) {
   const router = useRouter();
-  const { country } = router.query;
+  const country = props.catalogRoute.country;
   const locale = props.locale ?? "pl";
   const isEn = locale === "en";
 
@@ -229,39 +233,18 @@ export default function ListingsPage(props: PageProps) {
 
   const region = findRegion(props.regionSlug);
   const city = findCity(props.regionSlug, props.citySlug);
-  const baseMeta = countryMetadata(String(country), locale);
-  const h1 = city
-    ? isEn
-      ? `Property for sale in ${city.name}`
-      : `Nieruchomości w ${city.name} na sprzedaż`
-    : region
-      ? isEn
-        ? `Property for sale on the ${region.name}`
-        : `Nieruchomości na ${region.name} na sprzedaż`
-      : baseMeta.h1;
-  const description =
-    city?.intro[locale] || region?.copy[locale].intro || baseMeta.description;
-  const title = region
-    ? city
-      ? `${h1} | Onesta`
-      : isEn
-        ? `${h1} | Onesta`
-        : `Nieruchomości ${region.name} na sprzedaż | Onesta`
-    : baseMeta.title;
-  const path = catalogPath(String(country), locale, region?.slug, city?.slug);
-  const canonical = canonicalCatalog(path, props.query);
+  const content = landingContent(props.catalogRoute, locale);
+  const { title, h1, metaDescription: description } = content;
+  const path = catalogRoutePath(props.catalogRoute, locale);
+  const canonical = canonicalCatalog(content.canonical || path, props.query);
+  const filtered = hasFilters(props.query);
   const isSpainLanding =
-    country === "hiszpania" && !region && !city && locale === "pl";
-  const breadcrumbs = [
-    { name: isEn ? "Home" : "Strona główna", path: isEn ? "/en" : "/" },
-    { name: baseMeta.h1, path: catalogPath(String(country), locale) },
-  ];
-  if (region)
-    breadcrumbs.push({
-      name: region.name,
-      path: catalogPath(String(country), locale, region.slug),
-    });
-  if (city) breadcrumbs.push({ name: city.name, path });
+    country === "hiszpania" &&
+    !region &&
+    !city &&
+    !props.catalogRoute.propertyType &&
+    locale === "pl";
+  const breadcrumbs = catalogBreadcrumbs(props.catalogRoute, locale);
 
   return (
     <div
@@ -281,14 +264,14 @@ export default function ListingsPage(props: PageProps) {
         }
         description={description}
         canonical={canonical}
-        robots={hasFilters(props.query) ? "noindex, follow" : "index, follow"}
+        robots={filtered ? "noindex, follow" : "index, follow"}
         alternates={{
           pl: canonicalCatalog(
-            catalogPath(String(country), "pl", region?.slug, city?.slug),
+            catalogRoutePath(props.catalogRoute, "pl"),
             props.query,
           ),
           en: canonicalCatalog(
-            catalogPath(String(country), "en", region?.slug, city?.slug),
+            catalogRoutePath(props.catalogRoute, "en"),
             props.query,
           ),
         }}
@@ -318,18 +301,18 @@ export default function ListingsPage(props: PageProps) {
           <h1 className="max-w-4xl text-3xl font-semibold leading-tight md:text-4xl lg:text-[42px] lg:drop-shadow-sm">
             {h1}
           </h1>
-          {isSpainLanding ? (
+          {!filtered && content.intro ? (
+            <p className="mt-3 max-w-4xl leading-7">{content.intro}</p>
+          ) : isSpainLanding && !filtered ? (
             <p className="mt-3 w-full text-sm leading-5 text-[#4a5568] lg:text-white/90 lg:drop-shadow-sm">
               Szukasz nieruchomości w Hiszpanii? W Onesta znajdziesz{" "}
-              <strong>
-                apartamenty, mieszkania, domy i wille na sprzedaż
-              </strong>{" "}
+              <strong>apartamenty, mieszkania, domy i wille na sprzedaż</strong>{" "}
               w najpopularniejszych regionach hiszpańskiego wybrzeża, między
               innymi na Costa Blanca, Costa del Sol, Costa Cálida i Costa de
               Almería. Prezentujemy oferty z rynku pierwotnego i wtórnego oraz
               pomagamy przejść przez cały proces zakupu — od wyboru odpowiedniej
-              lokalizacji i nieruchomości, przez prezentacje i formalności, aż do
-              finalizacji transakcji i odbioru nieruchomości. Skorzystaj z
+              lokalizacji i nieruchomości, przez prezentacje i formalności, aż
+              do finalizacji transakcji i odbioru nieruchomości. Skorzystaj z
               filtrów poniżej, aby wybrać region, typ nieruchomości, liczbę
               sypialni i budżet.
             </p>
@@ -371,9 +354,15 @@ export default function ListingsPage(props: PageProps) {
         </div>
       )}
 
-      {isSpainLanding ? (
+      {!filtered && content.bottomContent ? (
+        <section className="mx-auto max-w-[1300px] px-5 py-8 whitespace-pre-line">
+          {content.bottomContent}
+        </section>
+      ) : !filtered && !props.catalogRoute.propertyType && isSpainLanding ? (
         <SpainCatalogContent onConsultation={handleConsultationPopUp} />
-      ) : country === "hiszpania" ? (
+      ) : !filtered &&
+        !props.catalogRoute.propertyType &&
+        country === "hiszpania" ? (
         <SeoLocationContent
           regionSlug={region?.slug}
           citySlug={city?.slug}
@@ -413,21 +402,42 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   context,
 ) => {
   noStore(context.res);
-  const {
-    country,
-    title: regionSlug,
-    city: citySlug,
-  } = context.params as { country: string; title?: string; city?: string };
-  const countryOption = publicCountry(country);
-  if (!countryOption || countryOption.slug !== country)
-    return { notFound: true };
+  const locale: SiteLocale = context.resolvedUrl.startsWith("/en/")
+    ? "en"
+    : "pl";
+  const requestPath = context.resolvedUrl.split("?")[0];
+  let route = parseCatalogPath(requestPath);
+  const inputQuery = { ...context.query };
+  for (const key of ["catalog", "title", "city"]) delete inputQuery[key];
+  if (!route && ["/properties", "/en/properties"].includes(requestPath)) {
+    const requestedCountry =
+      inputQuery.country === undefined ? "hiszpania" : inputQuery.country;
+    const option =
+      typeof requestedCountry === "string"
+        ? publicCountry(requestedCountry)
+        : undefined;
+    if (!option?.seoEnabled) return { notFound: true };
+    route = { country: option.slug };
+  }
+  if (!route) return { notFound: true };
+  const { country, region: regionSlug, city: citySlug } = route;
+  const countryOption = publicCountry(country)!;
+  delete inputQuery.country;
+  const destination = buildCatalogUrl(country, inputQuery, locale, route)!;
+  // Normalize the scope before accessing the database. Compare parsed query strings
+  // so encoding/order differences cannot cause a redirect loop.
+  const currentUrl = new URL(context.resolvedUrl, "https://onesta.com.pl");
+  const nextUrl = new URL(destination, currentUrl);
+  currentUrl.searchParams.sort();
+  nextUrl.searchParams.sort();
+  if (
+    currentUrl.pathname + currentUrl.search !==
+    nextUrl.pathname + nextUrl.search
+  )
+    return { redirect: { destination, permanent: true } };
+  const filterQuery = effectiveCatalogQuery(route, inputQuery);
   const regionScope = regionSlug ? findRegion(regionSlug) : undefined;
   const cityScope = citySlug ? findCity(regionSlug, citySlug) : undefined;
-  if (
-    (regionSlug && (!regionScope || country !== "hiszpania")) ||
-    (citySlug && !cityScope)
-  )
-    return { notFound: true };
   const rawPage = context.query.page;
   if (
     rawPage !== undefined &&
@@ -440,21 +450,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     page > Math.floor(Number.MAX_SAFE_INTEGER / 21)
   )
     return { notFound: true };
-  const locale: SiteLocale = context.resolvedUrl.startsWith("/en/")
-    ? "en"
-    : "pl";
-  if (rawPage === "1")
-    return {
-      redirect: {
-        destination: preservedQuery(
-          catalogPath(country, locale, regionSlug, citySlug),
-          context.query,
-          ["page"],
-        ),
-        permanent: true,
-      },
-    };
-  if (!validFilters(context.query)) return { notFound: true };
+  if (!validFilters(filterQuery)) return { notFound: true };
 
   const limit = 21;
   const from = (page - 1) * limit;
@@ -474,7 +470,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     priceMax,
     location,
     sort,
-  } = context.query;
+  } = filterQuery;
 
   const provincesParam = region
     ? Array.isArray(region)
@@ -535,6 +531,8 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   )
     .gte("price", priceFrom)
     .lte("price", priceTo);
+  if (filterQuery.pool !== undefined)
+    query = query.eq("pool", filterQuery.pool === "true");
   if (marketType !== null) query = query.eq("new_build", marketType === "true");
 
   if (regionScope)
@@ -608,7 +606,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   const totalCount = count ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
-  if (page > totalPages || (totalCount === 0 && hasFilters(context.query)))
+  if (page > totalPages || (totalCount === 0 && hasFilters(inputQuery)))
     return { notFound: true };
 
   const currentPage = Math.min(page, totalPages);
@@ -617,13 +615,15 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     props: {
       properties: (properties ?? []) as unknown as Property[],
       country: countryOption.label,
+      catalogRoute: route,
+      locale,
       ...(regionScope ? { regionSlug: regionScope.slug } : {}),
       ...(cityScope ? { citySlug: cityScope.slug } : {}),
       totalCount,
       totalPages,
       currentPage,
       perPage: limit,
-      query: context.query as Record<string, string | string[]>,
+      query: inputQuery as Record<string, string | string[]>,
     },
   };
 };
@@ -653,7 +653,8 @@ function validFilters(query: Record<string, any>) {
       !["recommended", "price_asc", "price_desc"].includes(value)
     )
       return false;
-    if (key === "market" && !["true", "false"].includes(value)) return false;
+    if (["market", "pool"].includes(key) && !["true", "false"].includes(value))
+      return false;
     if (key === "type" && !/^[a-zA-Z ,/-]+$/.test(value)) return false;
     if (key === "location" && !/^[a-zA-Z0-9_, -]+$/.test(value)) return false;
   }

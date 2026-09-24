@@ -1,3 +1,4 @@
+import { queryFromUrl } from "@/lib/catalogRouting";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { MdKeyboardArrowRight } from "react-icons/md";
@@ -23,10 +24,10 @@ export default function Pagination({ totalPages, currentPage }: Props) {
   if (safeTotal <= 1) return null;
 
   const buildHref = (page: number) => {
-    const query = { ...router.query };
+    const query = { ...queryFromUrl(router.asPath) };
     if (page === 1) delete query.page;
     else query.page = String(page);
-    return { pathname: router.pathname, query };
+    return { pathname: router.asPath.split("?")[0], query };
   };
 
   const getItems = (): (number | "...")[] => {

@@ -318,7 +318,7 @@ export default function SpainCatalogContent({
                 tereny zielone, garaże lub miejsca parkingowe, tarasy oraz
                 dodatkowa infrastruktura dostępna dla mieszkańców.
               </p>
-              <ContentLink href="/nieruchomosci/hiszpania?type=apartment">
+              <ContentLink href="/nieruchomosci/hiszpania/apartments">
                 Zobacz mieszkania i apartamenty w Hiszpanii
               </ContentLink>
             </article>

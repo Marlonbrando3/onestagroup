@@ -17,6 +17,9 @@ export const FILTER_KEYS = [
   "priceMax",
   "location",
   "sort",
+  "minPrice",
+  "maxPrice",
+  "pool",
 ];
 export function slugify(value: unknown) {
   return String(value || "")
@@ -32,6 +35,7 @@ export function publicCountry(value: unknown) {
   return PROPERTY_COUNTRY_OPTIONS.find(
     (c) =>
       c.slug === value ||
+      c.seoSlug === value ||
       c.dbValues.some((v) => v.toLowerCase() === String(value).toLowerCase()),
   );
 }
@@ -41,7 +45,11 @@ export function catalogPath(
   region?: string,
   city?: string,
 ) {
-  return `${locale === "en" ? "/en/properties" : "/nieruchomosci"}/${country}${region ? "/" + region : ""}${city ? "/" + city : ""}`;
+  const option = publicCountry(country);
+  // Existing city and detail URLs retain their identity.
+  if (city)
+    return `${locale === "en" ? "/en/properties" : "/nieruchomosci"}/${option?.slug || country}/${region}/${city}`;
+  return `${locale === "en" ? "/en/properties/" + (option?.seoSlug || country) : "/nieruchomosci/" + (option?.slug || country)}${region ? "/" + region : ""}`;
 }
 export function propertyTitle(property: any, locale: SiteLocale = "pl") {
   const type =
@@ -68,11 +76,11 @@ export function propertyTitle(property: any, locale: SiteLocale = "pl") {
 export function propertyPath(property: any, locale: SiteLocale = "pl") {
   const country = publicCountry(property.country);
   if (!country || !property.external_id) return null;
-  return `${catalogPath(country.slug, locale)}/${slugify(propertyTitle(property, locale))}?id=${encodeURIComponent(String(property.external_id))}`;
+  return `${locale === "en" ? "/en/properties" : "/nieruchomosci"}/${country.slug}/${slugify(propertyTitle(property, locale))}?id=${encodeURIComponent(String(property.external_id))}`;
 }
 export function canonicalCatalog(path: string, query: Record<string, any>) {
   const params = new URLSearchParams();
-  for (const key of [...FILTER_KEYS, "page"].sort()) {
+  for (const key of ["page"]) {
     const value = query[key];
     if (
       value === undefined ||

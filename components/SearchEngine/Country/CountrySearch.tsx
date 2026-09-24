@@ -1,3 +1,4 @@
+import { buildCatalogUrl } from "@/lib/catalogRouting";
 import React from "react";
 import { useRouter } from "next/router";
 
@@ -21,7 +22,7 @@ export default function CountrySearch({
     // searchBtn.current.style.pointerEvents = "none";
     const country = slugify(e.target.value);
 
-    router.push({ pathname: `/nieruchomosci/${country}` }).then(() => {
+    router.push(buildCatalogUrl(country, {}) || "/nieruchomosci").then(() => {
       window.location.reload();
     });
   };

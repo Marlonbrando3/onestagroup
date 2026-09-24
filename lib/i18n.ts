@@ -1,3 +1,7 @@
+import { PROPERTY_COUNTRY_OPTIONS } from "./propertyCountries";
+const seoCountry = (value: string) =>
+  PROPERTY_COUNTRY_OPTIONS.find((c) => c.slug === value || c.seoSlug === value)
+    ?.seoSlug || value;
 export type SiteLocale = "pl" | "en";
 
 export const localePath = {
@@ -5,8 +9,10 @@ export const localePath = {
     home: "/",
     about: "/aboutus",
     propertiesBase: "/nieruchomosci",
-    properties: (country = "hiszpania") => `/nieruchomosci/${country}`,
-    property: (country: string, slug: string) => `/nieruchomosci/${country}/${slug}`,
+    properties: (country = "hiszpania") =>
+      `/nieruchomosci/${PROPERTY_COUNTRY_OPTIONS.find((c) => c.slug === country || c.seoSlug === country)?.slug || country}`,
+    property: (country: string, slug: string) =>
+      `/nieruchomosci/${country}/${slug}`,
     investorTrip: "/pobytinwestorski",
     privacy: "/polityka-prywatnosci",
   },
@@ -14,8 +20,10 @@ export const localePath = {
     home: "/en",
     about: "/en/about-us",
     propertiesBase: "/en/properties",
-    properties: (country = "hiszpania") => `/en/properties/${country}`,
-    property: (country: string, slug: string) => `/en/properties/${country}/${slug}`,
+    properties: (country = "hiszpania") =>
+      `/en/properties/${seoCountry(country)}`,
+    property: (country: string, slug: string) =>
+      `/en/properties/${country}/${slug}`,
     investorTrip: "/en/investor-trip",
     privacy: "/polityka-prywatnosci",
   },
