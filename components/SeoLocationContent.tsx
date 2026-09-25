@@ -7,6 +7,8 @@ import {
 } from "@/lib/seoLocations";
 import { catalogPath } from "@/lib/publicSeo";
 import type { SiteLocale } from "@/lib/i18n";
+import TorreviejaCatalogContent from "@/components/TorreviejaCatalogContent";
+import AlicanteCatalogContent from "@/components/AlicanteCatalogContent";
 
 type RegionDetails = {
   locations: string[];
@@ -293,6 +295,14 @@ export default function SeoLocationContent({
   const region = findRegion(regionSlug),
     city = findCity(regionSlug, citySlug),
     en = locale === "en";
+
+  if (city?.slug === "torrevieja" && !en) {
+    return <TorreviejaCatalogContent onConsultation={onConsultation} />;
+  }
+
+  if (city?.slug === "alicante" && !en) {
+    return <AlicanteCatalogContent onConsultation={onConsultation} />;
+  }
 
   if (region && !city && !en) {
     return (

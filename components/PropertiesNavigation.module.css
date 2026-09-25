@@ -33,8 +33,16 @@
 .regionHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid #e8ddca; }
 .regionHeading > p { font-size: 20px; line-height: 1.5; font-weight: 600; letter-spacing: -.03em; }
 .regionHeading > a { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; color: #9b7a36; font-size: 10px; font-weight: 600; }
-.townLinks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; max-height: 350px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #d7c8ad transparent; }
-.townLinks, .typeLinks { padding: 8px 5px 5px; margin-inline: -5px; }
+.townLinks { max-height: 350px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #d7c8ad transparent; }
+.townGroup { padding-bottom: 8px; }
+.townLetter { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 10px; margin: 0; padding-block: 8px; background: #fbf8f2; color: #9b7a36; font-size: 11px; line-height: 1.5; font-weight: 800; letter-spacing: .08em; }
+.townLetter::after { content: ""; flex: 1; height: 1px; background: #e8ddca; }
+.townLinks .townGroupLinks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; }
+.townGroupLinks a { scroll-margin-top: 35px; }
+.townLinks, .typeLinks { margin-inline: -5px; }
+/* Keep the sticky letters flush with the scrollport; top padding exposes scrolled links above them. */
+.townLinks { padding: 0 5px 5px; }
+.typeLinks { padding: 8px 5px 5px; }
 .townLinks a, .typeLinks a { display: flex; align-items: center; justify-content: space-between; gap: 7px; min-height: 35px; padding-block: 8px; font-size: 11px; line-height: 1.6; font-weight: 500; }
 .townLinks a > svg, .typeLinks a > svg { flex-shrink: 0; opacity: 0; }
 .townLinks a:hover, .typeLinks a:hover, .townLinks a:focus-visible, .typeLinks a:focus-visible, .allCountry:hover { color: #9b7a36; }
@@ -54,7 +62,7 @@
 .mobile a { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 10px 4px; font-size: 12px; line-height: 1.6; }
 .mobile a > svg { flex-shrink: 0; }
 .mobile a:hover, .mobileAll { color: #9b7a36; }
-.mobileTowns { max-height: 300px; overflow-y: auto; overscroll-behavior: contain; padding: 4px 8px; scrollbar-width: thin; }
+.mobileTowns { max-height: 300px; overflow-y: auto; overscroll-behavior: contain; padding: 0 8px 4px; scrollbar-width: thin; }
 .mobileTowns a { border-bottom: 1px solid #e8ddca80; }
 .mobileTypes { margin-top: 10px; padding-top: 8px; border-top: 1px solid #e8ddca; }
 .mobileTypes > div { padding: 8px 4px; }

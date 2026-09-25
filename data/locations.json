@@ -1,5 +1,12 @@
 [
   {
+    "id": "oliva",
+    "name": "Oliva",
+    "type": "town",
+    "parentId": null,
+    "country": "hiszpania"
+  },
+  {
     "id": "costa_blanca",
     "name": "Costa Blanca",
     "type": "coast",

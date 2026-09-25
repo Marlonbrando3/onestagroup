@@ -3,11 +3,36 @@ import { useEffect, useId, useRef, useState } from "react";
 import { FiArrowUpRight, FiChevronDown, FiChevronRight, FiX } from "react-icons/fi";
 import { catalogRoutePath } from "@/lib/catalogRouting";
 import type { SiteLocale } from "@/lib/i18n";
+import { normalizeLocationName, type LocationEntry } from "@/lib/locations";
 import { navigationCountries, navigationLocationHref, navigationPropertyTypes, navigationRegionLabel } from "@/lib/propertyNavigation";
 import styles from "./PropertiesNavigation.module.css";
 
 const countryName = (country: typeof navigationCountries[number], locale: SiteLocale) => locale === "en" ? country.englishLabel : country.label;
 const Arrow = () => <FiArrowUpRight aria-hidden="true" />;
+
+function AlphabeticalTownLinks({ towns, country, locale, onNavigate }: {
+  towns: LocationEntry[];
+  country: string;
+  locale: SiteLocale;
+  onNavigate: () => void;
+}) {
+  const groups = new Map<string, LocationEntry[]>();
+  for (const town of towns) {
+    const letter = normalizeLocationName(town.name).charAt(0).toLocaleUpperCase(locale);
+    const group = groups.get(letter) || [];
+    group.push(town);
+    groups.set(letter, group);
+  }
+
+  return <>{Array.from(groups, ([letter, group]) => (
+    <li key={letter} className={styles.townGroup}>
+      <h3 className={styles.townLetter}>{letter}</h3>
+      <ul className={styles.townGroupLinks}>
+        {group.map((town) => <li key={town.id}><Link prefetch={false} href={navigationLocationHref(country, town, locale)} onClick={onNavigate}>{town.name}<Arrow /></Link></li>)}
+      </ul>
+    </li>
+  ))}</>;
+}
 
 function PropertyTypes({ locale, onNavigate }: { locale: SiteLocale; onNavigate: () => void }) {
   // This selection deliberately stays independent of the location columns.
@@ -113,7 +138,7 @@ export function PropertiesNavigation({ locale }: { locale: SiteLocale }) {
               <div id={`${id}-towns`}>
                 <div className={styles.regionHeading}><p>{navigationRegionLabel(region.name, locale)}</p><Link prefetch={false} href={navigationLocationHref(countrySlug, region, locale)} onClick={close}>{isEn ? "View all" : "Zobacz wszystkie"}<Arrow /></Link></div>
                 <ul key={region.id} className={styles.townLinks}>
-                  {region.towns.map((town) => <li key={town.id}><Link prefetch={false} href={navigationLocationHref(countrySlug, town, locale)} onClick={close}>{town.name}<Arrow /></Link></li>)}
+                  <AlphabeticalTownLinks towns={region.towns} country={countrySlug} locale={locale} onNavigate={close} />
                 </ul>
               </div>
             </div>
@@ -143,7 +168,7 @@ export function MobilePropertiesNavigation({ locale, onNavigate }: { locale: Sit
                 <summary>{navigationRegionLabel(region.name, locale)}<FiChevronDown aria-hidden="true" /></summary>
                 <ul className={styles.mobileTowns}>
                   <li><Link prefetch={false} className={styles.mobileAll} href={navigationLocationHref(country.slug, region, locale)} onClick={onNavigate}>{isEn ? "All in this region" : "Wszystkie w regionie"}<Arrow /></Link></li>
-                  {region.towns.map((town) => <li key={town.id}><Link prefetch={false} href={navigationLocationHref(country.slug, town, locale)} onClick={onNavigate}>{town.name}<Arrow /></Link></li>)}
+                  <AlphabeticalTownLinks towns={region.towns} country={country.slug} locale={locale} onNavigate={onNavigate} />
                 </ul>
               </details>
             ))}

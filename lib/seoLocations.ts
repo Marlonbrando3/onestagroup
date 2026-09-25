@@ -233,6 +233,16 @@ export type SeoCity = {
 };
 export const SEO_CITIES: SeoCity[] = [
   {
+    slug: "alicante",
+    name: "Alicante",
+    region: "costa-blanca",
+    aliases: ["Alicante"],
+    intro: {
+      pl: "Przeglądaj mieszkania, apartamenty i domy na sprzedaż w mieście Alicante. Szukasz w całej prowincji? Pod ofertami porównasz główne miejscowości i przejdziesz do ich nieruchomości.",
+      en: "Browse apartments and houses for sale in Alicante city. For a wider search across Alicante province, explore other Costa Blanca locations using the links below the listings.",
+    },
+  },
+  {
     slug: "torrevieja",
     name: "Torrevieja",
     region: "costa-blanca",

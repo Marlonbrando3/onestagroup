@@ -16,6 +16,23 @@ function context(url) {
     res: { setHeader() {} },
   };
 }
+test("Alicante city landing excludes other towns in Alicante province in both languages", async () => {
+  const { load: loadCity } = harness([
+    ...fixtures,
+    { ...fixtures[0], id: 301, external_id: "ALICANTE-CITY", town: "Alicante" },
+    { ...fixtures[0], id: 302, external_id: "WRONG-PROVINCE", town: "Alicante", province: "Murcia" },
+  ]);
+  const cityLoader = loadCity("pages/properties/[[...catalog]].tsx").getServerSideProps;
+  for (const path of [
+    "/nieruchomosci/hiszpania/costa-blanca/alicante",
+    "/en/properties/hiszpania/costa-blanca/alicante",
+  ]) {
+    const result = await cityLoader(context(path));
+    assert.equal(result.props.totalCount, 1);
+    assert.equal(result.props.properties[0].external_id, "ALICANTE-CITY");
+    assert.equal(result.props.citySlug, "alicante");
+  }
+});
 test("A–D: all four SEO scopes use the shared datasource and exact Apartment filter", async () => {
   const matrix = [
     ["/nieruchomosci/hiszpania", { country: "hiszpania" }, 49],
