@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/okupads",
+        destination: "/blog/okupados",
+        permanent: true,
+      },
+      {
         source: "/blog/nieruchomosci-costa-blanca-old",
         destination: "/blog/nieruchomosci-costa-blanca",
         permanent: true,
