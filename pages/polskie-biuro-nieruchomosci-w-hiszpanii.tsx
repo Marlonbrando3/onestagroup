@@ -239,7 +239,7 @@ export default function PolishRealEstateAgency() {
             <figure className={hero.team}>
               <div className={hero.teamPhoto}>
                 <Image
-                  src={agencyPage.image}
+                  src="/images/agency/zespol-onesta.webp"
                   alt="Marek Marszałek i Karolina Bakowicz — zespół Onesta Group"
                   fill
                   priority
