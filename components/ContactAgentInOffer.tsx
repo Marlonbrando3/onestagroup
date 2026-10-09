@@ -26,7 +26,7 @@ const agents: Agent[] = [
     imagePosition: "center 30%",
     phone: "+48 505 055 846",
     phoneHref: "+48505055846",
-    email: "karolina@fenomen.nieruchomosci.pl",
+    email: "biuro@onesta.com.pl",
   },
 ];
 

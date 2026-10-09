@@ -44,7 +44,7 @@ const markets = [
   {
     title: "Dominikana",
     text: "Kierunek dla klientów szukających tropikalnego stylu życia, mocnego potencjału najmu wakacyjnego i nieruchomości blisko oceanu.",
-    href: "/aboutus",
+    href: "#contact",
     image: "/dominican.png",
   },
   {
@@ -96,8 +96,8 @@ const stats = [
       "ofert z rynku pierwotnego dzięki współpracy ze wszystkimi deweloperami",
   },
   {
-    value: "1",
-    label: "skutecznych i bezpiecznych procesów od selekcji do odbioru kluczy",
+    value: "0%",
+    label: "prowizji dla kupującego — wynagrodzenie pokrywa sprzedający lub deweloper",
   },
 ];
 
