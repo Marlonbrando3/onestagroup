@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, type CSSProperties } from "react";
-import { FiArrowRight, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPhone, FiPlus, FiSearch, FiShield } from "react-icons/fi";
+import { FiArrowRight, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPlus, FiSearch, FiShield } from "react-icons/fi";
 import ContactFormMain from "@/components/ContactFormMain";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -236,22 +236,18 @@ export default function PolishRealEstateAgency() {
                 <li><FiCheck aria-hidden="true" />Wszystko po polsku</li>
               </ul>
             </div>
-            <aside className={hero.advisors} aria-label="Twoi doradcy">
-              <div className={hero.advisorsPhoto}>
+            <figure className={hero.team}>
+              <div className={hero.teamPhoto}>
                 <Image
                   src={agencyPage.image}
                   alt="Marek Marszałek i Karolina Bakowicz — zespół Onesta Group"
                   fill
-                  sizes="300px"
+                  priority
+                  sizes="(min-width: 1280px) 400px, 320px"
                   className={styles.cover}
                 />
               </div>
-              <p className={hero.advisorsName}>Marek i Karolina</p>
-              <p className={hero.advisorsRole}>Twoi doradcy — po polsku, w Hiszpanii i w Polsce</p>
-              <a href="tel:+48576652525" className={hero.advisorsPhone}>
-                <FiPhone aria-hidden="true" /> +48 576 65 25 25
-              </a>
-            </aside>
+            </figure>
           </div>
           <div className={styles.container}>
             <AgencyPropertySearch />

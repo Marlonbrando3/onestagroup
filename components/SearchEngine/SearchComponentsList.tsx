@@ -46,7 +46,7 @@ export default function SearchInput({
     <div
       // ref={searchEngine}
       className={`${Red_Hat_DisplayFont.className}
-  w-full bg-white z-20
+  w-full ${hideFilters ? "bg-transparent" : "bg-white"} z-20
   relative md:static
   `}
     >

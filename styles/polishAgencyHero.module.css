@@ -27,7 +27,7 @@
 
 .inner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
+  grid-template-columns: minmax(0, 1fr) clamp(300px, 28vw, 400px);
   align-items: end;
   gap: 64px;
   margin-bottom: 28px;
@@ -97,20 +97,24 @@
 .facts li { display: inline-flex; align-items: center; gap: 8px; }
 .facts svg { width: 16px; height: 16px; color: var(--hero-gold); stroke-width: 2.4; }
 
-.advisors {
-  padding: 14px 14px 20px;
-  border: 1px solid #ffffff2e;
-  border-radius: 24px;
-  background: #1d3f6973;
-  box-shadow: 0 24px 50px #0000004d;
-  backdrop-filter: blur(14px);
+/* Zdjęcie zespołu: liść (dwa przeciwległe narożniki mocno zaokrąglone) + złota rama przesunięta za zdjęciem. */
+.team { position: relative; margin: 0 18px 18px 0; align-self: center; }
+.team::before {
+  content: "";
+  position: absolute;
+  inset: 18px -18px -18px 18px;
+  border: 2px solid var(--hero-gold);
+  border-radius: 120px 18px 120px 18px;
 }
-.advisorsPhoto { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 16px; }
-.hero .advisorsName { margin: 16px 6px 0; color: #fff; font-size: 17px; font-weight: 600; line-height: 1.3; }
-.hero .advisorsRole { margin: 4px 6px 0; color: #c9d3e0; font-size: 12px; line-height: 1.6; }
-.advisorsPhone { display: inline-flex; align-items: center; gap: 8px; margin: 12px 6px 0; color: var(--hero-gold); font-size: 14px; font-weight: 600; }
-.advisorsPhone:hover { color: #fff; }
-.advisorsPhone svg { width: 15px; height: 15px; }
+.teamPhoto {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 120px 18px 120px 18px;
+  outline: 6px solid #ffffff2e;
+  box-shadow: 0 28px 60px #0a162a66;
+}
+.teamPhoto img { object-position: center 30%; }
 
 /* Wyszukiwarka */
 .searchWrap { color: #182334; scroll-margin-top: 104px; }
@@ -225,11 +229,11 @@
   .claim { margin-top: 16px; }
   .inner { margin-bottom: 22px; }
   .hero .title { font-size: clamp(40px, 3.9vw, 56px); }
-  .advisorsPhoto { aspect-ratio: 16 / 10; }
 }
 
 @media (max-width: 1100px) {
-  .inner { grid-template-columns: minmax(0, 1fr) 230px; gap: 40px; }
+  .inner { grid-template-columns: minmax(0, 1fr) 260px; gap: 40px; }
+  .team::before, .teamPhoto { border-radius: 90px 16px 90px 16px; }
   .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .fields > .field:nth-child(odd) { border-left: 0; }
   .fields > .field:nth-child(n+3) { border-top: 1px solid #ece7de; }
@@ -239,7 +243,7 @@
 
 @media (max-width: 899px) {
   .inner { grid-template-columns: 1fr; }
-  .advisors { display: none; }
+  .team { display: none; }
 }
 
 @media (max-width: 599px) {
