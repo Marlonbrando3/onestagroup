@@ -37,10 +37,10 @@
 
 /* Middle: coasts with towns and live counts */
 .locations { padding: 32px; }
-.coasts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 32px; }
-.coastHeading { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 6px; color: #9b7a36; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.coasts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 32px; }
+.coastHeading { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 2px; color: #9b7a36; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
 .coastHeading:hover { color: #182334; }
-.towns a { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 7px 0; font-size: 15px; line-height: 1.35; color: #182334; }
+.towns a { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 3px 0; font-size: 15px; line-height: 1.35; color: #182334; }
 .towns a:hover { color: #9b7a36; }
 .count { flex-shrink: 0; font-size: 13px; font-variant-numeric: tabular-nums; color: #8a94a3; }
 
