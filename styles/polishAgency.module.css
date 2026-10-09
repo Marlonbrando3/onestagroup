@@ -65,8 +65,8 @@
 .breadcrumbs { padding-top: 20px; font-size: 12px; color: #687182; }
 .breadcrumbs nav { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .breadcrumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
-.about { display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 7%; padding-block: 42px 70px; }
-.aboutImage { position: relative; min-height: 510px; align-self: stretch; }
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center; gap: 6%; padding-block: 42px 64px; }
+.aboutImage { position: relative; height: 420px; }
 .aboutImage img { object-position: 25% center; }
 .aboutCopy h2 { margin-bottom: 28px; }
 .aboutCopy > p:not(.eyebrow) { color: #4b5668; }
@@ -268,8 +268,8 @@
 @media (max-width: 1100px) {
   .trustStrip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 32px; }
   .page .trustStrip h3 { font-size: 18px; }
-  .about { gap: 5%; }
-  .aboutImage { min-height: 530px; }
+  .about { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 5%; }
+  .aboutImage { height: 400px; }
   .benefitGrid { gap: 20px; }
   .benefit { padding: 24px; }
   .processIntro { gap: 36px; }
@@ -292,7 +292,7 @@
   .contactForm [data-contact-heading="intro"] { max-width: 600px; font-size: 38px; }
   .contactForm [data-contact-details] { max-width: 600px; }
   .about { padding-block: 32px 50px; }
-  .aboutImage { min-height: 530px; }
+  .aboutImage { height: 380px; }
   .aboutCopy .lead { font-size: 17px; }
   .aboutCopy p { font-size: 14px; }
   .section { padding-block: 60px; }
@@ -353,7 +353,7 @@
   .breadcrumbs { font-size: 10px; }
   .breadcrumbs nav { gap: 8px; }
   .about { grid-template-columns: 1fr; gap: 30px; }
-  .aboutImage { min-height: 300px; }
+  .aboutImage { height: 260px; }
   .aboutCopy p { font-size: 15px; }
   .aboutCopy .lead { font-size: 17px; }
   .aboutCopy h2 { margin-bottom: 22px; }
