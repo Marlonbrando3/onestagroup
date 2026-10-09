@@ -213,7 +213,7 @@ export default function PropertyCard({
             {propertyType} · ref. {property?.external_id}
           </p>
           <h3
-            className={`${HomePlayfairSans.className} mt-2 line-clamp-2 min-h-[58px] text-[25px] font-semibold leading-[1.12] tracking-[-0.02em] text-[#182334]`}
+            className={`${HomePlayfairSans.className} mt-2 min-h-[72px] text-[19px] font-semibold leading-[1.25] tracking-[-0.01em] text-[#182334] [text-wrap:pretty]`}
           >
             {listingTitle}
           </h3>
@@ -316,7 +316,7 @@ export default function PropertyCard({
               </div>
             </div>
 
-            <h3 className="mt-2 line-clamp-2 min-h-[42px] text-[17px] font-bold leading-[1.22] text-[#182334]">
+            <h3 className="mt-2 min-h-[42px] text-[15px] font-bold leading-[1.3] text-[#182334]">
               {listingTitle}
             </h3>
 
