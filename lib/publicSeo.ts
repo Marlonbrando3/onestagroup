@@ -1,6 +1,7 @@
 import { propertyTypeLabel, type SiteLocale } from "./i18n";
 import { PROPERTY_COUNTRY_OPTIONS } from "./propertyCountries";
 import { validTitleOrEmpty } from "./titlesDictionary";
+import { descriptiveTitle, developmentTitle } from "./offerTitle";
 
 export const SITE_URL = "https://onesta.com.pl";
 export const FILTER_KEYS = [
@@ -51,7 +52,8 @@ export function catalogPath(
     return `${locale === "en" ? "/en/properties" : "/nieruchomosci"}/${option?.slug || country}/${region}/${city}`;
   return `${locale === "en" ? "/en/properties/" + (option?.seoSlug || country) : "/nieruchomosci/" + (option?.slug || country)}${region ? "/" + region : ""}`;
 }
-export function propertyTitle(property: any, locale: SiteLocale = "pl") {
+/** Title used ONLY for URL slugs — kept on the original formula so offer URLs never change. */
+export function propertySlugTitle(property: any, locale: SiteLocale = "pl") {
   const type =
     propertyTypeLabel[locale][property.type] ||
     (locale === "en" ? "Property" : "Nieruchomość");
@@ -73,10 +75,19 @@ export function propertyTitle(property: any, locale: SiteLocale = "pl") {
     `${type}${property.town ? (locale === "en" ? " in " : " w ") : " "}${place}`
   );
 }
+/** Visible offer title (H1, cards, <title>, JSON-LD). Never used for URLs. */
+export function propertyTitle(property: any, locale: SiteLocale = "pl") {
+  if (property?.dev_title) return developmentTitle(property, property.dev_title, locale);
+  const feedTitle =
+    locale === "pl"
+      ? validTitleOrEmpty(property.title) || validTitleOrEmpty(property.headerAdvertisement)
+      : "";
+  return feedTitle || descriptiveTitle(property, locale);
+}
 export function propertyPath(property: any, locale: SiteLocale = "pl") {
   const country = publicCountry(property.country);
   if (!country || !property.external_id) return null;
-  return `${locale === "en" ? "/en/properties" : "/nieruchomosci"}/${country.slug}/${slugify(propertyTitle(property, locale))}?id=${encodeURIComponent(String(property.external_id))}`;
+  return `${locale === "en" ? "/en/properties" : "/nieruchomosci"}/${country.slug}/${slugify(propertySlugTitle(property, locale))}?id=${encodeURIComponent(String(property.external_id))}`;
 }
 export function canonicalCatalog(path: string, query: Record<string, any>) {
   const params = new URLSearchParams();

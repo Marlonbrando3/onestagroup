@@ -384,3 +384,17 @@ test("offer JSON-LD uses only real values; new builds publish a minimum price", 
   assert.equal(noPrice.offers, undefined);
   assert.equal(noPrice.image, undefined);
 });
+test("offer titles: development title > feed title > descriptive; URL slug never changes", () => {
+  const { load } = harness([]);
+  const seo = load("lib/publicSeo");
+  const base = { ...fixtures[0], title: null, type: "Villa", beds: 3, town: "Ojen", new_build: true, external_id: "MTI-1" };
+  const pathBefore = seo.propertyPath(base);
+  const withDev = { ...base, dev_title: { tail_pl: "w pierwszej linii pola golfowego El Soto", tail_en: "on the frontline of El Soto golf course", exceptional: true } };
+  assert.equal(seo.propertyTitle(withDev), "Wyjątkowa willa z 3 sypialniami w pierwszej linii pola golfowego El Soto");
+  assert.equal(seo.propertyTitle(withDev, "en"), "Exceptional 3-bedroom villa on the frontline of El Soto golf course");
+  assert.equal(seo.propertyPath(withDev), pathBefore, "slug does not depend on the visible title");
+  assert.match(pathBefore, /\/willa-w-ojen\?id=|\/dom-w-ojen\?id=/);
+  const auto = { ...base, distance_to_sea_m: 800, features: ["Private Pool"] };
+  assert.equal(seo.propertyTitle(auto), "Nowa willa z 3 sypialniami i prywatnym basenem w Ojén – 800 m od plaży");
+  assert.equal(seo.propertyTitle({ ...fixtures[0] }), "Apartament w Torrevieja", "valid feed titles are kept");
+});

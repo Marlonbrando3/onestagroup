@@ -32,6 +32,7 @@ import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
 import SpainCatalogContent from "@/components/SpainCatalogContent";
+import { attachDevelopmentTitles } from "@/lib/developmentTitles";
 import { Red_Hat_DisplayFont } from "@/fonts/fonts";
 import { SiteLocale } from "@/lib/i18n";
 import {
@@ -597,7 +598,8 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
     .order("id", { ascending: true })
     .range(from, to);
 
-  const { data: properties, count, error } = await query;
+  const { data: rawProperties, count, error } = await query;
+  const properties = rawProperties ? await attachDevelopmentTitles(rawProperties as any[]) : rawProperties;
 
   // PostgREST reports a requested range beyond the last row as HTTP 416.
   if (error?.code === "PGRST103") return { notFound: true };

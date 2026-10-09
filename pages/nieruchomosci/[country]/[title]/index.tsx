@@ -7,6 +7,7 @@ import ListingsPage, {
 import { findRegion, regionForProperty, SEO_CITIES } from "@/lib/seoLocations";
 import SeoHead from "@/components/SeoHead";
 import { propertyImages, propertyJsonLd } from "@/lib/propertySchema";
+import { attachDevelopmentTitles } from "@/lib/developmentTitles";
 import SeoBreadcrumbs from "@/components/SeoBreadcrumbs";
 import {
   catalogPath,
@@ -53,6 +54,7 @@ const PROPERTY_DETAIL_COLUMNS = [
   "features",
   "latitude",
   "longitude",
+  "distance_to_sea_m",
   "description_pl:descriptions->>pl",
   "description_en:descriptions->>en",
 ].join(",");
@@ -354,9 +356,10 @@ export async function getServerSideProps(context: any) {
     },
   };
 
+  const [titledData] = await attachDevelopmentTitles([normalizedData as Record<string, any>]);
   return {
     props: {
-      propertyFromSupabase: normalizedData ?? null,
+      propertyFromSupabase: titledData ?? null,
     },
   };
 }
