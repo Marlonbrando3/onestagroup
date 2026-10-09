@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, type CSSProperties } from "react";
-import { FiArrowRight, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPlus, FiSearch, FiShield } from "react-icons/fi";
+import { FiArrowRight, FiCalendar, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPlus, FiSearch, FiShield, FiTool } from "react-icons/fi";
 import ContactFormMain from "@/components/ContactFormMain";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -496,14 +496,14 @@ export default function PolishRealEstateAgency() {
               <Link href="/zarzadzanie-nieruchomosciami-w-hiszpanii" className={styles.textLink}>Poznaj obsługę nieruchomości <Arrow /></Link>
             </div>
             <div className={styles.supportCopy}>
-              <h3>Przygotowanie do zamieszkania</h3>
+              <h3><span className={styles.supportIcon}><FiTool aria-hidden="true" /></span>Przygotowanie do zamieszkania</h3>
               <p>
                 Pomagamy ustalić, co trzeba zrobić przed pierwszym pobytem:
                 odbiór, zgłoszenie usterek, media, umeblowanie czy kontakt
                 z wykonawcami. Dobieramy zakres do stanu nieruchomości i Twojego
                 planu. Usługi partnerów oraz ich koszty uzgadniamy osobno.
               </p>
-              <h3>Organizacja opieki i wynajmu</h3>
+              <h3><span className={styles.supportIcon}><FiCalendar aria-hidden="true" /></span>Organizacja opieki i wynajmu</h3>
               <p>
                 Jeżeli chcesz powierzyć nieruchomość lokalnej firmie, pomagamy
                 w kontakcie z obsługą i określeniu potrzeb. Plan wynajmu
