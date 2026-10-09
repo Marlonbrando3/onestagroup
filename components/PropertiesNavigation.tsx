@@ -22,9 +22,9 @@ const PHONE = "+48576652525";
 const PHONE_LABEL = "+48 576 65 25 25";
 
 // ---------- live offer counts (one request per page view, CDN-cached for 1h) ----------
-type LiveData = { towns: Record<string, MenuTown[]>; coastTotals: Record<string, number>; countryTotals: Record<string, number> };
+export type LiveData = { towns: Record<string, MenuTown[]>; searchTowns?: Record<string, MenuTown[]>; coastTotals: Record<string, number>; countryTotals: Record<string, number> };
 let liveRequest: Promise<LiveData | null> | null = null;
-function loadLive() {
+export function loadLive() {
   if (!liveRequest)
     liveRequest = fetch("/api/menu-locations")
       .then((response) => (response.ok ? response.json() : null))

@@ -34,6 +34,7 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
   if (!supabaseServer) return res.status(503).json({ error: "unavailable" });
   try {
     const towns: Record<string, MenuTown[]> = {};
+    const searchTowns: Record<string, MenuTown[]> = {};
     const coastTotals: Record<string, number> = {};
     const countryTotals: Record<string, number> = {};
 
@@ -51,7 +52,8 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
       const countryLocations = (locations as LocationEntry[]).filter((entry) => getLocationCountry(entry) === countrySlug);
 
       for (const coastId of coastIds) {
-        towns[coastId] = menuTownCandidates(coastId)
+        const seenSpellings = new Set<string>();
+        const counted = menuTownCandidates(coastId)
           .map((town) => {
             const names = new Set(
               expandLocationSelection([town.id], countryLocations)
@@ -60,11 +62,14 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
             );
             let count = 0;
             names.forEach((name) => (count += perTown.get(name) || 0));
-            return { id: town.id, name: town.name, count };
+            return { id: town.id, name: town.name, count, key: [...names].sort().join("|") };
           })
           .filter((town) => town.count > 0)
-          .sort((a, b) => b.count - a.count)
-          .slice(0, MENU_TOWNS_LIMIT);
+          // Alternative spellings of one place (e.g. Alfas/Alfaz del Pi) match the same rows — keep one.
+          .filter((town) => !seenSpellings.has(town.key) && !!seenSpellings.add(town.key))
+          .map(({ key, ...town }) => town);
+        towns[coastId] = [...counted].sort((a, b) => b.count - a.count).slice(0, MENU_TOWNS_LIMIT);
+        searchTowns[coastId] = [...counted].sort((a, b) => a.name.localeCompare(b.name, "pl"));
 
         const region = SEO_REGIONS.find((item) => item.locationId === coastId);
         if (region)
@@ -78,7 +83,7 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
     res.setHeader("Cache-Control", cache);
     res.setHeader("CDN-Cache-Control", cache);
     res.setHeader("Netlify-CDN-Cache-Control", cache);
-    return res.status(200).json({ towns, coastTotals, countryTotals, generatedAt: new Date().toISOString() });
+    return res.status(200).json({ towns, searchTowns, coastTotals, countryTotals, generatedAt: new Date().toISOString() });
   } catch (error) {
     console.error("menu-locations failed", error);
     res.setHeader("Cache-Control", "no-store");

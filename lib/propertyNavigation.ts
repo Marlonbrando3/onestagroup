@@ -71,6 +71,13 @@ export function navigationLocationHref(country: string, location: LocationEntry,
   return buildCatalogUrl(country, { location: location.id }, locale)!;
 }
 
+/** Region + city of a published city landing for a town, so searches can land on it with filters kept. */
+export function cityLandingScope(country: string, location: LocationEntry) {
+  const region = SEO_REGIONS.find((item) => item.country === country && item.locationId === location.parentId);
+  const city = region && SEO_CITIES.find((item) => item.region === region.slug && item.aliases.some((alias) => slugify(alias) === slugify(location.name)));
+  return region && city ? { region: region.slug, city: city.slug } : null;
+}
+
 export function navigationRegionLabel(name: string, locale: SiteLocale) {
   if (name === "Cypr Południowy" && locale === "en") return "Southern Cyprus";
   if (name === "Mallorca" && locale === "pl") return "Majorka";
