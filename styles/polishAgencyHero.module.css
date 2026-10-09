@@ -1,7 +1,7 @@
 /* Hero + wyszukiwarka strony „Polskie biuro nieruchomości w Hiszpanii”. */
 .hero {
   --hero-navy: #10213a;
-  --hero-gold: #e0bd7a;
+  --hero-gold: #ffd08a;
   --hero-gold-strong: #d4a85a;
   position: relative;
   isolation: isolate;
@@ -11,7 +11,7 @@
   min-height: min(calc(100svh - 74px), 860px);
   padding-block: 40px 32px;
   overflow: hidden;
-  background: var(--hero-navy);
+  background: #6b2c0e;
   color: #fff;
 }
 .photo { position: absolute; z-index: -2; inset: 0; }
@@ -21,8 +21,8 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, #0d1c33f2 0%, #0f2039d9 30%, #12243f80 58%, #12243f1a 82%),
-    linear-gradient(0deg, #0d1c33cc 0%, #0d1c3300 42%);
+    linear-gradient(90deg, #5e260cf0 0%, #7c3612db 30%, #a5521d85 58%, #c46f2a1f 82%),
+    linear-gradient(0deg, #4f1f0acc 0%, #4f1f0a00 42%);
 }
 
 .inner {
@@ -68,7 +68,7 @@
 .lead {
   max-width: 590px;
   margin: 14px 0 0;
-  color: #d9e1ec;
+  color: #fbe6d2;
   font-size: 16px;
   line-height: 1.75;
 }
@@ -87,13 +87,13 @@
   line-height: 1.3;
   transition: background .2s, color .2s, border-color .2s, transform .2s;
 }
-.primary { background: var(--hero-gold-strong); color: var(--hero-navy); box-shadow: 0 14px 30px #00000033; }
-.primary:hover { background: #e6bf72; transform: translateY(-1px); }
+.primary { background: #fff3e3; color: #5e260c; box-shadow: 0 14px 30px #00000033; }
+.primary:hover { background: #fff; transform: translateY(-1px); }
 .primary svg { width: 18px; height: 18px; }
-.secondary { border: 1px solid #ffffff73; background: #ffffff0f; color: #fff; backdrop-filter: blur(6px); }
+.secondary { border: 1px solid #ffffff8c; background: #ffffff14; color: #fff; backdrop-filter: blur(6px); }
 .secondary:hover { border-color: #fff; background: #ffffff24; }
 
-.facts { display: flex; flex-wrap: wrap; gap: 10px 26px; margin: 20px 0 0; padding: 0; list-style: none; color: #e9eef5; font-size: 13px; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px 26px; margin: 20px 0 0; padding: 0; list-style: none; color: #fdeee0; font-size: 13px; }
 .facts li { display: inline-flex; align-items: center; gap: 8px; }
 .facts svg { width: 16px; height: 16px; color: var(--hero-gold); stroke-width: 2.4; }
 
@@ -101,13 +101,13 @@
   padding: 14px 14px 20px;
   border: 1px solid #ffffff2e;
   border-radius: 24px;
-  background: #0f203a8c;
+  background: #6a2d0e8c;
   box-shadow: 0 24px 50px #0000004d;
   backdrop-filter: blur(14px);
 }
 .advisorsPhoto { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 16px; }
 .hero .advisorsName { margin: 16px 6px 0; color: #fff; font-size: 17px; font-weight: 600; line-height: 1.3; }
-.hero .advisorsRole { margin: 4px 6px 0; color: #c9d3e0; font-size: 12px; line-height: 1.6; }
+.hero .advisorsRole { margin: 4px 6px 0; color: #f3d9c2; font-size: 12px; line-height: 1.6; }
 .advisorsPhone { display: inline-flex; align-items: center; gap: 8px; margin: 12px 6px 0; color: var(--hero-gold); font-size: 14px; font-weight: 600; }
 .advisorsPhone:hover { color: #fff; }
 .advisorsPhone svg { width: 15px; height: 15px; }
@@ -245,7 +245,7 @@
 @media (max-width: 599px) {
   .hero { min-height: 0; padding-block: 44px 28px; }
   .photo img { object-position: 78% center; }
-  .photo::after { background: linear-gradient(180deg, #0d1c33b3 0%, #0f2039d9 45%, #0d1c33f2 100%); }
+  .photo::after { background: linear-gradient(180deg, #6a2c0eb8 0%, #7a3511dc 45%, #5a240cf2 100%); }
   .inner { margin-bottom: 30px; }
   .eyebrow { margin-bottom: 18px; font-size: 9px; letter-spacing: .18em; }
   .eyebrow::before { width: 28px; margin-right: 10px; }
