@@ -8,7 +8,7 @@
 .trigger svg { transition: transform 180ms; }
 .trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
 
-.panel { position: absolute; inset: 100% 0 auto; max-height: calc(100dvh - 82px); overflow-y: auto; overscroll-behavior: contain; border-block: 1px solid #e8ddca; background: #fbf8f2; box-shadow: 0 24px 36px #1823341a; }
+.panel { position: absolute; inset: 100% 0 auto; max-height: calc(100dvh - 82px); overflow-y: auto; overscroll-behavior: contain; border-block: 1px solid #ebe7e0; background: #fff; box-shadow: 0 24px 36px #1823341a; }
 .panel[hidden] { display: none; }
 .container { width: 91.666667%; max-width: 1280px; margin-inline: auto; }
 .grid { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.65fr) minmax(0, 0.9fr); }
