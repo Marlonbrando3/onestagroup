@@ -7,9 +7,8 @@
   isolation: isolate;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  min-height: min(calc(100svh - 74px), 860px);
-  padding-block: 40px 32px;
+  justify-content: flex-start;
+  padding-block: 32px 36px;
   overflow: hidden;
   background: #1d3f69;
   color: #fff;
@@ -215,12 +214,12 @@
 .hero a:focus-visible, .hero button:focus-visible { outline: 2px solid var(--hero-gold); outline-offset: 4px; }
 
 @media (min-width: 1280px) {
-  .hero { min-height: min(calc(100svh - 82px), 880px); }
+  .hero { padding-block: 36px 40px; }
 }
 
 /* Laptopy z niskim ekranem: wyszukiwarka musi się zmieścić bez przewijania. */
 @media (min-width: 900px) and (max-height: 860px) {
-  .hero { padding-block: 28px 24px; }
+  .hero { padding-block: 24px 28px; }
   .lead { display: none; }
   .claim { margin-top: 16px; }
   .inner { margin-bottom: 22px; }
@@ -243,7 +242,7 @@
 }
 
 @media (max-width: 599px) {
-  .hero { min-height: 0; padding-block: 44px 28px; }
+  .hero { padding-block: 26px 28px; }
   .photo img { object-position: 78% center; }
   .photo::after { background: linear-gradient(180deg, #17345a99 0%, #1d3f69c7 45%, #13294ae6 100%); }
   .inner { margin-bottom: 30px; }
