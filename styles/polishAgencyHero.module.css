@@ -111,7 +111,6 @@
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 120px 18px 120px 18px;
-  outline: 6px solid #ffffff2e;
   box-shadow: 0 28px 60px #0a162a66;
 }
 .teamPhoto img { object-position: center 30%; }
