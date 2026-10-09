@@ -12,7 +12,6 @@ import ResultsSlider from "./ResultsSlider";
 import { validTitleOrEmpty } from "../../lib/titlesDictionary";
 import {
   HomeMontserratSans,
-  HomePlayfairSans,
   HomeRedHatDisplayFont as Red_Hat_DisplayFont,
 } from "@/fonts/homeFonts";
 import { getCoastLabelFromProvince } from "@/lib/regionMap";
@@ -213,7 +212,7 @@ export default function PropertyCard({
             {propertyType} · ref. {property?.external_id}
           </p>
           <h3
-            className={`${HomePlayfairSans.className} mt-2 min-h-[72px] text-[19px] font-semibold leading-[1.25] tracking-[-0.01em] text-[#182334] [text-wrap:pretty]`}
+            className={`${HomeMontserratSans.className} mt-2 min-h-[69px] text-[16px] font-semibold leading-[1.45] text-[#182334] [text-wrap:pretty]`}
           >
             {listingTitle}
           </h3>
