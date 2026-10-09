@@ -1,3 +1,4 @@
+import { organizationJsonLd } from "@/lib/organizationSchema";
 import SeoHead from "@/components/SeoHead";
 import SeoLocationContent from "@/components/SeoLocationContent";
 import React, { useState } from "react";
@@ -142,14 +143,7 @@ export default function FirstView() {
         description="Poznaj nieruchomości w Hiszpanii i na Cyprze. Onesta pomaga porównać oferty, wybrać lokalizację i przejść przez proces zakupu. Umów konsultację."
         canonical="/"
         alternates={{ pl: "/", en: "/en" }}
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          "@id": "https://onesta.com.pl/#organization",
-          name: "Onesta Group",
-          url: "https://onesta.com.pl",
-          logo: "https://onesta.com.pl/logotype_full_new.png",
-        }}
+        jsonLd={organizationJsonLd()}
       />
       <Head>
         <meta

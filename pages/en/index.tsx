@@ -1,3 +1,4 @@
+import { organizationJsonLd } from "@/lib/organizationSchema";
 import SeoHead from "@/components/SeoHead";
 import SeoLocationContent from "@/components/SeoLocationContent";
 import React, { useState } from "react";
@@ -142,14 +143,7 @@ export default function EnglishHomePage() {
         description="Explore property in Spain and Cyprus. Compare locations and listings with Onesta and get support from property selection through the buying process."
         canonical="/en"
         alternates={{ pl: "/", en: "/en" }}
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          "@id": "https://onesta.com.pl/#organization",
-          name: "Onesta Group",
-          url: "https://onesta.com.pl",
-          logo: "https://onesta.com.pl/logotype_full_new.png",
-        }}
+        jsonLd={organizationJsonLd()}
       />
       <Head>
         <meta
