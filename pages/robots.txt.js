@@ -8,6 +8,7 @@ export async function getServerSideProps({ res }) {
   const robots = `User-agent: *
 Allow: /
 Disallow: /api/
+Allow: /api/property-image
 Disallow: /admin
 Disallow: /agent
 Disallow: /crm
