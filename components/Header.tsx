@@ -1,4 +1,5 @@
 import { PropertiesNavigation, MobilePropertiesNavigation } from "./PropertiesNavigation";
+import { menuScope } from "@/lib/propertyNavigation";
 import { parseCatalogPath, catalogRoutePath } from "@/lib/catalogRouting";
 import { useState } from "react";
 import dynamic from "next/dynamic";
@@ -190,7 +191,7 @@ export default function Header({
           </Link>
 
           <nav aria-label={isEn ? "Main navigation" : "Menu główne"} className="hidden self-stretch items-center justify-end gap-1 xl:flex">
-            <PropertiesNavigation key={router.asPath} locale={locale} onConsultation={handleConsultationClick} />
+            <PropertiesNavigation key={router.asPath} locale={locale} scope={menuScope(router.asPath)} onConsultation={handleConsultationClick} />
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -289,7 +290,7 @@ export default function Header({
           } border-t border-[#e8ddca] bg-[#fbf8f2] shadow-[0_18px_32px_rgba(24,35,52,0.12)] transition-all duration-300`}
         >
           <nav className="mx-auto flex w-11/12 max-w-7xl flex-col py-4">
-            <MobilePropertiesNavigation locale={locale} onNavigate={closeMenu} />
+            <MobilePropertiesNavigation locale={locale} scope={menuScope(router.asPath)} onNavigate={closeMenu} />
             {navItems.map((item) => (
               <Link
                 key={item.href}

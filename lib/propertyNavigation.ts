@@ -101,3 +101,17 @@ export function staticMenuTowns(coastId: string): MenuTown[] {
     .slice(0, MENU_TOWNS_LIMIT)
     .map((town) => ({ id: town.id, name: town.name, count: null }));
 }
+
+// ---- Context-aware menu: Spanish pages show Spain, Cypriot pages Cyprus, the rest all countries ----
+export type MenuScope = "hiszpania" | "cypr" | "all";
+export const MENU_COUNTRY_COASTS: Record<"hiszpania" | "cypr", string[]> = {
+  hiszpania: MENU_COASTS,
+  cypr: ["cypr_poludniowy"],
+};
+
+export function menuScope(path: string): MenuScope {
+  const p = (path || "/").split(/[?#]/)[0].toLowerCase();
+  if (/^\/(nieruchomosci\/hiszpania|en\/properties\/spain|polskie-biuro-nieruchomosci-w-hiszpanii|zarzadzanie-nieruchomosciami-w-hiszpanii)(\/|$)/.test(p)) return "hiszpania";
+  if (/^\/(nieruchomosci\/cypr|en\/properties\/cyprus)(\/|$)/.test(p)) return "cypr";
+  return "all";
+}

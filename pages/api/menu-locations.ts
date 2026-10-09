@@ -4,58 +4,81 @@ import { supabaseServer } from "@/lib/supabaseClient";
 import { publicListings } from "@/lib/publicListings";
 import { publicCountry } from "@/lib/publicSeo";
 import { expandLocationSelection, getLocationCountry, type LocationEntry } from "@/lib/locations";
-import { MENU_COASTS, MENU_TOWNS_LIMIT, menuTownCandidates, type MenuTown } from "@/lib/propertyNavigation";
+import { SEO_REGIONS } from "@/lib/seoLocations";
+import { MENU_COUNTRY_COASTS, MENU_TOWNS_LIMIT, menuTownCandidates, type MenuTown } from "@/lib/propertyNavigation";
 
-// Offer counts for the mega-menu. Counts mirror the catalogue's `?location=` filter:
-// a town matches every spelling of that location (town ILIKE name, i.e. case-insensitive).
-// Cached at the CDN for an hour, so the database is hit at most once per hour.
+// Offer counts for the mega-menu, mirroring the catalogue's filters:
+// - town:  `?location=` matches every spelling of a location, town ILIKE name (case-insensitive);
+// - coast: the SEO region page scope, province IN provinces AND town IN towns.
+// Cached at the CDN for an hour, so the database is queried at most once an hour.
 const PAGE = 1000;
+type Row = { id: number; town: string | null; province: string | null };
+
+async function fetchRows(dbValues: string[]) {
+  const rows: Row[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await publicListings(
+      supabaseServer!.from("properties").select("id, town, province"),
+      dbValues,
+    )
+      .order("id", { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (error) throw error;
+    rows.push(...((data || []) as Row[]));
+    if (!data || data.length < PAGE) break;
+  }
+  return rows;
+}
 
 export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
-  const country = publicCountry("hiszpania");
-  if (!supabaseServer || !country) return res.status(503).json({ error: "unavailable" });
-
+  if (!supabaseServer) return res.status(503).json({ error: "unavailable" });
   try {
-    const perTown = new Map<string, number>();
-    for (let from = 0; ; from += PAGE) {
-      const { data, error } = await publicListings(
-        supabaseServer.from("properties").select("id, town"),
-        country.dbValues,
-      )
-        .order("id", { ascending: true })
-        .range(from, from + PAGE - 1);
-      if (error) throw error;
-      for (const row of data || []) {
+    const towns: Record<string, MenuTown[]> = {};
+    const coastTotals: Record<string, number> = {};
+    const countryTotals: Record<string, number> = {};
+
+    for (const [countrySlug, coastIds] of Object.entries(MENU_COUNTRY_COASTS)) {
+      const country = publicCountry(countrySlug);
+      if (!country) continue;
+      const rows = await fetchRows(country.dbValues);
+      countryTotals[countrySlug] = rows.length;
+
+      const perTown = new Map<string, number>();
+      for (const row of rows) {
         const key = String(row.town || "").trim().toLowerCase();
         if (key) perTown.set(key, (perTown.get(key) || 0) + 1);
       }
-      if (!data || data.length < PAGE) break;
-    }
+      const countryLocations = (locations as LocationEntry[]).filter((entry) => getLocationCountry(entry) === countrySlug);
 
-    const spain = (locations as LocationEntry[]).filter((entry) => getLocationCountry(entry) === "hiszpania");
-    const coasts: Record<string, MenuTown[]> = {};
-    for (const coastId of MENU_COASTS) {
-      coasts[coastId] = menuTownCandidates(coastId)
-        .map((town) => {
-          const names = new Set(
-            expandLocationSelection([town.id], spain)
-              .filter((entry) => entry && ["town", "city"].includes(entry.type))
-              .map((entry) => entry.name.trim().toLowerCase()),
-          );
-          let count = 0;
-          names.forEach((name) => (count += perTown.get(name) || 0));
-          return { id: town.id, name: town.name, count };
-        })
-        .filter((town) => town.count > 0)
-        .sort((a, b) => b.count - a.count)
-        .slice(0, MENU_TOWNS_LIMIT);
+      for (const coastId of coastIds) {
+        towns[coastId] = menuTownCandidates(coastId)
+          .map((town) => {
+            const names = new Set(
+              expandLocationSelection([town.id], countryLocations)
+                .filter((entry) => entry && ["town", "city"].includes(entry.type))
+                .map((entry) => entry.name.trim().toLowerCase()),
+            );
+            let count = 0;
+            names.forEach((name) => (count += perTown.get(name) || 0));
+            return { id: town.id, name: town.name, count };
+          })
+          .filter((town) => town.count > 0)
+          .sort((a, b) => b.count - a.count)
+          .slice(0, MENU_TOWNS_LIMIT);
+
+        const region = SEO_REGIONS.find((item) => item.locationId === coastId);
+        if (region)
+          coastTotals[coastId] = rows.filter(
+            (row) => region.provinces.includes(String(row.province)) && region.towns.includes(String(row.town)),
+          ).length;
+      }
     }
 
     const cache = "public, s-maxage=3600, stale-while-revalidate=86400";
     res.setHeader("Cache-Control", cache);
     res.setHeader("CDN-Cache-Control", cache);
     res.setHeader("Netlify-CDN-Cache-Control", cache);
-    return res.status(200).json({ coasts, generatedAt: new Date().toISOString() });
+    return res.status(200).json({ towns, coastTotals, countryTotals, generatedAt: new Date().toISOString() });
   } catch (error) {
     console.error("menu-locations failed", error);
     res.setHeader("Cache-Control", "no-store");

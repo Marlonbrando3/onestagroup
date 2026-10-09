@@ -77,3 +77,4 @@
 
 @media (max-width: 1279px) { .panel { display: none; } }
 @media (prefers-reduced-motion: reduce) { .trigger svg, .mobile summary > svg, .market > svg { transition: none; } }
+.coastsSingle { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 360px; }

@@ -316,17 +316,19 @@ test("withdrawn properties and rentals are absent from catalogue and detail", as
 });
 
 module.exports = { harness, fixtures };
-test("mega-menu counts mirror catalogue town matching and rank by offers", async () => {
+test("mega-menu counts mirror catalogue matching, per country, ranked by offers", async () => {
   const base = fixtures[0];
   const row = (id, town, extra = {}) => ({ ...base, id: 1000 + id, external_id: `M-${id}`, town, ...extra });
   const rows = [
     ...Array.from({ length: 5 }, (_, i) => row(i, "Torrevieja")),
     row(10, "torrevieja"), // case variant — catalogue uses ILIKE
-    row(11, "Los Alcazares"),
-    row(12, "Los Alcázares"), // accent variant of the same canonical location
-    ...Array.from({ length: 3 }, (_, i) => row(20 + i, "Marbella")),
-    row(30, "Marbella", { status: "WYCOFANA" }), // withdrawn — excluded like in the catalogue
+    row(11, "Los Alcazares", { province: "Murcia" }),
+    row(12, "Los Alcázares", { province: "Murcia" }), // accent variant of the same location
+    ...Array.from({ length: 3 }, (_, i) => row(20 + i, "Marbella", { province: "Málaga" })),
+    row(30, "Marbella", { province: "Málaga", status: "WYCOFANA" }), // withdrawn — excluded
     row(31, "Calpe", { operation: "rent" }), // rental — excluded
+    row(40, "Pafos", { country: "Cypr", province: "Pafos" }),
+    row(41, "Pafos", { country: "Cypr", province: "Pafos" }),
   ];
   const { load } = harness(rows);
   const handler = load("pages/api/menu-locations.ts").default;
@@ -334,14 +336,27 @@ test("mega-menu counts mirror catalogue town matching and rank by offers", async
   const res = { setHeader() {}, status(code) { status = code; return this; }, json(data) { body = data; return this; } };
   await handler({}, res);
   assert.equal(status, 200);
-  const blanca = body.coasts.costa_blanca;
+  const blanca = body.towns.costa_blanca;
   assert.equal(blanca[0].name, "Torrevieja");
   assert.equal(blanca[0].count, 6);
   assert.ok(!blanca.some((t) => t.name === "Calpe"), "towns without public offers are hidden");
-  assert.equal(body.coasts.costa_calida.find((t) => /Alc/.test(t.name)).count, 2);
-  assert.equal(body.coasts.costa_del_sol.find((t) => t.name === "Marbella").count, 3);
-  for (const towns of Object.values(body.coasts)) {
+  assert.equal(body.towns.costa_calida.find((t) => /Alc/.test(t.name)).count, 2);
+  assert.equal(body.towns.costa_del_sol.find((t) => t.name === "Marbella").count, 3);
+  assert.equal(body.towns.cypr_poludniowy.find((t) => t.name === "Pafos").count, 2);
+  assert.equal(body.countryTotals.hiszpania, 11);
+  assert.equal(body.countryTotals.cypr, 2);
+  // Region pages filter town IN (...) — exact, case-sensitive — so "torrevieja" is not in the coast total.
+  assert.equal(body.coastTotals.costa_blanca, 5, "coast total follows the SEO region scope");
+  for (const towns of Object.values(body.towns)) {
     assert.ok(towns.length <= 8);
     for (let i = 1; i < towns.length; i++) assert.ok(towns[i - 1].count >= towns[i].count);
   }
+});
+test("menu scope follows page context", () => {
+  const { load } = harness([]);
+  const { menuScope } = load("lib/propertyNavigation.ts");
+  for (const p of ["/nieruchomosci/hiszpania", "/nieruchomosci/hiszpania/costa-blanca/torrevieja?page=2", "/polskie-biuro-nieruchomosci-w-hiszpanii", "/zarzadzanie-nieruchomosciami-w-hiszpanii", "/en/properties/spain"])
+    assert.equal(menuScope(p), "hiszpania", p);
+  for (const p of ["/nieruchomosci/cypr", "/en/properties/cyprus/costa"]) assert.equal(menuScope(p), "cypr", p);
+  for (const p of ["/", "/en", "/blog/okupados", "/aboutus", "/pobytinwestorski", "/nieruchomosci/hiszpaniax"]) assert.equal(menuScope(p), "all", p);
 });
