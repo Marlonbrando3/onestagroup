@@ -39,7 +39,6 @@ import { optimizedPropertyImageUrl } from "@/lib/propertyImages";
 import { getCoastLabelFromProvince, getCountryLabel } from "@/lib/regionMap";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { validTitleOrEmpty } from "@/lib/titlesDictionary";
-import Logotype from "@/public/logotype_full_new.png";
 
 type CbTopPageProps = {
   offers: CbTopCardOffer[];
@@ -1145,7 +1144,7 @@ export default function CbTopPage({ offers, socialImage }: CbTopPageProps) {
             <div className="max-w-[870px]">
               <div className="relative mb-10 h-[44px] w-[176px] max-w-full">
                 <Image
-                  src={Logotype}
+                  src="/logotype_full_new.svg"
                   alt="Onesta Group"
                   fill
                   sizes="176px"

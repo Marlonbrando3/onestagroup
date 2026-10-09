@@ -22,7 +22,7 @@ export default function Header({ handlePopUpOpen }: Data) {
             className="md:w-[90%] w-[79%] md:h-[50%] h-[60%] relative md:mx-auto cursor-pointer"
           >
             <Image
-              src="/logotype_full.png"
+              src="/logotype_full.svg"
               fill
               objectFit="contain"
               alt="logo"

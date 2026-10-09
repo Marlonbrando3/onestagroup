@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { Red_Hat_DisplayFont, OutfitSans } from "../fonts/fonts";
 import Image from "next/image";
 import Link from "next/link";
-import Logotype from "./images/logotype.png";
 import { IoMailOutline } from "react-icons/io5";
 import { CiPhone } from "react-icons/ci";
 import MobileFilters from "./MobileFilters";
@@ -201,7 +200,7 @@ export default function HeaderOffer() {
                 <Image
                   ref={logo}
                   className="object-contain px-[10px] pb-[4px]"
-                  src={Logotype}
+                  src="/logotype_full.svg"
                   fill
                   alt="logo"
                 />

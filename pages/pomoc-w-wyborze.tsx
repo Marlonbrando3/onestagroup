@@ -137,7 +137,7 @@ export default function HelpChoosing({ variant }: { variant: HelpVariant }) {
     </Head>
     <a className={styles.skipLink} href="#kontakt">Przejdź do formularza kontaktowego</a>
     <header className={styles.header}>
-      <Image src="/logotype_full_new.png" alt="Onesta Group" width={165} height={54} className={styles.logo} priority />
+      <Image src="/logotype_full_new.svg" alt="Onesta Group" width={165} height={54} className={styles.logo} priority />
       <span className={styles.headerNote}>TWÓJ DOM W HISZPANII. <span>NASZE DOŚWIADCZENIE.</span></span>
       <a href="#kontakt" className={styles.headerCta} onClick={e => goToContact(e, 'header')}>Porozmawiajmy <FiArrowUpRight /></a>
     </header>
@@ -211,7 +211,7 @@ export default function HelpChoosing({ variant }: { variant: HelpVariant }) {
 
       <section className={`${styles.faq} ${styles.section}`} aria-labelledby="faq-heading"><div data-reveal><p className={styles.eyebrow}>JESZCZE CHWILA NA WĄTPLIWOŚCI</p><h2 id="faq-heading" className={HomePlayfairSans.className}>Warto wiedzieć.</h2></div><div className={styles.faqList}>{questions.map((item, i) => <article key={item.question} data-reveal><span>0{i + 1}</span><div><h3>{item.question}</h3><p>{item.answer}</p></div></article>)}</div></section>
     </main>
-    <footer className={styles.footer}><Image src="/logotype_full_new.png" alt="Onesta Group" width={126} height={42} /><span>© {new Date().getFullYear()} Onesta Group</span><div><a href="tel:+48576652525">+48 576 652 525</a><a href="/polityka-prywatnosci" target="_blank" rel="noreferrer">Polityka prywatności</a><button type="button" className="cky-banner-element">Ustawienia cookies</button></div></footer>
+    <footer className={styles.footer}><Image src="/logotype_full_new.svg" alt="Onesta Group" width={126} height={42} /><span>© {new Date().getFullYear()} Onesta Group</span><div><a href="tel:+48576652525">+48 576 652 525</a><a href="/polityka-prywatnosci" target="_blank" rel="noreferrer">Polityka prywatności</a><button type="button" className="cky-banner-element">Ustawienia cookies</button></div></footer>
     {heroPassed && !contactVisible && !editing && !cookiesVisible && status !== 'success' && <div className={styles.mobileCta}><a href="#kontakt" onClick={e => goToContact(e, 'mobile_sticky')}>Poproś o rozmowę <FiArrowRight /></a><span>Bezpłatnie · po polsku · bez zobowiązań</span></div>}
   </div>;
 }

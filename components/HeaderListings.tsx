@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { MontserratSans } from "../fonts/fonts";
 import Image from "next/image";
 import Link from "next/link";
-import Logotype from "../public/logotype_full_new.png";
 import { HiOutlineMenu, HiOutlineMenuAlt3 } from "react-icons/hi";
 import { Red_Hat_DisplayFont } from "../fonts/fonts";
 
@@ -67,7 +66,7 @@ export default function Header({
               }`}
             >
               <Image
-                src={Logotype}
+                src="/logotype_full_new.svg"
                 fill
                 alt="logo"
                 className="object-contain transition-all duration-300 md:px-[15px] mt-[9px]"

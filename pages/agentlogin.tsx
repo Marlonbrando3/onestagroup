@@ -6,7 +6,6 @@ import { FormEvent, useState } from "react";
 import { FaArrowLeft, FaLock, FaRegUser } from "react-icons/fa";
 import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
 import { supabase } from "@/lib/supabaseClient";
-import Logotype from "@/public/logotype_full_new.png";
 
 export default function AgentLoginPage() {
   const router = useRouter();
@@ -76,7 +75,7 @@ export default function AgentLoginPage() {
               className="relative block h-[58px] w-[190px] rounded-xl bg-white px-3"
             >
               <Image
-                src={Logotype}
+                src="/logotype_full_new.svg"
                 alt="Onesta Group"
                 fill
                 sizes="190px"
@@ -114,7 +113,7 @@ export default function AgentLoginPage() {
                 className="relative block h-[52px] w-[164px]"
               >
                 <Image
-                  src={Logotype}
+                  src="/logotype_full_new.svg"
                   alt="Onesta Group"
                   fill
                   sizes="164px"

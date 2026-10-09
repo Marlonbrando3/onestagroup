@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import LogoType from "../public/logotype_full_new.png";
 import MenuData from "../data/menu.json";
 import { HomeRedHatDisplayFont as Red_Hat_DisplayFont } from "../fonts/homeFonts";
 import { FaFacebookSquare } from "@react-icons/all-files/fa/FaFacebookSquare";
@@ -33,21 +32,29 @@ const contactItems = [
     href: "mailto:biuro@onesta.com.pl",
   },
   {
-    label: "Adres",
+    label: "Biuro w Hiszpanii",
+    value: "Calle Abel 19, 30720 San Javier, Hiszpania",
+    valueEn: "Calle Abel 19, 30720 San Javier, Spain",
+  },
+  {
+    label: "Biuro w Polsce",
     value: "53-148 Wrocław, ul. Wolbromska 18/1b",
   },
 ];
 
 export default function Footer({ locale = "pl" }: { locale?: SiteLocale }) {
   const isEn = locale === "en";
-  const localizedContactItems = contactItems.map((item) => ({
+  const localizedContactItems = contactItems.map((item: { label: string; value: string; href?: string; valueEn?: string }) => ({
     ...item,
+    value: isEn && item.valueEn ? item.valueEn : item.value,
     label:
       isEn && item.label === "Telefon"
         ? "Phone"
-        : isEn && item.label === "Adres"
-          ? "Address"
-          : item.label,
+        : isEn && item.label === "Biuro w Hiszpanii"
+          ? "Office in Spain"
+          : isEn && item.label === "Biuro w Polsce"
+            ? "Office in Poland"
+            : item.label,
   }));
   const localizedMenuItems = isEn
     ? [
@@ -79,7 +86,7 @@ export default function Footer({ locale = "pl" }: { locale?: SiteLocale }) {
             className="relative block h-[58px] w-[190px]"
           >
             <Image
-              src={LogoType}
+              src="/logotype_full_new.svg"
               alt="Onesta Group"
               fill
               sizes="190px"

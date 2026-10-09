@@ -32,7 +32,6 @@ import {
 } from "@/lib/presentationOffer";
 import OfferPdfButton from "@/components/agent/OfferPdfButton";
 import type { OfferPdfContact } from "@/lib/offerPdf";
-import Logotype from "@/public/logotype_full_new.png";
 
 type PresentationOfferProps = {
   token: string;
@@ -141,7 +140,7 @@ export default function PresentationOfferPage({
                 publicPath={`/oferty/${encodeURIComponent(token)}/${encodeURIComponent(offer.external_id)}`}
               />
               <div className="relative h-[42px] w-[135px]">
-                <Image src={Logotype} alt="Onesta Group" fill sizes="135px" className="object-contain" priority />
+                <Image src="/logotype_full_new.svg" alt="Onesta Group" fill sizes="135px" className="object-contain" priority />
               </div>
             </div>
           </div>

@@ -170,7 +170,7 @@ export default function Header({
         />
       )}
       <header
-        className={`${MontserratSans.className} fixed left-0 top-0 z-40 w-full border-b border-[#e8ddca]/80 bg-[#fbf8f2]/95 text-[#182334] shadow-[0_10px_30px_rgba(24,35,52,0.08)] backdrop-blur-xl`}
+        className={`${MontserratSans.className} fixed left-0 top-0 z-40 w-full border-b border-[#ebe7e0] bg-white/95 text-[#182334] shadow-[0_10px_30px_rgba(24,35,52,0.08)] backdrop-blur-xl`}
       >
         <div className="mx-auto flex h-[74px] w-11/12 max-w-7xl items-center justify-between gap-5 xl:h-[82px]">
           <Link
@@ -179,13 +179,13 @@ export default function Header({
             aria-label={
               isEn ? "Onesta Group - homepage" : "Onesta Group - strona główna"
             }
-            className="relative block h-[50px] w-[154px] shrink-0 xl:h-[56px] xl:w-[180px]"
+            className="relative block h-[45px] w-[139px] shrink-0 xl:h-[50px] xl:w-[162px]"
           >
             <Image
-              src="/logotype_full_new.png"
+              src="/logotype_full_new.svg"
               alt="Onesta Group"
               fill
-              sizes="180px"
+              sizes="162px"
               className="object-contain"
             />
           </Link>
@@ -197,7 +197,7 @@ export default function Header({
                 key={item.href}
                 href={item.href}
                 onClick={closeMenu}
-                className="whitespace-nowrap rounded-full px-4 py-3 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#334155] transition hover:bg-white hover:text-[#9b7a36]"
+                className="whitespace-nowrap rounded-full px-4 py-3 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#334155] transition hover:bg-[#f6f3ee] hover:text-[#9b7a36]"
               >
                 {item.label}
               </Link>
@@ -287,7 +287,7 @@ export default function Header({
             menuOpen
               ? "pointer-events-auto max-h-[calc(100dvh-74px)] overflow-y-auto overscroll-contain opacity-100"
               : "pointer-events-none max-h-0 opacity-0"
-          } border-t border-[#e8ddca] bg-[#fbf8f2] shadow-[0_18px_32px_rgba(24,35,52,0.12)] transition-all duration-300`}
+          } border-t border-[#ebe7e0] bg-white shadow-[0_18px_32px_rgba(24,35,52,0.12)] transition-all duration-300`}
         >
           <nav className="mx-auto flex w-11/12 max-w-7xl flex-col py-4">
             <MobilePropertiesNavigation locale={locale} scope={menuScope(router.asPath)} onNavigate={closeMenu} />

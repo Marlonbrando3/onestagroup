@@ -101,7 +101,7 @@ export default function Leadforms() {
   }
   return <div className={`${styles.page} ${HomeMontserratSans.className}`}>
     <Head><title>Wybrane nieruchomości w Hiszpanii | Onesta Group</title><meta name="description" content="Od 9 lat pomagamy Polakom w zakupie nieruchomości w Hiszpanii. Wybierz budżet i odkryj polecane nowe inwestycje — bez zostawiania danych." /><meta property="og:title" content="Zobacz nasze najlepsze projekty w Hiszpanii | Onesta Group" /><meta property="og:image" content="https://onesta.com.pl/mediterranean-property-banner.webp" /></Head>
-    <header className={styles.header}><Image src="/logotype_full_new.png" alt="Onesta Group" width={165} height={54} className={styles.logo} /></header>
+    <header className={styles.header}><Image src="/logotype_full_new.svg" alt="Onesta Group" width={165} height={54} className={styles.logo} /></header>
     <main>
       <section className={styles.hero}>
         <Image src="/mediterranean-property-banner.webp" alt="Śródziemnomorska architektura i słoneczne tarasy z widokiem na morze" fill preload sizes="100vw" className={styles.heroImage} />
@@ -121,7 +121,7 @@ export default function Leadforms() {
         {status === 'ready' && offers.length > 0 && <p className={styles.priceNote}>Ceny ofertowe mogą ulec zmianie. Doradca potwierdzi aktualną cenę, dostępność i dodatkowe koszty zakupu.</p>}
       </section>}
       <section className={styles.closing}><span>9 lat doświadczenia. Jeden cel.</span><h2 className={HomePlayfairSans.className}>Żebyś w Hiszpanii poczuł się u siebie.</h2><p>Od pierwszego pytania do odbioru kluczy — jesteśmy obok.</p></section>
-    </main><footer className={styles.footer}><Image src="/logotype_full_new.png" alt="Onesta Group" width={120} height={40} /><span>© {new Date().getFullYear()} Onesta Group</span><a href="/polityka-prywatnosci">Polityka prywatności</a></footer>
+    </main><footer className={styles.footer}><Image src="/logotype_full_new.svg" alt="Onesta Group" width={120} height={40} /><span>© {new Date().getFullYear()} Onesta Group</span><a href="/polityka-prywatnosci">Polityka prywatności</a></footer>
     {selected && <Contact offer={selected} budget={budget} onClose={() => setSelected(null)} />}
   </div>;
 }

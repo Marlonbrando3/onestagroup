@@ -18,7 +18,7 @@ function Sources({ items, date }: { items: { label: string; url: string }[]; dat
 function Sheet({ offer, page, label, children, className = "" }: { offer: DossierOffer; page: number; label: string; children: ReactNode; className?: string }) {
   return <section className={`${s.sheet} ${className}`} id={`strona-${page}`} aria-label={`Strona ${page}: ${label}`}>
     <header className={s.pageHeader}>
-      <img className={s.logo} src="/logotype_full_new.png" alt="Onesta Group" width="132" height="33" />
+      <img className={s.logo} src="/logotype_full_new.svg" alt="Onesta Group" width="132" height="33" />
       <span>{label}</span>
     </header>
     <div className={s.pageBody}><div className={s.pageContent}>{children}</div></div>
@@ -138,7 +138,7 @@ export default function Dossier({ offer }: { offer: DossierOffer }) {
 
   return <div className={s.viewer} lang="pl">
     <div className={s.toolbar}>
-      <a href="#strona-1" className={s.toolbarBrand}><img src="/logotype_Onesta.png" alt="" width="24" height="30" /><span>ONESTA <i>/</i> <strong>Dossier nieruchomości</strong></span></a>
+      <a href="#strona-1" className={s.toolbarBrand}><img src="/logotype_Onesta.svg" alt="" width="24" height="30" /><span>ONESTA <i>/</i> <strong>Dossier nieruchomości</strong></span></a>
       <div className={s.toolbarActions}><span className={s.previewLabel}>REF {offer.reference} <i>·</i> 10 stron</span><button onClick={printDossier} disabled={printing}><FiDownload aria-hidden="true" />{printing ? "Przygotowuję…" : "Drukuj / zapisz PDF"}</button></div>
     </div>
     {printError && <p role="alert" className={s.printError}>{printError}</p>}

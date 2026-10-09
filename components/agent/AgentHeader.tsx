@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaLayerGroup, FaPlus, FaSignOutAlt } from "react-icons/fa";
 import { supabase } from "@/lib/supabaseClient";
-import Logotype from "@/public/logotype_full_new.png";
 
 type AgentHeaderProps = {
   agentName?: string;
@@ -31,7 +30,7 @@ export default function AgentHeader({ agentName, active }: AgentHeaderProps) {
         <div className="flex min-w-0 items-center gap-5">
           <Link href="/agent" className="relative h-[48px] w-[154px] shrink-0">
             <Image
-              src={Logotype}
+              src="/logotype_full_new.svg"
               alt="Onesta Group"
               fill
               sizes="154px"
