@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, type CSSProperties } from "react";
-import { FiArrowRight, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPlus, FiSearch, FiShield } from "react-icons/fi";
+import { FiArrowRight, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPhone, FiPlus, FiSearch, FiShield } from "react-icons/fi";
 import ContactFormMain from "@/components/ContactFormMain";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -19,6 +19,7 @@ import {
   agencySteps,
 } from "@/data/polishAgency";
 import styles from "@/styles/polishAgency.module.css";
+import hero from "@/styles/polishAgencyHero.module.css";
 
 const pageUrl = SITE_URL + agencyPage.path;
 const organizationId = SITE_URL + "/#organization";
@@ -195,10 +196,10 @@ export default function PolishRealEstateAgency() {
 
       <a href="#tresc" className={styles.skipLink}>Przejdź do treści</a>
       <main id="tresc">
-        <section className={styles.heroSection} aria-labelledby="agency-h1">
-          <div className={styles.heroPhoto} aria-hidden="true">
+        <section className={hero.hero} aria-labelledby="agency-h1">
+          <div className={hero.photo} aria-hidden="true">
             <Image
-              src="/images/seo/coasts/costa-del-sol.webp"
+              src="/images/seo/coasts/costa-blanca.webp"
               alt=""
               fill
               priority
@@ -206,31 +207,55 @@ export default function PolishRealEstateAgency() {
               className={styles.cover}
             />
           </div>
-          <div className={`${styles.container} ${styles.hero}`}>
-            <div className={styles.heroCopy}>
-              <p className={styles.eyebrow}><BrandName /> · HISZPANIA</p>
-              <h1 id="agency-h1">
-                <span className={styles.heroLine}>Polskie biuro nieruchomości</span>{" "}
-                <span className={styles.heroLine}>w Hiszpanii</span>
-              </h1>
-              <p className={styles.heroLead}>
-                Pomagamy znaleźć Twój dom lub apartament w Hiszpanii.
-                Od wyboru ofert po odbiór kluczy — z zespołem na miejscu
-                i obsługą po polsku.
+          <div className={`${styles.container} ${hero.inner}`}>
+            <div className={hero.copy}>
+              <p className={hero.eyebrow}>
+                <BrandName /> · Costa Blanca · Costa del Sol
               </p>
+              <h1 id="agency-h1" className={hero.title}>
+                Polskie biuro nieruchomości <em>w&nbsp;Hiszpanii</em>
+              </h1>
+              <p className={hero.claim}>
+                Twoje miejsce nad Morzem Śródziemnym — wybrane z&nbsp;głową, kupione bez nerwów.
+              </p>
+              <p className={hero.lead}>
+                Prowadzimy cały zakup po polsku: od pierwszej rozmowy, przez
+                wybór inwestycji i prezentacje na miejscu, po odbiór kluczy.
+              </p>
+              <div className={hero.actions}>
+                <Link href="/nieruchomosci/hiszpania" className={hero.primary}>
+                  Zobacz oferty <Arrow />
+                </Link>
+                <a href="#kontakt" className={hero.secondary}>
+                  Bezpłatna konsultacja
+                </a>
+              </div>
+              <ul className={hero.facts}>
+                <li><FiCheck aria-hidden="true" />0% prowizji dla kupującego</li>
+                <li><FiCheck aria-hidden="true" />Biura w Polsce i w Hiszpanii</li>
+                <li><FiCheck aria-hidden="true" />Wszystko po polsku</li>
+              </ul>
             </div>
-            <div className={styles.heroTeam}>
-              <Image
-                src={agencyPage.image}
-                alt="Marek Marszałek i Karolina Bakowicz — zespół Onesta Group"
-                width={1200}
-                height={800}
-                priority
-                sizes="(min-width: 900px) 340px, (min-width: 600px) 250px, 240px"
-              />
-            </div>
+            <aside className={hero.advisors} aria-label="Twoi doradcy">
+              <div className={hero.advisorsPhoto}>
+                <Image
+                  src={agencyPage.image}
+                  alt="Marek Marszałek i Karolina Bakowicz — zespół Onesta Group"
+                  fill
+                  sizes="300px"
+                  className={styles.cover}
+                />
+              </div>
+              <p className={hero.advisorsName}>Marek i Karolina</p>
+              <p className={hero.advisorsRole}>Twoi doradcy — po polsku, w Hiszpanii i w Polsce</p>
+              <a href="tel:+48576652525" className={hero.advisorsPhone}>
+                <FiPhone aria-hidden="true" /> +48 576 65 25 25
+              </a>
+            </aside>
           </div>
-          <AgencyPropertySearch />
+          <div className={styles.container}>
+            <AgencyPropertySearch />
+          </div>
         </section>
 
         <section className={styles.trustSection} aria-label="Co zyskujesz z Onesta Group">
@@ -457,7 +482,7 @@ export default function PolishRealEstateAgency() {
             <div>
               <div className={styles.supportTitle}>
                 <Image
-                  src="/mediterranean-property-banner.webp"
+                  src="/images/seo/coasts/costa-blanca.webp"
                   alt=""
                   fill
                   sizes="(min-width: 900px) 40vw, 88vw"
