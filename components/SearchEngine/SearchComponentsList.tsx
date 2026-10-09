@@ -16,6 +16,7 @@ type FunctionProps = {
   isMobileFiltersOpen: any;
   setIsMobileFiltersOpen: any;
   locale?: "pl" | "en";
+  hideFilters?: boolean;
 };
 
 export default function SearchInput({
@@ -27,6 +28,7 @@ export default function SearchInput({
   isMobileFiltersOpen,
   setIsMobileFiltersOpen,
   locale = "pl",
+  hideFilters = false,
 }: FunctionProps) {
   const router = useRouter();
   const isEn = locale === "en";
@@ -53,14 +55,16 @@ export default function SearchInput({
         className="relative mt-[20px] flex h-auto w-full flex-col items-stretch justify-center rounded-[16px] px-3 md:px-4 lg:mt-0 lg:flex-row lg:items-center lg:bg-gray-100/[0.3] lg:px-0"
       >
         <div className="h-auto flex-col items-center w-full mx-auto">
-          <MainSearchInSearchEngine
-            loader={loader}
-            setLoader={setLoader}
-            handleShowMobileFilters={handleShowMobileFilters}
-            searchEngine={searchEngine}
-            mobileButtonSearchEngine={mobileButtonSearchEngine}
-            locale={locale}
-          />
+          {!hideFilters && (
+            <MainSearchInSearchEngine
+              loader={loader}
+              setLoader={setLoader}
+              handleShowMobileFilters={handleShowMobileFilters}
+              searchEngine={searchEngine}
+              mobileButtonSearchEngine={mobileButtonSearchEngine}
+              locale={locale}
+            />
+          )}
           <h2 className="mx-auto w-[90vw] max-w-[1300px] text-[28px] mt-[10px]">
             {isEn ? "Property listings" : "Oferty nieruchomości"}
           </h2>

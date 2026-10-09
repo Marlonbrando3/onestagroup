@@ -105,6 +105,21 @@ export default function SearchResults(props: any) {
           </select>
         </div>
       </div>
+      {!loader && Number(count) === 0 && (
+        <div className="mb-10 rounded-[20px] border border-[#e5dac7] bg-[#f7f3ec] px-6 py-8 text-[#182334]">
+          <p className="text-[20px] font-bold">
+            {isEn ? "No listings match these filters" : "Brak ofert dla wybranych filtrów"}
+          </p>
+          <p className="mt-2 max-w-[640px] text-[15px] leading-7 text-[#4a5568]">
+            {isEn
+              ? "Try a wider price range, another town or fewer filters. You can also ask us — we search beyond the listings published here."
+              : "Spróbuj szerszego przedziału cenowego, innego miasta lub mniejszej liczby filtrów. Możesz też zapytać nas — szukamy także poza ofertami opublikowanymi na stronie."}
+          </p>
+          <a href="#contact" className="mt-4 inline-flex font-semibold text-[#9b7a36] underline underline-offset-4">
+            {isEn ? "Ask for a personal selection" : "Poproś o indywidualną selekcję"}
+          </a>
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {loader
           ? Array.from({ length: 6 }).map((_, i) => (

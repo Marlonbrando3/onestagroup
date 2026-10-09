@@ -32,6 +32,7 @@ import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Consultation from "@/components/consulatation/consultation";
 import RecommendedOffersPopup from "../../../components/SearchEngine/RecommendedOffersPopup";
 import SpainCatalogContent from "@/components/SpainCatalogContent";
+import AgencyPropertySearch from "@/components/AgencyPropertySearch";
 import { attachDevelopmentTitles } from "@/lib/developmentTitles";
 import { Red_Hat_DisplayFont } from "@/fonts/fonts";
 import { SiteLocale } from "@/lib/i18n";
@@ -239,6 +240,8 @@ export default function ListingsPage(props: PageProps) {
   const path = catalogRoutePath(props.catalogRoute, locale);
   const canonical = canonicalCatalog(content.canonical || path, props.query);
   const filtered = hasFilters(props.query);
+  // Spanish catalogue (PL) uses the same search as /polskie-biuro-nieruchomosci-w-hiszpanii.
+  const spainSearch = country === "hiszpania" && locale === "pl";
   const isSpainLanding =
     country === "hiszpania" &&
     !region &&
@@ -324,6 +327,11 @@ export default function ListingsPage(props: PageProps) {
           )}
         </header>
       </MiniHomeView>
+      {spainSearch && (
+        <div className="relative z-10 mx-auto w-[90vw] max-w-[1300px] lg:-mt-[60px]">
+          <AgencyPropertySearch syncWithUrl onNavigate={() => setLoader(true)} />
+        </div>
+      )}
       <RecommendedOffersPopup
         locale={locale}
         isOpen={showOffersPopup}
@@ -342,6 +350,7 @@ export default function ListingsPage(props: PageProps) {
           isMobileFiltersOpen={isMobileFiltersOpen}
           setIsMobileFiltersOpen={setIsMobileFiltersOpen}
           locale={locale}
+          hideFilters={spainSearch}
         />
       </div>
 
@@ -608,8 +617,8 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
   const totalCount = count ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
-  if (page > totalPages || (totalCount === 0 && hasFilters(inputQuery)))
-    return { notFound: true };
+  // An empty filtered search is a normal answer (noindex via `filtered`), not a missing page.
+  if (page > totalPages) return { notFound: true };
 
   const currentPage = Math.min(page, totalPages);
 

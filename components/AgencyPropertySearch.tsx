@@ -1,10 +1,26 @@
 import type { FormEvent } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { FiChevronDown, FiRotateCcw, FiSearch, FiSliders } from "react-icons/fi";
 import { agencyRegions } from "@/data/polishAgency";
-import { buildCatalogUrl, PROPERTY_TYPES } from "@/lib/catalogRouting";
-import { cityLandingScope, menuLocationById, staticMenuTowns, type MenuTown } from "@/lib/propertyNavigation";
+import {
+  buildCatalogUrl,
+  csv,
+  effectiveCatalogQuery,
+  parseCatalogPath,
+  PROPERTY_TYPES,
+  queryFromUrl,
+  typeForQuery,
+} from "@/lib/catalogRouting";
+import { SEO_CITIES } from "@/lib/seoLocations";
+import { slugify } from "@/lib/publicSeo";
+import {
+  cityLandingScope,
+  menuLocationById,
+  menuTownCandidates,
+  staticMenuTowns,
+  type MenuTown,
+} from "@/lib/propertyNavigation";
 import { loadLive } from "@/components/PropertiesNavigation";
 import styles from "@/styles/polishAgencyHero.module.css";
 
@@ -37,21 +53,98 @@ function useSearchTowns() {
   const [towns, setTowns] = useState<Record<string, MenuTown[]>>(fallbackTowns);
   useEffect(() => {
     let active = true;
-    loadLive().then((data) => { if (active && data?.searchTowns) setTowns(data.searchTowns); });
+    loadLive().then((data) => {
+      if (!active || !data?.searchTowns) return;
+      // Keep the curated fallback for a coast the live data has nothing for.
+      setTowns((current) => Object.fromEntries(Object.entries(current).map(([coast, list]) =>
+        [coast, data.searchTowns![coast]?.length ? data.searchTowns![coast] : list])));
+    });
     return () => { active = false; };
   }, []);
   return towns;
 }
 
-export default function AgencyPropertySearch() {
+type SearchState = {
+  region: string;
+  city: string;
+  market: string;
+  type: string;
+  beds: string;
+  price: string;
+  baths: string;
+  pool: string;
+};
+
+const first = (value: string | string[] | undefined) => csv(value)[0] || "";
+const bracketLabel = (price: string) => {
+  const [min, max] = price.split("-").map((v) => (v ? Number(v).toLocaleString("pl-PL") : ""));
+  return min && max ? `${min}–${max} €` : min ? `od ${min} €` : `do ${max} €`;
+};
+
+/** Filters currently applied in a catalogue URL, mapped onto this form's fields. */
+function stateFromUrl(asPath: string, fallbackMarket: string): SearchState {
+  const route = parseCatalogPath(asPath) || { country: "hiszpania" };
+  const query = effectiveCatalogQuery(route, queryFromUrl(asPath));
+  let region = route.region || first(query.region);
+  let city = first(query.location);
+  if (route.city) {
+    const seoCity = SEO_CITIES.find((item) => item.slug === route.city && item.region === route.region);
+    const town = seoCity && menuTownCandidates(coastId(seoCity.region)).find((candidate) =>
+      seoCity.aliases.some((alias) => slugify(alias) === slugify(candidate.name)));
+    city = town?.id || "";
+  }
+  if (city && !region) {
+    const parent = menuLocationById(city)?.parentId;
+    const match = agencyRegions.find(({ slug }) => coastId(slug) === parent);
+    if (match) region = match.slug;
+  }
+  const type = typeForQuery(query.type);
+  const priceMin = first(query.priceMin);
+  const priceMax = first(query.priceMax);
+  const market = first(query.market);
+  return {
+    region: agencyRegions.some(({ slug }) => slug === region) ? region : "",
+    city,
+    market: ["true", "false"].includes(market) ? market : asPath.includes("?") || route.region || route.city || route.propertyType ? "" : fallbackMarket,
+    type: type?.seoEnabled ? type.dbValues.join(",") : "",
+    beds: first(query.bedsMin) || first(query.beds),
+    price: priceMin || priceMax ? `${priceMin}-${priceMax}` : "",
+    baths: first(query.bathsMin) || first(query.baths),
+    pool: first(query.pool),
+  };
+}
+
+const EMPTY: SearchState = { region: "", city: "", market: "true", type: "", beds: "", price: "", baths: "", pool: "" };
+
+type Props = {
+  /** Catalogue pages: start from the filters in the current URL instead of the defaults. */
+  syncWithUrl?: boolean;
+  /** Called right before navigating (e.g. to show the catalogue's loader). */
+  onNavigate?: () => void;
+};
+
+export default function AgencyPropertySearch({ syncWithUrl = false, onNavigate }: Props) {
   const router = useRouter();
   const towns = useSearchTowns();
-  const [region, setRegion] = useState("");
-  const [city, setCity] = useState("");
-  const [market, setMarket] = useState("true");
-  const [advanced, setAdvanced] = useState(false);
-  const [price, setPrice] = useState("");
+  const fromUrl = useMemo(
+    () => (syncWithUrl ? stateFromUrl(router.asPath, "") : EMPTY),
+    [syncWithUrl, router.asPath],
+  );
+  const [state, setState] = useState<SearchState>(fromUrl);
+  useEffect(() => setState(fromUrl), [fromUrl]);
+  const set = (patch: Partial<SearchState>) => setState((current) => ({ ...current, ...patch }));
+  const { region, city, market, price } = state;
+  const [advanced, setAdvanced] = useState(Boolean(fromUrl.baths || fromUrl.pool));
   const [priceMin, priceMax] = price ? price.split("-") : ["", ""];
+  const customPrice = price && !PRICE_RANGES.some((range) => range.value === price);
+  // The town from the current URL stays selectable even when it is outside the list.
+  const townsFor = (slug: string): MenuTown[] => {
+    const list = towns[coastId(slug)] || [];
+    const current = city && menuLocationById(city);
+    return current && current.parentId === coastId(slug) && !list.some((town) => town.id === city)
+      ? [{ id: city, name: current.name, count: null }, ...list]
+      : list;
+  };
 
   function search(event: FormEvent<HTMLFormElement>) {
     const fields = new FormData(event.currentTarget);
@@ -61,6 +154,10 @@ export default function AgencyPropertySearch() {
         return value ? [[key, value]] : [];
       }),
     );
+    if (syncWithUrl) {
+      const sort = first(queryFromUrl(router.asPath).sort);
+      if (sort) query.sort = sort;
+    }
     // A chosen town lands on its city page when one is published; otherwise ?location= in the catalogue.
     let scope = {};
     if (query.location) {
@@ -72,7 +169,9 @@ export default function AgencyPropertySearch() {
     const destination = buildCatalogUrl("hiszpania", query, "pl", scope);
     if (!destination) return;
     event.preventDefault();
-    void router.push(destination);
+    if (destination === router.asPath) return;
+    onNavigate?.();
+    void router.push(destination, undefined, { scroll: !syncWithUrl });
   }
 
   return (
@@ -81,7 +180,7 @@ export default function AgencyPropertySearch() {
         action="/nieruchomosci/hiszpania"
         method="get"
         onSubmit={search}
-        onReset={() => { setPrice(""); setAdvanced(false); setMarket("true"); setRegion(""); setCity(""); }}
+        onReset={(event) => { event.preventDefault(); setState(syncWithUrl ? { ...EMPTY, market: "" } : EMPTY); setAdvanced(false); }}
         className={styles.search}
         aria-label="Wyszukaj nieruchomość w Hiszpanii"
       >
@@ -94,7 +193,7 @@ export default function AgencyPropertySearch() {
                 name="market"
                 value={value}
                 checked={market === value}
-                onChange={() => setMarket(value)}
+                onChange={() => set({ market: value })}
               />
               {label}
             </label>
@@ -105,7 +204,7 @@ export default function AgencyPropertySearch() {
           <label className={styles.field}>
             <span>Region</span>
             <div className={styles.select}>
-              <select name="region" value={region} onChange={(event) => { setRegion(event.target.value); setCity(""); }}>
+              <select name="region" value={region} onChange={(event) => set({ region: event.target.value, city: "" })}>
                 <option value="">Całe wybrzeże</option>
                 {agencyRegions.map(({ name, slug }) => <option key={slug} value={slug}>{name}</option>)}
               </select>
@@ -115,13 +214,13 @@ export default function AgencyPropertySearch() {
           <label className={styles.field}>
             <span>Miasto</span>
             <div className={styles.select}>
-              <select name="location" value={city} onChange={(event) => setCity(event.target.value)}>
+              <select name="location" value={city} onChange={(event) => set({ city: event.target.value })}>
                 <option value="">Dowolne</option>
                 {region
-                  ? (towns[coastId(region)] || []).map((town) => <option key={town.id} value={town.id}>{town.name}</option>)
+                  ? townsFor(region).map((town) => <option key={town.id} value={town.id}>{town.name}</option>)
                   : agencyRegions.map(({ name, slug }) => (
                       <optgroup key={slug} label={name}>
-                        {(towns[coastId(slug)] || []).map((town) => <option key={town.id} value={town.id}>{town.name}</option>)}
+                        {townsFor(slug).map((town) => <option key={town.id} value={town.id}>{town.name}</option>)}
                       </optgroup>
                     ))}
               </select>
@@ -131,7 +230,7 @@ export default function AgencyPropertySearch() {
           <label className={styles.field}>
             <span>Typ</span>
             <div className={styles.select}>
-              <select name="type" defaultValue="">
+              <select name="type" value={state.type} onChange={(event) => set({ type: event.target.value })}>
                 <option value="">Każdy typ</option>
                 {PROPERTY_TYPES.filter((type) => type.seoEnabled).map((type) => (
                   <option key={type.slug} value={type.dbValues.join(",")}>{type.label.pl}</option>
@@ -143,7 +242,7 @@ export default function AgencyPropertySearch() {
           <label className={styles.field}>
             <span>Sypialnie</span>
             <div className={styles.select}>
-              <select name="bedsMin" defaultValue="">
+              <select name="bedsMin" value={state.beds} onChange={(event) => set({ beds: event.target.value })}>
                 <option value="">Dowolnie</option>
                 {[1, 2, 3, 4, 5].map((count) => <option key={count} value={count}>{count}+</option>)}
               </select>
@@ -153,8 +252,9 @@ export default function AgencyPropertySearch() {
           <label className={styles.field}>
             <span>Cena</span>
             <div className={styles.select}>
-              <select value={price} onChange={(event) => setPrice(event.target.value)}>
+              <select value={price} onChange={(event) => set({ price: event.target.value })}>
                 <option value="">Dowolna</option>
+                {customPrice && <option value={price}>{bracketLabel(price)}</option>}
                 {PRICE_RANGES.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
               </select>
               <FiChevronDown aria-hidden="true" />
@@ -191,7 +291,7 @@ export default function AgencyPropertySearch() {
           <label className={styles.field}>
             <span>Łazienki</span>
             <div className={styles.select}>
-              <select name="bathsMin" defaultValue="">
+              <select name="bathsMin" value={state.baths} onChange={(event) => set({ baths: event.target.value })}>
                 <option value="">Dowolnie</option>
                 {[1, 2, 3, 4].map((count) => <option key={count} value={count}>{count}+</option>)}
               </select>
@@ -201,7 +301,7 @@ export default function AgencyPropertySearch() {
           <label className={styles.field}>
             <span>Basen</span>
             <div className={styles.select}>
-              <select name="pool" defaultValue="">
+              <select name="pool" value={state.pool} onChange={(event) => set({ pool: event.target.value })}>
                 <option value="">Bez znaczenia</option>
                 <option value="true">Z basenem</option>
                 <option value="false">Bez basenu</option>

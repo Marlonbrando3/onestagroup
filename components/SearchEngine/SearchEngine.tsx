@@ -22,6 +22,8 @@ type FunctionProps = {
   setIsMobileFiltersOpen: any;
   totalCount: any;
   locale?: "pl" | "en";
+  /** Spanish PL catalogue renders its own search above the results. */
+  hideFilters?: boolean;
 };
 
 type SearchEngineProps = FunctionProps & ServerSideProps;
@@ -36,6 +38,7 @@ export default function SearchEngine({
   isMobileFiltersOpen,
   setIsMobileFiltersOpen,
   locale = "pl",
+  hideFilters = false,
   ...restProps
 }: SearchEngineProps) {
   return (
@@ -50,6 +53,7 @@ export default function SearchEngine({
           isMobileFiltersOpen={isMobileFiltersOpen}
           setIsMobileFiltersOpen={setIsMobileFiltersOpen}
           locale={locale}
+          hideFilters={hideFilters}
         />
         <SearchResults
           {...restProps}
