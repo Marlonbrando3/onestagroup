@@ -77,20 +77,20 @@
 .section { padding-block: 86px; }
 .sectionHeading { max-width: 850px; margin-bottom: 42px; }
 .sectionHeading .lead { max-width: 760px; margin-top: 22px; color: #536074; }
-.page .benefitsSection { position: relative; padding-top: 0; background: #f2e7d6; color: #3e3024; }
-.benefitsIntro { position: relative; padding-block: 64px 88px; background: #58432e; color: #fffaf1; }
+.page .benefitsSection { position: relative; padding-top: 0; background: #f8f5ef; color: #111; }
+.benefitsIntro { position: relative; padding-block: 64px 88px; background: #1d3f69; color: #fff; }
 .benefitsPhoto { position: absolute; inset: 0; overflow: hidden; }
 .benefitsPhoto img { object-position: center 55%; }
-.benefitsPhoto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #30271eed 0%, #493822c9 43%, #8c673433 72%, #ba8c4a0d 100%); }
+.benefitsPhoto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #17345ad1 0%, #1d3f69b0 32%, #2a527d57 60%, #2a527d00 85%), linear-gradient(0deg, #13294a99 0%, #13294a00 45%); }
 .benefitsIntro .sectionHeading { max-width: 700px; margin-bottom: 0; }
-.benefitsIntro .eyebrow { color: #e9ca92; }
-.benefitsIntro .lead { max-width: 610px; color: #fff3e2; font-size: 17px; }
+.benefitsIntro .eyebrow { color: #e0bd7a; }
+.benefitsIntro .lead { max-width: 610px; color: #d9e1ec; font-size: 17px; }
 .benefitGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: -32px; }
-.benefit { padding: 28px; border: 1px solid #e6d4b8; border-radius: var(--radius-card); background: #fffaf1; box-shadow: 0 8px 20px #78562908; }
+.benefit { padding: 28px; border: 1px solid #e9e6e1; border-radius: var(--radius-card); background: #fff; box-shadow: 0 10px 28px #1823340f; }
 .benefitIcon { display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border: 1px solid #dfc399; border-radius: 50%; background: #f5e8d3; color: #94672e; }
 .benefitIcon svg { width: 26px; height: 26px; stroke-width: 1.5; }
-.benefit h3 { margin-top: 16px; max-width: 330px; }
-.benefit p { margin-top: 18px; color: #685a4b; font-size: 15px; line-height: 1.85; }
+.benefit h3 { margin-top: 16px; max-width: 330px; color: #111; }
+.benefit p { margin-top: 18px; color: #111; font-size: 15px; line-height: 1.85; }
 .processSection { position: relative; border-block: 1px solid var(--line); padding-block: 80px; background: radial-gradient(ellipse at 90% 0, #e9edf4 0, transparent 38%), #f8f5ef; }
 .processIntro { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); align-items: center; gap: 64px; }
 .processIntro .sectionHeading { margin-bottom: 0; }
@@ -117,13 +117,14 @@
 .stepCopy { position: relative; z-index: 1; }
 .steps h3 { font-size: 27px; }
 .steps p { margin-top: 14px; font-size: 14px; line-height: 1.85; color: #536074; }
-.processNote { display: flex; align-items: center; gap: 50px; margin-top: 12px; padding: 26px 32px; border-radius: var(--radius-card); background: #eee8dd; font-size: 15px; }
+.processNote { display: flex; align-items: center; gap: 50px; margin-top: 12px; padding: 26px 32px; border-radius: var(--radius-card); background: #1d3f69; color: #e3eaf3; font-size: 15px; box-shadow: 0 16px 34px #1d3f6926; }
 .processNoteMessage { display: flex; align-items: flex-start; gap: 20px; flex: 1; min-width: 0; }
-.processNoteIcon { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; border: 1px solid #ceb78c; border-radius: 50%; background: #f8eddb; color: #94672e; }
+.processNoteIcon { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; border: 1px solid #e0bd7a99; border-radius: 50%; background: #ffffff14; color: #e0bd7a; }
 .processNoteIcon svg { width: 26px; height: 26px; stroke-width: 1.75; }
 .processNote p { flex: 1; }
-.processNote strong { display: block; margin-bottom: 6px; color: var(--navy); font-size: 18px; }
-.processNote .textLink { flex-shrink: 0; margin-top: 0; }
+.processNote strong { display: block; margin-bottom: 6px; color: #fff; font-size: 18px; }
+.processNote .textLink { flex-shrink: 0; margin-top: 0; border-color: #e0bd7a; color: #fff; }
+.processNote .textLink:hover { color: #e0bd7a; }
 .regionsSection { padding-block: 80px; background: #eee8dd; }
 .regionGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
 .regionImageLink { position: relative; isolation: isolate; display: flex; align-items: flex-end; min-height: 500px; height: 100%; overflow: hidden; background: #514434; color: #fffaf1; }
@@ -296,7 +297,7 @@
   .sectionHeading { margin-bottom: 32px; }
   .benefitGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .benefitsIntro { padding-block: 50px 76px; }
-  .benefitsPhoto::after { background: linear-gradient(90deg, #30271ee0, #49382266); }
+  .benefitsPhoto::after { background: linear-gradient(90deg, #17345ad9, #1d3f6973); }
   .processIntro { grid-template-columns: 1fr; gap: 30px; }
   .processImage { aspect-ratio: 16 / 9; }
   .processSection, .regionsSection, .teamSection { padding-block: 60px; }
@@ -361,7 +362,7 @@
   .benefit { padding: 24px; }
   .benefitsIntro { padding-block: 42px 68px; }
   .benefitsPhoto img { object-position: 66% center; }
-  .benefitsPhoto::after { background: #30271ead; }
+  .benefitsPhoto::after { background: #17345ab8; }
   .benefitsIntro .lead { font-size: 15px; }
   .benefitGrid { margin-top: -24px; }
   .processImage, .faqImage { aspect-ratio: 3 / 2; }
