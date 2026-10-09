@@ -12,23 +12,25 @@ const canonicalLocations = getCanonicalLocations(locations as LocationEntry[]);
 // coast, including feed noise) dilutes internal links, so each coast shows a
 // curated set of key towns; the full list stays reachable from the catalogue
 // filters. Regions without an entry (e.g. Cyprus) keep their complete, short list.
+// Ordered by expected demand: this order is the server-rendered fallback
+// until live offer counts re-rank the list in the browser.
 const MENU_TOWNS: Record<string, string[]> = {
   costa_blanca: [
-    "Alicante", "Altea", "Benidorm", "Calpe", "Ciudad Quesada", "Denia", "Finestrat",
-    "Gran Alacant", "Guardamar del Segura", "Javea", "La Zenia", "Orihuela Costa",
-    "Pilar de la Horadada", "San Miguel de Salinas", "Santa Pola", "Torrevieja", "Villamartin",
+    "Torrevieja", "Orihuela Costa", "Alicante", "Calpe", "Benidorm", "Guardamar del Segura",
+    "Javea", "Denia", "Altea", "Finestrat", "Santa Pola", "Pilar de la Horadada",
+    "Ciudad Quesada", "San Miguel de Salinas", "Villamartin", "La Zenia", "Gran Alacant",
   ],
   costa_calida: [
-    "Aguilas", "Cartagena", "La Manga del Mar Menor", "Los Alcazares", "Mazarron", "Murcia",
-    "San Javier", "San Pedro del Pinatar", "Torre Pacheco",
+    "San Pedro del Pinatar", "Los Alcazares", "Torre Pacheco", "San Javier", "Cartagena",
+    "La Manga del Mar Menor", "Mazarron", "Aguilas", "Murcia",
   ],
   costa_del_sol: [
-    "Benahavis", "Benalmadena", "Casares", "Estepona", "Fuengirola", "Malaga", "Manilva",
-    "Marbella", "Mijas", "Nerja", "Torremolinos",
+    "Marbella", "Estepona", "Mijas", "Fuengirola", "Benahavis", "Malaga", "Benalmadena",
+    "Manilva", "Torremolinos", "Casares", "Nerja",
   ],
-  costa_de_almeria: ["Cuevas del Almanzora", "Mojacar", "Pulpi", "San Juan de los Terreros", "Vera"],
+  costa_de_almeria: ["Vera", "Pulpi", "San Juan de los Terreros", "Mojacar", "Cuevas del Almanzora"],
   costa_brava: [],
-  mallorca: ["Calvia", "Palma de Mallorca", "Puerto de Andratx"],
+  mallorca: ["Palma de Mallorca", "Calvia", "Puerto de Andratx"],
 };
 
 function curatedMenuTowns(regionId: string, towns: LocationEntry[]) {
@@ -73,4 +75,29 @@ export function navigationRegionLabel(name: string, locale: SiteLocale) {
   if (name === "Cypr Południowy" && locale === "en") return "Southern Cyprus";
   if (name === "Mallorca" && locale === "pl") return "Majorka";
   return name;
+}
+
+// ---- Mega-menu v2 (09.10.2026): flat panel, towns ranked by live offer counts ----
+
+/** Spanish coasts shown side by side in the desktop panel. */
+export const MENU_COASTS = ["costa_blanca", "costa_del_sol", "costa_calida", "costa_de_almeria"];
+export const MENU_TOWNS_LIMIT = 8;
+
+const canonicalById = new Map(canonicalLocations.map((location) => [location.id, location]));
+export const menuLocationById = (id: string) => canonicalById.get(id);
+
+/** Every canonical town of a coast — candidates ranked by /api/menu-locations. */
+export function menuTownCandidates(coastId: string) {
+  return canonicalLocations.filter(
+    (location) => location.parentId === coastId && ["town", "city"].includes(location.type),
+  );
+}
+
+export type MenuTown = { id: string; name: string; count: number | null };
+
+/** Server-rendered fallback (no counts) until live counts arrive in the browser. */
+export function staticMenuTowns(coastId: string): MenuTown[] {
+  return curatedMenuTowns(coastId, menuTownCandidates(coastId))
+    .slice(0, MENU_TOWNS_LIMIT)
+    .map((town) => ({ id: town.id, name: town.name, count: null }));
 }

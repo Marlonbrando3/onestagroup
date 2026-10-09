@@ -190,7 +190,7 @@ export default function Header({
           </Link>
 
           <nav aria-label={isEn ? "Main navigation" : "Menu główne"} className="hidden self-stretch items-center justify-end gap-1 xl:flex">
-            <PropertiesNavigation key={router.asPath} locale={locale} />
+            <PropertiesNavigation key={router.asPath} locale={locale} onConsultation={handleConsultationClick} />
             {navItems.map((item) => (
               <Link
                 key={item.href}

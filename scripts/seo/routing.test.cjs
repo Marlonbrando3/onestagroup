@@ -316,3 +316,32 @@ test("withdrawn properties and rentals are absent from catalogue and detail", as
 });
 
 module.exports = { harness, fixtures };
+test("mega-menu counts mirror catalogue town matching and rank by offers", async () => {
+  const base = fixtures[0];
+  const row = (id, town, extra = {}) => ({ ...base, id: 1000 + id, external_id: `M-${id}`, town, ...extra });
+  const rows = [
+    ...Array.from({ length: 5 }, (_, i) => row(i, "Torrevieja")),
+    row(10, "torrevieja"), // case variant — catalogue uses ILIKE
+    row(11, "Los Alcazares"),
+    row(12, "Los Alcázares"), // accent variant of the same canonical location
+    ...Array.from({ length: 3 }, (_, i) => row(20 + i, "Marbella")),
+    row(30, "Marbella", { status: "WYCOFANA" }), // withdrawn — excluded like in the catalogue
+    row(31, "Calpe", { operation: "rent" }), // rental — excluded
+  ];
+  const { load } = harness(rows);
+  const handler = load("pages/api/menu-locations.ts").default;
+  let status, body;
+  const res = { setHeader() {}, status(code) { status = code; return this; }, json(data) { body = data; return this; } };
+  await handler({}, res);
+  assert.equal(status, 200);
+  const blanca = body.coasts.costa_blanca;
+  assert.equal(blanca[0].name, "Torrevieja");
+  assert.equal(blanca[0].count, 6);
+  assert.ok(!blanca.some((t) => t.name === "Calpe"), "towns without public offers are hidden");
+  assert.equal(body.coasts.costa_calida.find((t) => /Alc/.test(t.name)).count, 2);
+  assert.equal(body.coasts.costa_del_sol.find((t) => t.name === "Marbella").count, 3);
+  for (const towns of Object.values(body.coasts)) {
+    assert.ok(towns.length <= 8);
+    for (let i = 1; i < towns.length; i++) assert.ok(towns[i - 1].count >= towns[i].count);
+  }
+});
