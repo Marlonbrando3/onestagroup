@@ -56,7 +56,14 @@ export default function Footer({ locale = "pl" }: { locale?: SiteLocale }) {
         { label: "Properties in Spain", href: "/en/properties/spain" },
         { label: "Properties in Cyprus", href: "/en/properties/cyprus" },
       ]
-    : [...menuItems, { label: "Newsletter", href: "/newsletter" }];
+    : [
+        ...menuItems,
+        {
+          label: "Polskie biuro nieruchomości w Hiszpanii",
+          href: "/polskie-biuro-nieruchomosci-w-hiszpanii",
+        },
+        { label: "Newsletter", href: "/newsletter" },
+      ];
 
   return (
     <footer
@@ -152,9 +159,10 @@ export default function Footer({ locale = "pl" }: { locale?: SiteLocale }) {
       <div className="border-t border-[#e5dac7] bg-[#182334] text-white">
         <div className="mx-auto flex w-11/12 max-w-7xl flex-col gap-3 py-4 text-[11px] uppercase tracking-[0.14em] text-white/75 md:flex-row md:items-center md:justify-between">
           <p>
+            <strong className="normal-case">Onesta Group</strong>{" "}
             {isEn
-              ? "Onesta Group Sp. z o.o. All rights reserved."
-              : "Onesta Group Sp. z o.o. Wszystkie prawa zastrzeżone."}
+              ? "Sp. z o.o. All rights reserved."
+              : "Sp. z o.o. Wszystkie prawa zastrzeżone."}
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link

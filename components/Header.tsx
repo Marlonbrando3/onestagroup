@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaRegUser } from "react-icons/fa";
 import { HomeMontserratSans as MontserratSans } from "../fonts/homeFonts";
-import Logotype from "../public/logotype_full_new.png";
 import { localePath, SiteLocale } from "@/lib/i18n";
 
 type HeaderProps = {
@@ -182,7 +181,7 @@ export default function Header({
             className="relative block h-[50px] w-[154px] shrink-0 xl:h-[56px] xl:w-[180px]"
           >
             <Image
-              src={Logotype}
+              src="/logotype_full_new.png"
               alt="Onesta Group"
               fill
               sizes="180px"

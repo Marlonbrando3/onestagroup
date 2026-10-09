@@ -24,6 +24,14 @@ import { getCoastLabelFromProvince, getCountryLabel } from "@/lib/regionMap";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { validTitleOrEmpty } from "@/lib/titlesDictionary";
 import { propertyImageUrl } from "@/lib/propertyImages";
+import {
+  imageUrls,
+  descriptionValue,
+  featureValues,
+  featureLabel,
+} from "@/lib/presentationOffer";
+import OfferPdfButton from "@/components/agent/OfferPdfButton";
+import type { OfferPdfContact } from "@/lib/offerPdf";
 import Logotype from "@/public/logotype_full_new.png";
 
 type PresentationOfferProps = {
@@ -32,48 +40,12 @@ type PresentationOfferProps = {
   images: string[];
   description: string;
   features: string[];
+  contact: OfferPdfContact;
 };
 
 function formatPrice(value: number | null) {
   const numeric = Number(value || 0);
   return numeric ? `${numeric.toLocaleString("pl-PL")} €` : "Cena na zapytanie";
-}
-
-function featureLabel(value: string) {
-  const normalized = value.trim().toLowerCase();
-  const labels: Record<string, string> = {
-    "air-conditioning": "Klimatyzacja",
-    "air conditioning": "Klimatyzacja",
-    "private-pool": "Prywatny basen",
-    "private pool": "Prywatny basen",
-    "swimming-pool": "Basen",
-    "swimming pool": "Basen",
-    "community-pool": "Basen wspólnotowy",
-    elevator: "Winda",
-    garden: "Ogród",
-    terrace: "Taras",
-    solarium: "Solarium",
-    garage: "Garaż",
-    "private-parking": "Prywatny parking",
-    "underground-parking": "Parking podziemny",
-    "sea-view": "Widok na morze",
-    "sea views": "Widok na morze",
-    "mountain-views": "Widok na góry",
-    "built-in-closets": "Szafy w zabudowie",
-    "storage-room": "Pomieszczenie gospodarcze",
-    "video-door-entry": "Wideodomofon",
-    gym: "Siłownia",
-    spa: "Spa",
-    sauna: "Sauna",
-    playground: "Plac zabaw",
-  };
-
-  if (labels[normalized]) return labels[normalized];
-  return value
-    .replace(/[-_]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/^./, (letter) => letter.toUpperCase());
 }
 
 export default function PresentationOfferPage({
@@ -82,6 +54,7 @@ export default function PresentationOfferPage({
   images,
   description,
   features,
+  contact,
 }: PresentationOfferProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const typeLabel =
@@ -161,8 +134,15 @@ export default function PresentationOfferPage({
             <Link href={`/oferty/${token}`} className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.11em] text-[#6b5a3d] transition hover:text-[#182334]">
               <FaArrowLeft aria-hidden="true" /> Wróć do prezentacji
             </Link>
-            <div className="relative h-[42px] w-[135px]">
-              <Image src={Logotype} alt="Onesta Group" fill sizes="135px" className="object-contain" priority />
+            <div className="flex flex-wrap items-center justify-end gap-3">
+              <OfferPdfButton
+                offer={offer}
+                contact={contact}
+                publicPath={`/oferty/${encodeURIComponent(token)}/${encodeURIComponent(offer.external_id)}`}
+              />
+              <div className="relative h-[42px] w-[135px]">
+                <Image src={Logotype} alt="Onesta Group" fill sizes="135px" className="object-contain" priority />
+              </div>
             </div>
           </div>
         </div>
@@ -310,71 +290,6 @@ export default function PresentationOfferPage({
   );
 }
 
-function imageUrls(value: unknown): string[] {
-  let normalized = value;
-  if (typeof normalized === "string") {
-    try {
-      normalized = JSON.parse(normalized);
-    } catch {
-      normalized = [normalized];
-    }
-  }
-
-  if (!Array.isArray(normalized)) return [];
-  return Array.from(
-    new Set(
-      normalized
-        .map((image: any) =>
-          typeof image === "string" ? image : image?.url || image?.src || "",
-        )
-        .map((url) => String(url || "").trim())
-        .filter(Boolean),
-    ),
-  );
-}
-
-function featureValues(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return Array.from(new Set(value.map((item) => String(item || "").trim()).filter(Boolean)));
-  }
-  if (value && typeof value === "object") {
-    const nested = (value as Record<string, unknown>).feature;
-    return featureValues(nested);
-  }
-  if (typeof value === "string" && value.trim()) return [value.trim()];
-  return [];
-}
-
-function descriptionValue(value: unknown): string {
-  let raw = "";
-  if (typeof value === "string") raw = value;
-  if (value && typeof value === "object" && !Array.isArray(value)) {
-    const descriptions = value as Record<string, unknown>;
-    raw = String(
-      descriptions.pl ||
-        descriptions.en ||
-        Object.values(descriptions).find((item) => typeof item === "string") ||
-        "",
-    );
-  }
-
-  return raw
-    .replace(/<\s*br\s*\/?>/gi, "\n")
-    .replace(/<li[^>]*>/gi, "\n• ")
-    .replace(/<\/li\s*>/gi, "")
-    .replace(/<\/(p|div|h[1-6])\s*>/gi, "\n\n")
-    .replace(/<[^>]+>/g, "")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/\r/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
-
 export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = async (
   context,
 ) => {
@@ -403,7 +318,7 @@ export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = as
 
   const { data: presentation, error } = await supabaseServer
     .from("agent_offer_lists")
-    .select("offers")
+    .select("offers,contact_name,contact_email,contact_phone,agent_name,agent_email")
     .eq("public_token", token)
     .maybeSingle();
 
@@ -449,6 +364,11 @@ export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = as
       images: imageUrls(offer.images),
       description: descriptionValue(offer.descriptions),
       features: featureValues(offer.features),
+      contact: {
+        name: presentation.contact_name || presentation.agent_name || "",
+        email: presentation.contact_email || presentation.agent_email || "",
+        phone: presentation.contact_phone || "",
+      },
     },
   };
 };

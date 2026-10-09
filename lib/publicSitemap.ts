@@ -19,7 +19,14 @@ export function sitemapXml(entries: SitemapEntry[]) {
 }
 export async function sitemapEntries(): Promise<SitemapEntry[]> {
   if (!supabaseServer) throw new Error("Sitemap database unavailable");
-  const entries: SitemapEntry[] = ["/", "/en", "/abc", "/blog"].map((path) => ({
+  const entries: SitemapEntry[] = [
+    "/",
+    "/en",
+    "/abc",
+    "/blog",
+    "/polskie-biuro-nieruchomosci-w-hiszpanii",
+    "/zarzadzanie-nieruchomosciami-w-hiszpanii",
+  ].map((path) => ({
     loc: SITE_URL + path,
   }));
   for (const locale of ["pl", "en"] as const) {

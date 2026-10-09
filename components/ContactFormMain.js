@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { HomeMontserratSans as MontserratSans } from "../fonts/homeFonts";
 import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion";
 
-export default function ContactFormMain({ locale = "pl", contained = false }) {
+export default function ContactFormMain({ locale = "pl", contained = false, reference = "Strona główna", className = "" }) {
   const router = useRouter();
   const submitButton = useRef();
   const isEn = locale === "en";
@@ -47,7 +47,7 @@ export default function ContactFormMain({ locale = "pl", contained = false }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          Ref: "Strona główna",
+          Ref: reference,
           dataForm,
           consents,
           source: router.asPath,
@@ -93,22 +93,22 @@ export default function ContactFormMain({ locale = "pl", contained = false }) {
   return (
     <div
       id="contact"
-      className={`${MontserratSans.className} overflow-hidden bg-[#111827] shadow-2xl ${contained ? "mx-auto mb-12 w-[90vw] max-w-[1180px] md:mb-16" : ""}`}
+      className={`${MontserratSans.className} overflow-hidden bg-[#111827] shadow-2xl ${contained ? "mx-auto mb-12 w-[90vw] max-w-[1180px] md:mb-16" : ""} ${className}`}
     >
-      <div className="grid lg:grid-cols-[0.82fr_1.18fr]">
-        <aside className="relative min-h-[360px] p-8 text-white lg:p-10">
-          <div className="absolute inset-0 bg-[url('/contactformbg.webp')] bg-cover bg-center opacity-35" />
-          <div className="absolute inset-0 bg-[#111827]/82" />
-          <div className="relative">
-            <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#d6b36a]">
-              Onesta Group
+      <div data-contact-layout className="grid lg:grid-cols-[0.82fr_1.18fr]">
+        <aside data-contact-aside className="relative min-h-[360px] p-8 text-white lg:p-10">
+          <div data-contact-photo className="absolute inset-0 bg-[url('/contactformbg.webp')] bg-cover bg-center opacity-35" />
+          <div data-contact-overlay className="absolute inset-0 bg-[#111827]/82" />
+          <div data-contact-content className="relative">
+            <p data-contact-eyebrow className="text-sm font-bold uppercase tracking-[0.24em] text-[#d6b36a]">
+              <strong className="normal-case">Onesta Group</strong>
             </p>
-            <h3 className="mt-4 text-3xl font-semibold leading-tight">
+            <h3 data-contact-heading="intro" className="mt-4 text-3xl font-semibold leading-tight">
               {isEn
                 ? "Let’s talk about a safe property purchase abroad."
                 : "Porozmawiajmy o bezpiecznym zakupie nieruchomości."}
             </h3>
-            <div className="mt-10 space-y-7 text-sm leading-7 text-white/78">
+            <div data-contact-details className="mt-10 space-y-7 text-sm leading-7 text-white/78">
               <div>
                 <p className="font-bold text-white">
                   {isEn ? "Client office" : "Biuro dla klientów"}
@@ -118,13 +118,21 @@ export default function ContactFormMain({ locale = "pl", contained = false }) {
               </div>
               <div>
                 <p className="font-bold text-white">
+                  {isEn ? "Office in Spain" : "Biuro w Hiszpanii"}
+                </p>
+                <p>Calle Abel 19</p>
+                <p>30720 San Javier</p>
+                <p>{isEn ? "Spain" : "Hiszpania"}</p>
+              </div>
+              <div>
+                <p className="font-bold text-white">
                   {isEn ? "Company registered office" : "Siedziba firmy"}
                 </p>
-                <p>Onesta Group sp. z o.o.</p>
+                <p><strong>Onesta Group</strong> sp. z o.o.</p>
                 <p>53-148 Wrocław, ul. Wolbromska 18/1b</p>
                 <p>NIP: 899 292 23 78</p>
               </div>
-              <div>
+              <div data-contact-direct>
                 <p>
                   <a href="mailto:biuro@onesta.com.pl">
                     biuro@onesta.com.pl
@@ -139,22 +147,24 @@ export default function ContactFormMain({ locale = "pl", contained = false }) {
         </aside>
 
         <form className="bg-white p-6 md:p-8 lg:p-10" onSubmit={handleSubmit}>
-          <div className="mb-8">
-            <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#b8954c]">
+          <div data-contact-form-heading className="mb-8">
+            <p data-contact-eyebrow className="text-sm font-bold uppercase tracking-[0.22em] text-[#b8954c]">
               {isEn ? "Contact form" : "Formularz kontaktowy"}
             </p>
-            <h3 className="mt-2 text-2xl font-bold text-[#182334] md:text-3xl">
+            <h3 data-contact-heading="form" className="mt-2 text-2xl font-bold text-[#182334] md:text-3xl">
               {isEn
                 ? "Tell us what you are looking for. We will reply with specific guidance."
                 : "Napisz, czego szukasz. Oddzwonimy z konkretną odpowiedzią."}
             </h3>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div data-contact-fields className="grid gap-4 md:grid-cols-2">
             <input
               className={inputClass}
               type="text"
               placeholder={isEn ? "Full name" : "Imię i nazwisko"}
+              aria-label={isEn ? "Full name" : "Imię i nazwisko"}
+              autoComplete="name"
               required
               onChange={(e) =>
                 setDataForm({ ...dataForm, Name: e.target.value })
@@ -165,6 +175,8 @@ export default function ContactFormMain({ locale = "pl", contained = false }) {
               className={inputClass}
               type="tel"
               placeholder={isEn ? "Phone number" : "Numer telefonu"}
+              aria-label={isEn ? "Phone number" : "Numer telefonu"}
+              autoComplete="tel"
               required
               onChange={(e) =>
                 setDataForm({ ...dataForm, Phone: e.target.value })
@@ -175,6 +187,8 @@ export default function ContactFormMain({ locale = "pl", contained = false }) {
               className={`${inputClass} md:col-span-2`}
               type="email"
               placeholder={isEn ? "Email address" : "Adres email"}
+              aria-label={isEn ? "Email address" : "Adres email"}
+              autoComplete="email"
               required
               onChange={(e) =>
                 setDataForm({ ...dataForm, Email: e.target.value })
@@ -188,13 +202,14 @@ export default function ContactFormMain({ locale = "pl", contained = false }) {
                   ? "Describe your budget, country, timing and purchase goal"
                   : "Opisz budżet, kraj, termin i cel zakupu"
               }
+              aria-label={isEn ? "Your purchase plans" : "Twoje plany zakupu"}
               onChange={(e) =>
                 setDataForm({ ...dataForm, Message: e.target.value })
               }
             />
           </div>
 
-          <div className="mt-6 space-y-3 text-sm leading-6 text-[#475569]">
+          <div data-contact-consents className="mt-6 space-y-3 text-sm leading-6 text-[#475569]">
             <label className="flex items-start gap-3">
               <input
                 type="checkbox"
@@ -225,8 +240,8 @@ export default function ContactFormMain({ locale = "pl", contained = false }) {
               />
               <span>
                 {isEn
-                  ? "I consent to the processing of my personal data by Onesta Group Sp. z o.o. for marketing purposes, including contact by phone and email to present property offers."
-                  : "Wyrażam zgodę na przetwarzanie moich danych osobowych przez Onesta Group Sp. z o.o. w celach marketingowych, w tym na kontakt telefoniczny oraz mailowy w celu przedstawienia ofert nieruchomości."}
+                  ? <>I consent to the processing of my personal data by <strong>Onesta Group</strong> Sp. z o.o. for marketing purposes, including contact by phone and email to present property offers.</>
+                  : <>Wyrażam zgodę na przetwarzanie moich danych osobowych przez <strong>Onesta Group</strong> Sp. z o.o. w celach marketingowych, w tym na kontakt telefoniczny oraz mailowy w celu przedstawienia ofert nieruchomości.</>}
               </span>
             </label>
           </div>

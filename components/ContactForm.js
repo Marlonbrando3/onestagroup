@@ -39,7 +39,7 @@ export default function ContactForm({ propertyId, propertyRef }) {
           trackGoogleAdsContactConversion();
           console.log("Response succeeded!");
           router.push({
-            pathname: "https://onesta.com.pl/thankyoupage",
+            pathname: "/thankyoupage",
           });
         } else {
           submitButton.current.innerHTML = "Coś poszło nie tak";

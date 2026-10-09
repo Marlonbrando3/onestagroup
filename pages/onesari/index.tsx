@@ -2186,7 +2186,7 @@ export default function OnesariPage() {
       typeof window !== "undefined" &&
       ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
-    if (!isLocalhost) {
+    if (!isLocalhost && process.env.NEXT_PUBLIC_IMPORT_RUNTIME !== "vercel") {
       const endpoint =
         kind === "metainmo"
           ? "/.netlify/functions/metainmoToSupabase-background"

@@ -9,6 +9,7 @@ import {
   FaSave,
   FaTimes,
 } from "react-icons/fa";
+import OfferPdfButton from "@/components/agent/OfferPdfButton";
 import AgentHeader from "@/components/agent/AgentHeader";
 import PropertyCard from "@/components/SearchEngine/PropertyCard";
 import { HomeMontserratSans } from "@/fonts/homeFonts";
@@ -31,6 +32,7 @@ export default function PresentationEditor({
   const router = useRouter();
   const [accessToken, setAccessToken] = useState("");
   const [agent, setAgent] = useState<AgentIdentity | null>(null);
+  const [publicToken, setPublicToken] = useState("");
   const [currentId, setCurrentId] = useState(presentationId || "");
   const [offers, setOffers] = useState<AgentOffer[]>([]);
   const [presentationName, setPresentationName] = useState("");
@@ -101,6 +103,7 @@ export default function PresentationEditor({
         setAgent(payload.agent || null);
         if (presentationId) {
           const presentation = payload.data;
+          setPublicToken(presentation?.public_token || "");
           setOffers(Array.isArray(presentation?.offers) ? presentation.offers : []);
           setPresentationName(presentation?.presentation_name || "");
           setContactName(presentation?.contact_name || presentation?.agent_name || "");
@@ -193,6 +196,7 @@ export default function PresentationEditor({
         return;
       }
 
+      setPublicToken(token || "");
       setCurrentId(savedId);
       setGeneratedUrl(`${window.location.origin}/oferty/${token}`);
     } catch (error: any) {
@@ -346,6 +350,14 @@ export default function PresentationEditor({
                 {offers.map((offer, index) => (
                   <div key={offer.external_id} className="relative min-w-0">
                     <PropertyCard property={offer} />
+                    <div className="mt-3">
+                      <OfferPdfButton
+                        offer={offer}
+                        contact={{ name: contactName, email: contactEmail, phone: contactPhone }}
+                        accessToken={accessToken}
+                        publicPath={publicToken ? `/oferty/${encodeURIComponent(publicToken)}/${encodeURIComponent(offer.external_id)}` : undefined}
+                      />
+                    </div>
                     <span className="absolute left-3 top-3 z-30 flex h-9 min-w-9 items-center justify-center rounded-full bg-[#d6b66f] px-2 text-[11px] font-extrabold text-[#182334] shadow-lg">
                       {index + 1}
                     </span>

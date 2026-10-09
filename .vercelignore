@@ -1,5 +1,8 @@
 # Lokalne kopie historii edytora nie są częścią aplikacji.
 .history
+.netlify
+.next
+node_modules
 
 # Stare funkcje tła Netlify nie są używane przez wdrożenie Vercel.
 netlify

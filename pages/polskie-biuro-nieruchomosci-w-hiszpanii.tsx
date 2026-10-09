@@ -1,0 +1,606 @@
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { Fragment, type CSSProperties } from "react";
+import { FiArrowRight, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPlus, FiSearch, FiShield } from "react-icons/fi";
+import ContactFormMain from "@/components/ContactFormMain";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import AgencyPropertySearch from "@/components/AgencyPropertySearch";
+import AgencyQuickContact from "@/components/AgencyQuickContact";
+import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
+import { SITE_URL } from "@/lib/publicSeo";
+import Team from "@/data/team.json";
+import {
+  agencyBenefits,
+  agencyFaqs,
+  agencyPage,
+  agencyRegions,
+  agencySteps,
+} from "@/data/polishAgency";
+import styles from "@/styles/polishAgency.module.css";
+
+const pageUrl = SITE_URL + agencyPage.path;
+const organizationId = SITE_URL + "/#organization";
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "RealEstateAgent",
+      "@id": organizationId,
+      name: "Onesta Group",
+      legalName: "Onesta Group Sp. z o.o.",
+      url: SITE_URL,
+      logo: SITE_URL + "/logotype_full_new.png",
+      telephone: "+48576652525",
+      email: "biuro@onesta.com.pl",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "ul. Wolbromska 18/1b",
+        postalCode: "53-148",
+        addressLocality: "Wrocław",
+        addressCountry: "PL",
+      },
+      areaServed: [
+        ...agencyRegions.map(({ name }) => name),
+        "Alicante",
+        "Torrevieja",
+      ].map((name) => ({ "@type": "Place", name })),
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+48576652525",
+        email: "biuro@onesta.com.pl",
+        contactType: "customer service",
+        availableLanguage: ["pl"],
+      },
+    },
+    {
+      "@type": "WebPage",
+      "@id": pageUrl + "#webpage",
+      url: pageUrl,
+      name: agencyPage.title,
+      description: agencyPage.description,
+      inLanguage: "pl-PL",
+      about: { "@id": organizationId },
+      publisher: { "@id": organizationId },
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: SITE_URL + agencyPage.image,
+      },
+      breadcrumb: { "@id": pageUrl + "#breadcrumbs" },
+      mainEntity: { "@id": pageUrl + "#service" },
+      hasPart: { "@id": pageUrl + "#faq" },
+    },
+    {
+      "@type": "Service",
+      "@id": pageUrl + "#service",
+      name: "Polskojęzyczna obsługa zakupu nieruchomości w Hiszpanii",
+      serviceType: "Pośrednictwo w zakupie nieruchomości",
+      provider: { "@id": organizationId },
+      areaServed: { "@type": "Country", name: "Hiszpania" },
+      description:
+        "Selekcja ofert, organizacja prezentacji, koordynacja procesu zakupu i uzgodniona pomoc po transakcji. Biura na Costa Blanca i biura współpracujące na Costa del Sol. Obsługa zawsze po polsku.",
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": pageUrl + "#breadcrumbs",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Strona główna", item: SITE_URL },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Polskie biuro nieruchomości w Hiszpanii",
+          item: pageUrl,
+        },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      "@id": pageUrl + "#faq",
+      inLanguage: "pl-PL",
+      mainEntity: agencyFaqs.map(({ question, answer }) => ({
+        "@type": "Question",
+        name: question,
+        acceptedAnswer: { "@type": "Answer", text: answer },
+      })),
+    },
+  ],
+};
+
+const agencyTeam = [
+  ...Team,
+  {
+    id: 4,
+    name: "Dominik Michałowski",
+    title: "Partner · zarządzanie nieruchomościami",
+    photo: "dominik.png",
+  },
+  {
+    id: 5,
+    name: "Damian Włodarkiewicz",
+    title: "Zarządzanie nieruchomościami, zespołem, procesami i marketingiem",
+    photo: "damian.png",
+  },
+];
+
+const teamIntros: Record<number, string> = {
+  1: "Porządkuje potrzeby, szczegóły ofert i kolejne kroki zakupu. Dba o jasną komunikację w całym procesie.",
+  2: "Pomaga poznać regiony i ich codzienne życie, aby miejsce odpowiadało Twoim planom, także poza sezonem.",
+  3: "Omawia cele zakupu, porównuje możliwości i pomaga doprecyzować kryteria wyboru nieruchomości. Przygotowuje oferty, prowadzi przez proces preselekcji i planuje prezentacje.",
+  4: "Prowadzi prezentacje nieruchomości i pomaga zorganizować opiekę nad nimi po zakupie. Koordynuje bieżące sprawy na miejscu i kontakt z właścicielami.",
+  5: "Łączy zarządzanie nieruchomościami, zespołem i procesami z działaniami marketingowymi, aby zwiększać efektywność i maksymalizować rentowność wynajmu dla właścicieli, z którymi współpracujemy.",
+};
+
+const benefitIcons = [FiMessageCircle, FiMapPin, FiCompass, FiHome, FiFileText, FiHeart];
+const trustBenefits = [
+  { icon: FiMessageCircle, title: "Kontakt po polsku", text: "Swobodna rozmowa na każdym etapie." },
+  { icon: FiMapPin, title: "Biura na wybrzeżach", text: "Lokalny zespół i biura współpracujące." },
+  { icon: FiKey, title: "Pełne wsparcie w zakupie", text: "Od pierwszej rozmowy do odbioru kluczy." },
+  { icon: FiShield, title: "Bezpieczny proces transakcji", text: "Koordynacja formalności ze specjalistami." },
+  { icon: FiSearch, title: "Preselekcja nieruchomości", text: "Oferty dopasowane do Twoich planów." },
+  { icon: FiHome, title: "100% ofert rynku pierwotnego", text: "Dostęp dzięki współpracy z deweloperami." },
+];
+
+function Arrow() {
+  return <FiArrowRight aria-hidden="true" />;
+}
+
+function BrandName() {
+  return <strong className={styles.brandName}>Onesta Group</strong>;
+}
+
+function BrandText({ children }: { children: string }) {
+  return <>{children.split("Onesta Group").map((text, index) => (
+    <Fragment key={index}>{index > 0 && <BrandName />}{text}</Fragment>
+  ))}</>;
+}
+
+export default function PolishRealEstateAgency() {
+  return (
+    <>
+    <Header />
+    <div
+      className={`${styles.page} ${HomeMontserratSans.className}`}
+      style={{ "--agency-serif": HomePlayfairSans.style.fontFamily } as CSSProperties}
+    >
+      <Head>
+        <title>{agencyPage.title}</title>
+        <meta name="description" content={agencyPage.description} />
+        <meta
+          name="keywords"
+          content="polskie biuro nieruchomości w Hiszpanii, polskie biura nieruchomości w Hiszpanii, polskie biura nieruchomości w Alicante, polskie biuro nieruchomości w Torrevieja, polska agencja nieruchomości w Hiszpanii"
+        />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <link rel="canonical" href={pageUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="pl_PL" />
+        <meta property="og:site_name" content="Onesta Group" />
+        <meta property="og:title" content={agencyPage.title} />
+        <meta property="og:description" content={agencyPage.description} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={SITE_URL + agencyPage.image} />
+        <meta property="og:image:alt" content="Marek Marszałek i Karolina Bakowicz — zespół Onesta Group" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={agencyPage.title} />
+        <meta name="twitter:description" content={agencyPage.description} />
+        <meta name="twitter:image" content={SITE_URL + agencyPage.image} />
+        <script
+          id="polish-agency-structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+          }}
+        />
+      </Head>
+
+      <a href="#tresc" className={styles.skipLink}>Przejdź do treści</a>
+      <main id="tresc">
+        <section className={styles.heroSection} aria-labelledby="agency-h1">
+          <div className={styles.heroPhoto} aria-hidden="true">
+            <Image
+              src="/images/seo/coasts/costa-del-sol.webp"
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className={styles.cover}
+            />
+          </div>
+          <div className={`${styles.container} ${styles.hero}`}>
+            <div className={styles.heroCopy}>
+              <p className={styles.eyebrow}><BrandName /> · HISZPANIA</p>
+              <h1 id="agency-h1">
+                <span className={styles.heroLine}>Polskie biuro nieruchomości</span>{" "}
+                <span className={styles.heroLine}>w Hiszpanii</span>
+              </h1>
+              <p className={styles.heroLead}>
+                Pomagamy znaleźć Twój dom lub apartament w Hiszpanii.
+                Od wyboru ofert po odbiór kluczy — z zespołem na miejscu
+                i obsługą po polsku.
+              </p>
+            </div>
+            <div className={styles.heroTeam}>
+              <Image
+                src={agencyPage.image}
+                alt="Marek Marszałek i Karolina Bakowicz — zespół Onesta Group"
+                width={1200}
+                height={800}
+                priority
+                sizes="(min-width: 900px) 340px, (min-width: 600px) 250px, 240px"
+              />
+            </div>
+          </div>
+          <AgencyPropertySearch />
+        </section>
+
+        <section className={styles.trustSection} aria-label="Co zyskujesz z Onesta Group">
+          <div className={styles.container}>
+            <ul className={styles.trustStrip}>
+              {trustBenefits.map(({ icon: Icon, title, text }) => (
+                <li key={title}>
+                  <span className={styles.trustIcon}><Icon aria-hidden="true" /></span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <div className={`${styles.container} ${styles.breadcrumbs}`}>
+          <nav aria-label="Ścieżka nawigacji">
+            <Link href="/">Strona główna</Link>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Polskie biuro nieruchomości w Hiszpanii</span>
+          </nav>
+        </div>
+
+        <section id="o-biurze" className={`${styles.container} ${styles.about}`} aria-labelledby="about-heading">
+          <div className={styles.aboutImage}>
+            <Image
+              src="/bg_blog_main.png"
+              alt="Nadmorska okolica na Costa Blanca, z domami, ogrodami i plażą"
+              fill
+              sizes="(min-width: 900px) 45vw, 90vw"
+              className={styles.cover}
+            />
+          </div>
+          <div className={styles.aboutCopy}>
+            <p className={styles.eyebrow}>Poznaj <BrandName /></p>
+            <h2 id="about-heading">Lokalna wiedza.<br />Rozmowa po polsku.</h2>
+            <p className={styles.lead}>
+              Za zakupem nieruchomości stoją konkretne plany. Pomagamy je
+              uporządkować, porównać możliwości i wybrać odpowiednie miejsce w Hiszpanii.
+            </p>
+            <p>
+              Jako polskie biuro nieruchomości w Hiszpanii wspieramy osoby
+              szukające apartamentu na wakacje, domu do zamieszkania albo
+              nieruchomości z myślą o wynajmie. Zaczynamy od Twoich potrzeb:
+              sposobu korzystania, budżetu i oczekiwań wobec lokalizacji.
+            </p>
+            <p>
+              Mamy biura na <strong>Costa Blanca</strong> oraz biura
+              współpracujące na <strong>Costa del Sol</strong>. Łączymy
+              obecność na miejscu z obsługą klientów z Polski. Rozmowy,
+              selekcję i przygotowanie wizyty możemy rozpocząć zdalnie.
+            </p>
+            <a href="#zespol" className={styles.textLink}>Ludzie i sposób pracy <Arrow /></a>
+          </div>
+        </section>
+
+        <nav className={`${styles.container} ${styles.sectionNav}`} aria-label="Na tej stronie">
+          <span>Na tej stronie</span>
+          <a href="#atuty">Dlaczego <BrandName /></a>
+          <a href="#jak-pomagamy">Proces zakupu</a>
+          <a href="#regiony">Regiony i biura</a>
+          <a href="#costa-blanca-costa-del-sol">Costa Blanca i Costa del Sol</a>
+          <a href="#koszty">Koszty obsługi</a>
+          <a href="#pytania">Pytania i odpowiedzi</a>
+        </nav>
+
+        <section id="atuty" className={`${styles.section} ${styles.benefitsSection}`} aria-labelledby="benefits-heading">
+          <div className={styles.benefitsIntro}>
+            <div className={styles.benefitsPhoto}>
+              <Image src="/pomoc-w-wyborze/calp.webp" alt="Plaża i nadmorska zabudowa Calpe na Costa Blanca" fill sizes="100vw" className={styles.cover} />
+            </div>
+            <div className={styles.container}>
+              <div className={styles.sectionHeading}>
+                <p className={styles.eyebrow}>Dlaczego warto</p>
+                <h2 id="benefits-heading">Polskie biuro nieruchomości w Hiszpanii. Co zyskujesz?</h2>
+                <p className={styles.lead}>
+                  Łatwiejsza komunikacja to początek. Równie ważne są trafny wybór
+                  lokalizacji, porównanie ofert i dobrze zorganizowany proces.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className={`${styles.container} ${styles.benefitGrid}`}>
+            {agencyBenefits.map(({ title, text }, index) => {
+              const Icon = benefitIcons[index];
+              return (
+                <article key={title} className={styles.benefit}>
+                  <span className={styles.benefitIcon}><Icon aria-hidden="true" /></span>
+                  <h3>{title}</h3>
+                  <p><BrandText>{text}</BrandText></p>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section id="jak-pomagamy" className={styles.processSection} aria-labelledby="process-heading">
+          <div className={styles.container}>
+            <div className={styles.processIntro}>
+              <div className={styles.sectionHeading}>
+                <p className={styles.eyebrow}>Jak pomagamy</p>
+                <h2 id="process-heading">Od pierwszej rozmowy<br />do odbioru kluczy.</h2>
+                <p className={styles.lead}>
+                  Wiesz, na jakim etapie jesteś, co porównujemy i kto zajmuje się
+                  kolejnymi sprawami. Przez cały proces masz polskojęzyczną obsługę <BrandName />.
+                </p>
+              </div>
+              <div className={styles.processImage}>
+                <Image src="/images/agency/zakup-nieruchomosci-uscisk-dloni.webp" alt="Małżeństwo i doradca nieruchomości ściskają dłonie w domu na hiszpańskim wybrzeżu" fill sizes="(min-width: 900px) 40vw, 88vw" className={styles.cover} />
+              </div>
+            </div>
+            <ol className={styles.steps}>
+              {agencySteps.map(({ title, text }, index) => (
+                <li key={title}>
+                  <span className={styles.stepNumber} aria-hidden="true">0{index + 1}</span>
+                  <div className={styles.stepCopy}><h3>{title}</h3><p>{text}</p></div>
+                </li>
+              ))}
+            </ol>
+            <div className={styles.processNote}>
+              <div className={styles.processNoteMessage}>
+                <span className={styles.processNoteIcon} aria-hidden="true"><FiArrowRight /></span>
+                <p>
+                  <strong>Masz przestrzeń na decyzję.</strong> Pierwszy przyjazd
+                  może służyć poznaniu rynku. Jeżeli żadna oferta nie pasuje,
+                  wracamy do selekcji. Plan i długość prezentacji ustalamy przed podróżą.
+                </p>
+              </div>
+              <Link href="/pobytinwestorski" className={styles.textLink}>Poznaj pobyt inwestorski <Arrow /></Link>
+            </div>
+            <Link href="/blog/nieruchomosci-w-hiszpanii-jak-wyglada-proces" className={styles.textLink}>
+              Przeczytaj szczegółowy poradnik o procesie zakupu <Arrow />
+            </Link>
+          </div>
+        </section>
+
+        <section id="regiony" className={styles.regionsSection} aria-labelledby="regions-heading">
+          <div className={styles.container}>
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>Gdzie działamy</p>
+              <h2 id="regions-heading">Znajdź swoją część Hiszpanii.</h2>
+              <p className={styles.lead}>
+                Poznaj różnice między regionami, zanim wybierzesz nieruchomość.
+                Nasze biura na Costa Blanca i biura współpracujące na Costa del Sol
+                pomagają przejść od porównania lokalizacji do prezentacji na miejscu.
+              </p>
+            </div>
+            <div className={styles.regionGrid}>
+              {agencyRegions.map(({ name, slug, label, text }) => (
+                <article key={slug}>
+                  <Link href={`/nieruchomosci/hiszpania/${slug}`} className={styles.regionImageLink} aria-label={`Zobacz nieruchomości: ${name}`}>
+                    <div className={styles.regionImage}>
+                      <Image src={`/images/seo/coasts/${slug}.webp`} alt={`Nadmorski krajobraz — ${name}`} fill sizes="(min-width: 1100px) 22vw, (min-width: 600px) 44vw, 90vw" className={styles.cover} />
+                    </div>
+                    <div className={styles.regionCopy}>
+                      <p className={styles.regionLabel}>{label}</p>
+                      <h3>{name}<Arrow /></h3>
+                      <p className={styles.regionDescription}>{text}</p>
+                    </div>
+                  </Link>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <AgencyQuickContact />
+
+        <section id="costa-blanca-costa-del-sol" className={`${styles.container} ${styles.section}`} aria-labelledby="local-heading">
+          <div className={styles.sectionHeading}>
+            <p className={styles.eyebrow}>Biura i lokalna obsługa</p>
+            <h2 id="local-heading">Polskie biuro nieruchomości na Costa Blanca i Costa del Sol.</h2>
+            <p className={styles.lead}>
+              Na Costa Blanca mamy własne biura, a na Costa del Sol działamy
+              z biurami współpracującymi. W obu regionach zapewniamy obsługę
+              po polsku — od selekcji ofert po zakup.
+            </p>
+          </div>
+          <div className={styles.twoColumns}>
+            <article className={styles.localArticle}>
+              <div className={styles.localImage}>
+                <Image src="/images/seo/coasts/costa-blanca.webp" alt="Nadmorskie domy i zatoka na Costa Blanca" fill sizes="(min-width: 600px) 42vw, 88vw" className={styles.cover} />
+              </div>
+              <h3>Costa Blanca: nasze biura na miejscu</h3>
+              <p>
+                Nasze biura na Costa Blanca zapewniają lokalne wsparcie przy
+                wyborze i zakupie nieruchomości. Pomagamy porównać Alicante,
+                Torrevieję, Calpe, Guardamar del Segura i inne miejscowości
+                wybrzeża, uwzględniając Twój budżet i sposób korzystania z nieruchomości.
+              </p>
+              <p>
+                Ustalamy obszar poszukiwań, przygotowujemy preselekcję ofert
+                i planujemy prezentacje. Na miejscu pokazujemy również
+                otoczenie: plaże, sklepy, dojazdy i charakter dzielnicy.
+                Przez cały proces rozmawiasz z nami po polsku.
+              </p>
+              <Link href="/nieruchomosci/hiszpania/costa-blanca" className={styles.textLink}>Zobacz nieruchomości na Costa Blanca <Arrow /></Link>
+            </article>
+            <article className={styles.localArticle}>
+              <div className={styles.localImage}>
+                <Image src="/images/seo/coasts/costa-del-sol.webp" alt="Nadmorska zabudowa i śródziemnomorski krajobraz Costa del Sol" fill sizes="(min-width: 600px) 42vw, 88vw" className={styles.cover} />
+              </div>
+              <h3>Costa del Sol: biura współpracujące</h3>
+              <p>
+                Na Costa del Sol współpracujemy z lokalnymi biurami, łącząc
+                ich znajomość rynku z polskojęzyczną obsługą <BrandName />.
+                Pomagamy znaleźć apartament lub dom m.in. w Esteponie,
+                Marbelli, Mijas i okolicznych miejscowościach.
+              </p>
+              <p>
+                Porównujemy lokalizacje, standard inwestycji i koszty utrzymania
+                pod kątem Twoich planów. Z biurami partnerskimi organizujemy
+                prezentacje wybranych ofert i koordynujemy kolejne etapy zakupu.
+                Obsługa pozostaje po polsku także przy współpracy z lokalnymi partnerami.
+              </p>
+              <Link href="/nieruchomosci/hiszpania/costa-del-sol" className={styles.textLink}>Zobacz nieruchomości na Costa del Sol <Arrow /></Link>
+            </article>
+          </div>
+        </section>
+
+        <section className={styles.supportSection} aria-labelledby="support-heading">
+          <div className={`${styles.container} ${styles.supportGrid}`}>
+            <div>
+              <div className={styles.supportTitle}>
+                <Image
+                  src="/mediterranean-property-banner.webp"
+                  alt=""
+                  fill
+                  sizes="(min-width: 900px) 40vw, 88vw"
+                  className={styles.cover}
+                />
+                <div className={styles.supportTitleCopy}>
+                  <p className={styles.eyebrow}>Także po zakupie</p>
+                  <h2 id="support-heading">Klucze to początek<br />Twojego miejsca.</h2>
+                </div>
+              </div>
+              <p className={styles.lead}>
+                Kiedy wracasz do Polski, sprawy w Hiszpanii nadal mogą wymagać
+                lokalnej obecności. Dlatego dalszą pomoc warto zaplanować przed zakupem.
+              </p>
+              <Link href="/zarzadzanie-nieruchomosciami-w-hiszpanii" className={styles.textLink}>Poznaj obsługę nieruchomości <Arrow /></Link>
+            </div>
+            <div className={styles.supportCopy}>
+              <h3>Przygotowanie do zamieszkania</h3>
+              <p>
+                Pomagamy ustalić, co trzeba zrobić przed pierwszym pobytem:
+                odbiór, zgłoszenie usterek, media, umeblowanie czy kontakt
+                z wykonawcami. Dobieramy zakres do stanu nieruchomości i Twojego
+                planu. Usługi partnerów oraz ich koszty uzgadniamy osobno.
+              </p>
+              <h3>Organizacja opieki i wynajmu</h3>
+              <p>
+                Jeżeli chcesz powierzyć nieruchomość lokalnej firmie, pomagamy
+                w kontakcie z obsługą i określeniu potrzeb. Plan wynajmu
+                uwzględniamy już podczas selekcji ofert. Możliwości najmu
+                turystycznego sprawdza się dla konkretnej nieruchomości oraz
+                aktualnych wymogów lokalnych.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="koszty" className={`${styles.container} ${styles.section} ${styles.costGrid}`} aria-labelledby="cost-heading">
+          <div>
+            <p className={styles.eyebrow}>Jasne zasady</p>
+            <h2 id="cost-heading" className={styles.costHeading}>
+              <span>Prowizja od sprzedaży przy współpracy z <BrandName /> wynosi</span>{" "}
+              <span className={styles.costValue}>0 zł</span>{" "}
+              <span className={styles.costAudience}>dla kupującego.</span>
+            </h2>
+          </div>
+          <div>
+            <p>
+              Nie pobieramy od Ciebie prowizji za pośrednictwo w zakupie
+              nieruchomości. Nasze wynagrodzenie pokrywa sprzedający, deweloper
+              lub partner.
+            </p>
+            <p>
+              Oddzielnie ustalamy zakres i koszty dodatkowych usług, takich jak
+              obsługa prawna, tłumaczenia, wyposażenie lub zarządzanie po zakupie.
+            </p>
+            <p>
+              Cena z ogłoszenia nie jest całkowitym budżetem. Uwzględniamy
+              podatki i opłaty związane z zakupem oraz przyszłe wydatki:
+              wspólnotę, media, ubezpieczenie i utrzymanie. Koszty zależą od
+              regionu, rynku pierwotnego lub wtórnego i konkretnej transakcji.
+            </p>
+            <Link href="/blog/koszty-zakupu-nieruchomosci-hiszpania-costa-blanca" className={styles.textLink}>Przeczytaj o kosztach zakupu <Arrow /></Link>
+          </div>
+        </section>
+
+        <AgencyQuickContact variant="conversation" />
+
+        <section id="zespol" className={styles.teamSection} aria-labelledby="team-heading">
+          <div className={styles.container}>
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>Po Twojej stronie</p>
+              <h2 id="team-heading">Kim jesteśmy</h2>
+              <p className={styles.lead}>Za ofertami stoją ludzie. Z nami omówisz wybór, zadasz pytania i zaplanujesz kolejne kroki po polsku.</p>
+            </div>
+            <div className={styles.teamGrid}>
+              {agencyTeam.map((person) => (
+                <article key={person.id} data-person={person.id}>
+                  <div className={styles.teamImage}>
+                    <Image src={`/${person.photo}`} alt={person.name} fill sizes="(min-width: 1455px) 237px, (min-width: 1101px) 17vw, (min-width: 900px) 28vw, (min-width: 600px) 43vw, 88vw" className={styles.cover} />
+                  </div>
+                  <h3>{person.name}</h3>
+                  <p className={styles.teamRole}>{person.title}</p>
+                  <p>{teamIntros[person.id]}</p>
+                </article>
+              ))}
+            </div>
+            <Link href="/aboutus" className={styles.textLink}><span>Więcej o zespole <BrandName /></span> <Arrow /></Link>
+          </div>
+        </section>
+
+        <section id="pytania" className={`${styles.container} ${styles.section} ${styles.faqSection}`} aria-labelledby="faq-heading">
+          <div className={styles.sectionHeading}>
+            <p className={styles.eyebrow}>Pytania i odpowiedzi</p>
+            <h2 id="faq-heading">Co warto wiedzieć<br />przed pierwszą rozmową?</h2>
+            <p className={styles.lead}>Najczęstsze pytania o polskie biuro nieruchomości w Hiszpanii, prezentacje, formalności i dalszą opiekę.</p>
+            <div className={styles.faqImage}>
+              <Image src="/torrevieja-apartamenty-na-sprzedaz.png" alt="Słoneczna plaża i apartamenty przy morzu w Torrevieja" fill sizes="(min-width: 900px) 35vw, 88vw" className={styles.cover} />
+            </div>
+          </div>
+          <div className={styles.faqList}>
+            {agencyFaqs.map(({ question, answer }, index) => (
+              <details key={question} className={styles.faqItem}>
+                <summary>
+                  <span className={styles.faqNumber} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <span><BrandText>{question}</BrandText></span>
+                  <FiPlus aria-hidden="true" className={styles.faqIcon} />
+                </summary>
+                <p><BrandText>{answer}</BrandText></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.guidesSection} aria-labelledby="guides-heading">
+          <div className={styles.container}>
+            <p className={styles.eyebrow}>Przygotuj się do zakupu</p>
+            <h2 id="guides-heading">Więcej odpowiedzi w naszych poradnikach.</h2>
+            <div className={styles.guideGrid}>
+              {[
+                ["polskie-biuro-nieruchomosci-w-hiszpanii", "Jak wybrać biuro nieruchomości?", "Jak porównać polskie biura nieruchomości w Hiszpanii, o co zapytać i jak ustalić zakres obsługi.", "/images/seo/coasts/costa-del-sol.webp", "Nadmorskie domy i panorama wybrzeża Costa del Sol"],
+                ["nieruchomosci-w-hiszpanii-jak-wyglada-proces", "Zakup od pierwszej selekcji do aktu", "Praktyczny przewodnik po poszukiwaniach, prezentacjach i etapach transakcji.", "/costa-blanca-podstawowe-informacje.png", "Nowe domy z tarasami na Costa Blanca"],
+                ["koszty-zakupu-nieruchomosci-hiszpania-costa-blanca", "Budżet szerszy niż cena oferty", "Wydatki związane z zakupem i utrzymaniem, o których warto porozmawiać przed decyzją.", "/images/seo/coasts/costa-calida.webp", "Apartamenty i promenada nad morzem na Costa Cálida"],
+              ].map(([slug, title, text, photo, alt]) => (
+                <article key={slug}>
+                  <Link href={`/blog/${slug}`} className={styles.guideImage} tabIndex={-1} aria-hidden="true">
+                    <Image src={photo} alt={alt} fill sizes="(min-width: 600px) 28vw, 88vw" className={styles.cover} />
+                  </Link>
+                  <h3><Link href={`/blog/${slug}`}>{title} <Arrow /></Link></h3>
+                  <p>{text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="kontakt" className={styles.contactSection} aria-label="Kontakt z Onesta Group">
+          <ContactFormMain className={styles.contactForm} reference="Polskie biuro nieruchomości w Hiszpanii" />
+          <p className={styles.contactNote}>Pierwsza konsultacja jest bezpłatna. Obsługa zawsze po polsku.</p>
+        </section>
+      </main>
+
+    </div>
+    <Footer />
+    </>
+  );
+}

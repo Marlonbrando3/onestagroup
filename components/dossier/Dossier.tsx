@@ -23,7 +23,7 @@ function Sheet({ offer, page, label, children, className = "" }: { offer: Dossie
     </header>
     <div className={s.pageBody}><div className={s.pageContent}>{children}</div></div>
     <footer className={s.pageFooter}>
-      <a href="https://onesta.com.pl">onesta.com.pl</a>
+      <a href="/">onesta.com.pl</a>
       <span>REF {offer.reference}{offer.isDemo ? " · Wersja pokazowa" : ""}</span>
       <span className={s.pageNumber}>{String(page).padStart(2, "0")} <i>/ 10</i></span>
     </footer>
@@ -249,7 +249,7 @@ export default function Dossier({ offer }: { offer: DossierOffer }) {
         <p className={s.note}>* Costa Blanca, Costa del Sol, Costa Cálida i Costa de Almería — zakres dostępu deklarowany przez Onesta Group. Dostępność konkretnych lokali potwierdzamy u deweloperów.</p>
         <div className={s.cooperationHeading}><h3>Tak pracujemy razem</h3><span>Od rozmowy do dobrej decyzji</span></div>
         <Journey steps={offer.cooperationSteps} compact />
-        <div className={s.closing}><span>Porozmawiajmy o Twoim miejscu w Hiszpanii.</span><a href="https://onesta.com.pl">onesta.com.pl <FiArrowUpRight aria-hidden="true" /></a></div>
+        <div className={s.closing}><span>Porozmawiajmy o Twoim miejscu w Hiszpanii.</span><a href="/">onesta.com.pl <FiArrowUpRight aria-hidden="true" /></a></div>
         <Sources items={[dossierSources.onesta]} />
       </Sheet>
     </main>

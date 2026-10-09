@@ -682,6 +682,9 @@ export default function SpainCatalogContent({
               ze specjalistami potrzebnymi do bezpiecznego przeprowadzenia
               zakupu.
             </p>
+            <ContentLink href="/polskie-biuro-nieruchomosci-w-hiszpanii">
+              Poznaj Onesta — polskie biuro nieruchomości w Hiszpanii
+            </ContentLink>
           </div>
         </section>
 

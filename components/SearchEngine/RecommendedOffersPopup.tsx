@@ -375,7 +375,7 @@ export default function RecommendedOffersPopup({
                     <span>
                       {t("Akceptuję ", "I accept the ")}
                       <a
-                        href="https://onesta.com.pl/polityka-prywatnosci"
+                        href="/polityka-prywatnosci"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-semibold text-[#9b7a36] underline underline-offset-2"
