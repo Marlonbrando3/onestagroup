@@ -360,3 +360,27 @@ test("menu scope follows page context", () => {
   for (const p of ["/nieruchomosci/cypr", "/en/properties/cyprus/costa"]) assert.equal(menuScope(p), "cypr", p);
   for (const p of ["/", "/en", "/blog/okupados", "/aboutus", "/pobytinwestorski", "/nieruchomosci/hiszpaniax"]) assert.equal(menuScope(p), "all", p);
 });
+test("offer JSON-LD uses only real values; new builds publish a minimum price", () => {
+  const { load } = harness([]);
+  const { propertyJsonLd } = load("lib/propertySchema.ts");
+  const base = { ...fixtures[0], beds: 0, latitude: 0, longitude: 0, province: "Alicante" };
+  const resale = propertyJsonLd({ ...base, new_build: false }, "pl", "/nieruchomosci/hiszpania/apartament-w-torrevieja?id=REF-0");
+  assert.equal(resale["@type"], "RealEstateListing");
+  assert.equal(resale.url, "https://onesta.com.pl/nieruchomosci/hiszpania/apartament-w-torrevieja?id=REF-0");
+  assert.equal(resale.offers.price, 100000);
+  assert.equal(resale.offers.priceCurrency, "EUR");
+  assert.equal(resale.about["@type"], "Apartment");
+  assert.equal(resale.about.floorSize.value, 49);
+  assert.equal(resale.about.numberOfBedrooms, undefined, "0 bedrooms is omitted, not published");
+  assert.equal(resale.about.geo, undefined, "0,0 coordinates are omitted");
+  assert.equal(resale.about.address.addressLocality, "Torrevieja");
+  assert.deepEqual(resale.image, ["https://example.invalid/image.jpg"]);
+  const newBuild = propertyJsonLd({ ...base, new_build: true, beds: 2, latitude: 37.98, longitude: -0.68 }, "pl", "/x?id=REF-0");
+  assert.equal(newBuild.offers.price, undefined);
+  assert.equal(newBuild.offers.priceSpecification.minPrice, 100000);
+  assert.equal(newBuild.about.numberOfBedrooms, 2);
+  assert.equal(newBuild.about.geo.latitude, 37.98);
+  const noPrice = propertyJsonLd({ ...base, price: 0, images: [] }, "en", "/x");
+  assert.equal(noPrice.offers, undefined);
+  assert.equal(noPrice.image, undefined);
+});

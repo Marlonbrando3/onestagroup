@@ -6,6 +6,7 @@ import ListingsPage, {
 } from "@/pages/nieruchomosci/[country]";
 import { findRegion, regionForProperty, SEO_CITIES } from "@/lib/seoLocations";
 import SeoHead from "@/components/SeoHead";
+import { propertyImages, propertyJsonLd } from "@/lib/propertySchema";
 import SeoBreadcrumbs from "@/components/SeoBreadcrumbs";
 import {
   catalogPath,
@@ -164,6 +165,8 @@ function Property({
       <SeoHead
         {...metadata}
         canonical={canonical}
+        image={propertyImages(propertyFromSupabase, 1)[0]}
+        jsonLd={propertyJsonLd(propertyFromSupabase, locale, canonical)}
         alternates={{
           pl: propertyPath(propertyFromSupabase, "pl"),
           en: propertyPath(propertyFromSupabase, "en"),
