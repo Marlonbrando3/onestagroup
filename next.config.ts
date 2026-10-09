@@ -14,6 +14,19 @@ const nextConfig: NextConfig = {
         destination: "/blog/nieruchomosci-costa-blanca",
         permanent: true,
       },
+      // 09.10.2026: artykuł celował wprost w „nieruchomości Hiszpania” i konkurował
+      // z katalogiem, który omawia te same tematy pełniej — scalamy sygnały.
+      {
+        source: "/blog/nieruchomosci-w-hiszpanii",
+        destination: "/nieruchomosci/hiszpania",
+        permanent: true,
+      },
+      // Skrócona „pigułka” duplikowała pełny poradnik procesu zakupu.
+      {
+        source: "/blog/jak-kupic-nieruchomosc-w-hiszpanii-pigulka",
+        destination: "/blog/nieruchomosci-w-hiszpanii-jak-wyglada-proces",
+        permanent: true,
+      },
       {
         source: "/nieruchomosci/hiszpania/wszystkie-regiony",
         destination: "/nieruchomosci/hiszpania",

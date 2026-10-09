@@ -405,8 +405,8 @@ export default function SpainCatalogContent({
                 związane z zakupem.
               </p>
               <div className="flex flex-col items-start">
-                <ContentLink href="/blog/nieruchomosci-w-hiszpanii">
-                  Sprawdź ceny nieruchomości w Hiszpanii
+                <ContentLink href="/blog/nieruchomosci-w-hiszpanii-co-sie-zmienilo">
+                  Sprawdź, jak zmienia się rynek nieruchomości w Hiszpanii
                 </ContentLink>
                 <ContentLink href="/blog/koszty-zakupu-nieruchomosci-hiszpania-costa-blanca">
                   Poznaj i zrozum koszty zakupu nieruchomości w Hiszpanii
