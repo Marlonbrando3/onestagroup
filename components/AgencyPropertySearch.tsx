@@ -15,6 +15,17 @@ const MARKETS = [
   { value: "", label: "Wszystkie" },
 ];
 
+// Widełki cenowe dobrane do rozkładu ofert w Hiszpanii (każdy przedział ma kilkaset ofert).
+const PRICE_RANGES = [
+  { value: "-200000", label: "do 200 tys. €" },
+  { value: "200000-300000", label: "200–300 tys. €" },
+  { value: "300000-400000", label: "300–400 tys. €" },
+  { value: "400000-500000", label: "400–500 tys. €" },
+  { value: "500000-750000", label: "500–750 tys. €" },
+  { value: "750000-1000000", label: "750 tys. – 1 mln €" },
+  { value: "1000000-", label: "powyżej 1 mln €" },
+];
+
 const FIELDS = ["region", "location", "type", "priceMin", "priceMax", "market", "bedsMin", "bathsMin", "pool"];
 
 const coastId = (regionSlug: string) => regionSlug.replace(/-/g, "_");
@@ -39,7 +50,8 @@ export default function AgencyPropertySearch() {
   const [city, setCity] = useState("");
   const [market, setMarket] = useState("true");
   const [advanced, setAdvanced] = useState(false);
-  const [minPrice, setMinPrice] = useState("");
+  const [price, setPrice] = useState("");
+  const [priceMin, priceMax] = price ? price.split("-") : ["", ""];
 
   function search(event: FormEvent<HTMLFormElement>) {
     const fields = new FormData(event.currentTarget);
@@ -69,7 +81,7 @@ export default function AgencyPropertySearch() {
         action="/nieruchomosci/hiszpania"
         method="get"
         onSubmit={search}
-        onReset={() => { setMinPrice(""); setAdvanced(false); setMarket("true"); setRegion(""); setCity(""); }}
+        onReset={() => { setPrice(""); setAdvanced(false); setMarket("true"); setRegion(""); setCity(""); }}
         className={styles.search}
         aria-label="Wyszukaj nieruchomość w Hiszpanii"
       >
@@ -139,16 +151,17 @@ export default function AgencyPropertySearch() {
             </div>
           </label>
           <label className={styles.field}>
-            <span>Budżet do (€)</span>
-            <input
-              name="priceMax"
-              type="number"
-              inputMode="numeric"
-              min={minPrice || 0}
-              max={99999999}
-              step={1000}
-              placeholder="np. 350 000"
-            />
+            <span>Cena</span>
+            <div className={styles.select}>
+              <select value={price} onChange={(event) => setPrice(event.target.value)}>
+                <option value="">Dowolna</option>
+                {PRICE_RANGES.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
+              </select>
+              <FiChevronDown aria-hidden="true" />
+            </div>
+            {/* Widełki trafiają do katalogu jako zwykłe priceMin / priceMax (działa też bez JS). */}
+            <input type="hidden" name="priceMin" value={priceMin} disabled={!priceMin} />
+            <input type="hidden" name="priceMax" value={priceMax} disabled={!priceMax} />
           </label>
           <button type="submit" className={styles.submit}>
             <FiSearch aria-hidden="true" />
@@ -175,20 +188,6 @@ export default function AgencyPropertySearch() {
         </div>
 
         <div id="agency-search-advanced" className={styles.advanced} hidden={!advanced}>
-          <label className={styles.field}>
-            <span>Cena od (€)</span>
-            <input
-              name="priceMin"
-              type="number"
-              inputMode="numeric"
-              min={0}
-              max={99999999}
-              step={1000}
-              placeholder="Bez minimum"
-              value={minPrice}
-              onChange={(event) => setMinPrice(event.target.value)}
-            />
-          </label>
           <label className={styles.field}>
             <span>Łazienki</span>
             <div className={styles.select}>
