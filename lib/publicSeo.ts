@@ -97,23 +97,43 @@ export function hasFilters(query: Record<string, any>) {
     (key) => query[key] !== undefined && query[key] !== "",
   );
 }
+function plPlural(n: number, one: string, few: string, many: string) {
+  if (n === 1) return one;
+  const d = n % 10,
+    t = n % 100;
+  return d >= 2 && d <= 4 && (t < 12 || t > 14) ? few : many;
+}
 export function propertyMetadata(property: any, locale: SiteLocale = "pl") {
+  const en = locale === "en";
   const name = propertyTitle(property, locale);
-  const details = [name];
-  if (Number(property.surface_built) > 0)
-    details.push(`${property.surface_built} m²`);
-  if (property.beds !== null && property.beds !== undefined)
+  const surface = Number(property.surface_built);
+  const beds = Number(property.beds);
+  const baths = Number(property.baths);
+  const details: string[] = [];
+  if (surface > 0) details.push(`${surface} m²`);
+  // 0 in the feed means studio OR missing data, so it is omitted instead of
+  // printing "Sypialnie: 0" in search results.
+  if (beds > 0)
     details.push(
-      locale === "en"
-        ? `Bedrooms: ${property.beds}`
-        : `Sypialnie: ${property.beds}`,
+      en
+        ? `${beds} bedroom${beds === 1 ? "" : "s"}`
+        : `${beds} ${plPlural(beds, "sypialnia", "sypialnie", "sypialni")}`,
     );
-  if (property.pool === true) details.push(locale === "en" ? "Pool" : "Basen");
+  if (baths > 0)
+    details.push(
+      en
+        ? `${baths} bathroom${baths === 1 ? "" : "s"}`
+        : `${baths} ${plPlural(baths, "łazienka", "łazienki", "łazienek")}`,
+    );
+  if (property.pool === true) details.push(en ? "pool" : "basen");
+  if (property.new_build === true)
+    details.push(en ? "new build" : "rynek pierwotny");
+  const lead = en ? `${name} for sale` : `${name} na sprzedaż`;
   // Feed does not distinguish project starting prices from individual-unit prices.
   // Leave price out of metadata until that distinction is explicit in the data.
   return {
-    title: `${name}${Number(property.surface_built) > 0 ? ", " + property.surface_built + " m²" : ""} · ${property.external_id} | Onesta`,
-    description: `${details.join(". ")}. ${locale === "en" ? "View photos and contact Onesta about this property." : "Zobacz zdjęcia i zapytaj Onesta o tę nieruchomość."}`,
+    title: `${name}${surface > 0 ? ", " + surface + " m²" : ""} · ${property.external_id} | Onesta`,
+    description: `${lead}${details.length ? ": " + details.join(", ") : ""}. ${en ? "0% buyer's commission. View photos and ask Onesta about this property." : "0% prowizji dla kupującego. Zobacz zdjęcia i zapytaj Onesta o tę nieruchomość."}`,
   };
 }
 export function countryMetadata(country: string, locale: SiteLocale = "pl") {

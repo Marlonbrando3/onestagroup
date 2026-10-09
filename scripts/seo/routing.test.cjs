@@ -199,7 +199,9 @@ test("same slug, distinct IDs, reverse request order, zero bedrooms and cache", 
   const seo = load("lib/publicSeo");
   const uri = seo.propertyPath(fixtures[1]);
   assert.equal(new URL(uri, seo.SITE_URL).searchParams.get("id"), "REF/a & b");
-  assert.match(seo.propertyMetadata(fixtures[0]).description, /Sypialnie: 0/);
+  assert.doesNotMatch(seo.propertyMetadata(fixtures[0]).description, /Sypialnie: 0|0 sypial/);
+  assert.match(seo.propertyMetadata({ ...fixtures[0], beds: 2, baths: 1 }).description, /2 sypialnie, 1 łazienka/);
+  assert.match(seo.propertyMetadata({ ...fixtures[0], beds: 5 }).description, /5 sypialni/);
 });
 test("missing, invalid and ambiguous ID never choose arbitrary record; outage is server error", async () => {
   const { load } = harness(fixtures),
