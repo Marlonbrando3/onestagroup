@@ -10,7 +10,9 @@ import AgencyPropertySearch from "@/components/AgencyPropertySearch";
 import AgencyQuickContact from "@/components/AgencyQuickContact";
 import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
 import { SITE_URL } from "@/lib/publicSeo";
-import Team from "@/data/team.json";
+import { teamMembers } from "@/data/aboutUs";
+import PropertyCard from "@/components/SearchEngine/PropertyCard";
+import { loadAgencyShowcase, type AgencyShowcase } from "@/lib/agencyShowcase";
 import {
   agencyBenefits,
   agencyFaqs,
@@ -20,6 +22,7 @@ import {
 } from "@/data/polishAgency";
 import styles from "@/styles/polishAgency.module.css";
 import hero from "@/styles/polishAgencyHero.module.css";
+import about from "@/styles/aboutUs.module.css";
 
 const pageUrl = SITE_URL + agencyPage.path;
 const organizationId = SITE_URL + "/#organization";
@@ -108,29 +111,19 @@ const structuredData = {
   ],
 };
 
-const agencyTeam = [
-  ...Team,
-  {
-    id: 4,
-    name: "Dominik Michałowski",
-    title: "Partner · zarządzanie nieruchomościami",
-    photo: "dominik.png",
-  },
-  {
-    id: 5,
-    name: "Damian Włodarkiewicz",
-    title: "Zarządzanie nieruchomościami, zespołem, procesami i marketingiem",
-    photo: "damian.png",
-  },
-];
-
-const teamIntros: Record<number, string> = {
-  1: "Porządkuje potrzeby, szczegóły ofert i kolejne kroki zakupu. Dba o jasną komunikację w całym procesie.",
-  2: "Pomaga poznać regiony i ich codzienne życie, aby miejsce odpowiadało Twoim planom, także poza sezonem.",
-  3: "Omawia cele zakupu, porównuje możliwości i pomaga doprecyzować kryteria wyboru nieruchomości. Przygotowuje oferty, prowadzi przez proces preselekcji i planuje prezentacje.",
-  4: "Prowadzi prezentacje nieruchomości i pomaga zorganizować opiekę nad nimi po zakupie. Koordynuje bieżące sprawy na miejscu i kontakt z właścicielami.",
-  5: "Łączy zarządzanie nieruchomościami, zespołem i procesami z działaniami marketingowymi, aby zwiększać efektywność i maksymalizować rentowność wynajmu dla właścicieli, z którymi współpracujemy.",
+const offersWord = (n: number) => {
+  const last = n % 10;
+  const lastTwo = n % 100;
+  if (n === 1) return "oferta";
+  if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) return "oferty";
+  return "ofert";
 };
+const formatCount = (n: number) => n.toLocaleString("pl-PL");
+const initials = (name: string) => name.split(" ").map((part) => part[0]).join("");
+
+export async function getStaticProps() {
+  return { props: { showcase: await loadAgencyShowcase() }, revalidate: 3600 };
+}
 
 const benefitIcons = [FiMessageCircle, FiMapPin, FiCompass, FiHome, FiFileText, FiHeart];
 const trustBenefits = [
@@ -156,7 +149,8 @@ function BrandText({ children }: { children: string }) {
   ))}</>;
 }
 
-export default function PolishRealEstateAgency() {
+export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyShowcase }) {
+  const { totalOffers, newBuildOffers, coastCounts, featured } = showcase;
   return (
     <>
     <Header />
@@ -309,11 +303,23 @@ export default function PolishRealEstateAgency() {
           </div>
         </section>
 
+        {totalOffers ? (
+          <section className={about.statsBand} aria-label="Onesta Group w liczbach">
+            <dl className={`${styles.container} ${about.stats}`}>
+              <div><dt>Ofert w Hiszpanii</dt><dd>{formatCount(totalOffers)}</dd></div>
+              {newBuildOffers ? <div><dt>Z rynku pierwotnego</dt><dd>{formatCount(newBuildOffers)}</dd></div> : null}
+              <div><dt>Wybrzeża</dt><dd>4</dd></div>
+              <div><dt>Prowizji dla kupującego</dt><dd>0 zł</dd></div>
+            </dl>
+          </section>
+        ) : null}
+
         <nav className={`${styles.container} ${styles.sectionNav}`} aria-label="Na tej stronie">
           <span>Na tej stronie</span>
           <a href="#atuty">Dlaczego <BrandName /></a>
           <a href="#jak-pomagamy">Proces zakupu</a>
           <a href="#regiony">Regiony i biura</a>
+          {featured.length ? <a href="#wybrane-oferty">Wybrane inwestycje</a> : null}
           <a href="#costa-blanca-costa-del-sol">Costa Blanca i Costa del Sol</a>
           <a href="#koszty">Koszty obsługi</a>
           <a href="#pytania">Pytania i odpowiedzi</a>
@@ -408,7 +414,10 @@ export default function PolishRealEstateAgency() {
                       <Image src={`/images/seo/coasts/${slug}.webp`} alt={`Nadmorski krajobraz — ${name}`} fill sizes="(min-width: 1100px) 22vw, (min-width: 600px) 44vw, 90vw" className={styles.cover} />
                     </div>
                     <div className={styles.regionCopy}>
-                      <p className={styles.regionLabel}>{label}</p>
+                      <p className={styles.regionLabel}>
+                        {label}
+                        {coastCounts[slug] ? <span className={about.regionCount}>{formatCount(coastCounts[slug])} {offersWord(coastCounts[slug])}</span> : null}
+                      </p>
                       <h3>{name}<Arrow /></h3>
                       <p className={styles.regionDescription}>{text}</p>
                     </div>
@@ -418,6 +427,29 @@ export default function PolishRealEstateAgency() {
             </div>
           </div>
         </section>
+
+        {featured.length ? (
+          <section id="wybrane-oferty" className={`${styles.container} ${styles.section}`} aria-labelledby="featured-heading">
+            <div className={about.featuredHead}>
+              <div className={styles.sectionHeading}>
+                <p className={styles.eyebrow}>Wybrane przez nas</p>
+                <h2 id="featured-heading">Nowe inwestycje, które polecamy.</h2>
+                <p className={styles.lead}>
+                  Kilka projektów z rynku pierwotnego, które znamy i chętnie pokazujemy na miejscu.
+                  Pełną selekcję przygotujemy po rozmowie o Twoich planach.
+                </p>
+              </div>
+              <Link href="/nieruchomosci/hiszpania?market=true" className={styles.textLink}>
+                Wszystkie nowe inwestycje {newBuildOffers ? `(${formatCount(newBuildOffers)})` : ""} <Arrow />
+              </Link>
+            </div>
+            <div className={about.featuredGrid}>
+              {featured.map((property: any) => (
+                <PropertyCard key={property.external_id} property={property} locale="pl" appearance="cbtop" />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <AgencyQuickContact />
 
@@ -553,15 +585,22 @@ export default function PolishRealEstateAgency() {
               <h2 id="team-heading">Kim jesteśmy</h2>
               <p className={styles.lead}>Za ofertami stoją ludzie. Z nami omówisz wybór, zadasz pytania i zaplanujesz kolejne kroki po polsku.</p>
             </div>
-            <div className={styles.teamGrid}>
-              {agencyTeam.map((person) => (
-                <article key={person.id} data-person={person.id}>
-                  <div className={styles.teamImage}>
-                    <Image src={`/${person.photo}`} alt={person.name} fill sizes="(min-width: 1455px) 237px, (min-width: 1101px) 17vw, (min-width: 900px) 28vw, (min-width: 600px) 43vw, 88vw" className={styles.cover} />
+            <div className={about.team}>
+              {teamMembers.map((person) => (
+                <article key={person.id} className={about.member}>
+                  <div className={about.memberHead}>
+                    <span className={about.monogram} aria-hidden="true">{initials(person.name)}</span>
+                    <div>
+                      <h3>{person.name}</h3>
+                      <p className={about.role}>{person.role}</p>
+                    </div>
                   </div>
-                  <h3>{person.name}</h3>
-                  <p className={styles.teamRole}>{person.title}</p>
-                  <p>{teamIntros[person.id]}</p>
+                  <p className={about.bio}>{person.bio}</p>
+                  <div className={about.memberFoot}>
+                    <span className={about.languages} aria-label={`Języki: ${person.languages.join(", ")}`}>
+                      {person.languages.map((code) => <span key={code}>{code}</span>)}
+                    </span>
+                  </div>
                 </article>
               ))}
             </div>
