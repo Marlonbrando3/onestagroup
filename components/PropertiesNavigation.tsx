@@ -254,6 +254,12 @@ function ConsultationAside({ scope, locale, close, onConsultation }: { scope: Me
           {isEn ? "Book a free consultation" : "Umów bezpłatną konsultację"}
         </button>
       )}
+      {!isEn && scope !== "cypr" && (
+        <Link prefetch={false} href="/polskie-biuro-nieruchomosci-w-hiszpanii" onClick={close} className={styles.ctaAll}>
+          Polskie biuro w Hiszpanii
+          <FiArrowRight aria-hidden="true" />
+        </Link>
+      )}
       <Link prefetch={false} href={allHref} onClick={close} className={styles.ctaAll}>
         {scope === "all" ? (isEn ? "All properties in Spain" : "Wszystkie oferty w Hiszpanii") : isEn ? "All properties" : "Wszystkie nieruchomości"}
         <FiArrowRight aria-hidden="true" />

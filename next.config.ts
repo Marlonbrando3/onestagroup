@@ -21,6 +21,13 @@ const nextConfig: NextConfig = {
         destination: "/nieruchomosci/hiszpania",
         permanent: true,
       },
+      // Wpis blogowy kanibalizował frazę „polskie biuro nieruchomości w Hiszpanii”;
+      // poradnik żyje teraz pod /blog/jak-wybrac-biuro-nieruchomosci-w-hiszpanii.
+      {
+        source: "/blog/polskie-biuro-nieruchomosci-w-hiszpanii",
+        destination: "/polskie-biuro-nieruchomosci-w-hiszpanii",
+        permanent: true,
+      },
       // Skrócona „pigułka” duplikowała pełny poradnik procesu zakupu.
       {
         source: "/blog/jak-kupic-nieruchomosc-w-hiszpanii-pigulka",

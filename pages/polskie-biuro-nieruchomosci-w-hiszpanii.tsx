@@ -637,7 +637,7 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
             <h2 id="guides-heading">Więcej odpowiedzi w naszych poradnikach.</h2>
             <div className={styles.guideGrid}>
               {[
-                ["polskie-biuro-nieruchomosci-w-hiszpanii", "Jak wybrać biuro nieruchomości?", "Jak porównać polskie biura nieruchomości w Hiszpanii, o co zapytać i jak ustalić zakres obsługi.", "/images/seo/coasts/costa-del-sol.webp", "Nadmorskie domy i panorama wybrzeża Costa del Sol"],
+                ["jak-wybrac-biuro-nieruchomosci-w-hiszpanii", "Jak wybrać biuro nieruchomości?", "Na co zwrócić uwagę przy wyborze agencji w Hiszpanii, o co zapytać i jak ustalić zakres obsługi.", "/images/seo/coasts/costa-del-sol.webp", "Nadmorskie domy i panorama wybrzeża Costa del Sol"],
                 ["nieruchomosci-w-hiszpanii-jak-wyglada-proces", "Zakup od pierwszej selekcji do aktu", "Praktyczny przewodnik po poszukiwaniach, prezentacjach i etapach transakcji.", "/costa-blanca-podstawowe-informacje.png", "Nowe domy z tarasami na Costa Blanca"],
                 ["koszty-zakupu-nieruchomosci-hiszpania-costa-blanca", "Budżet szerszy niż cena oferty", "Wydatki związane z zakupem i utrzymaniem, o których warto porozmawiać przed decyzją.", "/images/seo/coasts/costa-calida.webp", "Apartamenty i promenada nad morzem na Costa Cálida"],
               ].map(([slug, title, text, photo, alt]) => (

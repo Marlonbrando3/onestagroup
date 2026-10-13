@@ -55,7 +55,7 @@
 .ctaContacts svg { color: #d6b36a; flex-shrink: 0; }
 .root .ctaButton { margin-top: auto; min-height: 52px; margin-block-start: 24px; border: 0; border-radius: 6px; background: #d6b36a; color: #182334; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; transition: background 150ms; }
 .root .ctaButton:hover { background: #e4c47d; }
-.ctaAll { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; color: #d6b36a; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.ctaAll { display: flex; width: fit-content; align-items: center; gap: 8px; margin-top: 18px; color: #d6b36a; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
 .ctaAll:hover { color: white; }
 
 /* Mobile drawer */

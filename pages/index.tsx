@@ -17,7 +17,7 @@ import {
   HomePlayfairSans as PlayfairSans,
   HomeWorkSans as WorkSans,
 } from "../fonts/homeFonts";
-import Team from "../data/team.json";
+import { teamMembers } from "@/data/aboutUs";
 import NewsletterSignupForm from "@/components/NewsletterSignupForm";
 
 const Header = dynamic(() => import("../components/Header"), {
@@ -248,37 +248,21 @@ export default function FirstView() {
               </div>
 
               <div className="relative z-20 mx-auto -mt-16 w-[92%] border border-[#e5dac7] bg-white p-5 shadow-xl lg:absolute lg:left-1/2 lg:top-[100px] top-[100px] lg:mx-0 lg:-mt-0 lg:w-[88%] lg:-translate-x-1/2">
-                <div className="grid grid-cols-3 gap-3">
-                  {Team.map((person) => (
-                    <div key={person.id} className="min-w-0">
-                      <div className="relative aspect-[3/4] overflow-hidden rounded-md border border-[#e5dac7]">
-                        <Image
-                          src={`/${person.photo}`}
-                          fill
-                          sizes="180px"
-                          className="object-cover"
-                          style={{
-                            objectPosition:
-                              person.photo === "Marek.webp"
-                                ? "center 30%"
-                                : person.photo === "Przemek.webp"
-                                  ? "center 40%"
-                                  : person.photo === "Karolina.webp"
-                                    ? "center 30%"
-                                    : "center",
-                          }}
-                          alt={person.name}
-                        />
-                      </div>
-                      <p className="mt-3 text-sm font-semibold leading-tight">
-                        {person.name}
-                      </p>
-                      <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#9b7a36]">
-                        {person.title}
-                      </p>
-                    </div>
-                  ))}
+                <div className="relative aspect-[3/2] overflow-hidden rounded-md border border-[#e5dac7]">
+                  <Image
+                    src="/images/agency/zespol-onesta.webp"
+                    fill
+                    sizes="(min-width: 1024px) 560px, 90vw"
+                    className="object-cover object-[center_30%]"
+                    alt="Marek Marszałek i Karolina Bakowicz, współzałożyciele Onesta Group"
+                  />
                 </div>
+                <p className="mt-3 text-sm font-semibold leading-tight">
+                  Marek Marszałek i Karolina Bakowicz
+                </p>
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#9b7a36]">
+                  Współzałożyciele Onesta Group
+                </p>
                 <div className="mt-6 border-t border-[#e5dac7] pt-5">
                   <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
                     Zespół po stronie kupującego
@@ -287,6 +271,12 @@ export default function FirstView() {
                     Pracujesz z osobami, które znają lokalny rynek, proces
                     zakupu i realne problemy klientów kupujących poza Polską.
                   </p>
+                  <Link
+                    href="/aboutus"
+                    className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#182334] transition hover:text-[#9b7a36]"
+                  >
+                    Poznaj zespół <FaArrowRight />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -378,6 +368,65 @@ export default function FirstView() {
                 </div>
               </Link>
             ))}
+          </div>
+
+          <div className="mt-10 grid gap-10 overflow-hidden bg-[#1d3f69] p-8 text-white shadow-xl lg:grid-cols-[1.15fr_0.85fr] lg:p-12">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#e0bd7a]">
+                Nasz główny kierunek
+              </p>
+              <h3
+                className={`${PlayfairSans.className} mt-4 text-3xl font-semibold leading-tight md:text-4xl`}
+              >
+                Polskie biuro nieruchomości w Hiszpanii
+              </h3>
+              <p className="mt-5 max-w-2xl text-base leading-7 text-[#d9e1ec]">
+                Najwięcej naszych klientów kupuje na hiszpańskim wybrzeżu. Mamy
+                biuro w San Javier, prowadzimy cały zakup po polsku — od
+                selekcji ofert i prezentacji na miejscu po odbiór kluczy — a
+                kupujący nie płaci nam prowizji.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link
+                  href="/polskie-biuro-nieruchomosci-w-hiszpanii"
+                  className="inline-flex h-12 items-center gap-3 rounded-md bg-[#d4a85a] px-6 text-sm font-bold uppercase tracking-wide text-[#10213a] transition hover:bg-[#e6bf72]"
+                >
+                  Poznaj nasze biuro w Hiszpanii <FaArrowRight />
+                </Link>
+                <Link
+                  href="/nieruchomosci/hiszpania"
+                  className="inline-flex h-12 items-center rounded-md border border-white/50 px-6 text-sm font-semibold uppercase tracking-wide text-white transition hover:border-white hover:bg-white/10"
+                >
+                  Nieruchomości w Hiszpanii
+                </Link>
+              </div>
+            </div>
+            <nav aria-label="Regiony Hiszpanii" className="self-center">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#e0bd7a]">
+                Wybrzeża, na których działamy
+              </p>
+              <ul className="mt-4 divide-y divide-white/15 border-y border-white/15">
+                {[
+                  ["Costa Blanca", "costa-blanca", "Alicante, Torrevieja, Calpe"],
+                  ["Costa Cálida", "costa-calida", "Mar Menor, San Pedro del Pinatar"],
+                  ["Costa del Sol", "costa-del-sol", "Marbella, Estepona, Málaga"],
+                  ["Costa de Almería", "costa-de-almeria", "Vera, Mojácar, Pulpí"],
+                ].map(([name, slug, towns]) => (
+                  <li key={slug}>
+                    <Link
+                      href={`/nieruchomosci/hiszpania/${slug}`}
+                      className="group flex items-center justify-between gap-4 py-3.5"
+                    >
+                      <span>
+                        <span className="block text-lg font-semibold">{name}</span>
+                        <span className="block text-xs text-[#c9d3e0]">{towns}</span>
+                      </span>
+                      <FaArrowRight className="shrink-0 text-[#e0bd7a] transition group-hover:translate-x-1" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </section>
 
@@ -490,36 +539,26 @@ export default function FirstView() {
             </h2>
           </div>
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            {Team.map((person) => (
-              <article key={person.id} className="bg-white shadow-sm">
-                <div className="relative aspect-[4/4] overflow-hidden">
-                  <Image
-                    src={`/${person.photo}`}
-                    fill
-                    sizes="(min-width: 1024px) 30vw, 90vw"
-                    className="object-cover"
-                    style={{
-                      objectPosition:
-                        person.photo === "Marek.webp"
-                          ? "center 30%"
-                          : person.photo === "Przemek.webp"
-                            ? "center 40%"
-                            : person.photo === "Karolina.webp"
-                              ? "center 30%"
-                              : "center",
-                    }}
-                    alt={person.name}
-                  />
+            {teamMembers.map((person) => (
+              <article key={person.id} className="flex flex-col border border-[#e9e6e1] bg-white p-7 shadow-sm">
+                <div className="flex items-center gap-4">
+                  <span
+                    aria-hidden="true"
+                    className={`${PlayfairSans.className} flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#1d3f69] text-xl text-[#e0bd7a]`}
+                  >
+                    {person.name.split(" ").map((part) => part[0]).join("")}
+                  </span>
+                  <div>
+                    <p className="text-xl font-semibold leading-tight">{person.name}</p>
+                    <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#9b7a36]">
+                      {person.role}
+                    </p>
+                  </div>
                 </div>
-                <div className="p-7">
-                  <p className="text-2xl font-semibold">{person.name}</p>
-                  <p className="mt-2 text-xs font-bold uppercase tracking-[0.2em] text-[#9b7a36]">
-                    {person.title}
-                  </p>
-                  <p className="mt-5 text-sm leading-7 text-[#5f6b7a]">
-                    {person.desc}
-                  </p>
-                </div>
+                <p className="mt-5 text-sm leading-7 text-[#374151]">{person.bio}</p>
+                <p className="mt-auto pt-5 text-xs font-semibold tracking-wide text-[#5f6b7a]">
+                  {person.languages.join(" · ")}
+                </p>
               </article>
             ))}
           </div>

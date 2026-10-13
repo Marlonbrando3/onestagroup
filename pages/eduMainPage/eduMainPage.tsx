@@ -46,12 +46,12 @@ export default function EduMainPage() {
           <p className="w-[90%]">Jak kupić nieruchomość w Hiszpanii - poradnik</p>
         </Link>
         <Link
-          href="/blog/polskie-biuro-nieruchomosci-w-hiszpanii"
+          href="/blog/jak-wybrac-biuro-nieruchomosci-w-hiszpanii"
           className="border-[1.5px] border-gray-600  w-full md:h-[23%] h-[16%] font-semibold rounded-[3px] flex items-center cursor-pointer hover:border-gray-400 duration-100"
         >
           <PiOfficeChairLight className="w-[80px] h-[50px] px-[20px]" />
           <p className="w-[90%]">
-            Polskie biuro nieruchomości w Hiszpanii <br></br>- czy warto korzystać?
+            Jak wybrać biuro nieruchomości <br></br>w Hiszpanii?
           </p>
         </Link>
         <Link

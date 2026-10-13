@@ -609,8 +609,8 @@ export default function SpainCatalogContent({
                 sprzedać konkretnej nieruchomości za wszelką cenę</strong>, lecz
                 pomógł wybrać najlepszą spośród dostępnych możliwości.
               </p>
-              <ContentLink href="/blog/polskie-biuro-nieruchomosci-w-hiszpanii">
-                Przeczytaj: Jak wybrać polskie biuro nieruchomości w Hiszpanii?
+              <ContentLink href="/blog/jak-wybrac-biuro-nieruchomosci-w-hiszpanii">
+                Przeczytaj: Jak wybrać biuro nieruchomości w Hiszpanii?
               </ContentLink>
             </div>
           </div>
