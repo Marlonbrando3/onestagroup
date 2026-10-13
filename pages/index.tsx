@@ -17,7 +17,7 @@ import {
   HomePlayfairSans as PlayfairSans,
   HomeWorkSans as WorkSans,
 } from "../fonts/homeFonts";
-import { teamMembers } from "@/data/aboutUs";
+import Team from "../data/team.json";
 import NewsletterSignupForm from "@/components/NewsletterSignupForm";
 
 const Header = dynamic(() => import("../components/Header"), {
@@ -248,21 +248,37 @@ export default function FirstView() {
               </div>
 
               <div className="relative z-20 mx-auto -mt-16 w-[92%] border border-[#e5dac7] bg-white p-5 shadow-xl lg:absolute lg:left-1/2 lg:top-[100px] top-[100px] lg:mx-0 lg:-mt-0 lg:w-[88%] lg:-translate-x-1/2">
-                <div className="relative aspect-[3/2] overflow-hidden rounded-md border border-[#e5dac7]">
-                  <Image
-                    src="/images/agency/zespol-onesta.webp"
-                    fill
-                    sizes="(min-width: 1024px) 560px, 90vw"
-                    className="object-cover object-[center_30%]"
-                    alt="Marek Marszałek i Karolina Bakowicz, współzałożyciele Onesta Group"
-                  />
+                <div className="grid grid-cols-3 gap-3">
+                  {Team.map((person) => (
+                    <div key={person.id} className="min-w-0">
+                      <div className="relative aspect-[3/4] overflow-hidden rounded-md border border-[#e5dac7]">
+                        <Image
+                          src={`/${person.photo}`}
+                          fill
+                          sizes="180px"
+                          className="object-cover"
+                          style={{
+                            objectPosition:
+                              person.photo === "Marek.webp"
+                                ? "center 30%"
+                                : person.photo === "Przemek.webp"
+                                  ? "center 40%"
+                                  : person.photo === "Karolina.webp"
+                                    ? "center 30%"
+                                    : "center",
+                          }}
+                          alt={person.name}
+                        />
+                      </div>
+                      <p className="mt-3 text-sm font-semibold leading-tight">
+                        {person.name}
+                      </p>
+                      <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#9b7a36]">
+                        {person.title}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-                <p className="mt-3 text-sm font-semibold leading-tight">
-                  Marek Marszałek i Karolina Bakowicz
-                </p>
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#9b7a36]">
-                  Współzałożyciele Onesta Group
-                </p>
                 <div className="mt-6 border-t border-[#e5dac7] pt-5">
                   <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#9b7a36]">
                     Zespół po stronie kupującego
@@ -271,12 +287,6 @@ export default function FirstView() {
                     Pracujesz z osobami, które znają lokalny rynek, proces
                     zakupu i realne problemy klientów kupujących poza Polską.
                   </p>
-                  <Link
-                    href="/aboutus"
-                    className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#182334] transition hover:text-[#9b7a36]"
-                  >
-                    Poznaj zespół <FaArrowRight />
-                  </Link>
                 </div>
               </div>
             </div>
@@ -539,26 +549,36 @@ export default function FirstView() {
             </h2>
           </div>
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            {teamMembers.map((person) => (
-              <article key={person.id} className="flex flex-col border border-[#e9e6e1] bg-white p-7 shadow-sm">
-                <div className="flex items-center gap-4">
-                  <span
-                    aria-hidden="true"
-                    className={`${PlayfairSans.className} flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#1d3f69] text-xl text-[#e0bd7a]`}
-                  >
-                    {person.name.split(" ").map((part) => part[0]).join("")}
-                  </span>
-                  <div>
-                    <p className="text-xl font-semibold leading-tight">{person.name}</p>
-                    <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#9b7a36]">
-                      {person.role}
-                    </p>
-                  </div>
+            {Team.map((person) => (
+              <article key={person.id} className="bg-white shadow-sm">
+                <div className="relative aspect-[4/4] overflow-hidden">
+                  <Image
+                    src={`/${person.photo}`}
+                    fill
+                    sizes="(min-width: 1024px) 30vw, 90vw"
+                    className="object-cover"
+                    style={{
+                      objectPosition:
+                        person.photo === "Marek.webp"
+                          ? "center 30%"
+                          : person.photo === "Przemek.webp"
+                            ? "center 40%"
+                            : person.photo === "Karolina.webp"
+                              ? "center 30%"
+                              : "center",
+                    }}
+                    alt={person.name}
+                  />
                 </div>
-                <p className="mt-5 text-sm leading-7 text-[#374151]">{person.bio}</p>
-                <p className="mt-auto pt-5 text-xs font-semibold tracking-wide text-[#5f6b7a]">
-                  {person.languages.join(" · ")}
-                </p>
+                <div className="p-7">
+                  <p className="text-2xl font-semibold">{person.name}</p>
+                  <p className="mt-2 text-xs font-bold uppercase tracking-[0.2em] text-[#9b7a36]">
+                    {person.title}
+                  </p>
+                  <p className="mt-5 text-sm leading-7 text-[#5f6b7a]">
+                    {person.desc}
+                  </p>
+                </div>
               </article>
             ))}
           </div>
