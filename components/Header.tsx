@@ -5,6 +5,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+import { FiChevronDown } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { FaRegUser } from "react-icons/fa";
 import { HomeMontserratSans as MontserratSans } from "../fonts/homeFonts";
@@ -35,13 +36,20 @@ export default function Header({
   const [consultationOpen, setConsultationOpen] = useState(false);
   const isEn = locale === "en";
   const paths = localePath[locale];
-  const navItems = isEn
+  const navItems: { label: string; href: string; children?: { label: string; href: string }[] }[] = isEn
     ? [
         { label: "About us", href: paths.about },
         { label: "Investor trip", href: paths.investorTrip },
       ]
     : [
-        { label: "O nas", href: "/aboutus" },
+        {
+          label: "O nas",
+          href: "/aboutus",
+          children: [
+            { label: "Poznaj nas", href: "/aboutus" },
+            { label: "Polskie biuro nieruchomości w Hiszpanii", href: "/polskie-biuro-nieruchomosci-w-hiszpanii" },
+          ],
+        },
         { label: "Blog", href: "/blog" },
         { label: "Newsletter", href: "/newsletter" },
         { label: "Pobyt inwestorski", href: paths.investorTrip },
@@ -192,16 +200,45 @@ export default function Header({
 
           <nav aria-label={isEn ? "Main navigation" : "Menu główne"} className="hidden self-stretch items-center justify-end gap-1 xl:flex">
             <PropertiesNavigation key={router.asPath} locale={locale} scope={menuScope(router.asPath)} onConsultation={handleConsultationClick} />
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={closeMenu}
-                className="whitespace-nowrap rounded-full px-4 py-3 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#334155] transition hover:bg-[#f6f3ee] hover:text-[#9b7a36]"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) =>
+              item.children ? (
+                <div key={item.href} className="group relative self-center">
+                  <Link
+                    href={item.href}
+                    onClick={closeMenu}
+                    aria-haspopup="true"
+                    className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-3 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#334155] transition hover:bg-[#f6f3ee] hover:text-[#9b7a36] group-hover:text-[#9b7a36]"
+                  >
+                    {item.label}
+                    <FiChevronDown aria-hidden="true" className="h-4 w-4 transition group-hover:rotate-180" />
+                  </Link>
+                  <div className="pointer-events-none absolute left-0 top-full z-50 pt-2 opacity-0 transition group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                    <ul className="min-w-[340px] rounded-2xl border border-[#ebe7e0] bg-white p-2 shadow-[0_18px_40px_rgba(24,35,52,0.14)]">
+                      {item.children.map((child) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            onClick={closeMenu}
+                            className="block rounded-xl px-4 py-3 text-[13px] font-semibold text-[#334155] transition hover:bg-[#f6f3ee] hover:text-[#9b7a36]"
+                          >
+                            {child.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={closeMenu}
+                  className="whitespace-nowrap rounded-full px-4 py-3 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#334155] transition hover:bg-[#f6f3ee] hover:text-[#9b7a36]"
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
           </nav>
 
           <div className="hidden shrink-0 items-center gap-3 xl:flex">
@@ -291,16 +328,31 @@ export default function Header({
         >
           <nav className="mx-auto flex w-11/12 max-w-7xl flex-col py-4">
             <MobilePropertiesNavigation locale={locale} scope={menuScope(router.asPath)} onNavigate={closeMenu} />
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={item.href === "/" ? handleBackToMainPage : closeMenu}
-                className="border-b border-[#e8ddca] py-4 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#27364a]"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) =>
+              item.children ? (
+                <div key={item.href} className="border-b border-[#e8ddca] py-4">
+                  <p className="text-[14px] font-semibold uppercase tracking-[0.08em] text-[#27364a]">{item.label}</p>
+                  <ul className="mt-2 space-y-1 pl-4">
+                    {item.children.map((child) => (
+                      <li key={child.href}>
+                        <Link href={child.href} onClick={closeMenu} className="block py-2 text-[14px] font-medium text-[#475569]">
+                          {child.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={item.href === "/" ? handleBackToMainPage : closeMenu}
+                  className="border-b border-[#e8ddca] py-4 text-[14px] font-semibold uppercase tracking-[0.08em] text-[#27364a]"
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
             {isHomepage && (
               <Link
                 href="/agentlogin"
