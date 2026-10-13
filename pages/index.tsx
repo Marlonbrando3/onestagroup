@@ -379,65 +379,6 @@ export default function FirstView() {
               </Link>
             ))}
           </div>
-
-          <div className="mt-10 grid gap-10 overflow-hidden bg-[#1d3f69] p-8 text-white shadow-xl lg:grid-cols-[1.15fr_0.85fr] lg:p-12">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#e0bd7a]">
-                Nasz główny kierunek
-              </p>
-              <h3
-                className={`${PlayfairSans.className} mt-4 text-3xl font-semibold leading-tight md:text-4xl`}
-              >
-                Polskie biuro nieruchomości w Hiszpanii
-              </h3>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-[#d9e1ec]">
-                Najwięcej naszych klientów kupuje na hiszpańskim wybrzeżu. Mamy
-                biuro w San Javier, prowadzimy cały zakup po polsku — od
-                selekcji ofert i prezentacji na miejscu po odbiór kluczy — a
-                kupujący nie płaci nam prowizji.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  href="/polskie-biuro-nieruchomosci-w-hiszpanii"
-                  className="inline-flex h-12 items-center gap-3 rounded-md bg-[#d4a85a] px-6 text-sm font-bold uppercase tracking-wide text-[#10213a] transition hover:bg-[#e6bf72]"
-                >
-                  Poznaj nasze biuro w Hiszpanii <FaArrowRight />
-                </Link>
-                <Link
-                  href="/nieruchomosci/hiszpania"
-                  className="inline-flex h-12 items-center rounded-md border border-white/50 px-6 text-sm font-semibold uppercase tracking-wide text-white transition hover:border-white hover:bg-white/10"
-                >
-                  Nieruchomości w Hiszpanii
-                </Link>
-              </div>
-            </div>
-            <nav aria-label="Regiony Hiszpanii" className="self-center">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#e0bd7a]">
-                Wybrzeża, na których działamy
-              </p>
-              <ul className="mt-4 divide-y divide-white/15 border-y border-white/15">
-                {[
-                  ["Costa Blanca", "costa-blanca", "Alicante, Torrevieja, Calpe"],
-                  ["Costa Cálida", "costa-calida", "Mar Menor, San Pedro del Pinatar"],
-                  ["Costa del Sol", "costa-del-sol", "Marbella, Estepona, Málaga"],
-                  ["Costa de Almería", "costa-de-almeria", "Vera, Mojácar, Pulpí"],
-                ].map(([name, slug, towns]) => (
-                  <li key={slug}>
-                    <Link
-                      href={`/nieruchomosci/hiszpania/${slug}`}
-                      className="group flex items-center justify-between gap-4 py-3.5"
-                    >
-                      <span>
-                        <span className="block text-lg font-semibold">{name}</span>
-                        <span className="block text-xs text-[#c9d3e0]">{towns}</span>
-                      </span>
-                      <FaArrowRight className="shrink-0 text-[#e0bd7a] transition group-hover:translate-x-1" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
         </section>
 
         <section className="bg-white py-24">
