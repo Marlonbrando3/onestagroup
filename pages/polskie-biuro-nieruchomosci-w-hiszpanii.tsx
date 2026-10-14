@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Fragment, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
-import { FiArrowRight, FiAward, FiBriefcase, FiCalendar, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPercent, FiPlus, FiSearch, FiShield, FiTool, FiUsers } from "react-icons/fi";
+import { FiArrowRight, FiAward, FiBriefcase, FiCalendar, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPercent, FiPieChart, FiPlus, FiSearch, FiShield, FiTool, FiUsers } from "react-icons/fi";
 import ContactFormMain from "@/components/ContactFormMain";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -154,6 +154,13 @@ const teamIntros: Record<number, string> = {
   4: "Prowadzi prezentacje nieruchomości i pomaga zorganizować opiekę nad nimi po zakupie. Koordynuje bieżące sprawy na miejscu i kontakt z właścicielami.",
   5: "Łączy zarządzanie nieruchomościami, zespołem i procesami z działaniami marketingowymi, aby zwiększać efektywność i maksymalizować rentowność wynajmu dla właścicieli, z którymi współpracujemy.",
 };
+
+// „Jasne zasady”: trzy punkty z ikonami, jak lista atutów wyżej.
+const costPoints = [
+  { icon: FiPercent, lead: "Nie pobieramy prowizji za pośrednictwo w zakupie nieruchomości.", text: "Nasze wynagrodzenie pokrywa sprzedający, deweloper lub partner." },
+  { icon: FiFileText, lead: "Oddzielnie ustalamy zakres i koszty usług dodatkowych,", text: "takich jak obsługa prawna, tłumaczenia, wyposażenie lub zarządzanie po zakupie." },
+  { icon: FiPieChart, lead: "Cena z ogłoszenia nie jest całkowitym budżetem.", text: "Uwzględniamy podatki i opłaty związane z zakupem oraz przyszłe wydatki: wspólnotę, media, ubezpieczenie i utrzymanie. Koszty zależą od regionu, rynku pierwotnego lub wtórnego i konkretnej transakcji." },
+];
 
 // „Zobacz oferty” w hero przewija do następnego ekranu: liczby ofert + wyszukiwarka.
 function scrollToOffers(event: ReactMouseEvent<HTMLAnchorElement>) {
@@ -357,21 +364,14 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
             </h2>
           </div>
           <div>
-            <p>
-              Nie pobieramy od Ciebie prowizji za pośrednictwo w zakupie
-              nieruchomości. Nasze wynagrodzenie pokrywa sprzedający, deweloper
-              lub partner.
-            </p>
-            <p>
-              Oddzielnie ustalamy zakres i koszty dodatkowych usług, takich jak
-              obsługa prawna, tłumaczenia, wyposażenie lub zarządzanie po zakupie.
-            </p>
-            <p>
-              Cena z ogłoszenia nie jest całkowitym budżetem. Uwzględniamy
-              podatki i opłaty związane z zakupem oraz przyszłe wydatki:
-              wspólnotę, media, ubezpieczenie i utrzymanie. Koszty zależą od
-              regionu, rynku pierwotnego lub wtórnego i konkretnej transakcji.
-            </p>
+            <ul className={`${styles.cooperationList} ${styles.costList}`}>
+              {costPoints.map(({ icon: Icon, lead, text }) => (
+                <li key={lead}>
+                  <span className={styles.cooperationIcon}><Icon aria-hidden="true" /></span>
+                  <p><strong>{lead}</strong> {text}</p>
+                </li>
+              ))}
+            </ul>
             <Link href="/blog/koszty-zakupu-nieruchomosci-hiszpania-costa-blanca" className={styles.textLink}>Przeczytaj o kosztach zakupu <Arrow /></Link>
           </div>
         </section>
