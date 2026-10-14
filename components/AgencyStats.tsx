@@ -53,9 +53,11 @@ function CountUp({ value, run }: { value: number; run: boolean }) {
 export default function AgencyStats({
   totalOffers,
   newBuildOffers,
+  containerClassName = "",
 }: {
   totalOffers: number;
   newBuildOffers: number | null;
+  containerClassName?: string;
 }) {
   const { ref, state } = useInView<HTMLDListElement>();
   const run = state === "visible";
@@ -63,7 +65,7 @@ export default function AgencyStats({
     <section className={styles.statsBand} aria-label="Onesta Group w liczbach">
       <dl
         ref={ref}
-        className={`${styles.stats} ${styles.statsAnimated}`}
+        className={`${containerClassName} ${styles.stats} ${styles.statsAnimated}`}
         data-state={state}
       >
         <div>
@@ -89,7 +91,9 @@ export default function AgencyStats({
         <div>
           <dt>Prowizja</dt>
           <dd className={styles.statText}>
-            <span className={styles.statHighlight}>0&nbsp;zł</span> prowizji od kupującego
+            <span className={styles.statCommission}>
+              0&nbsp;zł <small>prowizji od kupującego</small>
+            </span>
           </dd>
         </div>
       </dl>
