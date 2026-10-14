@@ -131,6 +131,33 @@ export async function getStaticProps() {
 
 const benefitIcons = [FiMessageCircle, FiMapPin, FiCompass, FiHome, FiFileText, FiHeart];
 
+const cooperationPoints = [
+  {
+    title: "Najpierw Cię poznajemy",
+    text: "Stawiamy na pełne zrozumienie Twoich planów, budżetu i oczekiwań. Dzięki temu proponujemy trafione oferty, a nie listę przypadkowych linków.",
+  },
+  {
+    title: "Odpowiadamy, zanim zapytasz",
+    text: "Wiemy, jakie pytania pojawiają się na każdym etapie zakupu. Podpowiadamy i tłumaczymy, co właśnie się dzieje i co czeka Cię dalej.",
+  },
+  {
+    title: "Wszystko w języku polskim",
+    text: "Rozmowy, prezentacje, dokumenty i ustalenia — każdy krok omawiamy po polsku, bez barier językowych.",
+  },
+  {
+    title: "Ludzie w Polsce i w Hiszpanii",
+    text: "Z nami spotkasz się w Polsce, a na miejscu w Hiszpanii nasi ludzie są stale w biurach i na prezentacjach.",
+  },
+  {
+    title: "Bezpiecznie od A do Z",
+    text: "Prowadzimy przez cały proces: od wyboru, przez rezerwację i formalności z prawnikiem oraz notariuszem, po odbiór kluczy i — jeśli trzeba — umeblowanie mieszkania.",
+  },
+  {
+    title: "Własny dział zarządzania",
+    text: "Po zakupie możemy zaopiekować się Twoją nieruchomością: serwis, opieka podczas nieobecności i obsługa wynajmu.",
+  },
+];
+
 // „Zobacz oferty” w hero przewija do następnego ekranu: liczby ofert + wyszukiwarka.
 function scrollToOffers(event: ReactMouseEvent<HTMLAnchorElement>) {
   const target = document.getElementById("oferty");
@@ -289,36 +316,33 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           </section>
         </div>
 
-        <section id="o-biurze" className={`${styles.container} ${styles.about}`} aria-labelledby="about-heading">
-          <div className={styles.aboutImage}>
-            <Image
-              src="/bg_blog_main.png"
-              alt="Nadmorska okolica na Costa Blanca, z domami, ogrodami i plażą"
-              fill
-              sizes="(min-width: 900px) 45vw, 90vw"
-              className={styles.cover}
-            />
-          </div>
-          <div className={styles.aboutCopy}>
-            <p className={styles.eyebrow}>Poznaj <BrandName /></p>
-            <h2 id="about-heading">Lokalna wiedza.<br />Rozmowa po polsku.</h2>
-            <p className={styles.lead}>
-              Za zakupem nieruchomości stoją konkretne plany. Pomagamy je
-              uporządkować, porównać możliwości i wybrać odpowiednie miejsce w Hiszpanii.
-            </p>
-            <p>
-              Jako polskie biuro nieruchomości w Hiszpanii wspieramy osoby
-              szukające apartamentu na wakacje, domu do zamieszkania albo
-              nieruchomości z myślą o wynajmie. Zaczynamy od Twoich potrzeb:
-              sposobu korzystania, budżetu i oczekiwań wobec lokalizacji.
-            </p>
-            <p>
-              Mamy biura na <strong>Costa Blanca</strong> oraz biura
-              współpracujące na <strong>Costa del Sol</strong>. Łączymy
-              obecność na miejscu z obsługą klientów z Polski. Rozmowy,
-              selekcję i przygotowanie wizyty możemy rozpocząć zdalnie.
-            </p>
-            <a href="#zespol" className={styles.textLink}>Ludzie i sposób pracy <Arrow /></a>
+        <section id="o-biurze" className={styles.cooperation} aria-labelledby="about-heading">
+          <div className={`${styles.container} ${styles.cooperationGrid}`}>
+            <div className={styles.cooperationIntro}>
+              <p className={styles.eyebrow}>Poznaj <BrandName /></p>
+              <h2 id="about-heading">Co zrobimy dla Ciebie w&nbsp;ramach współpracy</h2>
+              <p className={styles.lead}>
+                <BrandName /> powstała z pasji do nieruchomości i do spotkań
+                z ludźmi, których marzenia o miejscu w Hiszpanii możemy pomóc spełnić.
+              </p>
+              <p>
+                Mamy duże doświadczenie w pracy z klientem — nie tylko
+                w nieruchomościach, ale też w innych branżach. Zawsze opieraliśmy
+                ją na wiedzy: zdobywaliśmy ją, przekazywaliśmy w zrozumiały sposób
+                i na jej podstawie doradzaliśmy przy ważnych zakupach. Tak samo
+                pracujemy dziś z osobami, które kupują nieruchomość w Hiszpanii.
+              </p>
+              <a href="#zespol" className={styles.textLink}>Poznaj nasz zespół <Arrow /></a>
+            </div>
+            <ol className={styles.cooperationList}>
+              {cooperationPoints.map(({ title, text }, index) => (
+                <li key={title}>
+                  <span className={styles.cooperationNumber} aria-hidden="true">0{index + 1}</span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
 
