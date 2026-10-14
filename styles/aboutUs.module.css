@@ -102,3 +102,18 @@
   .stats { padding-block: 26px; }
   .stats > div { padding-inline: 16px; }
 }
+
+/* Pasek liczb pod wyszukiwarką: 2 liczby + 2 opisy, delikatne wejście i odliczanie */
+.statsAnimated > div { transition: opacity .7s ease, transform .7s ease; }
+.statsAnimated[data-state="waiting"] > div { opacity: 0; transform: translateY(14px); }
+.statsAnimated[data-state="visible"] > div:nth-child(2) { transition-delay: .12s; }
+.statsAnimated[data-state="visible"] > div:nth-child(3) { transition-delay: .24s; }
+.statsAnimated[data-state="visible"] > div:nth-child(4) { transition-delay: .36s; }
+.stats dd.statText { margin-top: 8px; font-size: clamp(17px, 1.4vw, 20px); line-height: 1.35; }
+.statCoasts { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 17px; line-height: 1.35; }
+.statCoasts li { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.statCoasts li::before { content: ""; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--gold); }
+.statHighlight { display: block; margin-bottom: 4px; color: var(--navy); font-size: clamp(34px, 3.4vw, 48px); line-height: 1.05; }
+@media (prefers-reduced-motion: reduce) {
+  .statsAnimated > div { transition: none; }
+}

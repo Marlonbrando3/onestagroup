@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AgencyPropertySearch from "@/components/AgencyPropertySearch";
 import AgencyQuickContact from "@/components/AgencyQuickContact";
+import AgencyStats from "@/components/AgencyStats";
 import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
 import { SITE_URL } from "@/lib/publicSeo";
 import { teamMembers } from "@/data/aboutUs";
@@ -126,14 +127,6 @@ export async function getStaticProps() {
 }
 
 const benefitIcons = [FiMessageCircle, FiMapPin, FiCompass, FiHome, FiFileText, FiHeart];
-const trustBenefits = [
-  { icon: FiMessageCircle, title: "Kontakt po polsku", text: "Swobodna rozmowa na każdym etapie." },
-  { icon: FiMapPin, title: "Biura na wybrzeżach", text: "Lokalny zespół i biura współpracujące." },
-  { icon: FiKey, title: "Pełne wsparcie w zakupie", text: "Od pierwszej rozmowy do odbioru kluczy." },
-  { icon: FiShield, title: "Bezpieczny proces transakcji", text: "Koordynacja formalności ze specjalistami." },
-  { icon: FiSearch, title: "Preselekcja nieruchomości", text: "Oferty dopasowane do Twoich planów." },
-  { icon: FiHome, title: "100% ofert rynku pierwotnego", text: "Dostęp dzięki współpracy z deweloperami." },
-];
 
 function Arrow() {
   return <FiArrowRight aria-hidden="true" />;
@@ -264,19 +257,13 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           </div>
         </section>
 
-        <section className={styles.trustSection} aria-label="Co zyskujesz z Onesta Group">
-          <div className={styles.container}>
-            <ul className={styles.trustStrip}>
-              {trustBenefits.map(({ icon: Icon, title, text }) => (
-                <li key={title}>
-                  <span className={styles.trustIcon}><Icon aria-hidden="true" /></span>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        {totalOffers ? (
+          <AgencyStats
+            totalOffers={totalOffers}
+            newBuildOffers={newBuildOffers}
+            containerClassName={styles.container}
+          />
+        ) : null}
 
         <div className={`${styles.container} ${styles.breadcrumbs}`}>
           <nav aria-label="Ścieżka nawigacji">
@@ -319,16 +306,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           </div>
         </section>
 
-        {totalOffers ? (
-          <section className={about.statsBand} aria-label="Onesta Group w liczbach">
-            <dl className={`${styles.container} ${about.stats}`}>
-              <div><dt>Ofert w Hiszpanii</dt><dd>{formatCount(totalOffers)}</dd></div>
-              {newBuildOffers ? <div><dt>Z rynku pierwotnego</dt><dd>{formatCount(newBuildOffers)}</dd></div> : null}
-              <div><dt>Wybrzeża</dt><dd>4</dd></div>
-              <div><dt>Prowizji dla kupującego</dt><dd>0 zł</dd></div>
-            </dl>
-          </section>
-        ) : null}
 
         <nav className={`${styles.container} ${styles.sectionNav}`} aria-label="Na tej stronie">
           <span>Na tej stronie</span>
