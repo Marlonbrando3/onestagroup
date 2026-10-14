@@ -265,14 +265,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           />
         ) : null}
 
-        <div className={`${styles.container} ${styles.breadcrumbs}`}>
-          <nav aria-label="Ścieżka nawigacji">
-            <Link href="/">Strona główna</Link>
-            <span aria-hidden="true">/</span>
-            <span aria-current="page">Polskie biuro nieruchomości w Hiszpanii</span>
-          </nav>
-        </div>
-
         <section id="o-biurze" className={`${styles.container} ${styles.about}`} aria-labelledby="about-heading">
           <div className={styles.aboutImage}>
             <Image
