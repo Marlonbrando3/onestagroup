@@ -332,6 +332,35 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
         </section>
 
 
+        <section id="koszty" className={`${styles.container} ${styles.section} ${styles.costGrid}`} aria-labelledby="cost-heading">
+          <div>
+            <p className={styles.eyebrow}>Jasne zasady</p>
+            <h2 id="cost-heading" className={styles.costHeading}>
+              <span>Prowizja od sprzedaży przy współpracy z <BrandName /> wynosi</span>{" "}
+              <span className={styles.costValue}>0 zł</span>{" "}
+              <span className={styles.costAudience}>dla kupującego.</span>
+            </h2>
+          </div>
+          <div>
+            <p>
+              Nie pobieramy od Ciebie prowizji za pośrednictwo w zakupie
+              nieruchomości. Nasze wynagrodzenie pokrywa sprzedający, deweloper
+              lub partner.
+            </p>
+            <p>
+              Oddzielnie ustalamy zakres i koszty dodatkowych usług, takich jak
+              obsługa prawna, tłumaczenia, wyposażenie lub zarządzanie po zakupie.
+            </p>
+            <p>
+              Cena z ogłoszenia nie jest całkowitym budżetem. Uwzględniamy
+              podatki i opłaty związane z zakupem oraz przyszłe wydatki:
+              wspólnotę, media, ubezpieczenie i utrzymanie. Koszty zależą od
+              regionu, rynku pierwotnego lub wtórnego i konkretnej transakcji.
+            </p>
+            <Link href="/blog/koszty-zakupu-nieruchomosci-hiszpania-costa-blanca" className={styles.textLink}>Przeczytaj o kosztach zakupu <Arrow /></Link>
+          </div>
+        </section>
+
         <section id="jak-pomagamy" className={styles.processSection} aria-labelledby="process-heading">
           <div className={styles.container}>
             <div className={styles.processIntro}>
@@ -468,35 +497,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
                 aktualnych wymogów lokalnych.
               </p>
             </div>
-          </div>
-        </section>
-
-        <section id="koszty" className={`${styles.container} ${styles.section} ${styles.costGrid}`} aria-labelledby="cost-heading">
-          <div>
-            <p className={styles.eyebrow}>Jasne zasady</p>
-            <h2 id="cost-heading" className={styles.costHeading}>
-              <span>Prowizja od sprzedaży przy współpracy z <BrandName /> wynosi</span>{" "}
-              <span className={styles.costValue}>0 zł</span>{" "}
-              <span className={styles.costAudience}>dla kupującego.</span>
-            </h2>
-          </div>
-          <div>
-            <p>
-              Nie pobieramy od Ciebie prowizji za pośrednictwo w zakupie
-              nieruchomości. Nasze wynagrodzenie pokrywa sprzedający, deweloper
-              lub partner.
-            </p>
-            <p>
-              Oddzielnie ustalamy zakres i koszty dodatkowych usług, takich jak
-              obsługa prawna, tłumaczenia, wyposażenie lub zarządzanie po zakupie.
-            </p>
-            <p>
-              Cena z ogłoszenia nie jest całkowitym budżetem. Uwzględniamy
-              podatki i opłaty związane z zakupem oraz przyszłe wydatki:
-              wspólnotę, media, ubezpieczenie i utrzymanie. Koszty zależą od
-              regionu, rynku pierwotnego lub wtórnego i konkretnej transakcji.
-            </p>
-            <Link href="/blog/koszty-zakupu-nieruchomosci-hiszpania-costa-blanca" className={styles.textLink}>Przeczytaj o kosztach zakupu <Arrow /></Link>
           </div>
         </section>
 

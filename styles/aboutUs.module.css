@@ -127,6 +127,7 @@
 /* Przykładowe ogłoszenia na /polskie-biuro: 4 w wierszu */
 .featuredGrid.featuredGrid4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
 .featuredGrid.featuredGrid4 h3 { font-family: inherit; font-size: 16px; font-weight: 600; line-height: 1.45; letter-spacing: 0; }
+.featuredGrid.featuredGrid4 > * { overflow: hidden; border-radius: 20px; }
 .featuredMore { display: flex; justify-content: center; margin-top: 40px; }
 @media (max-width: 1100px) { .featuredGrid.featuredGrid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 599px) { .featuredGrid.featuredGrid4 { grid-template-columns: 1fr; } .featuredMore > a { width: 100%; } }
