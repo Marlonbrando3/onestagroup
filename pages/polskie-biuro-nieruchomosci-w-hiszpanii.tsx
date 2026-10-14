@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, type CSSProperties } from "react";
-import { FiArrowRight, FiCalendar, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPlus, FiSearch, FiShield, FiTool } from "react-icons/fi";
+import { FiArrowRight, FiAward, FiBriefcase, FiCalendar, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPercent, FiPlus, FiSearch, FiShield, FiTool, FiUsers } from "react-icons/fi";
 import ContactFormMain from "@/components/ContactFormMain";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -149,6 +149,19 @@ function BrandText({ children }: { children: string }) {
   ))}</>;
 }
 
+const heroAssurances = [
+  { icon: FiAward, text: "9 lat doświadczenia" },
+  { icon: FiMessageCircle, text: "Pełna obsługa w języku polskim" },
+  { icon: FiShield, text: "Bezpieczeństwo transakcji" },
+  { icon: FiBriefcase, text: "Współpracujący prawnicy, notariusze i tłumacze" },
+  { icon: FiHome, text: "Bezpośrednia współpraca z deweloperami" },
+  { icon: FiMapPin, text: "Biura w Polsce i w Hiszpanii" },
+  { icon: FiUsers, text: "Zespół nastawiony na Twoje potrzeby" },
+  { icon: FiPercent, text: "0% prowizji dla kupującego" },
+  { icon: FiCompass, text: "Prowadzenie zakupu od A do Z" },
+  { icon: FiKey, text: "Umeblowanie apartamentu i zarządzanie wynajmem" },
+];
+
 export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyShowcase }) {
   const { totalOffers, newBuildOffers, coastCounts, featured } = showcase;
   return (
@@ -204,18 +217,23 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           <div className={`${styles.container} ${hero.inner}`}>
             <div className={hero.copy}>
               <p className={hero.eyebrow}>
-                <BrandName /> · Costa Blanca · Costa del Sol
+                <BrandName /> · Costa&nbsp;Blanca · Costa&nbsp;del&nbsp;Sol · Costa&nbsp;Cálida · Costa&nbsp;de&nbsp;Almería
               </p>
               <h1 id="agency-h1" className={hero.title}>
                 Polskie biuro nieruchomości <em>w&nbsp;Hiszpanii</em>
               </h1>
-              <p className={hero.claim}>
-                Twoje miejsce nad Morzem Śródziemnym — wybrane z&nbsp;głową, kupione bez nerwów.
-              </p>
               <p className={hero.lead}>
                 Prowadzimy cały zakup po polsku: od pierwszej rozmowy, przez
                 wybór inwestycji i prezentacje na miejscu, po odbiór kluczy.
               </p>
+              <ul className={hero.assurances} aria-label="Dlaczego Onesta Group">
+                {heroAssurances.map(({ icon: Icon, text }) => (
+                  <li key={text}>
+                    <span className={hero.assuranceIcon}><Icon aria-hidden="true" /></span>
+                    {text}
+                  </li>
+                ))}
+              </ul>
               <div className={hero.actions}>
                 <Link href="/nieruchomosci/hiszpania" className={hero.primary}>
                   Zobacz oferty <Arrow />
@@ -224,11 +242,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
                   Bezpłatna konsultacja
                 </a>
               </div>
-              <ul className={hero.facts}>
-                <li><FiCheck aria-hidden="true" />0% prowizji dla kupującego</li>
-                <li><FiCheck aria-hidden="true" />Biura w Polsce i w Hiszpanii</li>
-                <li><FiCheck aria-hidden="true" />Wszystko po polsku</li>
-              </ul>
             </div>
             <figure className={hero.team}>
               <div className={hero.teamPhoto}>
@@ -243,6 +256,9 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
               </div>
             </figure>
           </div>
+        </section>
+
+        <section className={hero.searchBand} aria-label="Wyszukiwarka ofert">
           <div className={styles.container}>
             <AgencyPropertySearch />
           </div>
