@@ -18,7 +18,6 @@ import { teamMembers } from "@/data/aboutUs";
 import PropertyCard from "@/components/SearchEngine/PropertyCard";
 import { loadAgencyShowcase, type AgencyShowcase } from "@/lib/agencyShowcase";
 import {
-  agencyBenefits,
   agencyFaqs,
   agencyPage,
   agencyRegions,
@@ -129,7 +128,6 @@ export async function getStaticProps() {
   return { props: { showcase: await loadAgencyShowcase() }, revalidate: 3600 };
 }
 
-const benefitIcons = [FiMessageCircle, FiMapPin, FiCompass, FiHome, FiFileText, FiHeart];
 
 const cooperationPoints = [
   {
@@ -346,47 +344,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           </div>
         </section>
 
-
-        <nav className={`${styles.container} ${styles.sectionNav}`} aria-label="Na tej stronie">
-          <span>Na tej stronie</span>
-          <a href="#atuty">Dlaczego <BrandName /></a>
-          <a href="#jak-pomagamy">Proces zakupu</a>
-          <a href="#regiony">Regiony i biura</a>
-          {featured.length ? <a href="#wybrane-oferty">Wybrane inwestycje</a> : null}
-          <a href="#costa-blanca-costa-del-sol">Costa Blanca i Costa del Sol</a>
-          <a href="#koszty">Koszty obsługi</a>
-          <a href="#pytania">Pytania i odpowiedzi</a>
-        </nav>
-
-        <section id="atuty" className={`${styles.section} ${styles.benefitsSection}`} aria-labelledby="benefits-heading">
-          <div className={styles.benefitsIntro}>
-            <div className={styles.benefitsPhoto}>
-              <Image src="/pomoc-w-wyborze/calp.webp" alt="Plaża i nadmorska zabudowa Calpe na Costa Blanca" fill sizes="100vw" className={styles.cover} />
-            </div>
-            <div className={styles.container}>
-              <div className={styles.sectionHeading}>
-                <p className={styles.eyebrow}>Dlaczego warto</p>
-                <h2 id="benefits-heading">Polskie biuro nieruchomości w Hiszpanii. Co zyskujesz?</h2>
-                <p className={styles.lead}>
-                  Łatwiejsza komunikacja to początek. Równie ważne są trafny wybór
-                  lokalizacji, porównanie ofert i dobrze zorganizowany proces.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className={`${styles.container} ${styles.benefitGrid}`}>
-            {agencyBenefits.map(({ title, text }, index) => {
-              const Icon = benefitIcons[index];
-              return (
-                <article key={title} className={styles.benefit}>
-                  <span className={styles.benefitIcon}><Icon aria-hidden="true" /></span>
-                  <h3>{title}</h3>
-                  <p><BrandText>{text}</BrandText></p>
-                </article>
-              );
-            })}
-          </div>
-        </section>
 
         <section id="jak-pomagamy" className={styles.processSection} aria-labelledby="process-heading">
           <div className={styles.container}>
