@@ -129,6 +129,9 @@
   color: var(--hero-navy);
 }
 .assuranceIcon svg { width: 18px; height: 18px; stroke-width: 2.2; }
+/* Staż na rynku: ta sama forma, delikatnie mocniejsza — złota ramka, cieplejsze tło, rok w kroju nagłówka. */
+.assurances li.assuranceFeatured { border-color: #e0bd7ab3; background: linear-gradient(120deg, #e0bd7a33, #0f22401f 70%); box-shadow: 0 10px 26px #0a162a33; }
+.assuranceYear { color: var(--hero-gold); font-family: var(--agency-serif), Georgia, serif; font-size: 1.45em; font-weight: 600; line-height: 1; letter-spacing: -.01em; }
 
 /* Drugi ekran (cel „Zobacz oferty”): pasek liczb tuż pod hero, potem wyszukiwarka. */
 .nextScreen { scroll-margin-top: 74px; }

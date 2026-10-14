@@ -165,7 +165,7 @@ function BrandText({ children }: { children: string }) {
 }
 
 const heroAssurances = [
-  { icon: FiAward, text: "9 lat doświadczenia" },
+  { icon: FiAward, text: "Na rynku od 2018 roku", featured: true },
   { icon: FiMessageCircle, text: "Pełna obsługa w języku polskim" },
   { icon: FiShield, text: "Bezpieczeństwo transakcji" },
   { icon: FiBriefcase, text: "Współpracujący prawnicy, notariusze i tłumacze" },
@@ -251,10 +251,12 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
                 wybór inwestycji i prezentacje na miejscu, po odbiór kluczy.
               </p>
               <ul className={hero.assurances} aria-label="Dlaczego Onesta Group">
-                {heroAssurances.map(({ icon: Icon, text }) => (
-                  <li key={text}>
+                {heroAssurances.map(({ icon: Icon, text, featured }) => (
+                  <li key={text} className={featured ? hero.assuranceFeatured : undefined}>
                     <span className={hero.assuranceIcon}><Icon aria-hidden="true" /></span>
-                    {text}
+                    {featured ? (
+                      <span>Na rynku od <span className={hero.assuranceYear}>2018</span> roku</span>
+                    ) : text}
                   </li>
                 ))}
               </ul>
