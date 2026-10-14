@@ -1,7 +1,8 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
+import dynamic from "next/dynamic";
+import { Fragment, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
 import { FiArrowRight, FiAward, FiBriefcase, FiCalendar, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPercent, FiPlus, FiSearch, FiShield, FiTool, FiUsers } from "react-icons/fi";
 import ContactFormMain from "@/components/ContactFormMain";
 import Header from "@/components/Header";
@@ -9,6 +10,8 @@ import Footer from "@/components/Footer";
 import AgencyPropertySearch from "@/components/AgencyPropertySearch";
 import AgencyQuickContact from "@/components/AgencyQuickContact";
 import AgencyStats from "@/components/AgencyStats";
+
+const ConsultationPopup = dynamic(() => import("@/components/consulatation/consultation"), { ssr: false });
 import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
 import { SITE_URL } from "@/lib/publicSeo";
 import { teamMembers } from "@/data/aboutUs";
@@ -167,9 +170,18 @@ const heroAssurances = [
 
 export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyShowcase }) {
   const { totalOffers, newBuildOffers, coastCounts, featured } = showcase;
+  // Ten sam popup konsultacji dla przycisku w hero i „Umów konsultację” w menu.
+  const [consultationOpen, setConsultationOpen] = useState(false);
+  const toggleConsultation = () => setConsultationOpen((open) => !open);
   return (
     <>
-    <Header />
+    {consultationOpen && (
+      <ConsultationPopup
+        handleConsultationPopUp={toggleConsultation}
+        ConsultationsShowed={consultationOpen}
+      />
+    )}
+    <Header handleConsultationPopUp={toggleConsultation} />
     <div
       className={`${styles.page} ${HomeMontserratSans.className}`}
       style={{ "--agency-serif": HomePlayfairSans.style.fontFamily } as CSSProperties}
@@ -241,9 +253,9 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
                 <a href="#oferty" className={hero.primary} onClick={scrollToOffers}>
                   Zobacz oferty <Arrow />
                 </a>
-                <a href="#kontakt" className={hero.secondary}>
+                <button type="button" className={hero.secondary} onClick={toggleConsultation}>
                   Bezpłatna konsultacja
-                </a>
+                </button>
               </div>
             </div>
             <figure className={hero.team}>
