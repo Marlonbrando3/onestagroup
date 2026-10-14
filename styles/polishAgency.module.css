@@ -435,3 +435,12 @@
 
 /* „Jasne zasady” — lista z ikonami (styl jak atuty) */
 .costList { margin-bottom: 26px; }
+
+/* „Witaj w Onesta Group” — pochylony napis, szybko rozwija się od lewej */
+.welcome { position: relative; display: inline-block; margin: 0 0 22px; padding-bottom: 10px; }
+.welcomeText { display: inline-block; color: #b8914c; font-family: var(--agency-serif), Georgia, serif; font-size: clamp(30px, 3vw, 42px); font-style: italic; font-weight: 400; line-height: 1.1; letter-spacing: -.01em; white-space: nowrap; transition: clip-path .9s cubic-bezier(.2, .7, .2, 1), opacity .5s ease, transform .9s cubic-bezier(.2, .7, .2, 1), letter-spacing .9s ease; }
+.welcomeLine { position: absolute; left: 0; bottom: 0; width: 64%; height: 1px; background: linear-gradient(90deg, #b8914c, #b8914c00); transform-origin: left; transition: transform .8s .35s cubic-bezier(.2, .7, .2, 1); }
+.welcome[data-state="waiting"] .welcomeText { clip-path: inset(0 100% 0 0); opacity: 0; transform: translateX(-10px); letter-spacing: .04em; }
+.welcome[data-state="waiting"] .welcomeLine { transform: scaleX(0); }
+.welcome[data-state="visible"] .welcomeText { clip-path: inset(0 0 0 0); }
+@media (max-width: 599px) { .welcome { margin-bottom: 16px; } }

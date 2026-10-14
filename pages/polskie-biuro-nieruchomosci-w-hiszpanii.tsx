@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import AgencyPropertySearch from "@/components/AgencyPropertySearch";
 import AgencyQuickContact from "@/components/AgencyQuickContact";
 import AgencyStats from "@/components/AgencyStats";
+import WelcomeReveal from "@/components/WelcomeReveal";
 import Team from "@/data/team.json";
 
 const ConsultationPopup = dynamic(() => import("@/components/consulatation/consultation"), { ssr: false });
@@ -328,6 +329,7 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
         <section id="o-biurze" className={styles.cooperation} aria-labelledby="about-heading">
           <div className={`${styles.container} ${styles.cooperationGrid}`}>
             <div className={styles.cooperationIntro}>
+              <WelcomeReveal />
               <p className={styles.eyebrow}>Poznaj <BrandName /></p>
               <h2 id="about-heading">Co dla Ciebie zrobimy?</h2>
               <p className={styles.cooperationLead}>
