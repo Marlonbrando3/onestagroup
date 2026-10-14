@@ -129,32 +129,16 @@ export async function getStaticProps() {
 }
 
 
+// Atuty współpracy: ikona + jeden akapit, pierwsza myśl pogrubiona.
 const cooperationPoints = [
-  {
-    title: "Najpierw Cię poznajemy",
-    text: "Stawiamy na pełne zrozumienie Twoich planów, budżetu i oczekiwań. Dzięki temu proponujemy trafione oferty, a nie listę przypadkowych linków.",
-  },
-  {
-    title: "Odpowiadamy, zanim zapytasz",
-    text: "Wiemy, jakie pytania pojawiają się na każdym etapie zakupu. Podpowiadamy i tłumaczymy, co właśnie się dzieje i co czeka Cię dalej.",
-  },
-  {
-    title: "Wszystko w języku polskim",
-    text: "Rozmowy, prezentacje, dokumenty i ustalenia — każdy krok omawiamy po polsku, bez barier językowych.",
-  },
-  {
-    title: "Ludzie w Polsce i w Hiszpanii",
-    text: "Z nami spotkasz się w Polsce, a na miejscu w Hiszpanii nasi ludzie są stale w biurach i na prezentacjach.",
-  },
-  {
-    title: "Bezpiecznie od A do Z",
-    text: "Prowadzimy przez cały proces: od wyboru, przez rezerwację i formalności z prawnikiem oraz notariuszem, po odbiór kluczy i — jeśli trzeba — umeblowanie mieszkania.",
-  },
-  {
-    title: "Własny dział zarządzania",
-    text: "Po zakupie możemy zaopiekować się Twoją nieruchomością: serwis, opieka podczas nieobecności i obsługa wynajmu.",
-  },
+  { icon: FiHeart, lead: "Pracujesz z ludźmi z pasją", text: "do nieruchomości i do spełniania marzeń innych o własnym miejscu w Hiszpanii." },
+  { icon: FiCompass, lead: "Rozumiemy, na jakim etapie jesteś.", text: "Wiemy, jakie pytania pojawiają się na każdym kroku zakupu. Podpowiadamy i tłumaczymy, co właśnie się dzieje i co czeka Cię dalej, a na wątpliwości odpowiadamy, zanim urosną." },
+  { icon: FiMessageCircle, lead: "Wszystko w języku polskim", text: "— rozmowy, prezentacje, dokumenty i ustalenia, bez barier językowych." },
+  { icon: FiUsers, lead: "Zespół w Polsce i w Hiszpanii.", text: "Możemy spotkać się z Tobą w Polsce na pierwsze poznanie, a dalej prowadzić Cię przez nasze biura i agentów w Hiszpanii." },
+  { icon: FiShield, lead: "Bezpiecznie od A do Z", text: "— od wyboru, przez rezerwację i formalności z prawnikiem oraz notariuszem, po odbiór kluczy i, jeśli trzeba, umeblowanie mieszkania." },
+  { icon: FiKey, lead: "Własny dział zarządzania.", text: "Po zakupie możemy zaopiekować się Twoją nieruchomością: serwis, opieka podczas nieobecności i obsługa wynajmu." },
 ];
+
 
 // „Zobacz oferty” w hero przewija do następnego ekranu: liczby ofert + wyszukiwarka.
 function scrollToOffers(event: ReactMouseEvent<HTMLAnchorElement>) {
@@ -318,29 +302,23 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           <div className={`${styles.container} ${styles.cooperationGrid}`}>
             <div className={styles.cooperationIntro}>
               <p className={styles.eyebrow}>Poznaj <BrandName /></p>
-              <h2 id="about-heading">Co zrobimy dla Ciebie w&nbsp;ramach współpracy</h2>
-              <p className={styles.lead}>
-                <BrandName /> powstała z pasji do nieruchomości i do spotkań
-                z ludźmi, których marzenia o miejscu w Hiszpanii możemy pomóc spełnić.
-              </p>
+              <h2 id="about-heading">Co zyskujesz, współpracując z&nbsp;nami</h2>
               <p>
                 Mamy duże doświadczenie w pracy z klientem — nie tylko
                 w nieruchomościach, ale też w innych branżach. Zawsze opieraliśmy
                 ją na wiedzy: zdobywaliśmy ją, przekazywaliśmy w zrozumiały sposób
-                i na jej podstawie doradzaliśmy przy ważnych zakupach. Tak samo
-                pracujemy dziś z osobami, które kupują nieruchomość w Hiszpanii.
+                i na jej podstawie doradzaliśmy przy ważnych zakupach.
               </p>
               <a href="#zespol" className={styles.textLink}>Poznaj nasz zespół <Arrow /></a>
             </div>
-            <ol className={styles.cooperationList}>
-              {cooperationPoints.map(({ title, text }, index) => (
-                <li key={title}>
-                  <span className={styles.cooperationNumber} aria-hidden="true">0{index + 1}</span>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
+            <ul className={styles.cooperationList}>
+              {cooperationPoints.map(({ icon: Icon, lead, text }) => (
+                <li key={lead}>
+                  <span className={styles.cooperationIcon}><Icon aria-hidden="true" /></span>
+                  <p><strong>{lead}</strong> {text}</p>
                 </li>
               ))}
-            </ol>
+            </ul>
           </div>
         </section>
 

@@ -403,32 +403,30 @@
   .page *, .page *::before, .page *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
 
-/* „Co zrobimy dla Ciebie” (dawniej „Lokalna wiedza”): opis + 6 numerowanych punktów, tło z kształtami */
-.cooperation { position: relative; overflow: clip; padding-block: 88px 96px; }
+/* „Co zyskujesz, współpracując z nami”: opis + lista atutów z ikonami, tło z kształtami */
+.cooperation { position: relative; overflow: clip; padding-block: 80px 88px; }
 .cooperation::before, .cooperation::after { content: ""; position: absolute; z-index: 0; border-radius: 50%; pointer-events: none; }
 .cooperation::before { top: -180px; right: -160px; width: 560px; height: 560px; border: 2px solid #e0c48f66; box-shadow: inset 0 0 0 46px #f3e7cf55; }
 .cooperation::after { bottom: -220px; left: -200px; width: 520px; height: 520px; background: radial-gradient(circle, #1d3f6914 0%, #1d3f6900 70%); }
 .cooperationGrid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; gap: 72px; }
-.cooperationIntro { position: sticky; top: 120px; }
-.cooperationIntro h2 { margin-bottom: 26px; font-size: clamp(36px, 3.4vw, 50px); }
-.cooperationIntro > p:not(.eyebrow):not(.lead) { margin-top: 18px; color: #4b5668; line-height: 1.85; }
-.cooperationIntro .textLink { margin-top: 28px; }
-.cooperationList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin: 0; padding: 0; list-style: none; counter-reset: none; }
-.cooperationList li { position: relative; padding: 30px 28px 28px; border: 1px solid #e9e1d3; border-radius: 22px; background: #ffffffd9; box-shadow: 0 14px 34px #1823340d; transition: transform .25s, box-shadow .25s, border-color .25s; }
-.cooperationList li:hover { transform: translateY(-3px); border-color: #dfc399; box-shadow: 0 20px 40px #18233414; }
-.cooperationNumber { display: block; margin-bottom: 14px; color: #c8994b; font-family: var(--agency-serif), Georgia, serif; font-size: 44px; line-height: 1; font-variant-numeric: lining-nums; }
-.cooperationList h3 { color: var(--navy); font-size: 23px; line-height: 1.25; }
-.cooperationList p { margin-top: 12px; color: #4b5668; font-size: 15px; line-height: 1.75; }
+.cooperationIntro h2 { margin-bottom: 24px; font-size: clamp(36px, 3.4vw, 50px); }
+.cooperationIntro > p:not(.eyebrow) { color: #4b5668; font-size: 17px; line-height: 1.85; }
+.cooperationIntro .textLink { margin-top: 26px; }
+.cooperationList { display: grid; gap: 22px; margin: 0; padding: 0; list-style: none; }
+.cooperationList li { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: start; gap: 18px; }
+.cooperationIcon { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #dfc399; border-radius: 50%; background: #f5e8d3; color: #94672e; }
+.cooperationIcon svg { width: 20px; height: 20px; stroke-width: 1.8; }
+.cooperationList p { margin: 0; padding-top: 9px; color: #4b5668; font-size: 16px; line-height: 1.75; }
+.cooperationList strong { color: var(--navy); font-weight: 700; }
 @media (max-width: 1100px) {
-  .cooperationGrid { grid-template-columns: 1fr; gap: 44px; }
-  .cooperationIntro { position: static; max-width: 760px; }
+  .cooperationGrid { grid-template-columns: 1fr; gap: 40px; }
+  .cooperationIntro { max-width: 760px; }
 }
 @media (max-width: 599px) {
   .cooperation { padding-block: 56px 64px; }
   .cooperation::before { width: 320px; height: 320px; top: -120px; right: -140px; box-shadow: inset 0 0 0 28px #f3e7cf55; }
-  .cooperationList { grid-template-columns: 1fr; gap: 14px; }
-  .cooperationList li { padding: 24px 22px; }
-  .cooperationNumber { font-size: 38px; }
-  .cooperationList h3 { font-size: 22px; }
+  .cooperationList { gap: 18px; }
+  .cooperationList li { grid-template-columns: 38px minmax(0, 1fr); gap: 14px; }
+  .cooperationIcon { width: 38px; height: 38px; }
+  .cooperationList p { padding-top: 6px; font-size: 15px; }
 }
-@media (prefers-reduced-motion: reduce) { .cooperationList li { transition: none; } .cooperationList li:hover { transform: none; } }
