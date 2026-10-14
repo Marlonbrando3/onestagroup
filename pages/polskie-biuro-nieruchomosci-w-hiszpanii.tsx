@@ -141,8 +141,13 @@ const cooperationPoints = [
 
 
 // Zespół w sekcji „Kim jesteśmy” — zdjęcia jak w pierwotnej wersji strony.
+// Marek i Karolina: kadry z prawdziwego zdjęcia zespołu (to samo co w hero).
+const teamPhotoOverrides: Record<number, string> = {
+  1: "images/agency/team-marek.webp",
+  2: "images/agency/team-karolina.webp",
+};
 const agencyTeam = [
-  ...Team,
+  ...Team.map((person) => ({ ...person, photo: teamPhotoOverrides[person.id] ?? person.photo })),
   { id: 4, name: "Dominik Michałowski", title: "Partner · zarządzanie nieruchomościami", photo: "dominik.png" },
   { id: 5, name: "Damian Włodarkiewicz", title: "Zarządzanie nieruchomościami, zespołem, procesami i marketingiem", photo: "damian.png" },
 ];
