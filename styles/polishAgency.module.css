@@ -185,7 +185,7 @@
 .teamGrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; }
 .teamImage { position: relative; aspect-ratio: 4 / 5; background: #eee8dd; overflow: hidden; }
 .teamImage img { object-position: center 20%; }
-.teamGrid [data-person="3"] .teamImage img { object-position: center 25%; }
+.teamGrid [data-person="3"] .teamImage img { object-position: center 25%; transform: scale(1.6); transform-origin: 50% 24%; }
 .teamGrid [data-person="4"] .teamImage img { transform: scale(1.18); transform-origin: 38% 40%; }
 .teamGrid [data-person="5"] .teamImage img { object-position: 58% center; }
 .teamGrid h3 { min-height: 1.18em; margin-top: 20px; font-size: clamp(14px, 1.4vw, 20px); }

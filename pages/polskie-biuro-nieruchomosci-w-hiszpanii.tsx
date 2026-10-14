@@ -194,11 +194,9 @@ function BrandText({ children }: { children: string }) {
 const heroAssurances = [
   { icon: FiAward, text: "Na rynku od 2018 roku", featured: true },
   { icon: FiMessageCircle, text: "Pełna obsługa w języku polskim" },
-  { icon: FiShield, text: "Bezpieczeństwo transakcji" },
   { icon: FiBriefcase, text: "Współpracujący prawnicy, notariusze i tłumacze" },
   { icon: FiHome, text: "Bezpośrednia współpraca z deweloperami" },
   { icon: FiMapPin, text: "Biura w Polsce i w Hiszpanii" },
-  { icon: FiUsers, text: "Zespół nastawiony na Twoje potrzeby" },
   { icon: FiPercent, text: "0% prowizji dla kupującego" },
   { icon: FiCompass, text: "Prowadzenie zakupu od A do Z" },
   { icon: FiKey, text: "Umeblowanie apartamentu i zarządzanie wynajmem" },
