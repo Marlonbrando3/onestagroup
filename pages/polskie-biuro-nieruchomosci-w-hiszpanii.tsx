@@ -382,9 +382,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
                   kolejnymi sprawami. Przez cały proces masz polskojęzyczną obsługę <BrandName />.
                 </p>
               </div>
-              <div className={styles.processImage}>
-                <Image src="/images/agency/zakup-nieruchomosci-uscisk-dloni.webp" alt="Małżeństwo i doradca nieruchomości ściskają dłonie w domu na hiszpańskim wybrzeżu" fill sizes="(min-width: 900px) 40vw, 88vw" className={styles.cover} />
-              </div>
             </div>
             <ol className={styles.steps}>
               {agencySteps.map(({ title, text }, index) => (
