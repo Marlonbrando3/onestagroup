@@ -354,14 +354,15 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
             </ol>
             <div className={styles.processNote}>
               <div className={styles.processNoteMessage}>
-                <span className={styles.processNoteIcon} aria-hidden="true"><FiArrowRight /></span>
+                <span className={styles.processNoteIcon} aria-hidden="true"><FiCalendar /></span>
                 <p>
-                  <strong>Masz przestrzeń na decyzję.</strong> Pierwszy przyjazd
-                  może służyć poznaniu rynku. Jeżeli żadna oferta nie pasuje,
-                  wracamy do selekcji. Plan i długość prezentacji ustalamy przed podróżą.
+                  <strong>Poznaj pobyt inwestorski — najważniejszą część całego procesu.</strong>
+                  Zrozum, jak zorganizowana jest Twoja wizyta w Hiszpanii: jak przebiega,
+                  co chcemy Ci przez nią zapewnić, czym może się zakończyć i na co
+                  zwracać uwagę podczas oglądania nieruchomości.
                 </p>
               </div>
-              <Link href="/pobytinwestorski" className={styles.textLink}>Poznaj pobyt inwestorski <Arrow /></Link>
+              <Link href="/pobytinwestorski" className={styles.textLink}>Jak wygląda pobyt inwestorski <Arrow /></Link>
             </div>
             <Link href="/blog/nieruchomosci-w-hiszpanii-jak-wyglada-proces" className={styles.textLink}>
               Przeczytaj szczegółowy poradnik o procesie zakupu <Arrow />
