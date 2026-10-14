@@ -370,6 +370,29 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           </div>
         </section>
 
+        {featured.length ? (
+          <section id="wybrane-oferty" className={`${styles.container} ${styles.section}`} aria-labelledby="featured-heading">
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>Wybrane przez nas</p>
+              <h2 id="featured-heading">Przykładowe ogłoszenia, które wybraliśmy</h2>
+              <p className={styles.lead}>
+                Rekomendowane nowe inwestycje w budżecie od 320 do 480 tys. € —
+                apartamenty, bungalowy i domy, które znamy i chętnie pokażemy na miejscu.
+              </p>
+            </div>
+            <div className={`${about.featuredGrid} ${about.featuredGrid4}`}>
+              {featured.map((property: any) => (
+                <PropertyCard key={property.external_id} property={property} locale="pl" />
+              ))}
+            </div>
+            <div className={about.featuredMore}>
+              <Link href="/nieruchomosci/hiszpania?market=true" className={styles.button}>
+                Przeglądaj więcej ogłoszeń rekomendowanych <Arrow />
+              </Link>
+            </div>
+          </section>
+        ) : null}
+
         <section id="regiony" className={styles.regionsSection} aria-labelledby="regions-heading">
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
@@ -403,28 +426,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           </div>
         </section>
 
-        {featured.length ? (
-          <section id="wybrane-oferty" className={`${styles.container} ${styles.section}`} aria-labelledby="featured-heading">
-            <div className={about.featuredHead}>
-              <div className={styles.sectionHeading}>
-                <p className={styles.eyebrow}>Wybrane przez nas</p>
-                <h2 id="featured-heading">Nowe inwestycje, które polecamy.</h2>
-                <p className={styles.lead}>
-                  Kilka projektów z rynku pierwotnego, które znamy i chętnie pokazujemy na miejscu.
-                  Pełną selekcję przygotujemy po rozmowie o Twoich planach.
-                </p>
-              </div>
-              <Link href="/nieruchomosci/hiszpania?market=true" className={styles.textLink}>
-                Wszystkie nowe inwestycje {newBuildOffers ? `(${formatCount(newBuildOffers)})` : ""} <Arrow />
-              </Link>
-            </div>
-            <div className={about.featuredGrid}>
-              {featured.map((property: any) => (
-                <PropertyCard key={property.external_id} property={property} locale="pl" appearance="cbtop" />
-              ))}
-            </div>
-          </section>
-        ) : null}
 
         <AgencyQuickContact />
 
