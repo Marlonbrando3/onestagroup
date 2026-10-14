@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, type CSSProperties } from "react";
+import { Fragment, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
 import { FiArrowRight, FiAward, FiBriefcase, FiCalendar, FiCheck, FiCompass, FiFileText, FiHeart, FiHome, FiKey, FiMapPin, FiMessageCircle, FiPercent, FiPlus, FiSearch, FiShield, FiTool, FiUsers } from "react-icons/fi";
 import ContactFormMain from "@/components/ContactFormMain";
 import Header from "@/components/Header";
@@ -128,6 +128,16 @@ export async function getStaticProps() {
 
 const benefitIcons = [FiMessageCircle, FiMapPin, FiCompass, FiHome, FiFileText, FiHeart];
 
+// „Zobacz oferty” w hero przewija do następnego ekranu: liczby ofert + wyszukiwarka.
+function scrollToOffers(event: ReactMouseEvent<HTMLAnchorElement>) {
+  const target = document.getElementById("oferty");
+  if (!target) return;
+  event.preventDefault();
+  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  history.replaceState(null, "", "#oferty");
+}
+
 function Arrow() {
   return <FiArrowRight aria-hidden="true" />;
 }
@@ -228,9 +238,9 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
                 ))}
               </ul>
               <div className={hero.actions}>
-                <Link href="/nieruchomosci/hiszpania" className={hero.primary}>
+                <a href="#oferty" className={hero.primary} onClick={scrollToOffers}>
                   Zobacz oferty <Arrow />
-                </Link>
+                </a>
                 <a href="#kontakt" className={hero.secondary}>
                   Bezpłatna konsultacja
                 </a>
@@ -251,19 +261,21 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           </div>
         </section>
 
-        <section className={hero.searchBand} aria-label="Wyszukiwarka ofert">
-          <div className={styles.container}>
-            <AgencyPropertySearch />
-          </div>
-        </section>
+        <div id="oferty" className={hero.nextScreen}>
+          {totalOffers ? (
+            <AgencyStats
+              totalOffers={totalOffers}
+              newBuildOffers={newBuildOffers}
+              containerClassName={styles.container}
+            />
+          ) : null}
 
-        {totalOffers ? (
-          <AgencyStats
-            totalOffers={totalOffers}
-            newBuildOffers={newBuildOffers}
-            containerClassName={styles.container}
-          />
-        ) : null}
+          <section className={hero.searchBand} aria-label="Wyszukiwarka ofert">
+            <div className={styles.container}>
+              <AgencyPropertySearch />
+            </div>
+          </section>
+        </div>
 
         <section id="o-biurze" className={`${styles.container} ${styles.about}`} aria-labelledby="about-heading">
           <div className={styles.aboutImage}>

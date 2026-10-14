@@ -130,7 +130,9 @@
 }
 .assuranceIcon svg { width: 18px; height: 18px; stroke-width: 2.2; }
 
-/* Wyszukiwarka pod pierwszym widokiem, z równym odstępem od hero i paska liczb. */
+/* Drugi ekran (cel „Zobacz oferty”): pasek liczb tuż pod hero, potem wyszukiwarka. */
+.nextScreen { scroll-margin-top: 74px; }
+@media (min-width: 1280px) { .nextScreen { scroll-margin-top: 82px; } }
 .searchBand { position: relative; z-index: 1; padding-block: 40px; }
 
 .facts { display: flex; flex-wrap: wrap; gap: 10px 26px; margin: 20px 0 0; padding: 0; list-style: none; color: #e9eef5; font-size: 13px; }
