@@ -206,7 +206,7 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
         <section className={hero.hero} aria-labelledby="agency-h1">
           <div className={hero.photo} aria-hidden="true">
             <Image
-              src="/images/seo/coasts/costa-blanca.webp"
+              src="/images/agency/hero-polskie-biuro.webp"
               alt=""
               fill
               priority
