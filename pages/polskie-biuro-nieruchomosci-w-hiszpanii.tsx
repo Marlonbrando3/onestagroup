@@ -302,12 +302,19 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           <div className={`${styles.container} ${styles.cooperationGrid}`}>
             <div className={styles.cooperationIntro}>
               <p className={styles.eyebrow}>Poznaj <BrandName /></p>
-              <h2 id="about-heading">Co zyskujesz, współpracując z&nbsp;nami</h2>
+              <h2 id="about-heading">Co dla Ciebie zrobimy?</h2>
+              <p className={styles.cooperationLead}>
+                Dzięki dużemu doświadczeniu w pracy z klientem — nie tylko
+                w branży nieruchomości, ale też w zupełnie innych — jesteśmy dobrze
+                przygotowani, by zrozumieć Twoje potrzeby. Wiemy, jakie pytania zadać,
+                żeby ustalić, czego naprawdę szukasz, i jak pomóc, aby poszukiwania
+                i zakup nie kończyły się frustracją, tylko były ciekawą podróżą do
+                spełnienia Twoich marzeń.
+              </p>
               <p>
-                Mamy duże doświadczenie w pracy z klientem — nie tylko
-                w nieruchomościach, ale też w innych branżach. Zawsze opieraliśmy
-                ją na wiedzy: zdobywaliśmy ją, przekazywaliśmy w zrozumiały sposób
-                i na jej podstawie doradzaliśmy przy ważnych zakupach.
+                Stawiamy na pracę opartą na relacji, szczerości, wzajemnym
+                zrozumieniu i uczciwości. To podejście zawsze prowadziło nas do
+                sukcesu, a naszych klientów — do satysfakcjonujących zakupów.
               </p>
               <a href="#zespol" className={styles.textLink}>Poznaj nasz zespół <Arrow /></a>
             </div>

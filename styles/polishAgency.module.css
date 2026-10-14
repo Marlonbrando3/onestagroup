@@ -411,6 +411,8 @@
 .cooperationGrid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; gap: 72px; }
 .cooperationIntro h2 { margin-bottom: 24px; font-size: clamp(36px, 3.4vw, 50px); }
 .cooperationIntro > p:not(.eyebrow) { color: #4b5668; font-size: 17px; line-height: 1.85; }
+.cooperationIntro > p + p { margin-top: 18px; }
+.cooperationIntro > p.cooperationLead { color: var(--navy); font-size: 18px; line-height: 1.75; }
 .cooperationIntro .textLink { margin-top: 26px; }
 .cooperationList { display: grid; gap: 22px; margin: 0; padding: 0; list-style: none; }
 .cooperationList li { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: start; gap: 18px; }
