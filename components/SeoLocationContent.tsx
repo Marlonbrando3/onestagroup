@@ -9,6 +9,8 @@ import { catalogPath } from "@/lib/publicSeo";
 import type { SiteLocale } from "@/lib/i18n";
 import TorreviejaCatalogContent from "@/components/TorreviejaCatalogContent";
 import AlicanteCatalogContent from "@/components/AlicanteCatalogContent";
+import CityGuideContent from "@/components/CityGuideContent";
+import { cityGuide } from "@/data/cityGuides";
 
 type RegionDetails = {
   locations: string[];
@@ -302,6 +304,11 @@ export default function SeoLocationContent({
 
   if (city?.slug === "alicante" && !en) {
     return <AlicanteCatalogContent onConsultation={onConsultation} />;
+  }
+
+  const guide = city && !en ? cityGuide(city.slug) : undefined;
+  if (guide) {
+    return <CityGuideContent guide={guide} onConsultation={onConsultation} />;
   }
 
   if (region && !city && !en) {

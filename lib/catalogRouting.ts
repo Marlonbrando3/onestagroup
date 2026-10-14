@@ -1,5 +1,7 @@
 import { PROPERTY_COUNTRY_OPTIONS } from "./propertyCountries";
-import { SEO_REGIONS, findCity } from "./seoLocations";
+import { SEO_REGIONS, SEO_CITIES, findCity } from "./seoLocations";
+import locations from "@/data/locations.json";
+import type { LocationEntry } from "./locations";
 import { catalogPath, publicCountry, slugify } from "./publicSeo";
 import type { SiteLocale } from "./i18n";
 
@@ -224,6 +226,15 @@ export function effectiveCatalogQuery(
   delete result.maxPrice;
   return result;
 }
+function cityLandingForLocation(country: string, value: CatalogQuery[string]) {
+  const ids = csv(value);
+  if (ids.length !== 1) return undefined;
+  const location = (locations as LocationEntry[]).find((item) => item.id === ids[0]);
+  if (!location || !["town", "city"].includes(location.type)) return undefined;
+  const region = SEO_REGIONS.find((item) => item.country === country && item.seoEnabled && item.locationId === location.parentId);
+  const city = region && SEO_CITIES.find((item) => item.region === region.slug && item.aliases.some((alias) => slugify(alias) === slugify(location.name)));
+  return region && city ? { region: region.slug, city: city.slug } : undefined;
+}
 export function buildCatalogUrl(
   countryValue: string,
   input: CatalogQuery,
@@ -236,6 +247,13 @@ export function buildCatalogUrl(
   for (const key of ["country", "title", "city", "catalog", "id"])
     delete query[key];
   const route: CatalogRoute = { ...scope, country: country.slug };
+  // A single town that has its own city page lives at the clean address (?location=… → /region/city).
+  const cityLanding = !scope.city && !scope.propertyType ? cityLandingForLocation(country.slug, query.location) : undefined;
+  if (cityLanding && (!scope.region || scope.region === cityLanding.region)) {
+    route.region = cityLanding.region;
+    route.city = cityLanding.city;
+    delete query.location;
+  }
   const region =
     regionForQuery(country.slug, query.region) ||
     regionForQuery(country.slug, query.location);
