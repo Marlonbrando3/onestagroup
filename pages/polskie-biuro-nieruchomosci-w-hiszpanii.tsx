@@ -10,11 +10,11 @@ import Footer from "@/components/Footer";
 import AgencyPropertySearch from "@/components/AgencyPropertySearch";
 import AgencyQuickContact from "@/components/AgencyQuickContact";
 import AgencyStats from "@/components/AgencyStats";
+import Team from "@/data/team.json";
 
 const ConsultationPopup = dynamic(() => import("@/components/consulatation/consultation"), { ssr: false });
 import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
 import { SITE_URL } from "@/lib/publicSeo";
-import { teamMembers } from "@/data/aboutUs";
 import PropertyCard from "@/components/SearchEngine/PropertyCard";
 import { loadAgencyShowcase, type AgencyShowcase } from "@/lib/agencyShowcase";
 import {
@@ -139,6 +139,21 @@ const cooperationPoints = [
   { icon: FiKey, lead: "Własny dział zarządzania.", text: "Po zakupie możemy zaopiekować się Twoją nieruchomością: serwis, opieka podczas nieobecności i obsługa wynajmu." },
 ];
 
+
+// Zespół w sekcji „Kim jesteśmy” — zdjęcia jak w pierwotnej wersji strony.
+const agencyTeam = [
+  ...Team,
+  { id: 4, name: "Dominik Michałowski", title: "Partner · zarządzanie nieruchomościami", photo: "dominik.png" },
+  { id: 5, name: "Damian Włodarkiewicz", title: "Zarządzanie nieruchomościami, zespołem, procesami i marketingiem", photo: "damian.png" },
+];
+
+const teamIntros: Record<number, string> = {
+  1: "Porządkuje potrzeby, szczegóły ofert i kolejne kroki zakupu. Dba o jasną komunikację w całym procesie.",
+  2: "Pomaga poznać regiony i ich codzienne życie, aby miejsce odpowiadało Twoim planom, także poza sezonem.",
+  3: "Omawia cele zakupu, porównuje możliwości i pomaga doprecyzować kryteria wyboru nieruchomości. Przygotowuje oferty, prowadzi przez proces preselekcji i planuje prezentacje.",
+  4: "Prowadzi prezentacje nieruchomości i pomaga zorganizować opiekę nad nimi po zakupie. Koordynuje bieżące sprawy na miejscu i kontakt z właścicielami.",
+  5: "Łączy zarządzanie nieruchomościami, zespołem i procesami z działaniami marketingowymi, aby zwiększać efektywność i maksymalizować rentowność wynajmu dla właścicieli, z którymi współpracujemy.",
+};
 
 // „Zobacz oferty” w hero przewija do następnego ekranu: liczby ofert + wyszukiwarka.
 function scrollToOffers(event: ReactMouseEvent<HTMLAnchorElement>) {
@@ -456,7 +471,7 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
         </section>
 
 
-        <AgencyQuickContact />
+        <AgencyQuickContact variant="conversation" />
 
         <section className={styles.supportSection} aria-labelledby="support-heading">
           <div className={`${styles.container} ${styles.supportGrid}`}>
@@ -500,7 +515,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
           </div>
         </section>
 
-        <AgencyQuickContact variant="conversation" />
 
         <section id="zespol" className={styles.teamSection} aria-labelledby="team-heading">
           <div className={styles.container}>
@@ -509,22 +523,15 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
               <h2 id="team-heading">Kim jesteśmy</h2>
               <p className={styles.lead}>Za ofertami stoją ludzie. Z nami omówisz wybór, zadasz pytania i zaplanujesz kolejne kroki po polsku.</p>
             </div>
-            <div className={about.team}>
-              {teamMembers.map((person) => (
-                <article key={person.id} className={about.member}>
-                  <div className={about.memberHead}>
-                    <span className={about.monogram} aria-hidden="true">{initials(person.name)}</span>
-                    <div>
-                      <h3>{person.name}</h3>
-                      <p className={about.role}>{person.role}</p>
-                    </div>
+            <div className={styles.teamGrid}>
+              {agencyTeam.map((person) => (
+                <article key={person.id} data-person={person.id}>
+                  <div className={styles.teamImage}>
+                    <Image src={`/${person.photo}`} alt={person.name} fill sizes="(min-width: 1455px) 237px, (min-width: 1101px) 17vw, (min-width: 900px) 28vw, (min-width: 600px) 43vw, 88vw" className={styles.cover} />
                   </div>
-                  <p className={about.bio}>{person.bio}</p>
-                  <div className={about.memberFoot}>
-                    <span className={about.languages} aria-label={`Języki: ${person.languages.join(", ")}`}>
-                      {person.languages.map((code) => <span key={code}>{code}</span>)}
-                    </span>
-                  </div>
+                  <h3>{person.name}</h3>
+                  <p className={styles.teamRole}>{person.title}</p>
+                  <p>{teamIntros[person.id]}</p>
                 </article>
               ))}
             </div>
