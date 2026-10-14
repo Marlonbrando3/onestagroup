@@ -429,58 +429,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
 
         <AgencyQuickContact />
 
-        <section id="costa-blanca-costa-del-sol" className={`${styles.container} ${styles.section}`} aria-labelledby="local-heading">
-          <div className={styles.sectionHeading}>
-            <p className={styles.eyebrow}>Biura i lokalna obsługa</p>
-            <h2 id="local-heading">Polskie biuro nieruchomości na Costa Blanca i Costa del Sol.</h2>
-            <p className={styles.lead}>
-              Na Costa Blanca mamy własne biura, a na Costa del Sol działamy
-              z biurami współpracującymi. W obu regionach zapewniamy obsługę
-              po polsku — od selekcji ofert po zakup.
-            </p>
-          </div>
-          <div className={styles.twoColumns}>
-            <article className={styles.localArticle}>
-              <div className={styles.localImage}>
-                <Image src="/images/seo/coasts/costa-blanca.webp" alt="Nadmorskie domy i zatoka na Costa Blanca" fill sizes="(min-width: 600px) 42vw, 88vw" className={styles.cover} />
-              </div>
-              <h3>Costa Blanca: nasze biura na miejscu</h3>
-              <p>
-                Nasze biura na Costa Blanca zapewniają lokalne wsparcie przy
-                wyborze i zakupie nieruchomości. Pomagamy porównać Alicante,
-                Torrevieję, Calpe, Guardamar del Segura i inne miejscowości
-                wybrzeża, uwzględniając Twój budżet i sposób korzystania z nieruchomości.
-              </p>
-              <p>
-                Ustalamy obszar poszukiwań, przygotowujemy preselekcję ofert
-                i planujemy prezentacje. Na miejscu pokazujemy również
-                otoczenie: plaże, sklepy, dojazdy i charakter dzielnicy.
-                Przez cały proces rozmawiasz z nami po polsku.
-              </p>
-              <Link href="/nieruchomosci/hiszpania/costa-blanca" className={styles.textLink}>Zobacz nieruchomości na Costa Blanca <Arrow /></Link>
-            </article>
-            <article className={styles.localArticle}>
-              <div className={styles.localImage}>
-                <Image src="/images/seo/coasts/costa-del-sol.webp" alt="Nadmorska zabudowa i śródziemnomorski krajobraz Costa del Sol" fill sizes="(min-width: 600px) 42vw, 88vw" className={styles.cover} />
-              </div>
-              <h3>Costa del Sol: biura współpracujące</h3>
-              <p>
-                Na Costa del Sol współpracujemy z lokalnymi biurami, łącząc
-                ich znajomość rynku z polskojęzyczną obsługą <BrandName />.
-                Pomagamy znaleźć apartament lub dom m.in. w Esteponie,
-                Marbelli, Mijas i okolicznych miejscowościach.
-              </p>
-              <p>
-                Porównujemy lokalizacje, standard inwestycji i koszty utrzymania
-                pod kątem Twoich planów. Z biurami partnerskimi organizujemy
-                prezentacje wybranych ofert i koordynujemy kolejne etapy zakupu.
-                Obsługa pozostaje po polsku także przy współpracy z lokalnymi partnerami.
-              </p>
-              <Link href="/nieruchomosci/hiszpania/costa-del-sol" className={styles.textLink}>Zobacz nieruchomości na Costa del Sol <Arrow /></Link>
-            </article>
-          </div>
-        </section>
-
         <section className={styles.supportSection} aria-labelledby="support-heading">
           <div className={`${styles.container} ${styles.supportGrid}`}>
             <div>
