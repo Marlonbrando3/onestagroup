@@ -23,12 +23,6 @@ export type CityGuide = {
   faqs: Array<{ question: string; answer: string }>;
 };
 
-const SPAIN = "/nieruchomosci/hiszpania";
-const COSTA_BLANCA = "/nieruchomosci/hiszpania/costa-blanca";
-const city = (region: string, slug: string) => `/nieruchomosci/hiszpania/${region}/${slug}`;
-const COSTS = "/blog/koszty-zakupu-nieruchomosci-hiszpania-costa-blanca";
-const MANAGEMENT = "/zarzadzanie-nieruchomosciami-w-hiszpanii";
-
 export const CITY_GUIDES: Record<string, CityGuide> = {
   "orihuela-costa": {
     slug: "orihuela-costa",
@@ -286,7 +280,7 @@ export const CITY_GUIDES: Record<string, CityGuide> = {
     intro: {
       title: "Nieruchomości w San Miguel de Salinas — spokój kilka kilometrów od wybrzeża",
       paragraphs: [
-        "San Miguel de Salinas to niewielkie miasteczko w głębi lądu na południu prowincji Alicante, między Torrevieja a Pilar de la Horadada. Ma niecałe 7 tys. mieszkańców, z czego ponad połowa to obcokrajowcy. Leży najwyżej w całej okolicy Vega Baja, więc z części osiedli widać okoliczne laguny i wybrzeże.",
+        "San Miguel de Salinas to niewielkie miasteczko w głębi lądu na południu prowincji Alicante, między Torrevieja a Pilar de la Horadada. Ma niecałe 7 tys. mieszkańców, z czego ponad połowa to obcokrajowcy. To najwyżej położona miejscowość w okolicy Vega Baja, więc z części osiedli rozciągają się szerokie widoki.",
         "To kierunek dla osób, które cenią ciszę i przestrzeń bardziej niż plażę w zasięgu spaceru. Nad morze, do Orihuela Costa i Torrevieja, dojeżdża się samochodem. Porównaj tę lokalizację z innymi miejscami na [Costa Blanca](/nieruchomosci/hiszpania/costa-blanca) i z całą ofertą [nieruchomości w Hiszpanii](/nieruchomosci/hiszpania).",
       ],
     },
@@ -439,7 +433,7 @@ export const CITY_GUIDES: Record<string, CityGuide> = {
         {
           name: "Rojales — miasteczko",
           description:
-            "Hiszpańskie centrum gminy nad rzeką Segura, z urzędem, targiem i zabytkowymi domami wykutymi w skale (Cuevas del Rodeo). Dobre na całoroczne życie w lokalnej atmosferze, z dojazdem na plażę samochodem.",
+            "Hiszpańskie centrum gminy nad rzeką Segura, z urzędem, lokalnymi sklepami i zabytkowymi domami wykutymi w skale (Cuevas del Rodeo). Dobre na całoroczne życie w lokalnej atmosferze, z dojazdem na plażę samochodem.",
         },
       ],
       after: [
@@ -529,8 +523,380 @@ export const CITY_GUIDES: Record<string, CityGuide> = {
       },
     ],
   },
+  marbella: {
+    slug: "marbella",
+    ariaLabel: "Poradnik zakupu nieruchomości w Marbelli",
+    intro: {
+      title: "Nieruchomości w Marbelli — od starego miasta po Puerto Banús",
+      paragraphs: [
+        "Marbella to jedno z najbardziej znanych miast Costa del Sol: około 159 tys. mieszkańców, 27 km wybrzeża i pasmo Sierra Blanca, które osłania miasto od północy. Gmina dzieli się na pięć dzielnic, od San Pedro Alcántara na zachodzie po Las Chapas na wschodzie, a każda z nich to inny rynek nieruchomości.",
+        "Oferty powyżej obejmują całą gminę: centrum, Złotą Milę, Nueva Andalucía, Puerto Banús, San Pedro Alcántara i wschodnią Marbellę z Elvirią. Porównaj je z innymi miejscami na [Costa del Sol](/nieruchomosci/hiszpania/costa-del-sol) albo z całą ofertą [nieruchomości w Hiszpanii](/nieruchomosci/hiszpania).",
+      ],
+    },
+    areas: {
+      title: "Gdzie kupić nieruchomość w Marbelli? Porównaj dzielnice",
+      lead: [
+        "W Marbelli ten sam budżet znaczy zupełnie co innego w zależności od dzielnicy. Zanim zaczniesz porównywać oferty, ustal, czy zależy Ci na życiu w mieście, bliskości plaży, polach golfowych czy spokoju z dala od centrum.",
+      ],
+      items: [
+        {
+          name: "Centrum i stare miasto",
+          description:
+            "Historyczne Casco Antiguo z Plaza de los Naranjos, nadmorska promenada i całoroczne życie miasta. Mieszkania w kamienicach i nowszych blokach, blisko sklepów, szkół i plaży. Sprawdź parking, bo w centrum o miejsce trudno.",
+        },
+        {
+          name: "Złota Mila i Puerto Banús",
+          description:
+            "Około 4 km między centrum a Puerto Banús, z najbardziej prestiżowymi adresami, hotelami i willami. Okolice portu to restauracje i życie nocne przez cały sezon. Przy apartamencie oceń hałas wieczorem i wysokość opłat wspólnoty w luksusowych kompleksach.",
+        },
+        {
+          name: "Nueva Andalucía",
+          description:
+            "Dzielnica nad Puerto Banús, nazywana doliną golfa, z kilkoma polami i osiedlami z ogrodami. Dużo apartamentów z dużymi tarasami i willi. Na plażę i do portu dojeżdża się zwykle samochodem, choć z dolnej części da się dojść pieszo.",
+        },
+        {
+          name: "San Pedro Alcántara i wschodnia Marbella",
+          description:
+            "San Pedro to dzielnica o bardziej lokalnym charakterze, z własnym centrum i promenadą. Wschodnia część, z Elvirią i Las Chapas, to spokojniejsze osiedla przy długich plażach. Obie warto porównać, jeśli szukasz Marbelli w niższym budżecie niż Złota Mila.",
+        },
+      ],
+      after: [
+        "Rozważasz okolicę? Na zachód od Marbelli leży [Estepona](/nieruchomosci/hiszpania/costa-del-sol/estepona), a na wschód [Mijas](/nieruchomosci/hiszpania/costa-del-sol/mijas) i [Fuengirola](/nieruchomosci/hiszpania/costa-del-sol/fuengirola).",
+      ],
+    },
+    apartments: {
+      title: "Mieszkania i apartamenty na sprzedaż w Marbelli",
+      paragraphs: [
+        "Rozpiętość jest ogromna: od mieszkań w kamienicach w centrum po apartamenty w strzeżonych kompleksach z basenem, siłownią i recepcją. Te drugie dają wygodę, ale opłaty wspólnoty potrafią być wysokie, więc poproś o ich wysokość już przy pierwszym kontakcie.",
+        "Przy apartamencie z widokiem na morze sprawdź piętro, orientację tarasu i to, czy widok nie może zostać zasłonięty przez planowaną zabudowę. Na wzgórzach oceń, czy da się normalnie żyć bez samochodu.",
+      ],
+    },
+    houses: {
+      title: "Domy i wille na sprzedaż w Marbelli",
+      paragraphs: [
+        "Wille to wizytówka Marbelli: od domów szeregowych na osiedlach golfowych po rezydencje ze sporą działką. Porównuj prywatność, ekspozycję, widok i drogę dojazdową, która na wzgórzach bywa stroma.",
+        "Przy luksusowej nieruchomości sprawdź zgodność stanu faktycznego z dokumentacją, licencje dla rozbudów i koszty utrzymania: ogród, basen, ochrona i serwis domu podczas Twojej nieobecności.",
+      ],
+    },
+    market: {
+      title: "Nowe inwestycje czy rynek wtórny w Marbelli?",
+      columns: [
+        {
+          title: "Nowe inwestycje",
+          text: "Powstają głównie na obrzeżach, w Nueva Andalucía, San Pedro i wschodniej Marbelli. Zwykle oferują nowoczesny standard i części wspólne. Porównaj termin odbioru, harmonogram płatności i to, co obejmuje cena, oraz sprawdź, czy deweloper ma zabezpieczenie wpłat.",
+        },
+        {
+          title: "Rynek wtórny",
+          text: "Pozwala kupić w najbardziej ugruntowanych lokalizacjach, jak centrum czy Złota Mila, gdzie nowych działek prawie nie ma. Starsze budynki mogą wymagać modernizacji, dlatego doliczaj koszt remontu i sprawdź planowane prace we wspólnocie.",
+        },
+      ],
+    },
+    prices: {
+      title: "Ceny nieruchomości w Marbelli",
+      paragraphs: [
+        "Marbella należy do droższych rynków w Hiszpanii, ale ceny mocno różnią się między dzielnicami. Apartament przy plaży na Złotej Mili i mieszkanie w San Pedro to dwa różne światy. Aktualne ceny znajdziesz przy ogłoszeniach powyżej.",
+        "Szukając niższego budżetu, porównaj San Pedro Alcántara, wschodnią Marbellę i sąsiednie miasta. Do ceny dolicz koszty zakupu, wyposażenie i opłaty roczne; pomoże w tym poradnik o [kosztach zakupu nieruchomości w Hiszpanii](/blog/koszty-zakupu-nieruchomosci-hiszpania-costa-blanca).",
+      ],
+    },
+    rental: {
+      title: "Apartament w Marbelli pod wynajem",
+      paragraphs: [
+        "Marbella przyciąga gości przez większą część roku, także golfistów poza latem. Andaluzja wymaga jednak rejestracji mieszkania turystycznego, a wspólnota może ograniczać najem krótkoterminowy, więc sprawdź to dla konkretnego lokalu przed zakupem.",
+        "W kalkulacji uwzględnij wysokie opłaty wspólnoty, sprzątanie, obsługę gości i okresy bez rezerwacji. Obsługę najmu możesz powierzyć nam: zobacz [zarządzanie nieruchomościami w Hiszpanii](/zarzadzanie-nieruchomosciami-w-hiszpanii).",
+      ],
+    },
+    onesta: {
+      title: "Nieruchomości w Marbelli z obsługą po polsku",
+      paragraphs: [
+        "W Marbelli łatwo przepłacić za samą nazwę. Pomagamy porównać dzielnice i konkretne oferty, sprawdzić dokumenty i realne koszty utrzymania, zanim podejmiesz decyzję.",
+        "Organizujemy prezentacje, kontakt z deweloperami i sprzedającymi oraz formalności. Wszystko po polsku, bez prowizji dla kupującego.",
+      ],
+      button: "Porozmawiajmy o nieruchomości w Marbelli",
+    },
+    faqTitle: "Nieruchomości Marbella — najczęstsze pytania",
+    faqs: [
+      {
+        question: "Czy Puerto Banús należy do Marbelli?",
+        answer:
+          "Tak. Puerto Banús leży w dzielnicy Nueva Andalucía w gminie Marbella, około 4 km od centrum, na końcu tzw. Złotej Mili.",
+      },
+      {
+        question: "Która część Marbelli jest najtańsza?",
+        answer:
+          "Zwykle niższe ceny niż na Złotej Mili i w centrum znajdziesz w San Pedro Alcántara i na niektórych osiedlach wschodniej Marbelli. Ostatecznie decyduje jednak konkretny budynek, standard i odległość od plaży.",
+      },
+      {
+        question: "Jak daleko z Marbelli jest na lotnisko w Maladze?",
+        answer:
+          "Około 45 km. Dojazd zajmuje zwykle 40–50 minut, zależnie od dzielnicy i ruchu na autostradzie.",
+      },
+      {
+        question: "Czy w Marbelli można mieszkać przez cały rok?",
+        answer:
+          "Tak. To duże miasto z pełną infrastrukturą: szkołami, w tym międzynarodowymi, szpitalami i usługami czynnymi przez cały rok. Część osiedli wakacyjnych jest jednak poza sezonem wyraźnie cichsza.",
+      },
+      {
+        question: "Czy mogę wynajmować apartament w Marbelli turystom?",
+        answer:
+          "To zależy od lokalu i wspólnoty. W Andaluzji mieszkanie turystyczne trzeba zarejestrować, a statut wspólnoty może najem ograniczać. Sprawdź to przed zakupem. Ta strona prezentuje nieruchomości na sprzedaż.",
+      },
+      {
+        question: "Czy Onesta pomaga kupić nieruchomość w Marbelli po polsku?",
+        answer:
+          "Tak. Pomagamy wybrać dzielnicę i ofertę, organizujemy oglądanie i wspieramy formalności, bez prowizji dla kupującego. Zobacz, jak działa nasze [polskie biuro nieruchomości w Hiszpanii](/polskie-biuro-nieruchomosci-w-hiszpanii).",
+      },
+    ],
+  },
+
+  fuengirola: {
+    slug: "fuengirola",
+    ariaLabel: "Poradnik zakupu nieruchomości w Fuengiroli",
+    intro: {
+      title: "Nieruchomości w Fuengiroli — miasto z plażą i pociągiem do Malagi",
+      paragraphs: [
+        "Fuengirola to zwarte, całoroczne miasto na Costa del Sol, około 33 km na południowy zachód od Malagi. Na zaledwie 10 km² mieszka tu prawie 86 tys. osób, a wzdłuż około 8 km wybrzeża ciągnie się siedem plaż i długa promenada. Ponad 30% mieszkańców to obcokrajowcy, m.in. Brytyjczycy, Irlandczycy i Skandynawowie.",
+        "To dobry wybór dla osób, które chcą mieć wszystko blisko: plażę, sklepy, lekarzy i pociąg do Malagi i na lotnisko, bez konieczności posiadania samochodu. Porównaj Fuengirolę z innymi miejscami na [Costa del Sol](/nieruchomosci/hiszpania/costa-del-sol) i z całą ofertą [nieruchomości w Hiszpanii](/nieruchomosci/hiszpania).",
+      ],
+    },
+    areas: {
+      title: "Gdzie kupić nieruchomość w Fuengiroli?",
+      lead: [
+        "Fuengirola jest mała, ale jej części różnią się zabudową i rytmem życia. Wybór zależy od tego, czy chcesz mieszkać przy promenadzie, w spokojniejszej części mieszkalnej, czy na wzgórzach z widokiem.",
+      ],
+      items: [
+        {
+          name: "Centrum i promenada",
+          description:
+            "Plaża, restauracje, targ i dworzec kolejki podmiejskiej w zasięgu spaceru. Głównie mieszkania w blokach. Przy oglądaniu sprawdź hałas z ulicy i promenady w sezonie oraz to, czy budynek ma windę i parking.",
+        },
+        {
+          name: "Los Boliches",
+          description:
+            "Dawna dzielnica rybacka na północ od centrum, z własną plażą i stacją kolejki. Spokojniejsza niż ścisłe centrum, ale wciąż z pełną infrastrukturą. Dobra na całoroczne życie i dłuższe pobyty.",
+        },
+        {
+          name: "Torreblanca i Carvajal",
+          description:
+            "Wzgórza w północnej części miasta, z widokiem na morze i własnymi stacjami kolejki. Więcej osiedli z basenem i domów szeregowych. Oceń nachylenie ulic i trasę do plaży, zwłaszcza jeśli nie chcesz wszędzie jeździć samochodem.",
+        },
+        {
+          name: "Los Pacos i okolice Castillo Sohail",
+          description:
+            "Część mieszkalna w głębi miasta i okolice arabskiego zamku Sohail przy ujściu rzeki, na zachodnim krańcu. Często spokojniej i w niższym budżecie niż przy promenadzie. Sprawdź dojście do plaży i najbliższego przystanku.",
+        },
+      ],
+      after: [
+        "Fuengirola graniczy z [Mijas](/nieruchomosci/hiszpania/costa-del-sol/mijas), a niedaleko leży [Marbella](/nieruchomosci/hiszpania/costa-del-sol/marbella). Porównaj te lokalizacje, jeśli szukasz więcej przestrzeni.",
+      ],
+    },
+    apartments: {
+      title: "Mieszkania i apartamenty na sprzedaż w Fuengiroli",
+      paragraphs: [
+        "Większość ofert w Fuengiroli to mieszkania i apartamenty, bo miasto jest gęsto zabudowane. Przy plaży znajdziesz bloki z lat 70. i 80., a na wzgórzach nowsze osiedla z basenem.",
+        "Porównując mieszkania, sprawdź orientację i nasłonecznienie, windę, miejsce parkingowe i stan części wspólnych. W starszych budynkach zapytaj o planowane remonty elewacji i wind, które mogą oznaczać dodatkowe opłaty.",
+      ],
+    },
+    houses: {
+      title: "Domy na sprzedaż w Fuengiroli",
+      paragraphs: [
+        "Domów jest tu niewiele, głównie szeregowce i wille na wzgórzach w Torreblanca i Carvajal oraz na pograniczu z Mijas. Jeśli zależy Ci na ogrodzie i prywatnym basenie, porównaj też oferty w sąsiednich gminach.",
+        "Przy domu na wzgórzu oceń drogę dojazdową, schody na działce i koszty utrzymania ogrodu i basenu podczas nieobecności.",
+      ],
+    },
+    market: {
+      title: "Nowe inwestycje czy rynek wtórny w Fuengiroli?",
+      columns: [
+        {
+          title: "Nowe inwestycje",
+          text: "Ze względu na brak wolnych działek powstają głównie na obrzeżach i wzgórzach. Oferują nowoczesne układy, tarasy i części wspólne. Porównaj termin odbioru, standard i to, co obejmuje cena.",
+        },
+        {
+          title: "Rynek wtórny",
+          text: "Dominuje w centrum i przy promenadzie. Daje najlepsze lokalizacje i możliwość obejrzenia gotowego mieszkania, ale często wymaga odświeżenia. Sprawdź instalacje, okna i ewentualne zaległości wobec wspólnoty.",
+        },
+      ],
+    },
+    prices: {
+      title: "Ceny nieruchomości w Fuengiroli",
+      paragraphs: [
+        "Ceny zależą przede wszystkim od odległości od plaży, widoku i stanu budynku. Mieszkanie przy promenadzie z widokiem na morze i podobny metraż kilka ulic dalej to różne oferty. Aktualne ceny znajdziesz przy ogłoszeniach powyżej.",
+        "Tańszych mieszkań szukaj na rynku wtórnym w głębi miasta i w lokalach do odświeżenia. Do budżetu dolicz koszty zakupu i ewentualnego remontu; pomoże poradnik o [kosztach zakupu nieruchomości w Hiszpanii](/blog/koszty-zakupu-nieruchomosci-hiszpania-costa-blanca).",
+      ],
+    },
+    rental: {
+      title: "Mieszkanie w Fuengiroli pod wynajem",
+      paragraphs: [
+        "Bliskość plaży, kolejka do lotniska i całoroczne życie miasta sprzyjają wynajmowi, zarówno wakacyjnemu, jak i długoterminowemu. W Andaluzji mieszkanie turystyczne trzeba jednak zarejestrować, a wspólnota może ograniczać najem krótkoterminowy.",
+        "Sprawdź te zasady przed zakupem i policz pełne koszty obsługi. Jeśli chcesz to komuś powierzyć, zobacz nasze [zarządzanie nieruchomościami w Hiszpanii](/zarzadzanie-nieruchomosciami-w-hiszpanii).",
+      ],
+    },
+    onesta: {
+      title: "Nieruchomości w Fuengiroli z obsługą po polsku",
+      paragraphs: [
+        "Pomagamy porównać mieszkania w różnych częściach Fuengiroli i ocenić, czy lepszym wyborem będzie gotowe mieszkanie w centrum, czy nowy apartament na wzgórzach.",
+        "Organizujemy prezentacje, kontakt ze sprzedającymi i deweloperami oraz formalności. Wszystko po polsku, bez prowizji dla kupującego.",
+      ],
+      button: "Porozmawiajmy o nieruchomości w Fuengiroli",
+    },
+    faqTitle: "Nieruchomości Fuengirola — najczęstsze pytania",
+    faqs: [
+      {
+        question: "Czy z Fuengiroli dojadę pociągiem na lotnisko w Maladze?",
+        answer:
+          "Tak. Fuengirola jest końcową stacją podmiejskiej linii C-1, która łączy ją z Benalmádeną, Torremolinos, lotniskiem i centrum Malagi. W mieście są też stacje Los Boliches, Torreblanca i Carvajal.",
+      },
+      {
+        question: "Czy w Fuengiroli można żyć bez samochodu?",
+        answer:
+          "W centrum i Los Boliches w dużej mierze tak: sklepy, lekarze, plaża i kolejka są blisko. Na wzgórzach Torreblanca i Carvajal samochód bardzo się przydaje.",
+      },
+      {
+        question: "Czy Fuengirola jest dobra na stałe zamieszkanie?",
+        answer:
+          "Dla wielu osób tak. To całoroczne miasto z dużą międzynarodową społecznością, usługami i komunikacją. Poza sezonem jest spokojniej, ale miasto nie zamiera.",
+      },
+      {
+        question: "Gdzie szukać domu z ogrodem w okolicy Fuengiroli?",
+        answer:
+          "W samej Fuengiroli domów jest niewiele, głównie na wzgórzach. Więcej domów i willi znajdziesz w sąsiednim Mijas, dlatego warto porównać oba katalogi.",
+      },
+      {
+        question: "Czy mogę wynajmować mieszkanie w Fuengiroli turystom?",
+        answer:
+          "Zależy to od rejestracji mieszkania turystycznego w Andaluzji i zasad wspólnoty. Sprawdź to przed zakupem. Ta strona prezentuje nieruchomości na sprzedaż, nie oferty najmu.",
+      },
+      {
+        question: "Czy Onesta pomaga kupić mieszkanie w Fuengiroli po polsku?",
+        answer:
+          "Tak. Pomagamy wybrać ofertę, organizujemy oglądanie i wspieramy formalności, bez prowizji dla kupującego. Zobacz, jak działa nasze [polskie biuro nieruchomości w Hiszpanii](/polskie-biuro-nieruchomosci-w-hiszpanii).",
+      },
+    ],
+  },
+
+  manilva: {
+    slug: "manilva",
+    ariaLabel: "Poradnik zakupu nieruchomości w Manilvie",
+    intro: {
+      title: "Nieruchomości w Manilvie — zachodni kraniec Costa del Sol",
+      paragraphs: [
+        "Manilva to najdalej na zachód wysunięta nadmorska gmina prowincji Malaga, około 100 km od samej Malagi, na granicy z prowincją Kadyks. Ma około 18 tys. mieszkańców i 7,8 km wybrzeża. Na gminę składają się położone na wzgórzu miasteczko Manilva z winnicami, nadmorskie San Luis de Sabinillas oraz okolice zamku i portu La Duquesa.",
+        "Manilva wybierana jest przez osoby, które szukają spokojniejszej Costa del Sol niż Marbella, często w niższym budżecie. Porównaj ją z innymi miejscami na [Costa del Sol](/nieruchomosci/hiszpania/costa-del-sol) i z ofertą [nieruchomości w Hiszpanii](/nieruchomosci/hiszpania).",
+      ],
+    },
+    areas: {
+      title: "Gdzie kupić nieruchomość w Manilvie?",
+      lead: [
+        "Części gminy różnią się charakterem: od hiszpańskiego miasteczka na wzgórzu po nadmorskie osiedla przy porcie. Zacznij od tego, czy chcesz mieć plażę i port w zasięgu spaceru, czy wolisz widok i ciszę.",
+      ],
+      items: [
+        {
+          name: "San Luis de Sabinillas",
+          description:
+            "Największa miejscowość gminy, nad morzem, ze sklepami, restauracjami i promenadą czynnymi przez cały rok. Dużo mieszkań w zasięgu plaży. Dobra na całoroczne życie i dla osób bez samochodu.",
+        },
+        {
+          name: "Puerto de la Duquesa",
+          description:
+            "Port jachtowy otoczony restauracjami i apartamentami, z plażą obok. Żywy w sezonie, spokojniejszy zimą. Przy mieszkaniu z widokiem na port sprawdź, czy wieczorne życie restauracji nie będzie zbyt głośne.",
+        },
+        {
+          name: "El Castillo",
+          description:
+            "Okolice zamku La Duquesa, wzniesionego w 1767 roku za panowania Karola III, przy plaży. Mniejsza, spokojna zabudowa. Dobre dla osób, które cenią klimat małej nadmorskiej miejscowości.",
+        },
+        {
+          name: "Manilva i osiedla na wzgórzach",
+          description:
+            "Hiszpańskie miasteczko w głębi lądu, wśród winnic, oraz nowe osiedla na wzgórzach z widokiem na morze, a przy dobrej widoczności nawet na Gibraltar i Afrykę. Na plażę i do sklepów jedzie się samochodem.",
+        },
+      ],
+      after: [
+        "Na wschód od Manilvy leżą Casares i [Estepona](/nieruchomosci/hiszpania/costa-del-sol/estepona). Porównaj je, jeśli szukasz większego wyboru ofert na zachodzie Costa del Sol.",
+      ],
+    },
+    apartments: {
+      title: "Mieszkania i apartamenty na sprzedaż w Manilvie",
+      paragraphs: [
+        "W Sabinillas i przy porcie przeważają apartamenty w nadmorskich osiedlach, a na wzgórzach nowe apartamenty z dużymi tarasami i widokiem na morze. Wybierz między wygodą codziennych spacerów a widokiem i ciszą.",
+        "Sprawdź orientację tarasu, odległość od plaży po rzeczywistej trasie, parking i opłaty wspólnoty. Na osiedlach na wzgórzach oceń, jak długo jedzie się do sklepu i lekarza.",
+      ],
+    },
+    houses: {
+      title: "Domy i wille na sprzedaż w Manilvie",
+      paragraphs: [
+        "Domy szeregowe i wille znajdziesz głównie na wzgórzach i w okolicach pól golfowych na pograniczu z Casares. Dają więcej przestrzeni i prywatności niż apartamenty przy plaży.",
+        "Przy domu oceń wielkość działki, nasłonecznienie, drogę dojazdową i koszty utrzymania ogrodu i basenu. Przy starszych domach sprawdź zgodność stanu faktycznego z dokumentacją.",
+      ],
+    },
+    market: {
+      title: "Nowe inwestycje czy rynek wtórny w Manilvie?",
+      columns: [
+        {
+          title: "Nowe inwestycje",
+          text: "Powstają głównie na wzgórzach, z widokiem na morze. Porównaj standard, termin odbioru i to, co obejmuje cena. Zapytaj też, jak będzie wyglądać okolica po zakończeniu budowy sąsiednich etapów.",
+        },
+        {
+          title: "Rynek wtórny",
+          text: "Głównie w Sabinillas, przy porcie i w El Castillo. Lepsze położenie względem plaży i usług, możliwość obejrzenia gotowego mieszkania. Sprawdź stan techniczny i ewentualne planowane remonty we wspólnocie.",
+        },
+      ],
+    },
+    prices: {
+      title: "Ceny nieruchomości w Manilvie",
+      paragraphs: [
+        "Manilva bywa tańsza od Marbelli i Estepony, ale ceny zależą od widoku, odległości od plaży i stanu nieruchomości. Aktualne ceny znajdziesz przy ogłoszeniach powyżej.",
+        "Licząc budżet, dodaj koszty zakupu, wyposażenia i dojazdów, jeśli wybierasz osiedle na wzgórzu. Pomoże poradnik o [kosztach zakupu nieruchomości w Hiszpanii](/blog/koszty-zakupu-nieruchomosci-hiszpania-costa-blanca).",
+      ],
+    },
+    rental: {
+      title: "Apartament w Manilvie pod wynajem",
+      paragraphs: [
+        "Najmocniejszy popyt wakacyjny jest przy plaży i porcie La Duquesa. Osiedla na wzgórzach lepiej sprawdzają się przy dłuższych pobytach. W Andaluzji mieszkanie turystyczne trzeba zarejestrować, a wspólnota może ograniczać najem.",
+        "Sprawdź te zasady przed zakupem i uwzględnij w kalkulacji sezonowość. Obsługę najmu możesz powierzyć nam: zobacz [zarządzanie nieruchomościami w Hiszpanii](/zarzadzanie-nieruchomosciami-w-hiszpanii).",
+      ],
+    },
+    onesta: {
+      title: "Nieruchomości w Manilvie z obsługą po polsku",
+      paragraphs: [
+        "Pomagamy ocenić, czy Manilva będzie dla Ciebie lepsza niż droższe miasta Costa del Sol, i porównać mieszkania przy plaży z nowymi apartamentami na wzgórzach.",
+        "Organizujemy prezentacje, kontakt ze sprzedającymi i deweloperami oraz formalności. Wszystko po polsku, bez prowizji dla kupującego.",
+      ],
+      button: "Porozmawiajmy o nieruchomości w Manilvie",
+    },
+    faqTitle: "Nieruchomości Manilva — najczęstsze pytania",
+    faqs: [
+      {
+        question: "Czy Manilva leży na Costa del Sol?",
+        answer:
+          "Tak. To najbardziej wysunięta na zachód nadmorska gmina prowincji Malaga, zachodni kraniec Costa del Sol, na granicy z prowincją Kadyks.",
+      },
+      {
+        question: "Czy La Duquesa i Sabinillas należą do Manilvy?",
+        answer:
+          "Tak. San Luis de Sabinillas, El Castillo i Puerto de la Duquesa to części gminy Manilva. W ogłoszeniach często pojawiają się te nazwy zamiast nazwy gminy; ta strona obejmuje wszystkie.",
+      },
+      {
+        question: "Jak daleko z Manilvy jest do Malagi?",
+        answer:
+          "Około 100 km do miasta Malaga. Na lotnisko w Maladze jedzie się zwykle nieco ponad godzinę, zależnie od ruchu i trasy.",
+      },
+      {
+        question: "Czy Manilva jest tańsza niż Marbella?",
+        answer:
+          "Często tak, zwłaszcza przy podobnym metrażu i widoku. Porównuj jednak konkretne oferty: nowy apartament z widokiem w Manilvie może kosztować więcej niż starsze mieszkanie w San Pedro Alcántara.",
+      },
+      {
+        question: "Czy w Manilvie można mieszkać przez cały rok?",
+        answer:
+          "Tak, zwłaszcza w San Luis de Sabinillas, gdzie usługi działają przez cały rok. Część osiedli wakacyjnych i okolice portu są zimą wyraźnie spokojniejsze.",
+      },
+      {
+        question: "Czy Onesta pomaga kupić nieruchomość w Manilvie?",
+        answer:
+          "Tak. Pomagamy wybrać ofertę, organizujemy oglądanie i wspieramy formalności, po polsku i bez prowizji dla kupującego. Zobacz nasze [polskie biuro nieruchomości w Hiszpanii](/polskie-biuro-nieruchomosci-w-hiszpanii).",
+      },
+    ],
+  },
 };
 
 export const cityGuide = (slug?: string) => (slug ? CITY_GUIDES[slug] : undefined);
-// Nieużywane stałe zostawione dla kolejnych miast.
-void SPAIN; void COSTA_BLANCA; void city; void COSTS; void MANAGEMENT;
