@@ -17,6 +17,7 @@ import { publicCache,
   publicCountry,
   noStore,
   FILTER_KEYS,
+  logPublicRender,
 } from "@/lib/publicSeo";
 import { useState, useRef, useEffect } from "react";
 import { GetServerSideProps } from "next";
@@ -681,10 +682,13 @@ function validFilters(query: Record<string, any>) {
 }
 
 // Catalogue pages are public and identical for every visitor: keep them on Netlify's CDN
-// for an hour (query string is part of the key). Errors, 404s and redirects stay uncached.
+// for 24 h (query string is part of the key). Errors, 404s and redirects stay uncached.
 export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
   const result = await listingsServerSideProps(context);
-  if ("props" in result) publicCache(context.res, 86400, 7 * 86400);
+  if ("props" in result) {
+    logPublicRender(context, "catalog");
+    publicCache(context.res, 86400, 7 * 86400);
+  }
   else noStore(context.res);
   return result;
 };

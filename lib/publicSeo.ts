@@ -168,14 +168,29 @@ export function countryMetadata(country: string, locale: SiteLocale = "pl") {
  * includes the query string (filters, page, ?id=), so different offers never share an entry.
  * Never use on pages with private data (agent, CRM, client lists).
  */
-export function publicCache(res: any, seconds: number, staleSeconds = seconds * 24) {
+export function publicCache(
+  res: any,
+  seconds: number,
+  staleSeconds = seconds * 24,
+  varyQuery?: string[],
+) {
   res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
   res.setHeader("CDN-Cache-Control", `public, s-maxage=${seconds}, stale-while-revalidate=${staleSeconds}`);
   res.setHeader(
     "Netlify-CDN-Cache-Control",
     `public, durable, s-maxage=${seconds}, stale-while-revalidate=${staleSeconds}`,
   );
-  res.setHeader("Netlify-Vary", "query");
+  // varyQuery: only these params form the cache key, so ?fbclid=, ?utm_… etc. reuse the entry.
+  res.setHeader("Netlify-Vary", varyQuery?.length ? `query=${varyQuery.join("|")}` : "query");
+}
+
+/**
+ * One log line per server render of a public page (Netlify → Logs → Functions), so we can
+ * see which URLs and which bots still reach the function instead of the CDN cache.
+ */
+export function logPublicRender(context: any, kind: string) {
+  const ua = String(context?.req?.headers?.["user-agent"] || "-").slice(0, 120);
+  console.log(`[ssr] ${kind} ${context?.resolvedUrl || context?.req?.url || "-"} | ${ua}`);
 }
 export function noStore(res: any) {
   res.setHeader(

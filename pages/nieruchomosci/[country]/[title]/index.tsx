@@ -10,6 +10,7 @@ import { propertyImages, propertyJsonLd } from "@/lib/propertySchema";
 import { attachDevelopmentTitles } from "@/lib/developmentTitles";
 import SeoBreadcrumbs from "@/components/SeoBreadcrumbs";
 import { publicCache,
+  logPublicRender,
   catalogPath,
   propertyPath,
   propertyTitle,
@@ -364,12 +365,15 @@ async function propertyServerSideProps(context: any) {
   };
 }
 
-// Offer pages change rarely: keep them on Netlify's CDN for 24 h (key includes ?id=).
+// Offer pages change rarely: keep them on Netlify's CDN for 7 days. Only ?id= is part of
+// the cache key, so tracking params (fbclid, utm_…) don't create new entries.
 export async function getServerSideProps(context: any) {
   const result: any = await propertyServerSideProps(context);
-  // Region/city catalogue routes are delegated here too; they keep their own 1 h cache.
-  if (result && "props" in result && "propertyFromSupabase" in result.props)
-    publicCache(context.res, 7 * 86400, 30 * 86400);
+  // Region/city catalogue routes are delegated here too; they keep their own catalogue cache.
+  if (result && "props" in result && "propertyFromSupabase" in result.props) {
+    logPublicRender(context, "offer");
+    publicCache(context.res, 7 * 86400, 30 * 86400, ["id"]);
+  }
   else if (!(result && "props" in result)) noStore(context.res);
   return result;
 }
