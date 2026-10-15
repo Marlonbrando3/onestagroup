@@ -9,7 +9,7 @@ import SeoHead from "@/components/SeoHead";
 import { propertyImages, propertyJsonLd } from "@/lib/propertySchema";
 import { attachDevelopmentTitles } from "@/lib/developmentTitles";
 import SeoBreadcrumbs from "@/components/SeoBreadcrumbs";
-import {
+import { publicCache,
   catalogPath,
   propertyPath,
   propertyTitle,
@@ -297,7 +297,7 @@ function Property({
   );
 }
 
-export async function getServerSideProps(context: any) {
+async function propertyServerSideProps(context: any) {
   if (
     !context.query.id &&
     parseCatalogPath(context.resolvedUrl)
@@ -362,4 +362,14 @@ export async function getServerSideProps(context: any) {
       propertyFromSupabase: titledData ?? null,
     },
   };
+}
+
+// Offer pages change rarely: keep them on Netlify's CDN for 24 h (key includes ?id=).
+export async function getServerSideProps(context: any) {
+  const result: any = await propertyServerSideProps(context);
+  // Region/city catalogue routes are delegated here too; they keep their own 1 h cache.
+  if (result && "props" in result && "propertyFromSupabase" in result.props)
+    publicCache(context.res, 86400, 7 * 86400);
+  else if (!(result && "props" in result)) noStore(context.res);
+  return result;
 }

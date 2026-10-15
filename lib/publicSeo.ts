@@ -162,6 +162,21 @@ export function countryMetadata(country: string, locale: SiteLocale = "pl") {
       : "Przeglądaj apartamenty i domy na Cyprze. Porównaj lokalizacje, ceny i parametry ofert. Skorzystaj ze wsparcia Onesta przy wyborze i zakupie.";
   return { h1, title: `${h1} | Onesta`, description };
 }
+/**
+ * Public catalogue/offer pages: browsers revalidate, Netlify's CDN keeps the page for
+ * `seconds` and serves it stale while refreshing in the background. The cache key
+ * includes the query string (filters, page, ?id=), so different offers never share an entry.
+ * Never use on pages with private data (agent, CRM, client lists).
+ */
+export function publicCache(res: any, seconds: number, staleSeconds = seconds * 24) {
+  res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+  res.setHeader("CDN-Cache-Control", `public, s-maxage=${seconds}, stale-while-revalidate=${staleSeconds}`);
+  res.setHeader(
+    "Netlify-CDN-Cache-Control",
+    `public, durable, s-maxage=${seconds}, stale-while-revalidate=${staleSeconds}`,
+  );
+  res.setHeader("Netlify-Vary", "query");
+}
 export function noStore(res: any) {
   res.setHeader(
     "Cache-Control",

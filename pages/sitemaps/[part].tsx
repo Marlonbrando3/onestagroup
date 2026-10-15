@@ -10,6 +10,7 @@ export async function getServerSideProps({ params, res }: any) {
     return { notFound: true };
   res.setHeader("Content-Type", "application/xml; charset=utf-8");
   res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900");
+  res.setHeader("Netlify-CDN-Cache-Control", "public, durable, s-maxage=21600, stale-while-revalidate=86400");
   res.end(
     sitemapXml(entries.slice((page - 1) * SITEMAP_SIZE, page * SITEMAP_SIZE)),
   );

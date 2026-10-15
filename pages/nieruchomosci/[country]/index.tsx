@@ -11,7 +11,7 @@ import SeoHead from "@/components/SeoHead";
 import SeoBreadcrumbs from "@/components/SeoBreadcrumbs";
 import SeoLocationContent from "@/components/SeoLocationContent";
 import { findRegion, findCity } from "@/lib/seoLocations";
-import {
+import { publicCache,
   canonicalCatalog,
   hasFilters,
   publicCountry,
@@ -408,7 +408,7 @@ function escapeLikeValue(value: string): string {
   return String(value).replace(/[%_,]/g, "").trim();
 }
 
-export const getServerSideProps: GetServerSideProps<PageProps> = async (
+const listingsServerSideProps: GetServerSideProps<PageProps> = async (
   context,
 ) => {
   noStore(context.res);
@@ -679,3 +679,12 @@ function validFilters(query: Record<string, any>) {
   }
   return true;
 }
+
+// Catalogue pages are public and identical for every visitor: keep them on Netlify's CDN
+// for an hour (query string is part of the key). Errors, 404s and redirects stay uncached.
+export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
+  const result = await listingsServerSideProps(context);
+  if ("props" in result) publicCache(context.res, 3600);
+  else noStore(context.res);
+  return result;
+};
