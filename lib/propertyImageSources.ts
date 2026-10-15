@@ -1,3 +1,5 @@
+// Zmieniasz listę? Zaktualizuj też [images] remote_images w netlify.toml
+// (Netlify Image CDN pobiera zdjęcia tylko z hostów z tamtej listy).
 const PROPERTY_IMAGE_PROTOCOLS_BY_HOST = new Map<string, ReadonlySet<string>>([
   ["123immo.es", new Set(["https:"])],
   ["agencymgam.com", new Set(["https:"])],
@@ -94,3 +96,4 @@ export function isAllowedPropertyImageUrl(url: URL): boolean {
 
   return allowedProtocols?.has(url.protocol) ?? false;
 }
+

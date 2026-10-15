@@ -55,6 +55,13 @@ const nextConfig: NextConfig = {
     // every feed can use Vercel Image Optimization without opening the public
     // optimizer to arbitrary hosts. These patterns cover editorial content.
     remotePatterns: [
+      // Zdjęcia z feedów idą przez Netlify Image CDN prosto ze źródła (bez funkcji).
+      // Next pozwala tu na max 50 wzorców, a hostów jest ~90, więc produkcyjna
+      // lista jest w netlify.toml ([images] remote_images, ta sama co w
+      // lib/propertyImageSources.ts). Next sprawdza hosty tylko w trybie dev.
+      ...(process.env.NODE_ENV === "development"
+        ? [{ protocol: "https" as const, hostname: "**" }]
+        : []),
       {
         protocol: "https",
         hostname: "images.pexels.com",
