@@ -45,6 +45,10 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   images: {
+    // Vercel (tymczasowy hosting): bez optymalizacji obrazków. Hostów zdjęć z feedów jest
+    // ~90, a Next pozwala na 50 wzorców; na Netlify robi to Image CDN (netlify.toml).
+    // Zdjęcia idą wtedy prosto ze źródła — działa i nie zużywa limitu optymalizacji Vercela.
+    unoptimized: process.env.VERCEL === "1",
     localPatterns: [
       // The proxy accepts a dynamic, validated `url` query parameter.
       { pathname: "/api/property-image" },
