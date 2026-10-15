@@ -684,7 +684,7 @@ function validFilters(query: Record<string, any>) {
 // for an hour (query string is part of the key). Errors, 404s and redirects stay uncached.
 export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
   const result = await listingsServerSideProps(context);
-  if ("props" in result) publicCache(context.res, 3600);
+  if ("props" in result) publicCache(context.res, 86400, 7 * 86400);
   else noStore(context.res);
   return result;
 };

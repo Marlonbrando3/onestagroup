@@ -369,7 +369,7 @@ export async function getServerSideProps(context: any) {
   const result: any = await propertyServerSideProps(context);
   // Region/city catalogue routes are delegated here too; they keep their own 1 h cache.
   if (result && "props" in result && "propertyFromSupabase" in result.props)
-    publicCache(context.res, 86400, 7 * 86400);
+    publicCache(context.res, 7 * 86400, 30 * 86400);
   else if (!(result && "props" in result)) noStore(context.res);
   return result;
 }

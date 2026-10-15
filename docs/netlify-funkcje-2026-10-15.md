@@ -15,7 +15,7 @@ miały w bazie minimalną aktywność, więc to nie one.
   Lista hostów: `lib/propertyImageSources.ts` **oraz** `netlify.toml` (`[images] remote_images`)
   — przy dodaniu nowego feedu trzeba zaktualizować oba miejsca.
 - `publicCache()` w `lib/publicSeo.ts`: cache CDN z `Netlify-Vary: query` (każdy `?id=`
-  ma osobny wpis — to naprawia problem z 23.09). Katalogi 1 h, oferty 24 h
+  ma osobny wpis — to naprawia problem z 23.09). Katalogi 24 h, oferty 7 dni (zmiana 15.10 po starcie — limit ważniejszy niż świeżość)
   (+ stale-while-revalidate). 404/500/przekierowania nadal `no-store`.
   Przeglądarka zawsze pyta o świeżą wersję (`max-age=0`).
 - robots.txt: blokada kombinacji filtrów (`?location=`, `?type=`, `?priceMin=`…), blokada
@@ -24,4 +24,4 @@ miały w bazie minimalną aktywność, więc to nie one.
 
 ## Do sprawdzenia
 Function metrics po 2–3 dniach od wdrożenia. Usunięta/sprzedana oferta może być widoczna
-do 24 h (potem 404) — jeśli to przeszkadza, skrócić czas lub dodać purge po imporcie.
+do 7 dni (potem 404) — jeśli to przeszkadza, skrócić czas lub dodać purge po imporcie.
