@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   compress: true,
+  env: {
+    // Import XML w /onesari: na Vercelu (VERCEL=1 przy buildzie) idzie przez /api/...,
+    // na Netlify przez funkcje w tle. Ustawiane automatycznie, bez ręcznej zmiennej.
+    NEXT_PUBLIC_IMPORT_RUNTIME:
+      process.env.VERCEL === "1" ? "vercel" : process.env.NEXT_PUBLIC_IMPORT_RUNTIME || "",
+  },
   async redirects() {
     return [
       {
