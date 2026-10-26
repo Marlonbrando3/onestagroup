@@ -1,5 +1,4 @@
 import { parseCatalogPath } from "@/lib/catalogRouting";
-import PropertyDetailImage from "@/components/PropertyDetailImage";
 import { publicAvailability } from "@/lib/publicListings";
 import ListingsPage, {
   getServerSideProps as getListingsProps,
@@ -19,24 +18,36 @@ import { publicCache,
   noStore,
   preservedQuery,
 } from "@/lib/publicSeo";
-import { useRef } from "react";
+import { useState, type CSSProperties } from "react";
 import { supabaseServer } from "@/lib/supabaseClient";
 import Head from "next/head";
 import Header from "../../../../components/Header";
-import { useRouter } from "next/router";
-import { useState } from "react";
-import Descryption from "../../../../components/Descryption";
 import Footer from "@/components/Footer";
-import { OutfitSans, PlayfairSans } from "../../../../fonts/fonts";
-import Form from "@/components/SearchEngine/IntresetedPopUp/form";
-import { IoClose } from "react-icons/io5";
+import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
 import WhatsAppButton from "@/components/whatsapp/whatsappButton";
 import Slider from "@/components/SliderInOfferPage/slider";
 import Gallery from "@/components/SliderInOfferPage/gallery";
-import ContactInFooterMobile from "@/components/SearchEngine/ContactInFooterMobile";
-import { validTitleOrEmpty } from "@/lib/titlesDictionary";
+import ContactOnPropertyCard from "@/components/SearchEngine/ContactOnPropertyCard";
+import Loan from "@/components/loanCalc/loan";
+import { LuMapPin } from "react-icons/lu";
+import { typeDictionarySingular } from "@/lib/titlesDictionary";
 import { propertyTypeLabel, SiteLocale } from "@/lib/i18n";
-import { propertyImageUrl } from "@/lib/propertyImages";
+import { normalizeFeatures, terraceArea } from "@/lib/propertyFeatures";
+import OfferDescription from "@/components/offer/OfferDescription";
+import {
+  CopyRef,
+  OfferAgents,
+  OfferFacts,
+  OfferFeatures,
+  OfferGallery,
+  OfferInquiry,
+  OfferLocation,
+  OfferMobileBar,
+  OfferPriceCard,
+  OfferTrust,
+  factsFor,
+} from "@/components/offer/OfferSections";
+import offerStyles from "@/styles/offerPage.module.css";
 
 const PROPERTY_DETAIL_COLUMNS = [
   "external_id",
@@ -78,44 +89,31 @@ function Property({
   propertyFromSupabase: any;
   locale?: SiteLocale;
 }) {
-  const router = useRouter();
   const isEn = locale === "en";
+  const p = propertyFromSupabase;
 
-  const [propertyData, setPropertyData] = useState<any[]>([]);
-  // const [PropertyImages, setPropertyImages] = useState<any[]>([]);
-
-  const intrestedPopUp: any = useRef();
-
-  const [images, setImages] = useState<any[]>();
   const [choosedImage, setChoosedImage] = useState(0);
   const [showSlider, setShowSlider] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
 
-  let showedImage: any | undefined;
-  const { title } = router.query;
-
-  const listingTitle = propertyTitle(propertyFromSupabase, locale);
-  const metadata = propertyMetadata(propertyFromSupabase, locale);
-  const country = publicCountry(propertyFromSupabase.country)!;
-  const canonical = propertyPath(propertyFromSupabase, locale)!;
-  const region = regionForProperty(propertyFromSupabase);
+  const listingTitle = propertyTitle(p, locale);
+  const metadata = propertyMetadata(p, locale);
+  const country = publicCountry(p.country)!;
+  const canonical = propertyPath(p, locale)!;
+  const region = regionForProperty(p);
   const city =
     region &&
     SEO_CITIES.find(
-      (c) =>
-        c.region === region.slug &&
-        c.aliases.includes(propertyFromSupabase.town),
+      (c) => c.region === region.slug && c.aliases.includes(p.town),
     );
+  const countryName = isEn
+    ? country.slug === "cypr"
+      ? "Cyprus"
+      : "Spain"
+    : country.label;
   const breadcrumbs = [
     { name: isEn ? "Home" : "Strona główna", path: isEn ? "/en" : "/" },
-    {
-      name: isEn
-        ? country.slug === "cypr"
-          ? "Cyprus"
-          : "Spain"
-        : country.label,
-      path: catalogPath(country.slug, locale),
-    },
+    { name: countryName, path: catalogPath(country.slug, locale) },
   ];
   if (region)
     breadcrumbs.push({
@@ -129,171 +127,160 @@ function Property({
     });
   breadcrumbs.push({ name: listingTitle, path: canonical });
 
-  if (images !== undefined) {
-    images?.filter((img) => {
-      if (img.showed === true) {
-        showedImage = img.image.replace("thumbnail", "normal");
-      }
-    });
-  }
+  const typeLabel =
+    propertyTypeLabel[locale]?.[p.type] ||
+    typeDictionarySingular[p.type] ||
+    (isEn ? "Property" : "Nieruchomość");
+  const townName = city?.name || p.town;
+  const place = [townName, region?.name, countryName].filter(Boolean).join(", ");
+  const features = normalizeFeatures(p.features, locale, p);
+  const facts = factsFor(p, terraceArea(p.features), typeLabel, locale);
+  const badges = [
+    p.new_build
+      ? { label: isEn ? "New build" : "Rynek pierwotny" }
+      : { label: isEn ? "Resale" : "Rynek wtórny" },
+    { label: isEn ? "0% buyer commission" : "0% prowizji", gold: true },
+  ];
 
-  const handleShowingGallery = () => {
-    setShowGallery(true);
+  const openImage = (index: number) => {
+    setChoosedImage(index);
+    setShowSlider(true);
   };
-
-  const imagesMiniData = propertyFromSupabase.images
-    ?.slice(1, 5)
-    .map((i: any, index: any) => {
-      return (
-        <div
-          key={i["@_id"]}
-          className="lg:w-[170px] lg:h-[176px] md:w-[121px] md:h-[122px] w-[15vw] h-[10vw] relative cursor-pointer hover:brightness-125 duration-100"
-          onClick={handleShowingGallery}
-        >
-          <PropertyDetailImage
-            key={propertyImageUrl(i)}
-            image={i}
-            alt={`${listingTitle} — ${index + 2}`}
-          />
-        </div>
-      );
-    });
-
-  const handleClosingIntresetedPopUp = () => {
-    intrestedPopUp.current.style.display = "none";
-  };
+  const askAboutOffer = () =>
+    document.getElementById("zapytanie")?.scrollIntoView({ behavior: "smooth" });
 
   return (
     <>
       <SeoHead
         {...metadata}
         canonical={canonical}
-        image={propertyImages(propertyFromSupabase, 1)[0]}
-        jsonLd={propertyJsonLd(propertyFromSupabase, locale, canonical)}
+        image={propertyImages(p, 1)[0]}
+        jsonLd={propertyJsonLd(p, locale, canonical)}
         alternates={{
-          pl: propertyPath(propertyFromSupabase, "pl"),
-          en: propertyPath(propertyFromSupabase, "en"),
+          pl: propertyPath(p, "pl"),
+          en: propertyPath(p, "en"),
         }}
       />
       <Head>
         <link rel="shortcut icon" href="/logotype.png" />
-        <meta
-          name="viewport"
-          content="initial-scale=1.0, width=device-width, minimum-scale=1, maximum-scale=1"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com"></link>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Manjari:wght@100;400;700&family=Nunito+Sans&display=swap"
-          rel="stylesheet"
-        ></link>
       </Head>
+      {showGallery && !showSlider ? (
+        <Gallery
+          locale={locale}
+          title={listingTitle}
+          choosedImage={choosedImage}
+          setChoosedImage={setChoosedImage}
+          showSlider={showSlider}
+          setShowSlider={setShowSlider}
+          showGallery={showGallery}
+          setShowGallery={setShowGallery}
+          images={p.images}
+        />
+      ) : null}
+      {showSlider ? (
+        <Slider
+          locale={locale}
+          showSlider={showSlider}
+          choosedImage={choosedImage}
+          setChoosedImage={setChoosedImage}
+          setShowSlider={setShowSlider}
+          images={p.images}
+          propertyDetails={p}
+        />
+      ) : null}
+      <Header
+        locale={locale}
+        languagePaths={{
+          pl: propertyPath(p, "pl")!,
+          en: propertyPath(p, "en")!,
+        }}
+      />
+      <WhatsAppButton />
       <div
-        className={`${OutfitSans.className} max-w-[1350px] flex flex-col mx-[5px] sm:mx-auto relative overflow-x-hidden mt-[80px] `}
+        className={`${offerStyles.page} ${HomeMontserratSans.className}`}
+        style={{ "--offer-serif": HomePlayfairSans.style.fontFamily } as CSSProperties}
       >
-        {showGallery && !showSlider ? (
-          <Gallery
-            locale={locale}
+        <main className={offerStyles.container}>
+          <header className={offerStyles.head}>
+            <SeoBreadcrumbs items={breadcrumbs} />
+            <p className={offerStyles.eyebrow}>
+              {[typeLabel, region?.name].filter(Boolean).join(" · ")}
+            </p>
+            <h1>{listingTitle}</h1>
+            <div className={offerStyles.metaRow}>
+              <span>
+                <LuMapPin aria-hidden="true" />
+                {place}
+              </span>
+              <span className={offerStyles.ref}>
+                <CopyRef value={p.external_id} locale={locale} />
+              </span>
+            </div>
+          </header>
+
+          <OfferGallery
+            images={p.images}
             title={listingTitle}
-            choosedImage={choosedImage}
-            setChoosedImage={setChoosedImage}
-            showSlider={showSlider}
-            setShowSlider={setShowSlider}
-            showGallery={showGallery}
-            setShowGallery={setShowGallery}
-            images={propertyFromSupabase.images}
-          />
-        ) : null}
-        {showSlider ? (
-          <Slider
+            badges={badges}
             locale={locale}
-            showSlider={showSlider}
-            choosedImage={choosedImage}
-            setChoosedImage={setChoosedImage}
-            setShowSlider={setShowSlider}
-            images={propertyFromSupabase.images}
-            propertyDetails={propertyFromSupabase}
+            onOpenGallery={() => setShowGallery(true)}
+            onOpenImage={openImage}
           />
-        ) : null}
-        <WhatsAppButton />
-        <div
-          ref={intrestedPopUp}
-          id="intrestedPopUp"
-          className="hidden w-full h-full fixed z-40 top-0 bottom-0 left-0 right-0 m-auto shadow-[10px_25px_60px_20px_rgba(0,0,0,0.3)] bg-gray-900/[0.6] justify-center items-center"
-        >
-          <div className="md:w-[800px] w-[90%] h-[500px] relative">
-            <IoClose
-              onClick={handleClosingIntresetedPopUp}
-              className="absolute right-[10px] top-[10px] z-[70] cursor-pointer"
-            />
-            <Form
-              intrestedPopUp={intrestedPopUp}
-              OfferNumber={propertyFromSupabase.external_id}
-            />
-          </div>
-        </div>
-        <Header
-          locale={locale}
-          languagePaths={{
-            pl: propertyPath(propertyFromSupabase, "pl")!,
-            en: propertyPath(propertyFromSupabase, "en")!,
-          }}
-        />
-        {/* <MiniHomeViewOffer /> */}
-        <div className="lg:w-full md:w-[95vw] w-full pt-5 md:pt-auto mx-auto my-0 rounded-md bg-white">
-          <SeoBreadcrumbs items={breadcrumbs} />
-          <h1
-            className={`${PlayfairSans.className} pb-[20px] font-[500] tracking-[0.6px] scale-x-[0.9] scale-y-[1.04] md:-ml-[55px] md:text-[36px] text-[32px] leading-[34px]`}
-          >
-            {listingTitle}
-          </h1>
-          <div className="flex flex-col md:flex-row items-center justify-center">
-            {/* MAIN GALLERY IMAGE */}
-            <div className="md:flex-1 md:h-[255px] lg:h-[360px] md:w-[60vw] h-[200px] overflow-hidden mx-[10px]">
-              <div className="flex md:h-full sm:h-full h-[900px] w-full flex-col justify-between rounded-md overflow-hidden">
-                <div className="lg:w-full md:w-full md:h-[500px] h-[200px] w-[95vw] sm:block select-none relative mx-auto relative rounded-md cursor-pointer">
-                  <PropertyDetailImage
-                    key={propertyImageUrl(propertyFromSupabase.images?.[0])}
-                    image={propertyFromSupabase.images?.[0]}
-                    alt={listingTitle}
-                    main
-                    onClick={handleShowingGallery}
-                  />
-                </div>
-              </div>
+
+          <div className={offerStyles.layout}>
+            <div className={offerStyles.main}>
+              <OfferFacts facts={facts} locale={locale} />
+              <OfferFeatures features={features} locale={locale} />
+              <OfferDescription
+                description={p.descriptions?.pl}
+                descriptionEN={p.descriptions?.en}
+                locale={locale}
+              />
+              <OfferLocation
+                property={p}
+                place={place}
+                locale={locale}
+                cityLink={
+                  city
+                    ? { name: city.name, path: catalogPath(country.slug, locale, region!.slug, city.slug) }
+                    : null
+                }
+                regionLink={
+                  region
+                    ? { name: region.name, path: catalogPath(country.slug, locale, region.slug) }
+                    : null
+                }
+              />
+              <section
+                className={`${offerStyles.card} ${offerStyles.loanSlot}`}
+                aria-label={isEn ? "Mortgage calculator" : "Kalkulator kredytowy"}
+              >
+                <Loan propertyPrice={p.price} locale={locale} />
+              </section>
+              <OfferTrust locale={locale} />
+              <OfferInquiry locale={locale}>
+                <ContactOnPropertyCard
+                  propertyRef={p.external_id}
+                  locale={locale}
+                  variant="section"
+                />
+              </OfferInquiry>
             </div>
-            {/* mini-gallery */}
-            <div className="flex md:justify-start justify-between items-start lg:w-[570px] md:w-[400px] w-[95vw] lg:flex-none  flex-wrap lg:gap-2 md:gap-3 gap-0  mt-[5px] md:mt-auto">
-              {imagesMiniData}
-            </div>
+            <aside className={offerStyles.aside}>
+              <OfferPriceCard
+                price={p.price}
+                area={p.surface_built}
+                facts={facts}
+                locale={locale}
+                onAsk={askAboutOffer}
+              />
+              <OfferAgents locale={locale} />
+            </aside>
           </div>
-        </div>
-        {/* <Features /> */}
-        <Descryption
-          localization={{
-            lat: propertyFromSupabase.latitude,
-            lng: propertyFromSupabase.longitude,
-          }}
-          propertyData={propertyFromSupabase}
-          features={propertyFromSupabase.features}
-          description={propertyFromSupabase.descriptions.pl}
-          descriptionEN={propertyFromSupabase.descriptions.en}
-          locale={locale}
-          bedrooms={propertyFromSupabase.beds}
-          bathrooms={propertyFromSupabase.baths}
-          distance={propertyData[0]?.distance}
-          pool={propertyFromSupabase.pool}
-          propertyId={propertyFromSupabase.external_id}
-          propertyRef={propertyFromSupabase.external_id}
-          propertyPrice={propertyFromSupabase.price}
-          propertType={propertyFromSupabase.type}
-        />
-        <ContactInFooterMobile
-          propertyRef={propertyFromSupabase.external_id}
-          locale={locale}
-        />
-        <Footer locale={locale} />
+        </main>
+        <OfferMobileBar price={p.price} locale={locale} onAsk={askAboutOffer} />
       </div>
+      <Footer locale={locale} />
     </>
   );
 }

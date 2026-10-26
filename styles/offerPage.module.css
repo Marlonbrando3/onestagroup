@@ -1,0 +1,190 @@
+/* Strona pojedynczej oferty — ten sam język wizualny co /polskie-biuro-nieruchomosci-w-hiszpanii:
+   kremowe tło, granat, złoto, serif w nagłówkach, karty z miękkim cieniem. */
+.page {
+  --cream: #f8f5ef;
+  --ink: #182334;
+  --navy: #182b46;
+  --gold: #947340;
+  --gold-soft: #f5e8d3;
+  --gold-line: #dfc399;
+  --muted: #536074;
+  --line: #e7e0d4;
+  --radius-media: 22px;
+  --radius-card: 20px;
+  padding-top: 84px;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+.page * { box-sizing: border-box; }
+.page h1, .page h2, .page h3 {
+  font-family: var(--offer-serif), Georgia, serif;
+  font-weight: 400;
+  text-wrap: balance;
+}
+.page h2 { font-size: clamp(28px, 2.6vw, 38px); line-height: 1.12; letter-spacing: -.03em; }
+.page h3 { font-size: 21px; line-height: 1.25; letter-spacing: -.015em; }
+.page a:focus-visible, .page button:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.page section[id] { scroll-margin-top: 104px; }
+
+.container { width: min(1240px, 92%); margin-inline: auto; }
+.eyebrow { color: var(--gold); font-size: 12px; font-weight: 600; letter-spacing: .18em; line-height: 1.6; text-transform: uppercase; }
+
+/* Nagłówek */
+.head { padding-top: 6px; }
+.head h1 { max-width: 980px; margin-top: 10px; font-size: clamp(30px, 3.4vw, 48px); line-height: 1.08; letter-spacing: -.035em; }
+.metaRow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; margin-top: 16px; color: var(--muted); font-size: 15px; }
+.metaRow span { display: inline-flex; align-items: center; gap: 7px; }
+.metaRow svg { color: var(--gold); flex-shrink: 0; }
+.ref { font-size: 13px; letter-spacing: .02em; }
+.copyRef { display: inline-flex; align-items: center; gap: 5px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.copyRef:hover { color: var(--ink); }
+
+/* Galeria */
+.gallery { position: relative; display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 10px; height: clamp(320px, 42vw, 560px); margin-top: 26px; }
+.shot { position: relative; overflow: hidden; border: 0; border-radius: 14px; padding: 0; background: #e8e1d5; cursor: zoom-in; }
+.shot:first-child { grid-row: span 2; border-radius: var(--radius-media); }
+.shot img { transition: transform .5s ease; }
+.shot:hover img { transform: scale(1.03); }
+.allPhotos { position: absolute; right: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; border: 1px solid #ffffff; border-radius: 999px; background: #ffffffeb; color: var(--ink); font-size: 14px; font-weight: 600; box-shadow: 0 8px 24px #18233424; cursor: pointer; }
+.allPhotos:hover { background: #fff; }
+.badges { position: absolute; top: 16px; left: 16px; display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none; }
+.badge { padding: 6px 12px; border-radius: 999px; background: #182b46e6; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .04em; }
+.badgeGold { background: #f5e8d3; color: #6f5126; }
+
+/* Układ treści */
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 48px; align-items: start; margin-top: 36px; padding-bottom: 72px; }
+.main { display: grid; gap: 22px; min-width: 0; }
+.aside { position: sticky; top: 100px; display: grid; gap: 16px; }
+
+.card { padding: clamp(22px, 3vw, 34px); border: 1px solid var(--line); border-radius: var(--radius-card); background: #fff; box-shadow: 0 10px 28px #1823340d; }
+.cardHead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px; margin-bottom: 22px; }
+.cardHead p { color: var(--muted); font-size: 15px; }
+
+/* Najważniejsze parametry */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.fact { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 16px; background: var(--cream); }
+.factIcon { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--gold-line); border-radius: 50%; background: var(--gold-soft); color: #94672e; }
+.fact dt { color: var(--muted); font-size: 12px; letter-spacing: .04em; line-height: 1.3; }
+.fact dd { margin: 2px 0 0; font-size: 18px; font-weight: 600; line-height: 1.25; }
+
+/* Cechy */
+.featureGroups { display: grid; gap: 26px; }
+.featureGroup + .featureGroup { padding-top: 24px; border-top: 1px solid var(--line); }
+.featureGroup h3 { margin-bottom: 12px; font-size: 18px; }
+.featureList { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px 24px; margin: 0; padding: 0; list-style: none; }
+.featureList li { display: flex; align-items: center; gap: 12px; font-size: 15px; line-height: 1.4; }
+.featureList svg { width: 34px; height: 34px; padding: 8px; flex-shrink: 0; border-radius: 50%; background: var(--gold-soft); color: #94672e; }
+.empty { color: var(--muted); }
+
+/* Opis */
+.langSwitch { display: inline-flex; gap: 6px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--cream); }
+.langSwitch button { min-height: 36px; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; }
+.langSwitch button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 8px #18233414; }
+.langSwitch button:disabled { cursor: wait; opacity: .6; }
+.description { position: relative; max-width: 74ch; color: #2f3a4b; font-size: 16px; line-height: 1.85; }
+.description p + p { margin-top: 14px; }
+.description strong { display: block; margin-top: 8px; color: var(--ink); font-family: var(--offer-serif), Georgia, serif; font-size: 20px; font-weight: 400; letter-spacing: -.01em; }
+.collapsed { max-height: 460px; overflow: hidden; }
+.collapsed::after { content: ""; position: absolute; inset: auto 0 0; height: 140px; background: linear-gradient(#fff0, #fff); }
+.moreButton { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 0; border: 0; background: none; color: var(--gold); font-size: 15px; font-weight: 600; cursor: pointer; }
+.moreButton:hover { color: #6f5126; }
+
+/* Lokalizacja */
+.locationGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 26px; align-items: stretch; }
+.locationList { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.locationList li { display: flex; gap: 12px; color: #2f3a4b; font-size: 15px; }
+.locationList svg { margin-top: 4px; color: var(--gold); flex-shrink: 0; }
+.textLink { color: #75582e; font-weight: 600; text-decoration: underline; text-decoration-color: #b58b4c; text-underline-offset: 4px; }
+.textLink:hover { color: var(--ink); }
+.map { overflow: hidden; min-height: 280px; border-radius: 16px; background: #e8e1d5; }
+.map iframe { display: block; width: 100%; height: 100%; min-height: 280px; border: 0; }
+
+/* Cena (kolumna boczna) */
+.priceCard { padding: 28px; border: 1px solid var(--line); border-radius: var(--radius-card); background: #fff; box-shadow: 0 18px 44px #1823341a; }
+.priceLabel { color: var(--muted); font-size: 13px; letter-spacing: .04em; }
+.price { margin-top: 2px; color: var(--ink); font-family: var(--offer-serif), Georgia, serif; font-size: 42px; line-height: 1.1; letter-spacing: -.03em; }
+.perMeter { margin-top: 6px; color: var(--muted); font-size: 14px; }
+.priceNote { display: flex; gap: 10px; margin-top: 18px; padding: 12px 14px; border-radius: 14px; background: var(--gold-soft); color: #5d4521; font-size: 13px; line-height: 1.5; }
+.priceNote svg { margin-top: 2px; flex-shrink: 0; }
+.actions { display: grid; gap: 10px; margin-top: 20px; }
+.primary, .secondary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 12px 22px; border-radius: 999px; font-size: 15px; font-weight: 600; text-align: center; cursor: pointer; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+.primary { border: 0; background: var(--navy); color: #fff; }
+.primary:hover { background: #2b4261; }
+.secondary { border: 1px solid var(--ink); background: #fff; color: var(--ink); }
+.secondary:hover { background: var(--ink); color: #fff; }
+.whatsapp { border-color: #1f9d55; color: #13703b; }
+.whatsapp:hover { border-color: #1f9d55; background: #1f9d55; color: #fff; }
+.miniFacts { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+.miniFacts span { display: inline-flex; align-items: center; gap: 6px; }
+.miniFacts svg { color: var(--gold); }
+
+/* Doradcy */
+.agentsCard { padding: 22px; border: 1px solid var(--line); border-radius: var(--radius-card); background: #fff; }
+.agentsCard > p { color: var(--muted); font-size: 13px; letter-spacing: .04em; }
+.agent { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; align-items: center; margin-top: 14px; }
+.agentPhoto { position: relative; width: 56px; height: 56px; overflow: hidden; border-radius: 50%; background: var(--cream); }
+.agentName { font-weight: 600; line-height: 1.3; }
+.agentLinks { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 14px; }
+.agentLinks a { display: inline-flex; align-items: center; gap: 6px; color: #75582e; }
+.agentLinks a:hover { color: var(--ink); }
+
+/* Kalkulator (stary komponent Loan — tylko wygląd) */
+.loanSlot > div { margin: 0 !important; padding: 0 !important; font-family: inherit !important; letter-spacing: 0 !important; }
+.loanSlot > div > div:first-child { display: none; }
+.loanSlot > div > p:first-of-type { font-family: var(--offer-serif), Georgia, serif; font-size: clamp(28px, 2.6vw, 38px) !important; font-weight: 400 !important; line-height: 1.12; letter-spacing: -.03em; }
+.loanSlot > div > p:nth-of-type(2) { color: var(--muted); font-size: 13px !important; line-height: 1.6 !important; }
+.loanSlot input, .loanSlot select { height: 50px !important; border: 1px solid #ddd4c5 !important; border-radius: 12px !important; background: #fffdf9 !important; font-weight: 600 !important; }
+.loanSlot :global(.bg-yellow-400) { margin-top: 8px; padding: 6px; border-radius: 999px !important; background: var(--gold-soft) !important; color: #5d4521; }
+.loanSlot :global(.text-yellow-600) { color: var(--ink) !important; font-family: var(--offer-serif), Georgia, serif; font-size: 34px !important; font-weight: 400 !important; }
+.loanSlot :global(.h-\[300px\]) { height: auto !important; gap: 14px; }
+.inquiry { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 34px; }
+.inquiry .lead { margin-top: 14px; color: var(--muted); }
+.inquiryPoints { display: grid; gap: 12px; margin: 22px 0 0; padding: 0; list-style: none; }
+.inquiryPoints li { display: flex; gap: 12px; font-size: 15px; }
+.inquiryPoints svg { margin-top: 4px; color: var(--gold); flex-shrink: 0; }
+
+/* Dlaczego z Onestą */
+.trust { overflow: hidden; border-radius: var(--radius-card); background: linear-gradient(115deg, #15253d, #213a59); color: #fff; }
+.trustInner { display: grid; gap: 28px; padding: clamp(26px, 3.4vw, 40px); }
+.trust .eyebrow { color: #e0bd7a; }
+.trust h2 { margin-top: 10px; color: #fff; }
+.trustList { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin: 0; padding: 0; list-style: none; }
+.trustIcon { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid #c9ad734d; border-radius: 50%; background: #ffffff0a; color: #e1c592; }
+.trustList h3 { margin-top: 14px; color: #fff; font-family: inherit; font-size: 16px; font-weight: 600; letter-spacing: 0; }
+.trustList p { margin-top: 6px; color: #c3cede; font-size: 14px; line-height: 1.65; }
+
+/* Pasek na telefonie */
+.mobileBar { display: none; }
+
+@media (max-width: 1080px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .aside { position: static; order: -1; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .trustInner { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .page { padding-top: 76px; }
+  .gallery { grid-template-columns: 1fr; grid-template-rows: 1fr; height: 300px; margin-top: 18px; margin-inline: -4%; }
+  .shot { display: none; border-radius: 0; }
+  .shot:first-child { display: block; border-radius: 0; }
+  .allPhotos { right: 12px; bottom: 12px; min-height: 40px; padding: 8px 14px; font-size: 13px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .fact { gap: 10px; padding: 12px; }
+  .factIcon { width: 38px; height: 38px; }
+  .fact dd { font-size: 16px; }
+  .locationGrid, .inquiry { grid-template-columns: 1fr; }
+  .trustList { grid-template-columns: 1fr; }
+  .price { font-size: 36px; }
+  .priceCard { padding: 22px; }
+  .miniFacts, .aside .agentsCard { display: none; }
+  .layout { padding-bottom: 96px; }
+  .mobileBar { position: fixed; z-index: 30; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #fffffff2; box-shadow: 0 -8px 24px #1823341a; backdrop-filter: blur(8px); }
+  .mobileBar strong { display: block; font-size: 18px; line-height: 1.2; }
+  .mobileBar span { color: var(--muted); font-size: 12px; }
+  .mobileBar .primary { min-height: 46px; padding: 10px 18px; font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shot img { transition: none; }
+}

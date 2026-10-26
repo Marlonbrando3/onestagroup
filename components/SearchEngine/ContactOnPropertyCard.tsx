@@ -7,15 +7,22 @@ import { trackGoogleAdsContactConversion } from "@/analitycs/googleAdsConversion
 type Props = {
   propertyRef: any;
   locale?: "pl" | "en";
+  /** "section": widoczny na każdym ekranie, bez stałych wysokości (strona oferty). */
+  variant?: "card" | "section";
 };
 
 export default function ContactOnPropertyCard({
   propertyRef,
   locale = "pl",
+  variant = "card",
 }: Props) {
   const router = useRouter();
   const isEn = locale === "en";
   const { id } = router.query;
+  const section = variant === "section";
+  const field = section
+    ? "w-full rounded-[12px] border border-[#ddd4c5] bg-[#fffdf9] px-4 h-[50px] text-[15px] outline-none focus:border-[#947340]"
+    : "border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]";
 
   const [Name, setName] = useState();
   const [Phone, setPhone] = useState();
@@ -92,18 +99,32 @@ export default function ContactOnPropertyCard({
 
   return (
     <div className={`${OutfitSans.className} h-auto grow`}>
-      <div className="bg-white rounded-md p-4 h-[550px] hidden lg:block z-40 bg-yellow-300/[0.2]">
-        <p className="font-[500] pb-4 text-[20px]">
-          {isEn ? "I am interested" : " Jestem zainteresowany"}
-        </p>
-        <p className="font-[300] pb-4 text-[16px] leading-[18px]">
-          {isEn
-            ? "Contact us by completing the form below"
-            : "Skontaktuj się z nami wypełniając formularz kontaktowy"}
-        </p>
+      <div
+        className={
+          section
+            ? "block"
+            : "bg-white rounded-md p-4 h-[550px] hidden lg:block z-40 bg-yellow-300/[0.2]"
+        }
+      >
+        {!section && (
+          <>
+            <p className="font-[500] pb-4 text-[20px]">
+              {isEn ? "I am interested" : " Jestem zainteresowany"}
+            </p>
+            <p className="font-[300] pb-4 text-[16px] leading-[18px]">
+              {isEn
+                ? "Contact us by completing the form below"
+                : "Skontaktuj się z nami wypełniając formularz kontaktowy"}
+            </p>
+          </>
+        )}
 
         <form
-          className="w-full flex flex-col h-[450px] justify-between mt-[10px]"
+          className={
+            section
+              ? "w-full flex flex-col gap-3"
+              : "w-full flex flex-col h-[450px] justify-between mt-[10px]"
+          }
           onSubmit={handleSendingProperty}
         >
           <input
@@ -111,7 +132,7 @@ export default function ContactOnPropertyCard({
             name="name"
             value={Name}
             placeholder={isEn ? "Name (required)" : "Imię (wymagane)"}
-            className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
+            className={field}
             required
           />
 
@@ -120,7 +141,7 @@ export default function ContactOnPropertyCard({
             value={Phone}
             onChange={handleChangingForm}
             placeholder={isEn ? "Phone number" : "Numer telefonu"}
-            className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
+            className={field}
             required
           />
 
@@ -130,7 +151,7 @@ export default function ContactOnPropertyCard({
             value={Mail}
             onChange={handleChangingForm}
             placeholder={isEn ? "Email address" : "Adres email"}
-            className="border-[0.5px] rounded-md border-gray-600 pl-[5px] h-[40px]"
+            className={field}
             required
           />
 
@@ -138,7 +159,11 @@ export default function ContactOnPropertyCard({
             name="msg"
             value={`${massege} ${propertyRef}`}
             onChange={handleChangingForm}
-            className="border-[0.5px] rounded-md border-gray-600 pl-2 h-[150px] leading-[22px] p-2"
+            className={
+              section
+                ? "w-full rounded-[12px] border border-[#ddd4c5] bg-[#fffdf9] p-4 h-[130px] text-[15px] leading-[22px] outline-none focus:border-[#947340]"
+                : "border-[0.5px] rounded-md border-gray-600 pl-2 h-[150px] leading-[22px] p-2"
+            }
           />
 
           {/* ✔ CHECKBOXY */}
@@ -181,7 +206,11 @@ export default function ContactOnPropertyCard({
 
           <button
             ref={submitButton}
-            className="bg-yellow-500 rounded-md text-white font-bold h-[40px]"
+            className={
+              section
+                ? "mt-2 min-h-[52px] rounded-full bg-[#182b46] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#2b4261]"
+                : "bg-yellow-500 rounded-md text-white font-bold h-[40px]"
+            }
           >
             {isEn ? "Send" : "Wyślij"}
           </button>
