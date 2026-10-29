@@ -28,7 +28,8 @@ export const PHONE = "+48 505 055 846";
 export const PHONE_HREF = "tel:+48505055846";
 export const WA = "https://wa.me/48505055846";
 export const EMAIL = "k.bakowicz@onesta.com.pl";
-const FORM_ENDPOINT = "https://formsubmit.co/ajax/k.bakowicz@onesta.com.pl";
+// Wysyłka przez własne API strony (nodemailer, skrzynka LH.pl) — patrz pages/api/form-one.ts.
+const FORM_ENDPOINT = "/api/form-one";
 
 export const euro = (n: number) => new Intl.NumberFormat("pl-PL").format(n) + " €";
 export const roomCount = (n: number, one: string, few: string, many: string) =>
@@ -157,14 +158,12 @@ function ContactSection({
       name: String(data.get("name") || "").trim(),
       phone: String(data.get("phone") || "").trim(),
       email: String(data.get("email") || "").trim(),
-      Budżet: budgets.join(", ") || "Do ustalenia",
+      budget: budgets.join(", ") || "Do ustalenia",
       message: message.trim(),
       _honey: String(data.get("contact_website") || ""),
-      Kategoria: category,
-      Oferta: offer ? offer.ref : "",
-      Strona: window.location.origin + window.location.pathname,
-      _subject: "Onesta — zapytanie z landing page",
-      _template: "table",
+      category,
+      offer: offer ? offer.ref : "",
+      page: window.location.origin + window.location.pathname,
     };
     setSending(true);
     setStatus({ text: "Wysyłamy Twoje zapytanie…", state: "pending" });
@@ -174,7 +173,6 @@ function ContactSection({
       const response = await fetch(FORM_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        credentials: "omit",
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
@@ -184,7 +182,7 @@ function ContactSection({
       } catch {
         throw new Error(`Nie udało się potwierdzić wysyłki. Zadzwoń: ${PHONE}.`);
       }
-      if (!response.ok || !result || !(result.success === true || result.success === "true")) {
+      if (!response.ok || !result || result.success !== true) {
         throw new Error(typeof result?.message === "string" ? result.message : "Nie udało się potwierdzić wysyłki. Spróbuj później.");
       }
       setStatus({ text: "Dziękujemy! Twoje zapytanie zostało przekazane. Skontaktujemy się z Tobą.", state: "success" });
@@ -308,9 +306,6 @@ function ContactSection({
           <button className="button" type="submit" disabled={sending} aria-busy={sending || undefined}>
             {sending ? "Wysyłanie…" : <>Wyślij zapytanie <span>↗</span></>}
           </button>
-          <p className="form-note">
-            Wysyłkę formularza obsługuje FormSubmit. Dane zgłoszenia zostaną przekazane tej usłudze w celu dostarczenia wiadomości.
-          </p>
           <p id="form-status" role="status" data-state={status.state}>
             {status.text}
           </p>
