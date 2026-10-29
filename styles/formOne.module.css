@@ -1,0 +1,677 @@
+/* Wygenerowane z landingu Dulka (style.css + mobile.css), zakres: .root */
+/* Tailwind (globals.css) zeruje domyślne style przeglądarki; oryginał landingu na nich polegał,
+   więc przywracamy je tylko wewnątrz .root (przed regułami oryginału, żeby te wygrywały). */
+.root{line-height:normal}
+.root :global(p){margin:1em 0}
+.root :global(h1){margin:.67em 0;font-size:2em;font-weight:700}
+.root :global(h2){margin:.83em 0;font-size:1.5em;font-weight:700}
+.root :global(h3){margin:1em 0;font-size:1.17em;font-weight:700}
+.root :global(h4){margin:1.33em 0;font-weight:700}
+.root :global(ul){list-style:disc;margin:1em 0;padding-left:40px}
+.root :global(fieldset){margin:0 2px;padding:.35em .75em .625em;border:2px groove #c0c0c0}
+.root :global(legend){padding:0 2px}
+.root :global(img){display:inline;max-width:none;height:auto}
+.root{--ink:#173b40;--gold:#bc9b62;--cream:#f6f4ee;--muted:#657475;--line:#dadfd9}
+.root :global(*){box-sizing:border-box}
+.root{scroll-behavior:smooth;scroll-padding-top:95px}
+.root{margin:0;color:var(--ink);background:var(--cream);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+.root :global(a){color:inherit;text-decoration:none}
+.root :global(button),.root :global(input),.root :global(select),.root :global(textarea){font:inherit}
+.root :global(a),.root :global(button){touch-action:manipulation}
+.root :global(a:focus-visible),.root :global(button:focus-visible){outline:3px solid var(--gold);outline-offset:5px}
+.root :global(header){height:96px;padding:0 5.5%;display:flex;align-items:center;justify-content:space-between;background:#123135;color:white;border-bottom:1px solid #ffffff20}
+.root :global(.brand img){width:185px;display:block}
+.root :global(nav){display:flex;gap:32px;align-items:center;font-size:13px}
+.root :global(nav a:hover){color:#e4bd77}
+.root :global(.nav-contact){border-bottom:1px solid #a88d59;padding:10px 0}
+.root :global(.nav-contact span){margin-left:25px}
+.root :global(.header-phone){font-size:13px;letter-spacing:.4px}
+.root :global(.hero){position:relative;min-height:530px;display:grid;grid-template-columns:1fr 1fr;background:#123135;color:#fff;overflow:hidden}
+.root :global(.hero-copy){padding:48px 8% 52px 11%;position:relative;z-index:1}
+.root :global(.eyebrow){font-size:10px;font-weight:600;letter-spacing:2.5px;margin:0 0 25px;color:var(--gold);line-height:1.6}
+.root :global(h1),.root :global(h2),.root :global(h3),.root :global(p){margin-top:0}
+.root :global(h1),.root :global(h2){font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:-1.8px}
+.root :global(h1){font-size:clamp(44px,4.1vw,65px);line-height:1.05;margin-bottom:27px}
+.root :global(h1 em){color:#d4ba8d;font-weight:400}
+.root :global(.hero-description){max-width:390px;font-size:14px;line-height:1.8;color:#d0dcdb;margin-bottom:32px}
+.root :global(.button){display:flex;justify-content:space-between;gap:35px;align-items:center;background:var(--gold);color:#102e32;padding:18px 23px;border:0;cursor:pointer;font-size:13px;font-weight:600;width:fit-content;min-height:52px;transition:background .2s}
+.root :global(.button:hover){background:#d3b982}
+.root :global(.button span){font-size:20px;font-weight:400}
+.root :global(.hero-small){font-size:11px;color:#b4c8c7;margin:20px 0 0}
+.root :global(.hero-image){position:relative;background:linear-gradient(90deg,#12313530,transparent),url('/form-one/assets/mini_bg_about_us.webp') center/cover}
+.root :global(.image-caption){position:absolute;bottom:32px;left:32px;right:32px;display:flex;justify-content:space-between;align-items:end;color:white;font-size:11px;letter-spacing:1px;text-shadow:0 1px 4px #000}
+.root :global(.image-caption span:first-child){background:#123135b8;padding:12px 16px;backdrop-filter:blur(7px)}
+.root :global(.hero-index){font-family:Georgia,serif;font-size:25px}
+.root :global(.trust){display:grid;grid-template-columns:repeat(3,1fr);padding:25px 5.5%;background:white;border-bottom:1px solid var(--line);gap:30px}
+.root :global(.trust div){display:flex;align-items:center;gap:18px;font-size:12px;line-height:1.6}
+.root :global(.trust strong){font-family:Georgia,serif;font-size:24px;font-weight:400;white-space:nowrap}
+.root :global(.trust div+div){border-left:1px solid var(--line);padding-left:30px}
+.root :global(.section){padding:80px 5.5%}
+.root :global(.section-heading){display:flex;justify-content:space-between;gap:40px;align-items:end;margin-bottom:36px}
+.root :global(.section-heading h2){font-size:46px;line-height:1.1;margin-bottom:0}
+.root :global(.section-heading .eyebrow){margin-bottom:18px}
+.root :global(.section-heading>p){font-size:13px;line-height:1.8;max-width:330px;color:var(--muted);margin:0}
+.root :global(.categories){display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.root :global(.budget-card){border:1px solid #d2d8d1;background:#fff;padding:28px 25px 24px;min-height:252px;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.root :global(.budget-card:hover){transform:translateY(-5px);box-shadow:0 14px 30px #173b4010}
+.root :global(.card-top){display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:1px;color:#85908c}
+.root :global(.card-top svg){width:26px;height:26px;color:var(--gold);stroke-width:1}
+.root :global(.budget-card h3){font-family:Georgia,serif;font-weight:400;font-size:32px;letter-spacing:-1px;margin:32px 0 12px}
+.root :global(.budget-card h3 small){font-family:Arial,sans-serif;letter-spacing:0;font-size:12px;margin-right:5px}
+.root :global(.budget-card p){font-size:12px;color:var(--muted);line-height:1.7;flex:1;margin-bottom:23px}
+.root :global(.card-link){display:flex;justify-content:space-between;font-size:11px;font-weight:600;border-top:1px solid var(--line);padding-top:17px}
+.root :global(.premium){background:var(--ink);color:white;border-color:var(--ink)}
+.root :global(.premium p){color:#ccd7d5}
+.root :global(.premium .card-link){border-color:#ffffff30}
+.root :global(.premium h3){color:#e0c799}
+.root :global(.budget-footnote){font-size:10px;color:var(--muted);margin:20px 0 0}
+.root :global(.story){display:grid;grid-template-columns:.85fr 1.15fr;gap:8%;align-items:center;background:#eceee7}
+.root :global(.story-picture){height:500px;position:relative}
+.root :global(.story-picture>img){height:100%;width:100%;object-fit:cover}
+.root :global(.picture-label){position:absolute;bottom:24px;left:24px;background:#f6f4ee; padding:18px 24px;font-size:11px;line-height:1.7}
+.root :global(.picture-label strong){display:block;font-family:Georgia,serif;font-weight:400;font-size:23px}
+.root :global(.story h2){font-size:46px;line-height:1.13;margin-bottom:22px}
+.root :global(.story-text){font-size:13px;line-height:1.9;max-width:500px;color:var(--muted)}
+.root :global(.steps){display:grid;gap:0;margin-top:26px}
+.root :global(.step){display:flex;gap:22px;padding:18px 0;border-top:1px solid #cfd5cc}
+.root :global(.step>span){font-family:Georgia,serif;font-size:20px;color:#9a834f}
+.root :global(.step h3){font-size:13px;margin:1px 0 7px}
+.root :global(.step p){font-size:12px;line-height:1.6;color:var(--muted);margin:0}
+.root :global(.contact){padding:80px 5.5%;background:#173b40;color:white}
+.root :global(.contact-layout){display:grid;grid-template-columns:1fr 1fr;gap:10%;max-width:1400px;margin:auto}
+.root :global(.contact h2){font-size:54px;line-height:1.08;margin-bottom:22px}
+.root :global(.contact-copy>p:not(.eyebrow)){max-width:370px;font-size:13px;line-height:1.9;color:#c3d1d0}
+.root :global(.person){display:flex;align-items:center;gap:16px;margin:30px 0}
+.root :global(.person img){height:65px;width:65px;object-fit:cover;object-position:center 25%;border-radius:50%}
+.root :global(.person strong){display:block;font-size:13px;margin-bottom:7px}
+.root :global(.person span){display:block;font-size:10px;color:#c3d1d0}
+.root :global(.phone){display:block;font-family:Georgia,serif;font-size:29px;margin-bottom:12px}
+.root :global(.email){font-size:14px;color:#d6e1df;display:block}
+.root :global(.whatsapp){display:inline-block;font-size:11px;border-bottom:1px solid #6d8b89;padding-bottom:7px;margin-top:27px}
+.root :global(form){background:var(--cream);color:var(--ink);padding:32px}
+.root :global(form h3){font-family:Georgia,serif;font-size:27px;font-weight:400;letter-spacing:-.6px;margin-bottom:9px}
+.root :global(.form-intro){font-size:11px;line-height:1.6;color:var(--muted);margin-bottom:25px}
+.root :global(.form-row){display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.root :global(label){display:block;font-size:11px;margin-bottom:18px;font-weight:600}
+.root :global(input),.root :global(select),.root :global(textarea){display:block;width:100%;border:0;border-bottom:1px solid #bdc9c2;color:var(--ink);background:transparent;padding:12px 0;border-radius:0;font-size:12px;outline-offset:3px}
+.root :global(textarea){resize:vertical}
+.root :global(input::placeholder),.root :global(textarea::placeholder){color:#7c8581}
+.root :global(input:focus),.root :global(select:focus),.root :global(textarea:focus){outline:1px solid var(--gold)}
+.root :global(.optional){font-weight:400;color:var(--muted)}
+.root :global(.privacy){font-size:10px;line-height:1.7;color:var(--muted)}
+.root :global(.privacy a){text-decoration:underline}
+.root :global(form .button){width:100%;margin-top:20px}
+.root :global(.form-note){font-size:9px;line-height:1.6;color:var(--muted);margin:12px 0 0}
+.root :global(#form-status){font-size:12px;line-height:1.7;margin:12px 0 0}
+.root :global(footer){padding:45px 5.5% 22px;background:#102e32;color:#c8d3d0}
+.root :global(.footer-top){display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:32px;padding-bottom:38px}
+.root :global(.footer-brand img){width:165px}
+.root :global(.footer-brand p){font-size:11px;line-height:1.8;margin-top:15px}
+.root :global(footer h4){font-size:10px;letter-spacing:1px;font-weight:400;color:#b9a377;margin:7px 0 18px}
+.root :global(footer p),.root :global(footer a){font-size:11px;line-height:1.9}
+.root :global(footer .footer-top a){display:block}
+.root :global(.legal){display:flex;border-top:1px solid #ffffff20;padding-top:20px;gap:35px;align-items:center}
+.root :global(.legal p){font-size:9px;line-height:1.8;margin:0;margin-right:auto}
+.root :global(.legal a){font-size:9px}
+.root :global(.category-hero){padding:45px 5.5% 50px;background:#173b40;color:white}
+.root :global(.breadcrumbs){font-size:11px;color:#ccd8d5;margin-bottom:35px;display:block}
+.root :global(.category-hero h1){font-size:58px;margin-bottom:18px}
+.root :global(.category-hero>p:last-child){font-size:13px;line-height:1.8;max-width:540px;color:#c3d1d0}
+.root :global(.category-tabs){display:flex;gap:10px;flex-wrap:wrap;padding:25px 5.5%;border-bottom:1px solid var(--line)}
+.root :global(.category-tabs a){padding:12px 18px;border:1px solid #c8d0c7;font-size:12px}
+.root :global(.category-tabs a[aria-current=page]){background:var(--ink);color:white;border-color:var(--ink)}
+.root :global(.offers-header){display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:20px}
+.root :global(.offers-header h2){font-size:34px;margin:0}
+.root :global(.offers-header span){font-size:11px;color:var(--muted)}
+.root :global(.offers){display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.root :global(.offer-placeholder){background:white;border:1px solid var(--line)}
+.root :global(.placeholder-art){height:180px;background:#e6e9e1;position:relative;display:flex;justify-content:center;align-items:center}
+.root :global(.placeholder-art svg){width:80px;height:80px;stroke:#abb8aa;stroke-width:.6;fill:none}
+.root :global(.placeholder-art span){position:absolute;top:16px;left:16px;font-size:9px;letter-spacing:1px;background:#f6f4ee;padding:7px 9px;color:#728074}
+.root :global(.placeholder-copy){padding:22px}
+.root :global(.placeholder-copy h3){font-family:Georgia,serif;font-size:23px;font-weight:400;margin-bottom:10px}
+.root :global(.placeholder-copy p){font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:0}
+.root :global(.empty-explanation){font-size:12px;line-height:1.8;color:var(--muted);max-width:630px;margin:25px 0 0}
+.root :global(.mobile-contact){display:none}
+@media(min-width:1600px){.root :global(.hero-copy){padding-left:15%}
+.root :global(.hero){min-height:590px}
+.root :global(.section),.root :global(header),.root :global(.contact),.root :global(footer){padding-left:max(5.5%,calc((100vw - 1400px)/2));padding-right:max(5.5%,calc((100vw - 1400px)/2))}}
+@media(max-width:1000px){.root :global(header){height:80px}
+.root :global(.brand img){width:150px}
+.root :global(.header-phone){display:none}
+.root :global(.hero){min-height:490px}
+.root :global(.hero-copy){padding-top:42px}
+.root :global(h1){font-size:55px}
+.root :global(.categories){grid-template-columns:repeat(2,1fr)}
+.root :global(.budget-card){min-height:235px}
+.root :global(.story){gap:6%}
+.root :global(.story h2),.root :global(.section-heading h2){font-size:39px}
+.root :global(.contact-layout){gap:6%}
+.root :global(.contact h2){font-size:46px}
+.root :global(form){padding:26px}
+.root :global(.footer-top){grid-template-columns:1fr 1fr;gap:25px}
+.root :global(.trust){gap:18px}
+.root :global(.trust div){font-size:10px;gap:12px}
+.root :global(.trust strong){font-size:22px}
+.root :global(.trust div+div){padding-left:18px}}
+@media(max-width:650px){.root{scroll-padding-top:20px}
+.root :global(header){height:75px;padding:0 6%}
+.root :global(.brand img){width:142px}
+.root :global(nav){gap:0}
+.root :global(nav>a:not(.nav-contact)){display:none}
+.root :global(.nav-contact){font-size:11px}
+.root :global(.nav-contact span){margin-left:15px}
+.root :global(.hero){display:flex;flex-direction:column}
+.root :global(.hero-copy){padding:32px 6% 30px}
+.root :global(.hero .eyebrow){font-size:9px;margin-bottom:22px}
+.root :global(h1){font-size:46px;letter-spacing:-1.8px}
+.root :global(.hero-description){font-size:13px;max-width:350px;margin-bottom:25px}
+.root :global(.hero-small){margin-top:16px}
+.root :global(.hero-image){height:230px;background-position:center}
+.root :global(.image-caption){bottom:20px;left:6%;right:6%}
+.root :global(.trust){padding:23px 6%;grid-template-columns:1fr;gap:13px}
+.root :global(.trust div){font-size:11px;gap:20px}
+.root :global(.trust strong){font-size:21px;min-width:93px}
+.root :global(.trust div+div){border:0;padding:0}
+.root :global(.section){padding:50px 6%}
+.root :global(.section-heading){display:block;margin-bottom:25px}
+.root :global(.section-heading h2){font-size:38px}
+.root :global(.section-heading>p){margin-top:20px;max-width:100%;font-size:12px}
+.root :global(.categories){gap:12px}
+.root :global(.budget-card){padding:20px 16px;min-height:230px}
+.root :global(.budget-card h3){font-size:27px;margin-top:27px}
+.root :global(.budget-card h3 small){display:block;font-size:10px;margin-bottom:6px}
+.root :global(.budget-card p){font-size:10px;line-height:1.7}
+.root :global(.card-link){font-size:10px}
+.root :global(.budget-footnote){font-size:9px;line-height:1.7}
+.root :global(.story){display:flex;flex-direction:column;gap:35px}
+.root :global(.story-picture){height:330px;width:100%}
+.root :global(.story-picture>img){object-position:center 56%}
+.root :global(.story h2){font-size:38px}
+.root :global(.story .eyebrow){margin-bottom:18px}
+.root :global(.contact){padding:50px 6%}
+.root :global(.contact-layout){display:flex;flex-direction:column;gap:35px}
+.root :global(.contact h2){font-size:46px}
+.root :global(.contact-copy>p:not(.eyebrow)){font-size:12px}
+.root :global(form){padding:25px 22px}
+.root :global(form h3){font-size:25px}
+.root :global(.form-row){gap:15px}
+.root :global(.phone){font-size:28px}
+.root :global(footer){padding:35px 6% 25px}
+.root :global(.footer-top){gap:25px 18px;grid-template-columns:1fr 1fr}
+.root :global(.footer-brand){grid-column:1/-1}
+.root :global(.footer-brand img){width:145px}
+.root :global(footer h4){font-size:9px}
+.root :global(footer p),.root :global(footer a){font-size:10px}
+.root :global(.legal){gap:15px;flex-wrap:wrap}
+.root :global(.legal p){width:100%}
+.root :global(.category-hero){padding:30px 6%}
+.root :global(.category-hero h1){font-size:43px}
+.root :global(.category-tabs){padding:20px 6%;gap:8px}
+.root :global(.category-tabs a){font-size:10px;padding:10px 12px}
+.root :global(.offers){grid-template-columns:1fr 1fr;gap:14px}
+.root :global(.offers-header){display:block}
+.root :global(.offers-header h2){font-size:30px;margin-bottom:12px}
+.root :global(.offers-header span){font-size:10px}
+.root :global(.placeholder-art){height:125px}
+.root :global(.placeholder-copy){padding:17px}
+.root :global(.placeholder-copy h3){font-size:19px}
+.root :global(.placeholder-copy p){font-size:10px}
+.root :global(.empty-explanation){font-size:11px}
+.root :global(.breadcrumbs){margin-bottom:25px}}
+@media(prefers-reduced-motion:reduce){.root{scroll-behavior:auto}
+.root :global(*){transition:none!important}}
+.root :global(.top-selection){font-size:14px;line-height:1.7;color:var(--muted);margin:18px 0 0;max-width:500px}
+.root :global(.other-search){display:flex;align-items:center;justify-content:space-between;gap:55px;background:#e9e5da;padding:55px 5.5%;border-top:1px solid #d8d6cb}
+.root :global(.other-search .eyebrow){margin-bottom:18px}
+.root :global(.other-search h2){font-size:42px;line-height:1.12;margin-bottom:20px}
+.root :global(.other-search p:not(.eyebrow)){font-size:13px;line-height:1.85;max-width:580px;color:var(--muted);margin-bottom:0}
+.root :global(.other-search strong){font-weight:600;color:var(--ink)}
+.root :global(.other-search .button){flex-shrink:0;max-width:100%}
+@media(min-width:1600px){.root :global(.other-search){padding-left:max(5.5%,calc((100vw - 1400px)/2));padding-right:max(5.5%,calc((100vw - 1400px)/2))}}
+@media(max-width:1000px){.root :global(.other-search){gap:30px}
+.root :global(.other-search .button){max-width:310px;line-height:1.6}}
+@media(max-width:650px){.root :global(.hero){min-height:0}
+.root :global(.top-selection){font-size:12px;margin-top:15px}
+.root :global(.other-search){display:block;padding:40px 6%}
+.root :global(.other-search h2){font-size:36px}
+.root :global(.other-search p:not(.eyebrow)){font-size:12px}
+.root :global(.other-search .button){margin-top:25px;width:100%;max-width:none;font-size:12px;gap:20px}}
+.root :global(header nav){font-size:16px;gap:28px}
+.root :global(.header-phone){font-size:20px;font-weight:600;letter-spacing:.2px}
+.root :global(.brand img){width:175px}
+.root :global(.region-sol){padding-top:60px;border-top:1px solid #d6ddd2;background:#eef0e9}
+.root :global(.region-budget h2){font-size:52px}
+.root :global(.category-region){font-family:Georgia,serif;font-size:25px!important;color:#d4ba8d!important;margin-bottom:15px}
+.root :global(.other-search){margin:38px 5.5%;padding:38px 40px;border:2px solid var(--gold);background:#ede6d7;box-shadow:0 7px 20px #173b4009;position:relative}
+.root :global(.other-search:before){content:'';position:absolute;inset:7px;border:1px solid #bc9b6240;pointer-events:none}
+.root :global(.other-search h2){font-size:40px}
+.root :global(.person){gap:22px}
+.root :global(.person img){height:118px;width:118px}
+.root :global(.person strong){font-size:17px}
+.root :global(.person span){font-size:11px;letter-spacing:1.8px;color:#d4ba8d}
+.root :global(.email){font-size:18px}
+.root :global(.whatsapp){display:inline-flex;align-items:center;gap:10px;font-size:13px;line-height:1.6}
+.root :global(.whatsapp-icon){width:29px;height:29px;flex-shrink:0;color:#7cdaa0}
+.root :global(.required-mark){color:#8b6934}
+.root :global(#support .story){border-bottom:1px solid #cfd5cc}
+.root :global(.contact){scroll-margin-top:20px}
+@media(min-width:1600px){.root :global(.other-search){margin-left:max(5.5%,calc((100vw - 1400px)/2));margin-right:max(5.5%,calc((100vw - 1400px)/2));padding-left:40px;padding-right:40px}}
+@media(max-width:1150px){.root :global(header){gap:20px;flex-wrap:wrap;height:auto;min-height:95px;padding-top:16px;padding-bottom:16px}
+.root :global(header nav){font-size:15px;gap:20px}
+.root :global(.header-phone){display:block;font-size:19px}
+.root :global(.brand img){width:155px}}
+@media(max-width:800px){.root :global(header nav){order:3;width:100%;justify-content:space-between;font-size:14px}
+.root :global(header .brand){margin-right:auto}
+.root :global(.header-phone){font-size:19px}
+.root :global(.other-search){display:block}
+.root :global(.other-search .button){margin-top:25px;max-width:100%}}
+@media(max-width:650px){.root :global(header){padding:16px 6%;gap:14px}
+.root :global(.brand img){width:128px}
+.root :global(.header-phone){font-size:18px}
+.root :global(header nav>a:not(.nav-contact)){display:block}
+.root :global(header nav){gap:12px;font-size:12px}
+.root :global(.nav-contact){font-size:12px}
+.root :global(.nav-contact span){margin-left:5px}
+.root :global(.region-budget h2){font-size:40px}
+.root :global(.region-sol){padding-top:45px}
+.root :global(.other-search){margin:25px 6%;padding:30px 24px}
+.root :global(.other-search h2){font-size:33px}
+.root :global(.other-search .button){padding:15px;font-size:11px}
+.root :global(.person img){height:105px;width:105px}
+.root :global(.person){gap:18px}
+.root :global(.person strong){font-size:16px}
+.root :global(.person span){font-size:10px}
+.root :global(.email){font-size:16px}
+.root :global(.whatsapp){font-size:12px}}
+.root :global(.hero-image){background-image:linear-gradient(90deg,#12313515,transparent),url('/form-one/assets/costa-del-sol-hero.webp');background-position:center}
+.root :global(.number-actions){display:flex;align-items:center;gap:13px;flex-shrink:0}
+.root :global(.number-actions .header-phone),.root :global(.number-actions .phone){display:inline-flex;align-items:center;gap:10px;margin:0;white-space:nowrap}
+.root :global(.phone-icon){height:22px;width:22px;flex-shrink:0}
+.root :global(.whatsapp-number){display:inline-flex;align-items:center;justify-content:center;padding:5px;border:1px solid #ffffff30;border-radius:50%}
+.root :global(.whatsapp-number:hover){background:#ffffff15}
+.root :global(.whatsapp-number .whatsapp-icon){width:25px;height:25px}
+.root :global(.phone-group){margin-bottom:14px}
+.root :global(.phone-group .phone-icon){width:27px;height:27px}
+.root :global(.header-phone-group){gap:9px}
+.root :global(header){gap:22px}
+.root :global(header nav){gap:22px}
+.root :global(.region-budget){padding-top:38px;padding-bottom:35px}
+.root :global(.region-heading){display:grid;grid-template-columns:180px 1fr auto;gap:25px;align-items:center;padding:0 0 25px;margin-bottom:23px;border-bottom:1px solid #cbd2c5}
+.root :global(.region-view){width:180px;height:132px;object-fit:cover;object-position:center 50%}
+.root :global(.region-intro .eyebrow){font-size:9px;letter-spacing:1.7px;margin-bottom:11px}
+.root :global(.region-intro h2){font-size:43px;margin-bottom:11px;line-height:1}
+.root :global(.region-intro>p:last-child){font-size:12px;line-height:1.7;color:var(--muted);margin:0}
+.root :global(.selection-badge){background:var(--ink);color:#fff;padding:20px 24px;border-left:4px solid var(--gold);text-align:left;min-width:245px}
+.root :global(.selection-badge strong){display:block;font-family:Georgia,serif;font-size:36px;line-height:1;color:#e1c48e;font-weight:400;letter-spacing:2px;margin-bottom:12px}
+.root :global(.selection-badge span){display:block;font-size:11px;line-height:1.7}
+.root :global(.region-sol){padding-top:38px;background:#e5eae2;border-top:2px solid #c0cab9;border-bottom:1px solid #c0cab9}
+.root :global(.region-budget .budget-card){min-height:195px;padding:20px 21px 17px}
+.root :global(.region-budget .budget-card h3){font-size:28px;margin:20px 0 10px}
+.root :global(.region-budget .budget-card p){font-size:11px;margin-bottom:17px;line-height:1.5}
+.root :global(.region-budget .card-link){padding-top:13px}
+.root :global(.region-budget .card-top){font-size:9px}
+.root :global(.region-budget .budget-footnote){margin-top:15px}
+.root :global(.budget-options){border:0;margin:0 0 19px;padding:0;min-width:0}
+.root :global(.budget-options legend){font-size:11px;font-weight:600;margin-bottom:12px;padding:0}
+.root :global(.budget-checkboxes){display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.root :global(.budget-checkboxes label){display:flex;align-items:center;gap:10px;padding:12px 10px;background:#fff;border:1px solid #cbd3c9;margin:0;cursor:pointer;font-weight:400;font-size:11px;line-height:1.5}
+.root :global(.budget-checkboxes input){display:inline-block;width:17px;height:17px;padding:0;margin:0;accent-color:var(--ink);flex-shrink:0}
+.root :global(.budget-checkboxes label:has(input:checked)){border-color:var(--gold);background:#eee6d6}
+.root :global(.preferences-help){font-size:10px;color:var(--muted);line-height:1.8;margin:-8px 0 20px}
+.root :global(.contact textarea){min-height:70px}
+@media(max-width:1150px){.root :global(header .header-phone-group){margin-left:auto}
+.root :global(.region-heading){grid-template-columns:145px 1fr auto;gap:20px}
+.root :global(.region-view){width:145px;height:122px}
+.root :global(.selection-badge){min-width:220px;padding:18px}
+.root :global(.region-intro h2){font-size:37px}}
+@media(max-width:800px){.root :global(.region-heading){grid-template-columns:130px 1fr}
+.root :global(.region-view){width:130px;height:115px;grid-row:1/3;align-self:stretch}
+.root :global(.selection-badge){grid-column:2;min-width:0;padding:11px 15px;display:flex;gap:15px;align-items:center}
+.root :global(.selection-badge strong){font-size:28px;white-space:nowrap;margin:0}
+.root :global(.selection-badge span){font-size:10px}
+.root :global(.region-intro h2){font-size:35px}
+.root :global(.region-intro .eyebrow){font-size:8px}
+.root :global(.region-heading){gap:14px 18px}
+.root :global(.region-intro>p:last-child){display:none}}
+@media(max-width:650px){.root :global(header){gap:14px}
+.root :global(.header-phone-group){gap:6px}
+.root :global(.number-actions .header-phone){font-size:15px;gap:7px}
+.root :global(.header-phone .phone-icon){width:17px;height:17px}
+.root :global(.header-phone-group .whatsapp-icon){width:21px;height:21px}
+.root :global(.header-phone-group .whatsapp-number){padding:3px}
+.root :global(.brand img){width:113px}
+.root :global(.phone-group .phone){font-size:25px}
+.root :global(.phone-group){gap:10px}
+.root :global(.phone-group .phone-icon){height:22px;width:22px}
+.root :global(.region-budget),.root :global(.region-sol){padding-top:28px;padding-bottom:28px}
+.root :global(.region-heading){grid-template-columns:105px 1fr;gap:14px;padding-bottom:20px;margin-bottom:18px}
+.root :global(.region-view){width:105px;height:125px}
+.root :global(.region-intro h2){font-size:32px;margin:0}
+.root :global(.region-intro .eyebrow){font-size:7px;letter-spacing:1px;line-height:1.7;margin-bottom:9px}
+.root :global(.selection-badge){display:block;padding:10px 13px}
+.root :global(.selection-badge strong){font-size:26px;margin-bottom:6px}
+.root :global(.selection-badge span){font-size:9px;line-height:1.5}
+.root :global(.region-budget .budget-card){min-height:184px;padding:17px 14px 14px}
+.root :global(.region-budget .budget-card h3){font-size:25px;margin-top:16px}
+.root :global(.region-budget .budget-card p){font-size:10px;margin-bottom:13px}
+.root :global(.region-budget .card-top){font-size:8px}
+.root :global(.region-budget .card-top svg){height:22px;width:22px}
+.root :global(.budget-checkboxes){gap:9px}
+.root :global(.budget-checkboxes label){font-size:10px;padding:11px 8px;gap:7px}}
+.root :global(footer .footer-phone-group a){display:inline-flex;align-items:center;gap:7px}
+.root :global(footer .footer-phone-group .phone-icon){height:16px;width:16px}
+.root :global(footer .footer-phone-group .whatsapp-icon){height:18px;width:18px}
+.root :global(footer .footer-phone-group){gap:8px;margin-bottom:7px}
+.root :global(.region-heading){grid-template-columns:180px 1fr;margin-bottom:0;border-bottom:0;padding-bottom:22px}
+.root :global(.region-budget>.selection-badge){display:flex;align-items:center;gap:28px;width:100%;min-width:0;margin:0 0 18px;padding:18px 25px;border-left:4px solid var(--gold);grid-column:auto;text-align:left}
+.root :global(.region-budget>.selection-badge strong){margin:0;font-size:33px;white-space:nowrap}
+.root :global(.region-budget>.selection-badge span){font-size:13px;line-height:1.6}
+.root :global(.story-picture>img){object-position:center 46%}
+@media(max-width:1150px){.root :global(.region-heading){grid-template-columns:145px 1fr}}
+@media(max-width:800px){.root :global(.region-heading){grid-template-columns:130px 1fr}
+.root :global(.region-view){grid-row:auto;height:115px}
+.root :global(.region-budget>.selection-badge){padding:16px 20px;gap:23px}
+.root :global(.region-budget>.selection-badge span){font-size:12px}}
+@media(max-width:650px){.root :global(.region-heading){grid-template-columns:105px 1fr;gap:18px;padding-bottom:18px}
+.root :global(.region-view){height:105px;grid-row:auto}
+.root :global(.region-budget>.selection-badge){padding:15px 16px;gap:18px;margin-bottom:15px}
+.root :global(.region-budget>.selection-badge strong){font-size:27px}
+.root :global(.region-budget>.selection-badge span){font-size:11px;line-height:1.5}
+.root :global(.story-picture>img){object-position:center 48%}}
+.root :global(.property-layout){display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:38px;align-items:start}
+.root :global(.property-list){display:grid;gap:30px}
+.root :global(.property-card){border:1px solid #d1d9cf;background:#fff;overflow:hidden}
+.root :global(.property-photo){position:relative;display:block;aspect-ratio:16/9;overflow:hidden}
+.root :global(.property-photo img){display:block;width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.root :global(.property-photo:hover img){transform:scale(1.025)}
+.root :global(.property-photo>span){position:absolute;left:20px;top:20px;padding:9px 12px;background:var(--ink);color:#eed1a1;font-size:10px;letter-spacing:1.3px}
+.root :global(.property-card-copy){padding:26px}
+.root :global(.property-location){font-size:10px;letter-spacing:1.3px;color:#7d805f;line-height:1.7;margin:0 0 12px}
+.root :global(.property-card h2){font-size:32px;letter-spacing:-.8px;line-height:1.2;margin-bottom:11px}
+.root :global(.property-subtitle),.root :global(.detail-subtitle){font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:18px}
+.root :global(.property-price){display:block;font-family:Georgia,serif;font-weight:400;font-size:32px;color:var(--ink);margin:0 0 20px}
+.root :global(.property-stats){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;gap:12px}
+.root :global(.property-stats span){font-size:10px;color:var(--muted);line-height:1.7}
+.root :global(.property-stats strong){display:block;font-size:17px;font-weight:500;color:var(--ink);margin-bottom:3px}
+.root :global(.property-beach){font-size:12px;color:#758060;margin:17px 0}
+.root :global(.property-short){font-size:13px;line-height:1.85;color:var(--muted);margin-bottom:19px}
+.root :global(.property-important){font-size:12px;line-height:1.85;background:#f0e9da;padding:14px 17px;border-left:3px solid var(--gold);color:var(--ink);margin:18px 0}
+.root :global(.property-more){display:flex;justify-content:space-between;gap:20px;align-items:center;padding-top:17px;border-top:1px solid var(--line);font-size:13px;font-weight:600;min-height:45px}
+.root :global(.offer-agent){position:sticky;top:25px;background:var(--ink);color:white;padding:28px 23px;text-align:center;min-width:0}
+.root :global(.offer-agent .eyebrow){font-size:9px;letter-spacing:1.6px;margin-bottom:23px}
+.root :global(.agent-portrait){width:132px;height:132px;border-radius:50%;object-fit:cover;object-position:center 25%;margin-bottom:19px}
+.root :global(.offer-agent h2){font-size:25px;line-height:1.25;letter-spacing:-.5px;margin-bottom:10px}
+.root :global(.agent-role){font-size:10px;letter-spacing:2px;color:#d4ba8d;margin-bottom:20px}
+.root :global(.agent-text){font-size:12px;color:#c3d1d0;line-height:1.85;margin-bottom:18px}
+.root :global(.agent-phone){display:flex;justify-content:center;gap:8px;font-size:19px;line-height:1.7;align-items:center;min-height:44px}
+.root :global(.agent-email){font-size:12px;display:block;line-height:1.9;overflow-wrap:anywhere;min-height:35px}
+.root :global(.agent-wa){font-size:12px;color:#a0d5ae;display:block;min-height:44px;line-height:1.8;padding:10px 0;margin:5px 0 17px}
+.root :global(.offer-agent .button){width:100%;font-size:12px;padding:14px 17px;gap:13px}
+.root :global(.agent-reference){font-size:9px;color:#bacccb;margin:15px 0 0;line-height:1.8}
+.root :global(.property-disclaimer){font-size:11px;line-height:1.85;color:var(--muted);margin:24px 0 0}
+.root :global(.property-detail){padding-top:26px}
+.root :global(.property-detail .breadcrumbs){color:var(--muted);margin-bottom:25px}
+.root :global(.property-detail h1){font-size:46px;line-height:1.13;letter-spacing:-1px;margin-bottom:15px}
+.root :global(.gallery-stage){position:relative;aspect-ratio:4/3;background:#e1e6dd}
+.root :global(.gallery-stage>img){width:100%;height:100%;object-fit:contain;display:block}
+.root :global(.gallery-controls){position:absolute;bottom:15px;right:15px;display:flex;gap:13px;align-items:center;padding:6px;background:#173b40e8;color:#fff}
+.root :global(.gallery-controls button){background:none;border:1px solid #ffffff40;color:white;width:38px;height:38px;cursor:pointer;font-size:19px}
+.root :global(.gallery-controls span){font-size:12px;min-width:37px;text-align:center}
+.root :global(.gallery-thumbs){display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:12px 0 24px}
+.root :global(.gallery-thumbs button){padding:0;border:2px solid transparent;background:transparent;cursor:pointer;aspect-ratio:4/3;overflow:hidden}
+.root :global(.gallery-thumbs button[aria-pressed=true]){border-color:var(--gold)}
+.root :global(.gallery-thumbs img){display:block;width:100%;height:100%;object-fit:cover}
+.root :global(.detail-price-row){display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px;flex-wrap:wrap}
+.root :global(.detail-price-row .property-price){font-size:37px;margin:0}
+.root :global(.detail-price-row>span){font-size:10px;color:var(--muted);line-height:1.8}
+.root :global(.property-description){margin-top:30px}
+.root :global(.property-description h2){font-size:30px;letter-spacing:-.5px;margin:25px 0 16px}
+.root :global(.property-description p),.root :global(.property-description li){font-size:14px;color:var(--muted);line-height:1.9}
+.root :global(.property-description ul){padding-left:19px}
+.root :global(.property-description li){padding-left:4px;margin-bottom:8px}
+@media(max-width:1000px){.root :global(.property-layout){grid-template-columns:minmax(0,1fr) 260px;gap:25px}
+.root :global(.offer-agent){padding:24px 18px}
+.root :global(.agent-phone){font-size:17px}
+.root :global(.property-detail h1){font-size:39px}}
+@media(max-width:760px){.root :global(.property-layout){display:flex;flex-direction:column;gap:28px}
+.root :global(.property-list),.root :global(.property-layout>article){width:100%;min-width:0}
+.root :global(.offer-agent){position:static;width:100%;padding:28px 22px}
+.root :global(.offer-agent h2){font-size:28px}
+.root :global(.agent-phone){font-size:22px}
+.root :global(.agent-email){font-size:14px}
+.root :global(.agent-text){font-size:14px;max-width:450px;margin-left:auto;margin-right:auto}
+.root :global(.agent-wa){font-size:14px}
+.root :global(.offer-agent .button){font-size:14px}
+.root :global(.property-card-copy){padding:22px 19px}
+.root :global(.property-card h2){font-size:29px}
+.root :global(.property-short){font-size:14px}
+.root :global(.property-stats span){font-size:11px}
+.root :global(.property-stats strong){font-size:18px}
+.root :global(.property-photo>span){left:15px;top:15px}
+.root :global(.property-list){gap:25px}
+.root :global(.property-important){font-size:13px}
+.root :global(.property-more){font-size:14px;min-height:48px}
+.root :global(.property-detail h1){font-size:37px}
+.root :global(.property-detail .breadcrumbs){font-size:13px;line-height:1.7}
+.root :global(.property-description p),.root :global(.property-description li){font-size:15px}
+.root :global(.property-description h2){font-size:30px}
+.root :global(.gallery-thumbs){gap:6px}
+.root :global(.gallery-controls button){width:44px;height:44px}
+.root :global(.property-disclaimer){font-size:12px}
+.root :global(.detail-price-row .property-price){font-size:35px}
+.root :global(.detail-price-row>span){font-size:11px}
+.root :global(.property-detail .property-layout>article){order:0}
+.root :global(.property-detail .offer-agent){order:1}}
+.root :global(.property-photo),.root :global(.gallery-stage){background:#e1e6dd}
+.root :global(.image-unavailable::after){content:"Zdjęcie chwilowo niedostępne";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#536858;font-size:13px;padding:35px;text-align:center}
+.root :global(.image-unavailable>span),.root :global(.image-unavailable>.gallery-controls){z-index:1}
+.root :global(.thumb-unavailable){background:#e1e6dd!important}
+.root :global(.thumb-unavailable::after){content:"—";color:#536858;font-size:16px}
+.root :global(.gallery-thumbs button img[hidden]),.root :global(img[hidden]){display:none}
+.root :global(.agent-wa){display:flex;align-items:center;justify-content:center;gap:8px}
+.root :global(.agent-wa .whatsapp-icon){height:22px;width:22px}
+.root :global(.agent-phone .phone-icon){height:22px;width:22px}
+.root :global(.simple-property){display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start;gap:0}
+.root :global(.simple-property-list){gap:34px}
+.root :global(.inline-property-gallery){min-width:0;padding:20px 0 20px 20px}
+.root :global(.inline-property-main){position:relative;aspect-ratio:4/3;background:#e1e6dd}
+.root :global(.inline-property-main>img){height:100%;width:100%;display:block;object-fit:cover}
+.root :global(.inline-property-main>span){position:absolute;left:15px;top:15px;padding:8px 12px;background:var(--ink);color:#e7cda1;font-size:10px;letter-spacing:1px}
+.root :global(.inline-property-thumbs){display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:10px}
+.root :global(.inline-property-thumbs button){display:block;min-width:0;aspect-ratio:4/3;min-height:44px;padding:0;border:2px solid transparent;cursor:pointer;background:#e1e6dd}
+.root :global(.inline-property-thumbs button[aria-pressed=true]){border-color:var(--gold)}
+.root :global(.inline-property-thumbs img){display:block;width:100%;height:100%;object-fit:cover}
+.root :global(.simple-property .property-card-copy){padding:25px}
+.root :global(.simple-property h2){font-size:29px;line-height:1.2}
+.root :global(.simple-property .property-price){font-size:30px;margin-bottom:13px}
+.root :global(.simple-property-facts){font-size:12px;line-height:1.9;color:#6c765e;margin:0 0 17px;padding-bottom:15px;border-bottom:1px solid var(--line)}
+.root :global(.simple-property .property-short){font-size:13px;line-height:1.85;margin-bottom:14px}
+.root :global(.simple-property .property-important){margin-bottom:0;font-size:12px}
+@media(max-width:1000px){.root :global(.simple-property){grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.root :global(.simple-property h2){font-size:26px}
+.root :global(.simple-property .property-card-copy){padding:22px}
+.root :global(.inline-property-gallery){padding:18px 0 18px 18px}}
+@media(max-width:760px){.root :global(.simple-property){display:block}
+.root :global(.inline-property-gallery){padding:0}
+.root :global(.inline-property-main){aspect-ratio:4/3}
+.root :global(.inline-property-thumbs){gap:6px;padding:0 12px;margin:10px 0 0}
+.root :global(.simple-property .property-card-copy){padding:23px 20px}
+.root :global(.simple-property h2){font-size:29px}
+.root :global(.simple-property .property-price){font-size:32px}
+.root :global(.simple-property .property-short){font-size:14px;line-height:1.85}
+.root :global(.simple-property-facts){font-size:13px}
+.root :global(.simple-property .property-important){font-size:13px}
+.root :global(.simple-property-list){gap:25px}}
+.root :global(.category-hero>p.category-recommendation:last-child){font-size:clamp(20px,2vw,28px);font-weight:600;line-height:1.45;color:#edd5aa;max-width:850px;letter-spacing:.15px;margin:22px 0 0}
+.root :global(.offer-cta){grid-column:1/-1;margin:0 24px 24px;padding:25px 28px;background:#f8f6f0;border:1px solid #d9c7a5;border-left:4px solid var(--gold);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px 28px;align-items:center;text-align:left}
+.root :global(.offer-cta h3){margin:0 0 10px;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.25;font-weight:400;letter-spacing:-.5px;color:var(--ink)}
+.root :global(.offer-cta-copy p){margin:0;color:var(--muted);font-size:14px;line-height:1.8;max-width:610px}
+.root :global(.offer-cta .offer-inquiry){background:var(--ink);color:white;min-height:52px;padding:16px 22px;font-size:13px;gap:20px;line-height:1.5;white-space:normal}
+.root :global(.offer-cta .offer-inquiry:hover){background:#24525a}
+.root :global(.offer-cta-contact){grid-column:1/-1;display:flex;align-items:center;gap:10px 25px;flex-wrap:wrap;border-top:1px solid #ded9ce;padding-top:14px;font-size:13px}
+.root :global(.offer-cta-contact>span){color:var(--muted)}
+.root :global(.offer-cta-contact a){display:inline-flex;align-items:center;gap:8px;min-height:44px;font-weight:600}
+.root :global(.offer-cta-contact a:hover){text-decoration:underline;text-underline-offset:4px}
+.root :global(.offer-cta-contact svg){flex:none;width:21px;height:21px}
+.root :global(.property-detail .offer-cta){margin:28px 0;grid-template-columns:1fr}
+@media(max-width:1000px){.root :global(.offer-cta){grid-template-columns:1fr}
+.root :global(.offer-cta .offer-inquiry){justify-self:start}}
+@media(max-width:760px){.root :global(.offer-cta){margin:0 16px 20px;padding:22px 18px;gap:18px}
+.root :global(.offer-cta h3){font-size:26px}
+.root :global(.offer-cta-copy p){font-size:14px}
+.root :global(.offer-cta .offer-inquiry){width:100%;justify-content:space-between;min-height:54px;padding:15px 17px;font-size:14px}
+.root :global(.offer-cta-contact){align-items:flex-start;flex-direction:column;gap:0;font-size:13px}
+.root :global(.offer-cta-contact>span){margin-bottom:5px}
+.root :global(.offer-cta-contact a){font-size:14px}}
+/* mobile.css */
+@media (max-width:760px){.root{scroll-padding-top:16px;text-size-adjust:100%;-webkit-text-size-adjust:100%}
+.root{font-size:15px;line-height:1.6}
+.root :global(main),.root :global(section),.root :global(.contact-layout),.root :global(.contact-copy),.root :global(form),.root :global(.region-intro),.root :global(.placeholder-copy){min-width:0}
+.root :global(header){height:auto;min-height:0;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px 12px;padding:14px 20px 9px}
+.root :global(header .brand){margin:0}
+.root :global(.brand img){width:108px;height:auto}
+.root :global(header .header-phone-group){justify-self:end;margin:0;gap:6px}
+.root :global(.number-actions .header-phone){font-size:14px;gap:6px;line-height:1.3;min-height:44px}
+.root :global(.header-phone .phone-icon){width:17px;height:17px}
+.root :global(.header-phone-group .whatsapp-number){width:44px;height:44px;padding:9px}
+.root :global(.header-phone-group .whatsapp-icon){width:24px;height:24px}
+.root :global(header nav){grid-column:1/-1;order:initial;width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid #ffffff20;padding-top:5px}
+.root :global(header nav>a:not(.nav-contact)){display:flex}
+.root :global(header nav a),.root :global(header nav .nav-contact){align-items:center;min-height:44px;padding:7px 0;font-size:12px;line-height:1.4;border-bottom:0}
+.root :global(header nav .nav-contact span){margin-left:5px}
+.root :global(.hero){display:flex;flex-direction:column;min-height:0}
+.root :global(.hero-copy){padding:32px 20px 28px}
+.root :global(.hero .eyebrow){font-size:10px;letter-spacing:1.6px;margin-bottom:20px}
+.root :global(.hero h1){font-size:clamp(37px,10.7vw,56px);line-height:1.06;letter-spacing:-1.4px;margin-bottom:22px}
+.root :global(.hero-description){font-size:15px;line-height:1.75;max-width:500px;margin-bottom:24px}
+.root :global(.hero .button){width:100%;max-width:420px;min-height:54px;font-size:14px;gap:15px;padding:15px 19px;line-height:1.5}
+.root :global(.hero-small){font-size:11px;line-height:1.9;margin-top:18px}
+.root :global(.hero-image){height:auto;aspect-ratio:16/10;min-height:190px;max-height:350px;background-position:center}
+.root :global(.trust){display:grid;grid-template-columns:1fr;gap:0;padding:8px 20px}
+.root :global(.trust div){display:grid;grid-template-columns:125px 1fr;align-items:center;gap:14px;padding:14px 0;font-size:12px;line-height:1.65}
+.root :global(.trust div+div){border-left:0;border-top:1px solid var(--line);padding:14px 0}
+.root :global(.trust strong){font-size:22px;min-width:0}
+.root :global(.section),.root :global(.region-budget),.root :global(.region-sol){padding:28px 20px}
+.root :global(.region-heading){position:relative;display:block;padding:0;margin:0 0 14px;overflow:hidden;background:#173b40}
+.root :global(.region-view){display:block;width:100%;height:175px;object-fit:cover;object-position:center 47%;filter:brightness(.75)}
+.root :global(.region-heading::after){content:'';position:absolute;inset:0;background:linear-gradient(transparent 15%,#102e3299);pointer-events:none}
+.root :global(.region-intro){position:absolute;bottom:20px;left:18px;right:18px;z-index:1}
+.root :global(.region-intro .eyebrow){font-size:9px;letter-spacing:1.6px;color:#f0dcba;margin:0 0 10px}
+.root :global(.region-intro h2){font-size:38px;line-height:1;color:white;margin:0;text-shadow:0 1px 8px #0004}
+.root :global(.region-intro>p:last-child){display:none}
+.root :global(.region-budget>.selection-badge){display:flex;width:100%;gap:18px;padding:16px;margin:0 0 14px;border-left-width:4px}
+.root :global(.region-budget>.selection-badge strong){font-size:29px;letter-spacing:1px;flex-shrink:0}
+.root :global(.region-budget>.selection-badge span){font-size:12px;line-height:1.6}
+.root :global(.categories){grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.root :global(.region-budget .budget-card){min-width:0;min-height:198px;padding:16px 13px 14px}
+.root :global(.region-budget .card-top){font-size:9px;letter-spacing:.5px}
+.root :global(.region-budget .card-top svg){width:22px;height:22px}
+.root :global(.region-budget .budget-card h3){font-size:clamp(24px,6.6vw,32px);line-height:1.15;margin:18px 0 11px;white-space:nowrap}
+.root :global(.region-budget .budget-card h3 small){display:block;font-size:11px;line-height:1.2;margin-bottom:5px}
+.root :global(.region-budget .budget-card p){font-size:12px;line-height:1.6;margin-bottom:14px}
+.root :global(.region-budget .card-link){font-size:11px;line-height:1.6;padding-top:12px;gap:8px}
+.root :global(.region-budget .budget-footnote){font-size:11px;line-height:1.7;margin-top:15px}
+.root :global(.other-search){margin:24px 20px;padding:28px 23px;display:block}
+.root :global(.other-search .eyebrow){font-size:10px;letter-spacing:1.6px;margin-bottom:18px}
+.root :global(.other-search h2){font-size:36px;line-height:1.12;letter-spacing:-1.3px}
+.root :global(.other-search p:not(.eyebrow)){font-size:14px;line-height:1.8}
+.root :global(.other-search .button){max-width:none;width:100%;min-height:54px;margin-top:24px;font-size:13px;gap:12px;line-height:1.6;padding:14px 16px}
+.root :global(.contact){padding:36px 20px}
+.root :global(.contact-layout){display:flex;flex-direction:column;gap:30px}
+.root :global(.contact-copy>.eyebrow){font-size:10px;margin-bottom:18px}
+.root :global(.contact h2){font-size:44px;letter-spacing:-1.4px;line-height:1.1}
+.root :global(.contact-copy>p:not(.eyebrow)){max-width:100%;font-size:14px;line-height:1.85}
+.root :global(.person){gap:18px;margin:25px 0}
+.root :global(.person img){width:100px;height:100px}
+.root :global(.person strong){font-size:17px;line-height:1.5}
+.root :global(.person span){font-size:11px;line-height:1.5;letter-spacing:1.5px}
+.root :global(.phone-group){gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.root :global(.number-actions .phone){font-size:clamp(24px,6.8vw,30px);min-height:44px;gap:9px}
+.root :global(.phone-group .phone-icon){width:24px;height:24px}
+.root :global(.phone-group .whatsapp-number){width:44px;height:44px;padding:8px}
+.root :global(.email){font-size:16px;line-height:1.7;overflow-wrap:anywhere;min-height:44px;display:flex;align-items:center}
+.root :global(.whatsapp){font-size:13px;line-height:1.7;margin-top:14px;min-height:44px}
+.root :global(form){width:100%;padding:26px 20px}
+.root :global(form h3){font-size:29px;line-height:1.2;letter-spacing:-.6px}
+.root :global(.form-intro){font-size:13px;line-height:1.8;margin-bottom:24px}
+.root :global(.form-row){display:block}
+.root :global(label){font-size:13px;line-height:1.6;margin-bottom:20px}
+.root :global(input:not([type=checkbox])),.root :global(select),.root :global(textarea){font-size:16px;line-height:1.5;min-height:48px;padding:12px 0;max-width:100%}
+.root :global(.contact textarea){min-height:115px}
+.root :global(.budget-options){margin-bottom:22px}
+.root :global(.budget-options legend){font-size:13px;margin-bottom:12px}
+.root :global(.budget-checkboxes){grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.root :global(.budget-checkboxes label){min-height:54px;font-size:13px;line-height:1.5;padding:12px;gap:10px;margin:0}
+.root :global(.budget-checkboxes input){width:21px;height:21px;min-height:0}
+.root :global(.preferences-help){font-size:12px;line-height:1.8;margin-top:-9px}
+.root :global(.privacy){font-size:12px;line-height:1.8}
+.root :global(form .button){min-height:54px;font-size:14px;padding:15px 18px}
+.root :global(.form-note){font-size:11px;line-height:1.8}
+.root :global(#form-status){font-size:13px;overflow-wrap:anywhere}
+.root :global(.story){display:flex;flex-direction:column;gap:28px;padding:32px 20px}
+.root :global(.story-picture){height:auto;aspect-ratio:4/4.5;width:100%;max-height:520px}
+.root :global(.story-picture>img){object-position:center 44%}
+.root :global(.picture-label){bottom:18px;left:18px;right:18px;padding:15px 17px;font-size:12px;line-height:1.8}
+.root :global(.picture-label strong){font-size:24px;line-height:1.3;margin-bottom:6px}
+.root :global(.story h2){font-size:37px;line-height:1.15;letter-spacing:-1.3px}
+.root :global(.story-text){font-size:14px;line-height:1.85}
+.root :global(.step){gap:18px;padding:20px 0}
+.root :global(.step h3){font-size:14px;line-height:1.6}
+.root :global(.step p){font-size:13px;line-height:1.8}
+.root :global(footer){padding:30px 20px 22px}
+.root :global(.footer-top){grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 18px;padding-bottom:25px}
+.root :global(.footer-brand){grid-column:1/-1}
+.root :global(.footer-brand p){font-size:13px;line-height:1.8}
+.root :global(footer h4){font-size:12px;letter-spacing:1px;margin-bottom:12px}
+.root :global(footer p),.root :global(footer a){font-size:13px;line-height:1.9;overflow-wrap:anywhere}
+.root :global(footer .footer-phone-group){flex-wrap:wrap;gap:8px}
+.root :global(footer .footer-phone-group a){min-height:44px}
+.root :global(.legal){display:flex;flex-wrap:wrap;gap:14px 24px;padding-top:18px}
+.root :global(.legal p){width:100%;font-size:11px;line-height:1.9}
+.root :global(.legal a){font-size:12px;min-height:44px;display:inline-flex;align-items:center}
+.root :global(.category-hero){padding:25px 20px 30px}
+.root :global(.breadcrumbs){min-height:44px;font-size:13px;line-height:1.6;display:flex;align-items:center;margin-bottom:20px}
+.root :global(.category-hero h1){font-size:clamp(37px,9.7vw,48px);line-height:1.1;letter-spacing:-1.3px}
+.root :global(.category-hero>p:last-child){font-size:14px;line-height:1.8}
+.root :global(.category-tabs){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:20px;gap:10px}
+.root :global(.category-tabs a){display:flex;align-items:center;justify-content:center;min-height:48px;font-size:13px;padding:12px 10px;line-height:1.5;text-align:center}
+.root :global(.offers-header){display:block;margin-bottom:22px}
+.root :global(.offers-header h2){font-size:32px;line-height:1.2;margin-bottom:12px}
+.root :global(.offers-header span){font-size:12px;line-height:1.7;display:block}
+.root :global(.offers){grid-template-columns:minmax(0,1fr);gap:20px}
+.root :global(.placeholder-art){height:auto;aspect-ratio:16/10}
+.root :global(.placeholder-art span){font-size:10px;padding:8px 11px}
+.root :global(.placeholder-copy){padding:22px}
+.root :global(.placeholder-copy h3){font-size:26px}
+.root :global(.placeholder-copy p),.root :global(.empty-explanation){font-size:14px;line-height:1.8}}
+@media(max-width:420px){.root :global(header){padding-left:16px;padding-right:16px;gap:8px}
+.root :global(.brand img){width:93px}
+.root :global(.number-actions .header-phone){font-size:13px;gap:5px}
+.root :global(.header-phone .phone-icon){width:16px;height:16px}
+.root :global(header nav a),.root :global(header nav .nav-contact){font-size:11px}
+.root :global(.hero-copy),.root :global(.contact),.root :global(.category-hero),.root :global(.section),.root :global(.region-budget),.root :global(.region-sol),.root :global(.story),.root :global(footer){padding-left:16px;padding-right:16px}
+.root :global(.other-search){margin-left:16px;margin-right:16px;padding-left:21px;padding-right:21px}
+.root :global(.categories){gap:10px}
+.root :global(.region-budget .budget-card){padding-left:12px;padding-right:12px}
+.root :global(.region-budget .card-top){font-size:8px}
+.root :global(.region-budget .budget-card p){font-size:11px}
+.root :global(.budget-checkboxes){grid-template-columns:1fr}
+.root :global(.budget-checkboxes label){min-height:50px;font-size:14px}
+.root :global(.footer-top){grid-template-columns:1fr}
+.root :global(.footer-brand){grid-column:auto}}
+@media(max-width:350px){.root :global(header){grid-template-columns:1fr}
+.root :global(header .brand){justify-self:center}
+.root :global(header .header-phone-group){justify-self:center}
+.root :global(header nav){grid-column:1}
+.root :global(.hero h1){font-size:37px}
+.root :global(.hero-small){font-size:10px}
+.root :global(.trust div){grid-template-columns:113px 1fr;gap:10px}
+.root :global(.region-budget>.selection-badge){gap:13px;padding:14px 12px}
+.root :global(.region-budget>.selection-badge strong){font-size:26px}
+.root :global(.region-budget>.selection-badge span){font-size:11px}
+.root :global(.region-budget .budget-card h3){font-size:23px}
+.root :global(.person img){width:85px;height:85px}
+.root :global(.person strong){font-size:16px}
+.root :global(form){padding-left:16px;padding-right:16px}}
+@media(max-width:760px) and (prefers-reduced-motion:no-preference){.root :global(.budget-card:hover){transform:none}}
