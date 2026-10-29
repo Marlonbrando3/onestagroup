@@ -128,6 +128,8 @@ function ContactSection({
   );
   const [status, setStatus] = useState<{ text: string; state?: string }>({ text: "" });
   const [sending, setSending] = useState(false);
+  const [rodoConsent, setRodoConsent] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -164,6 +166,7 @@ function ContactSection({
       category,
       offer: offer ? offer.ref : "",
       page: window.location.origin + window.location.pathname,
+      consents: { rodo: rodoConsent, marketing: marketingConsent },
     };
     setSending(true);
     setStatus({ text: "Wysyłamy Twoje zapytanie…", state: "pending" });
@@ -189,6 +192,8 @@ function ContactSection({
       form.reset();
       setBudgets([]);
       setMessage("");
+      setRodoConsent(false);
+      setMarketingConsent(false);
     } catch (error: any) {
       setStatus({
         text:
@@ -296,6 +301,36 @@ function ContactSection({
             Administratorem danych jest Onesta Group sp. z o.o. Informacje o przetwarzaniu danych znajdziesz w{" "}
             <a href="/polityka-prywatnosci" target="_blank" rel="noopener">polityce prywatności</a>.
           </p>
+          <div className="consents">
+            <label className="consent">
+              <input
+                type="checkbox"
+                name="rodo"
+                required
+                checked={rodoConsent}
+                onChange={(e) => setRodoConsent(e.target.checked)}
+              />
+              <span>
+                Akceptuję{" "}
+                <a href="/polityka-prywatnosci" target="_blank" rel="noopener">
+                  politykę prywatności
+                </a>
+                . <span className="required-mark">*</span>
+              </span>
+            </label>
+            <label className="consent">
+              <input
+                type="checkbox"
+                name="marketing"
+                checked={marketingConsent}
+                onChange={(e) => setMarketingConsent(e.target.checked)}
+              />
+              <span>
+                Wyrażam zgodę na przetwarzanie moich danych osobowych przez <strong>Onesta Group</strong> Sp. z o.o. w celach
+                marketingowych, w tym na kontakt telefoniczny oraz mailowy w celu przedstawienia ofert nieruchomości.
+              </span>
+            </label>
+          </div>
           {/* Pole-pułapka na boty (puste u ludzi). */}
           <div aria-hidden="true" style={{ position: "absolute", left: -10000, width: 1, height: 1, overflow: "hidden" }}>
             <label>

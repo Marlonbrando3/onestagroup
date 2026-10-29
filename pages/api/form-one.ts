@@ -38,6 +38,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const page = clean(body.page, 300);
   const message = String(body.message ?? "").trim().slice(0, 2000);
 
+  const consents = (body.consents ?? {}) as Record<string, unknown>;
+  const rodo = consents.rodo === true;
+  const marketing = consents.marketing === true;
+  if (!rodo) {
+    return res.status(400).json({ success: false, message: "Zaakceptuj politykę prywatności." });
+  }
+
   if (!name || !/^[+0-9 ()\-]{7,30}$/.test(phone)) {
     return res.status(400).json({
       success: false,
@@ -72,6 +79,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ["Kategoria", category],
     ["Oferta", offer || "—"],
     ["Strona", page || "—"],
+    ["Polityka prywatności", "zaakceptowana"],
+    ["Zgoda marketingowa", marketing ? "TAK" : "nie"],
+    ["Data zgłoszenia", new Date().toLocaleString("pl-PL", { timeZone: "Europe/Warsaw" })],
   ];
   const html =
     `<h2 style="font-family:Arial,sans-serif">Nowe zapytanie z landingu /form-one</h2>` +
