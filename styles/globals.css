@@ -121,6 +121,56 @@ body {
   padding: 1rem 1.25rem;
 }
 
+/* Tabele we wpisach: przewijanie w poziomie na telefonie zamiast rozpychania strony. */
+.blog-article {
+  min-width: 0;
+}
+
+.blog-article table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.blog-article th,
+.blog-article td {
+  border-bottom: 1px solid rgb(229 231 235);
+  padding: 0.55rem 0.6rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.blog-article th {
+  white-space: normal;
+  vertical-align: bottom;
+}
+
+.blog-article th:first-child,
+.blog-article td:first-child {
+  text-align: left;
+}
+
+.blog-article thead th {
+  background: rgb(255 247 237);
+  color: rgb(3 7 18);
+  font-weight: 700;
+  border-bottom: 2px solid rgb(249 115 22);
+}
+
+.blog-article tbody tr:nth-child(even) {
+  background: rgb(249 250 251);
+}
+
+.blog-article table + p em,
+.blog-article table + p > em {
+  font-size: 14px;
+  color: rgb(107 114 128);
+}
+
 .blog-contact-column {
   min-width: 0;
 }

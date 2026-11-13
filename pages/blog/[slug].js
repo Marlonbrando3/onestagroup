@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemote } from "next-mdx-remote";
+import remarkGfm from "remark-gfm";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Newsletter from "@/components/newsletter";
@@ -214,6 +215,8 @@ export async function getStaticProps({ params }) {
 
   const mdxSource = await serialize(post.content, {
     parseFrontmatter: false,
+    // Tabele markdown (| a | b |) wymagają GFM.
+    mdxOptions: { remarkPlugins: [remarkGfm] },
   });
 
   return {
