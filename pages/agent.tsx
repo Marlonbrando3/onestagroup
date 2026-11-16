@@ -21,6 +21,7 @@ import PropertyCard from "@/components/SearchEngine/PropertyCard";
 import { HomeMontserratSans } from "@/fonts/homeFonts";
 import { AgentOffer, agentOfferLabel } from "@/lib/agentOffers";
 import { supabase } from "@/lib/supabaseClient";
+import LocationMultiSelect, { type AgentCoast } from "@/components/agent/LocationMultiSelect";
 
 type AgentIdentity = {
   id: string;
@@ -30,8 +31,10 @@ type AgentIdentity = {
 
 type Filters = {
   search: string;
+  ref: string;
   country: string;
-  province: string;
+  regions: string[];
+  towns: string[];
   type: string;
   market: string;
   bedsMin: string;
@@ -42,8 +45,10 @@ type Filters = {
 
 const emptyFilters: Filters = {
   search: "",
+  ref: "",
   country: "all",
-  province: "all",
+  regions: [],
+  towns: [],
   type: "all",
   market: "all",
   bedsMin: "",
@@ -52,18 +57,6 @@ const emptyFilters: Filters = {
   sort: "updated_desc",
 };
 
-const provinceOptions = [
-  "Malaga",
-  "Alicante",
-  "Murcia",
-  "Almería",
-  "Cádiz",
-  "Castellón",
-  "Granada",
-  "Valencia",
-  "Cypr Południowy",
-  "Samana",
-];
 
 const typeOptions = [
   "Apartment",
@@ -88,6 +81,22 @@ export default function AgentPage() {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [coasts, setCoasts] = useState<AgentCoast[]>([]);
+
+  // Lista wybrzeży i miast do filtra „Regiony i miasta”.
+  useEffect(() => {
+    if (!accessToken) return;
+    let active = true;
+    fetch("/api/agent/locations", { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (active && Array.isArray(payload?.coasts)) setCoasts(payload.coasts);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [accessToken]);
 
   useEffect(() => {
     let active = true;
@@ -141,7 +150,8 @@ export default function AgentPage() {
 
       const params = new URLSearchParams({ page: String(page) });
       Object.entries(appliedFilters).forEach(([key, value]) => {
-        if (value && value !== "all") params.set(key, value);
+        if (Array.isArray(value)) value.forEach((item) => params.append(key, item));
+        else if (value && value !== "all") params.set(key, value);
       });
 
       try {
@@ -311,14 +321,18 @@ export default function AgentPage() {
               <div className="mb-4 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#7b6844]">
                 <FaFilter aria-hidden="true" /> Filtry ofert
               </div>
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <div className="grid items-start gap-3 md:grid-cols-2 xl:grid-cols-4">
                 <input value={filters.search} onChange={(event) => setFilters((current) => ({ ...current, search: event.target.value }))} placeholder="Miasto, prowincja lub numer ref." className="agentFilterInput xl:col-span-2" />
                 <select value={filters.country} onChange={(event) => setFilters((current) => ({ ...current, country: event.target.value }))} className="agentFilterInput">
                   <option value="all">Wszystkie kraje</option><option value="hiszpania">Hiszpania</option><option value="cypr">Cypr</option>
                 </select>
-                <select value={filters.province} onChange={(event) => setFilters((current) => ({ ...current, province: event.target.value }))} className="agentFilterInput">
-                  <option value="all">Wszystkie regiony</option>{provinceOptions.map((option) => <option key={option} value={option}>{option}</option>)}
-                </select>
+                <input value={filters.ref} onChange={(event) => setFilters((current) => ({ ...current, ref: event.target.value }))} placeholder="Nr referencyjny, np. SP1526" className="agentFilterInput" aria-label="Numer referencyjny oferty" />
+                <LocationMultiSelect
+                  coasts={coasts}
+                  regions={filters.regions}
+                  towns={filters.towns}
+                  onChange={(next) => setFilters((current) => ({ ...current, ...next }))}
+                />
                 <select value={filters.type} onChange={(event) => setFilters((current) => ({ ...current, type: event.target.value }))} className="agentFilterInput">
                   <option value="all">Wszystkie typy</option>{typeOptions.map((option) => <option key={option} value={option}>{option}</option>)}
                 </select>

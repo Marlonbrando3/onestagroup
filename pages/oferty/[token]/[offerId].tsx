@@ -31,6 +31,8 @@ import {
   featureLabel,
 } from "@/lib/presentationOffer";
 import OfferPdfButton from "@/components/agent/OfferPdfButton";
+import ProjectUnits from "@/components/offer/ProjectUnits";
+import { getProjectUnits, type ProjectUnit } from "@/lib/projectUnits";
 import type { OfferPdfContact } from "@/lib/offerPdf";
 
 type PresentationOfferProps = {
@@ -40,6 +42,7 @@ type PresentationOfferProps = {
   description: string;
   features: string[];
   contact: OfferPdfContact;
+  projectUnits: ProjectUnit[];
 };
 
 function formatPrice(value: number | null) {
@@ -54,6 +57,7 @@ export default function PresentationOfferPage({
   description,
   features,
   contact,
+  projectUnits,
 }: PresentationOfferProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const typeLabel =
@@ -242,6 +246,11 @@ export default function PresentationOfferPage({
                   <p className="mt-5 text-[13px] text-slate-500">Brak dodatkowych atutów w danych oferty.</p>
                 )}
               </section>
+              <ProjectUnits
+                units={projectUnits}
+                variant="presentation"
+                headingClassName={HomePlayfairSans.className}
+              />
             </div>
 
             <section className="overflow-hidden rounded-2xl border border-[#ded5c8] bg-white shadow-sm lg:sticky lg:top-6">
@@ -363,6 +372,7 @@ export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = as
       images: imageUrls(offer.images),
       description: descriptionValue(offer.descriptions),
       features: featureValues(offer.features),
+      projectUnits: await getProjectUnits(offer),
       contact: {
         name: presentation.contact_name || presentation.agent_name || "",
         email: presentation.contact_email || presentation.agent_email || "",

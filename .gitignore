@@ -40,3 +40,6 @@ deno.lock
 next-env.d.ts
 
 certificates
+
+# lokalny podgląd projektów REDSP (lib/projectUnits.ts)
+/.cache/

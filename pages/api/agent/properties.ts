@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { authenticateAgent } from "@/lib/agentAuthServer";
 import { AGENT_OFFER_CARD_COLUMNS } from "@/lib/agentOffers";
 import { getPropertyCountryOption } from "@/lib/propertyCountries";
+import { agentLocationConditions } from "@/lib/agentLocations";
 import { supabaseServer } from "@/lib/supabaseClient";
 
 const PAGE_SIZE = 30;
@@ -13,6 +14,12 @@ function queryText(value: string | string[] | undefined) {
 function queryNumber(value: string | string[] | undefined) {
   const parsed = Number(queryText(value));
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+// Wiele wartości jednego parametru (?regions=a&regions=b), maks. 100.
+function queryList(value: string | string[] | undefined) {
+  const values = Array.isArray(value) ? value : value ? [value] : [];
+  return values.map((item) => String(item).trim()).filter(Boolean).slice(0, 100);
 }
 
 function safeSearchValue(value: string) {
@@ -36,8 +43,12 @@ export default async function handler(
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
   const search = safeSearchValue(queryText(req.query.search));
+  // Numer referencyjny z feedu (<ref>, np. SP1526, N9115) albo nasz numer oferty (MTI-…).
+  const ref = safeSearchValue(queryText(req.query.ref)).replace(/\s+/g, "");
   const country = queryText(req.query.country);
   const province = queryText(req.query.province);
+  const regions = queryList(req.query.regions);
+  const towns = queryList(req.query.towns);
   const type = queryText(req.query.type);
   const market = queryText(req.query.market);
   const bedsMin = queryNumber(req.query.bedsMin);
@@ -62,10 +73,19 @@ export default async function handler(
     );
   }
 
+  if (ref) {
+    query = query.or(`ref.ilike.%${ref}%,external_id.ilike.%${ref}%`);
+  }
+
   if (country && country !== "all") {
     query = query.in("country", getPropertyCountryOption(country).dbValues);
   }
   if (province && province !== "all") query = query.ilike("province", province);
+  // Regiony i miasta: oferta pasuje, jeśli leży w którymś z zaznaczonych wybrzeży LUB miast.
+  if (regions.length || towns.length) {
+    const conditions = agentLocationConditions(regions, towns);
+    if (conditions.length) query = query.or(conditions.join(","));
+  }
   if (type && type !== "all") query = query.ilike("type", type);
   if (market === "primary") query = query.eq("new_build", true);
   if (market === "secondary") query = query.eq("new_build", false);

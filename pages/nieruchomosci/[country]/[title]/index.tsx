@@ -34,6 +34,8 @@ import { typeDictionarySingular } from "@/lib/titlesDictionary";
 import { propertyTypeLabel, SiteLocale } from "@/lib/i18n";
 import { normalizeFeatures, terraceArea } from "@/lib/propertyFeatures";
 import OfferDescription from "@/components/offer/OfferDescription";
+import ProjectUnits from "@/components/offer/ProjectUnits";
+import { getProjectUnits, type ProjectUnit } from "@/lib/projectUnits";
 import {
   CopyRef,
   OfferAgents,
@@ -51,6 +53,8 @@ import offerStyles from "@/styles/offerPage.module.css";
 
 const PROPERTY_DETAIL_COLUMNS = [
   "external_id",
+  "ref",
+  "source",
   "type",
   "town",
   "province",
@@ -84,9 +88,11 @@ export default function PublicDetailPage(props: any) {
 
 function Property({
   propertyFromSupabase,
+  projectUnits = [],
   locale = "pl",
 }: {
   propertyFromSupabase: any;
+  projectUnits?: ProjectUnit[];
   locale?: SiteLocale;
 }) {
   const isEn = locale === "en";
@@ -236,6 +242,11 @@ function Property({
                 descriptionEN={p.descriptions?.en}
                 locale={locale}
               />
+              <ProjectUnits
+                units={projectUnits}
+                locale={locale}
+                headingClassName={HomePlayfairSans.className}
+              />
               <OfferLocation
                 property={p}
                 place={place}
@@ -345,9 +356,11 @@ async function propertyServerSideProps(context: any) {
   };
 
   const [titledData] = await attachDevelopmentTitles([normalizedData as Record<string, any>]);
+  const projectUnits = await getProjectUnits(propertyRecord, { locale, publicOnly: true });
   return {
     props: {
       propertyFromSupabase: titledData ?? null,
+      projectUnits,
     },
   };
 }
