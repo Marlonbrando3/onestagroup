@@ -55,6 +55,7 @@ const PROPERTY_DETAIL_COLUMNS = [
   "external_id",
   "ref",
   "source",
+  "development_ref",
   "type",
   "town",
   "province",

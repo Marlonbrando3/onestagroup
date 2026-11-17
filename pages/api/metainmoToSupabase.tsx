@@ -18,6 +18,10 @@ const METAINMO_SELECT_CHUNK_SIZE = 200;
 const RETRY_DELAYS_MS = [1000, 2500, 5000, 10000, 15000];
 const METAINMO_XML_URL =
   "https://xml.redsp.net/files/1127/9317amm45f/dom-hisz-kyero_v3.xml";
+// Feed REDSP v4: te same oferty, dodatkowo numer projektu (<development_ref>) i piętro (<floor>).
+// Z niego bierzemy tylko te dwa pola; reszta importu dalej korzysta z feedu Kyero v3.
+const METAINMO_V4_XML_URL =
+  "https://xml.redsp.net/files/1127/9317amm45f/dom-hisz-redsp_v4.xml";
 let metainmoImportInProgress = false;
 
 const delay = (ms: number) =>
@@ -140,6 +144,36 @@ function buildMetainmoExternalId(property: any): string | null {
     toText(property?.url);
 
   return rawId ? `MTI-${rawId}` : null;
+}
+
+type DevelopmentInfo = { development_ref: string | null; floor: number | null };
+
+// Mapa ref → { development_ref, floor } z feedu v4. Gdy feed jest niedostępny, zwraca null
+// i import zapisuje oferty bez zmiany tych pól (nie kasujemy ich).
+async function loadDevelopmentInfo(): Promise<Map<string, DevelopmentInfo> | null> {
+  try {
+    const response = await fetch(METAINMO_V4_XML_URL, { headers: { "cache-control": "no-cache" } });
+    if (!response.ok) return null;
+    const xml = await response.text();
+    const tag = (block: string, name: string) => {
+      const match = block.match(new RegExp(`<${name}>([^<]*)</${name}>`));
+      return match ? match[1].trim() : "";
+    };
+    const info = new Map<string, DevelopmentInfo>();
+    for (const block of xml.split("</property>")) {
+      const ref = tag(block, "ref");
+      if (!ref) continue;
+      const floor = tag(block, "floor");
+      info.set(ref, {
+        development_ref: tag(block, "development_ref") || null,
+        floor: floor !== "" && Number.isFinite(Number(floor)) ? Number(floor) : null,
+      });
+    }
+    return info.size ? info : null;
+  } catch (error) {
+    console.error("Import REDSP: nie udało się pobrać feedu v4 (numery projektów)", error);
+    return null;
+  }
 }
 
 function detectProperties(parsed: any): any[] {
@@ -507,6 +541,8 @@ export default async function handler(
     lockAcquired = true;
 
     sendProgress("download_xml", "Pobieram XML REDSP...", 5);
+    // Feed v4 (numery projektów i piętra) pobieramy równolegle z głównym XML.
+    const developmentInfoPromise = loadDevelopmentInfo();
     const response = await fetch(METAINMO_XML_URL, {
       headers: { "cache-control": "no-cache" },
     });
@@ -531,6 +567,16 @@ export default async function handler(
     sendProgress("map_records", "Mapuję rekordy z XML...", 28, properties.length, properties.length);
     // 🔹 mapowanie XML → struktura do Supabase
     const mapped = properties.map(mapMetainmoProperty);
+
+    sendProgress("development_info", "Dopisuję numery projektów i piętra (feed v4)...", 40);
+    const developmentInfo = await developmentInfoPromise;
+    if (developmentInfo) {
+      for (const row of mapped as Array<Record<string, any>>) {
+        const info = row?.ref ? developmentInfo.get(String(row.ref)) : undefined;
+        row.development_ref = info?.development_ref ?? null;
+        row.floor = info?.floor ?? null;
+      }
+    }
 
     const {
       rows: uniqueMetainmoRows,
