@@ -43,8 +43,6 @@ import {
 } from "react-icons/lu";
 import PropertyDetailImage from "@/components/PropertyDetailImage";
 import {
-  FEATURE_GROUP_LABELS,
-  type FeatureGroup,
   type FeatureIcon,
   type PropertyFeature,
 } from "@/lib/propertyFeatures";
@@ -211,16 +209,36 @@ export function factsFor(p: any, terrace: number | null, typeLabel: string, loca
   return facts;
 }
 
+// Pasek parametrów pod galerią — jak w prezentacji dla klienta (/oferty/[token]/[offerId]).
+const FACT_COLS: Record<number, string> = {
+  4: "lg:grid-cols-4",
+  5: "lg:grid-cols-5",
+  6: "lg:grid-cols-6",
+  7: "lg:grid-cols-7",
+  8: "lg:grid-cols-8",
+};
+
 export function OfferFacts({ facts, locale }: { facts: Fact[]; locale: Locale }) {
+  // Typ nieruchomości jest już nad tytułem („APARTAMENT · COSTA …”), więc w pasku go pomijamy.
+  const typeLabel = locale === "en" ? "Type" : "Typ";
+  const shown = facts.filter((f) => f.label !== typeLabel).slice(0, 8);
   return (
-    <section className={styles.card} aria-label={locale === "en" ? "Key facts" : "Najważniejsze parametry"}>
-      <dl className={styles.facts}>
-        {facts.map((f) => (
-          <div className={styles.fact} key={f.label}>
-            <span className={styles.factIcon} aria-hidden="true">{f.icon}</span>
-            <div>
-              <dt>{f.label}</dt>
-              <dd>{f.value}</dd>
+    <section
+      className="relative z-10 mx-auto -mt-5 w-[calc(100%-24px)] overflow-hidden rounded-2xl border border-[#ded5c8] bg-white shadow-[0_18px_45px_rgba(24,35,52,0.10)] sm:w-[calc(100%-48px)]"
+      aria-label={locale === "en" ? "Key facts" : "Najważniejsze parametry"}
+    >
+      <dl className={`grid grid-cols-2 sm:grid-cols-4 ${FACT_COLS[shown.length] || "lg:grid-cols-4"}`}>
+        {shown.map((f) => (
+          <div
+            key={f.label}
+            className="flex min-h-[70px] items-center gap-3 border-b border-r border-[#e8e0d5] px-4 py-3 last:odd:col-span-2 sm:min-h-[92px] sm:px-5 sm:py-4 sm:last:odd:col-span-1 lg:border-b-0 lg:px-4 lg:last:border-r-0"
+          >
+            <span className="shrink-0 text-[20px] text-[#b8954c]" aria-hidden="true">
+              {f.icon}
+            </span>
+            <div className="min-w-0">
+              <dt className="text-[8px] font-extrabold uppercase tracking-[0.11em] text-slate-400">{f.label}</dt>
+              <dd className="mt-1 truncate text-[14px] font-extrabold text-[#26364b]">{f.value}</dd>
             </div>
           </div>
         ))}
@@ -231,37 +249,33 @@ export function OfferFacts({ facts, locale }: { facts: Fact[]; locale: Locale })
 
 /* ---------- Cechy ---------- */
 
-const GROUP_ORDER: FeatureGroup[] = ["outdoor", "interior", "parking", "area"];
-
+// Atuty jako pastylki — jak w prezentacji dla klienta.
 export function OfferFeatures({ features, locale }: { features: PropertyFeature[]; locale: Locale }) {
   const en = locale === "en";
-  const groups = GROUP_ORDER.map((g) => ({
-    group: g,
-    items: features.filter((f) => f.group === g),
-  })).filter((g) => g.items.length);
   return (
-    <section id="cechy" className={styles.card} aria-labelledby="offer-features">
-      <div className={styles.cardHead}>
-        <h2 id="offer-features">{en ? "Property features" : "Cechy nieruchomości"}</h2>
-      </div>
-      {groups.length ? (
-        <div className={styles.featureGroups}>
-          {groups.map(({ group, items }) => (
-            <div className={styles.featureGroup} key={group}>
-              <h3>{FEATURE_GROUP_LABELS[group][locale]}</h3>
-              <ul className={styles.featureList}>
-                {items.map((f) => (
-                  <li key={f.key}>
-                    {ICONS[f.icon]}
-                    {f.label}
-                  </li>
-                ))}
-              </ul>
-            </div>
+    <section id="cechy" className="rounded-2xl border border-[#ded5c8] bg-white px-6 py-7 shadow-sm sm:px-9 sm:py-9" aria-labelledby="offer-features">
+      <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">
+        {en ? "Features & amenities" : "Wyposażenie i udogodnienia"}
+      </p>
+      <h2 id="offer-features" className="mt-2" style={{ fontSize: 32 }}>
+        {en ? "Property highlights" : "Atuty nieruchomości"}
+      </h2>
+      {features.length ? (
+        <ul className="mt-6 flex flex-wrap gap-2">
+          {features.map((f) => (
+            <li
+              key={f.key}
+              className="inline-flex items-center gap-2 rounded-full border border-[#ddcfbb] bg-[#f8f4ed] px-4 py-2.5 text-[11px] font-bold text-[#405066]"
+            >
+              <span className="text-[13px] text-[#b8954c]" aria-hidden="true">
+                {ICONS[f.icon]}
+              </span>
+              {f.label}
+            </li>
           ))}
-        </div>
+        </ul>
       ) : (
-        <p className={styles.empty}>
+        <p className="mt-5 text-[14px] text-slate-500">
           {en
             ? "Ask us for the full specification of this property — we will send it within a day."
             : "Zapytaj nas o pełną specyfikację tej nieruchomości — prześlemy ją w ciągu dnia."}

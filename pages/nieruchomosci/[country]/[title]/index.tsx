@@ -234,9 +234,10 @@ function Property({
             onOpenImage={openImage}
           />
 
+          <OfferFacts facts={facts} locale={locale} />
+
           <div className={offerStyles.layout}>
             <div className={offerStyles.main}>
-              <OfferFacts facts={facts} locale={locale} />
               <OfferFeatures features={features} locale={locale} />
               <OfferDescription
                 description={p.descriptions?.pl}
