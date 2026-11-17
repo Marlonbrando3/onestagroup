@@ -10,7 +10,6 @@ import {
   FaSave,
   FaTimes,
 } from "react-icons/fa";
-import OfferPdfButton from "@/components/agent/OfferPdfButton";
 import AgentHeader from "@/components/agent/AgentHeader";
 import PropertyCard from "@/components/SearchEngine/PropertyCard";
 import { HomeMontserratSans } from "@/fonts/homeFonts";
@@ -247,7 +246,7 @@ export default function PresentationEditor({
         <div className="grid items-start gap-7 xl:grid-cols-[370px_minmax(0,1fr)]">
           <form
             onSubmit={savePresentation}
-            className="sticky top-[104px] overflow-hidden rounded-2xl border border-[#ddd3c4] bg-white shadow-[0_16px_45px_rgba(24,35,52,0.08)]"
+            className="overflow-hidden rounded-2xl border border-[#ddd3c4] bg-white shadow-[0_16px_45px_rgba(24,35,52,0.08)] xl:sticky xl:top-[104px] xl:max-h-[calc(100vh-124px)] xl:overflow-y-auto xl:overscroll-contain"
           >
             <div className="bg-[#182334] px-6 py-6 text-white">
               <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#d6b66f]">
@@ -423,14 +422,6 @@ export default function PresentationEditor({
                 {offers.map((offer, index) => (
                   <div key={offer.external_id} className="relative min-w-0">
                     <PropertyCard property={offer} />
-                    <div className="mt-3">
-                      <OfferPdfButton
-                        offer={offer}
-                        contact={{ name: contactName, email: contactEmail, phone: contactPhone }}
-                        accessToken={accessToken}
-                        publicPath={publicToken ? `/oferty/${encodeURIComponent(publicToken)}/${encodeURIComponent(offer.external_id)}` : undefined}
-                      />
-                    </div>
                     <span className="absolute left-3 top-3 z-30 flex h-9 min-w-9 items-center justify-center rounded-full bg-[#d6b66f] px-2 text-[11px] font-extrabold text-[#182334] shadow-lg">
                       {index + 1}
                     </span>
