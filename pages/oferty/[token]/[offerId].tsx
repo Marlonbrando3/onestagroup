@@ -276,8 +276,11 @@ export default function PresentationOfferPage({
               barStuck ? "py-2 sm:py-[10px]" : "py-3 sm:py-4"
             }`}>
               <div className="min-w-0">
-                <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#8e2430]">Podoba Ci się ta oferta?</p>
-                <p className="mt-1 hidden truncate text-[14px] font-bold text-[#26364b] sm:block">
+                <p className="text-[9px] font-extrabold uppercase leading-[12px] tracking-[0.15em] text-[#8e2430]">Podoba Ci się ta oferta?</p>
+                <p className="mt-1 hidden truncate text-[11px] leading-[15px] text-[#5d6b7c] sm:block">
+                  Nie musisz wysyłać zdjęć WhatsAppem ani pamiętać numerów referencyjnych.
+                </p>
+                <p className="hidden truncate text-[14px] font-bold leading-[20px] text-[#26364b] sm:block">
                   {barStuck ? "Daj znać — agent prześle Ci więcej informacji." : "Daj znać jednym kliknięciem — agent prześle Ci więcej informacji."}
                 </p>
               </div>
