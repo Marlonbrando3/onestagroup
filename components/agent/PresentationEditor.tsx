@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
   FaArrowLeft,
+  FaChevronDown,
   FaCheck,
   FaCopy,
   FaExternalLinkAlt,
@@ -281,17 +282,23 @@ export default function PresentationEditor({
               <div className="grid gap-2 text-[11px] font-bold text-[#334155]">
                 <span>Prezentacja przygotowana dla</span>
                 <div className="grid grid-cols-[112px_minmax(0,1fr)] gap-2">
-                  <select
-                    value={clientSalutation}
-                    onChange={(event) => setClientSalutation(event.target.value as typeof clientSalutation)}
-                    className="presentationInput"
-                    aria-label="Zwrot do klienta"
-                  >
-                    <option value="pani">Pani</option>
-                    <option value="pan">Pana</option>
-                    <option value="panstwo">Państwa</option>
-                    <option value="">bez zwrotu</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={clientSalutation}
+                      onChange={(event) => setClientSalutation(event.target.value as typeof clientSalutation)}
+                      className="presentationInput w-full cursor-pointer appearance-none !pr-8"
+                      aria-label="Zwrot do klienta"
+                    >
+                      <option value="pani">Pani</option>
+                      <option value="pan">Pana</option>
+                      <option value="panstwo">Państwa</option>
+                      <option value="">bez zwrotu</option>
+                    </select>
+                    <FaChevronDown
+                      aria-hidden="true"
+                      className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#9b7a36]"
+                    />
+                  </div>
                   <input
                     maxLength={120}
                     value={clientName}
