@@ -282,14 +282,16 @@ export default function PresentationOfferPage({
               aria-hidden={!barStuck}
               className={`flex shrink-0 items-center justify-center gap-2.5 overflow-hidden whitespace-nowrap rounded-2xl border border-[#ded5c8] bg-white/95 text-[10px] font-extrabold uppercase tracking-[0.1em] text-[#182334] shadow-[0_12px_34px_rgba(24,35,52,0.12)] backdrop-blur transition-all duration-300 hover:border-[#182334] hover:bg-[#182334] hover:text-white ${
                 barStuck
-                  ? "mr-3 w-[56px] opacity-100 sm:w-[210px] lg:w-[290px]"
+                  ? "mr-3 w-[56px] opacity-100 sm:w-[150px] lg:w-[200px]"
                   : "pointer-events-none mr-0 w-0 border-0 opacity-0"
               }`}
             >
               <FaArrowLeft aria-hidden="true" className="shrink-0" />
               <span className="hidden sm:inline">Wróć do prezentacji</span>
             </Link>
-            <section className="flex min-w-0 flex-1 flex-col items-center gap-3 rounded-2xl border border-[#d9a7ab] bg-[#fdf6f5]/95 px-5 py-3 text-center shadow-[0_12px_34px_rgba(142,36,48,0.18)] backdrop-blur sm:flex-row sm:justify-between sm:gap-4 sm:px-8 sm:py-4 sm:text-left">
+            <section className={`flex min-w-0 flex-1 flex-col items-center gap-3 rounded-2xl border border-[#d9a7ab] bg-[#fdf6f5]/95 px-5 text-center shadow-[0_12px_34px_rgba(142,36,48,0.18)] backdrop-blur transition-[padding] duration-300 sm:flex-row sm:justify-between sm:gap-4 sm:px-8 sm:text-left ${
+              barStuck ? "py-2 sm:py-[10px]" : "py-3 sm:py-4"
+            }`}>
               <div className="min-w-0">
                 <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#8e2430]">Podoba Ci się ta oferta?</p>
                 <p className="mt-1 hidden truncate text-[14px] font-bold text-[#26364b] sm:block">
@@ -356,7 +358,7 @@ export default function PresentationOfferPage({
             </div>
 
             {/* Kontakt do agenta — na desktopie jedzie z klientem pod przyklejonym paskiem „Podoba Ci się…”. */}
-            <aside className="overflow-hidden rounded-2xl border border-[#ded5c8] bg-white shadow-sm lg:sticky lg:top-[108px]">
+            <aside className="overflow-hidden rounded-2xl border border-[#ded5c8] bg-white shadow-sm lg:sticky lg:top-[96px]">
               <div className="bg-[#182334] px-6 py-6 text-white sm:px-8">
                 <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#d6b66f]">Twój agent Onesta</p>
                 <div className="mt-4 flex items-center gap-4">
