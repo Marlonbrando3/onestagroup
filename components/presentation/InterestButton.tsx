@@ -3,7 +3,7 @@ import { FaCheck, FaRegHeart } from "react-icons/fa";
 
 // „Interesuje mnie ta oferta” w prezentacji dla klienta: jeden klik = mail do agenta
 // (pages/api/presentation-interest.ts). Kliknięte oferty pamiętamy w przeglądarce klienta.
-type Props = { token: string; offerId: string; variant?: "card" | "wide" };
+type Props = { token: string; offerId: string; variant?: "card" | "wide"; parentOfferId?: string };
 
 const storageKey = (token: string) => `onesta-interest-${token}`;
 
@@ -16,7 +16,7 @@ function readClicked(token: string): string[] {
   }
 }
 
-export default function InterestButton({ token, offerId, variant = "card" }: Props) {
+export default function InterestButton({ token, offerId, variant = "card", parentOfferId }: Props) {
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function InterestButton({ token, offerId, variant = "card" }: Pro
       const response = await fetch("/api/presentation-interest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, offerId }),
+        body: JSON.stringify({ token, offerId, parentOfferId }),
       });
       if (!response.ok) throw new Error(String(response.status));
       setState("sent");

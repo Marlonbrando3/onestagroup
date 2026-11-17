@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { LuBath, LuBedDouble, LuMail, LuRuler, LuX } from "react-icons/lu";
+import { LuBath, LuBedDouble, LuChevronRight, LuRuler, LuX } from "react-icons/lu";
 import ContactOnPropertyCard from "@/components/SearchEngine/ContactOnPropertyCard";
+import InterestButton from "@/components/presentation/InterestButton";
 import type { ProjectUnit } from "@/lib/projectUnits";
 import styles from "@/styles/projectUnits.module.css";
 
@@ -23,11 +24,14 @@ export default function ProjectUnits({
   variant = "public",
   locale = "pl",
   headingClassName,
+  interest,
 }: {
   units: ProjectUnit[];
   variant?: "public" | "presentation";
   locale?: "pl" | "en";
   headingClassName?: string;
+  /** Prezentacja: w okienku także „Interesuje mnie ta oferta” (mail i powiadomienie do agenta). */
+  interest?: { token: string; parentOfferId: string };
 }) {
   const [selected, setSelected] = useState<ProjectUnit | null>(null);
   const en = locale === "en";
@@ -106,7 +110,7 @@ export default function ProjectUnits({
                 ))}
               </span>
               {unit.price !== null && <span className={styles.price}>{formatPrice(unit.price)}</span>}
-              <LuMail className={styles.ask} aria-hidden="true" />
+              <LuChevronRight className={styles.ask} aria-hidden="true" />
             </button>
           </li>
         ))}
@@ -138,6 +142,24 @@ export default function ProjectUnits({
                 .filter(Boolean)
                 .join(" · ")}
             </p>
+            {interest ? (
+              <div className="mb-5 rounded-2xl border border-[#d9a7ab] bg-[#fdf6f5] p-4">
+                <p className="text-[14px] font-bold leading-5 text-[#5a1d26]">Bez wysyłania zdjęć i pamiętania numerów ofert.</p>
+                <p className="mb-3 mt-1 text-[12px] leading-5 text-[#526173]">
+                  Kliknij — tę informację dostanie agent, który skontaktuje się z Tobą i przekaże więcej szczegółów o tym mieszkaniu.
+                </p>
+                <InterestButton
+                  key={`interest-${selected.externalId}`}
+                  token={interest.token}
+                  offerId={selected.externalId}
+                  parentOfferId={interest.parentOfferId}
+                  variant="wide"
+                />
+                <p className="mt-4 text-center text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-400">
+                  albo napisz wiadomość
+                </p>
+              </div>
+            ) : null}
             <ContactOnPropertyCard
               key={selected.externalId}
               propertyRef={selected.externalId}

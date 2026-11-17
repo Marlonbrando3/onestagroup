@@ -356,6 +356,7 @@ export default function PresentationOfferPage({
                 units={projectUnits}
                 variant="presentation"
                 headingClassName={HomePlayfairSans.className}
+                interest={{ token, parentOfferId: String(offer.external_id) }}
               />
             </div>
 

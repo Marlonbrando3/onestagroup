@@ -44,7 +44,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(404).json({ success: false });
   }
 
-  const offer = (presentation.offers as any[]).find((item) => String(item?.external_id) === offerId);
+  let offer: any = (presentation.offers as any[]).find((item) => String(item?.external_id) === offerId);
+  // Mieszkanie z listy „Dostępne mieszkania w tej inwestycji” — nie ma go w prezentacji, ale należy
+  // do tej samej inwestycji (development_ref) co oferta z prezentacji (parentOfferId).
+  const parentOfferId = String(body.parentOfferId ?? "").trim().slice(0, 120);
+  if (!offer && parentOfferId && (presentation.offers as any[]).some((item) => String(item?.external_id) === parentOfferId)) {
+    const { data: rows } = await supabaseServer
+      .from("properties")
+      .select("external_id,ref,title,price,town,province,development_ref")
+      .in("external_id", [offerId, parentOfferId]);
+    const unit = rows?.find((row: any) => String(row.external_id) === offerId);
+    const parent = rows?.find((row: any) => String(row.external_id) === parentOfferId);
+    if (unit && parent && unit.development_ref && unit.development_ref === parent.development_ref) {
+      offer = { ...unit, title: unit.title || parent.title };
+    }
+  }
   if (!offer) return res.status(404).json({ success: false });
 
   // Ten sam klik powtórzony w krótkim czasie — nie wysyłamy drugiego maila.
