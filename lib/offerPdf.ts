@@ -11,6 +11,7 @@ import {
 } from "./presentationOffer";
 import { propertyImageUrl } from "./propertyImages";
 import { normalizeFeatures } from "./propertyFeatures";
+import { agencySteps } from "@/data/polishAgency";
 
 // Broszura PDF oferty (prezentacja klienta / panel agenta).
 // Strona 1: logo, duże zdjęcie, tytuł, cena, parametry, agent. Strona 2: opis i udogodnienia.
@@ -38,6 +39,23 @@ const BOTTOM = 272;
 const MAX_PHOTOS = 9;
 const LOGO_SRC = "/logotype_full_new.png";
 const PROXY_VERSION = "2";
+
+// Teksty jak na /polskie-biuro-nieruchomosci-w-hiszpanii (atuty z nagłówka i sekcja „Jasne zasady”).
+const AGENCY_FACTS = [
+  "Na rynku od 2018 roku",
+  "Pełna obsługa w języku polskim",
+  "Współpracujący prawnicy, notariusze i tłumacze",
+  "Bezpośrednia współpraca z deweloperami",
+  "Biura w Polsce i w Hiszpanii",
+  "0% prowizji dla kupującego",
+  "Prowadzenie zakupu od A do Z",
+  "Umeblowanie apartamentu i zarządzanie wynajmem",
+];
+const COST_POINTS = [
+  ["Nie pobieramy prowizji za pośrednictwo w zakupie nieruchomości.", "Nasze wynagrodzenie pokrywa sprzedający, deweloper lub partner."],
+  ["Oddzielnie ustalamy zakres i koszty usług dodatkowych,", "takich jak obsługa prawna, tłumaczenia, wyposażenie lub zarządzanie po zakupie."],
+  ["Cena z ogłoszenia nie jest całkowitym budżetem.", "Uwzględniamy podatki i opłaty związane z zakupem oraz przyszłe wydatki: wspólnotę, media, ubezpieczenie i utrzymanie. Koszty zależą od regionu, rynku pierwotnego lub wtórnego i konkretnej transakcji."],
+];
 
 let fontsPromise: Promise<string[]> | undefined;
 function loadFonts() {
@@ -390,6 +408,152 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
       if (col === 1 || index === gallery.length - 1) y += cellH + gap;
     });
   }
+
+  // Akapit z pogrubionym początkiem (np. „Nie pobieramy prowizji…” + reszta zdania).
+  const leadParagraph = (lead: string, rest: string, x: number, width: number) => {
+    font(10, true, INK);
+    const words = `${lead} ${rest}`.split(" ");
+    const leadCount = lead.split(" ").length;
+    let line: { text: string; bold: boolean }[] = [];
+    let lineW = 0;
+    const flush = () => {
+      ensure(6);
+      let cx = x;
+      line.forEach((part) => {
+        font(10, part.bold, part.bold ? INK : MUTED);
+        doc.text(part.text, cx, y);
+        cx += doc.getTextWidth(part.text);
+      });
+      y += 5.6;
+      line = [];
+      lineW = 0;
+    };
+    words.forEach((word, index) => {
+      const bold = index < leadCount;
+      font(10, bold);
+      const piece = (line.length ? " " : "") + word;
+      const w = doc.getTextWidth(piece);
+      if (lineW + w > width && line.length) {
+        flush();
+        line.push({ text: word, bold });
+        font(10, bold);
+        lineW = doc.getTextWidth(word);
+      } else {
+        line.push({ text: piece, bold });
+        lineW += w;
+      }
+    });
+    if (line.length) flush();
+  };
+
+  // ---------- O Onesta: atuty + zasady prowizji ----------
+  newPage();
+  sectionTitle("Poznaj Onesta Group", "Dlaczego warto kupować z nami");
+  {
+    const gap = 4;
+    const colW = (WIDTH - gap) / 2;
+    const boxH = 13;
+    AGENCY_FACTS.forEach((fact, index) => {
+      const col = index % 2;
+      const x = MARGIN + col * (colW + gap);
+      const top = y + Math.floor(index / 2) * (boxH + 3);
+      doc.setFillColor(PAPER);
+      doc.roundedRect(x, top, colW, boxH, 2.5, 2.5, "F");
+      doc.setFillColor(GOLD);
+      doc.circle(x + 6, top + boxH / 2, 1.3, "F");
+      font(9.5, index === 0 || index === 5, INK);
+      const factLines: string[] = doc.splitTextToSize(fact, colW - 15);
+      const firstY = top + boxH / 2 + 1.2 - ((factLines.length - 1) * 4) / 2;
+      factLines.forEach((line, lineIndex) => doc.text(line, x + 11, firstY + lineIndex * 4));
+    });
+    y += Math.ceil(AGENCY_FACTS.length / 2) * (boxH + 3) + 10;
+  }
+  ensure(60);
+  font(7.5, true, GOLD);
+  doc.text("JASNE ZASADY", MARGIN, y, { charSpace: 0.6 });
+  y += 8;
+  font(16, true, INK);
+  const costLead = "Prowizja od sprzedaży przy współpracy z Onesta wynosi ";
+  doc.text(costLead, MARGIN, y);
+  y += 9;
+  font(26, true, GOLD);
+  doc.text("0 zł", MARGIN, y);
+  const zeroW = doc.getTextWidth("0 zł ");
+  font(16, true, INK);
+  doc.text("dla kupującego.", MARGIN + zeroW, y);
+  y += 10;
+  COST_POINTS.forEach(([lead, rest]) => {
+    ensure(12);
+    doc.setFillColor(GOLD);
+    doc.circle(MARGIN + 1.5, y - 1.4, 1, "F");
+    leadParagraph(lead, rest, MARGIN + 6, WIDTH - 6);
+    y += 2.5;
+  });
+
+  // ---------- Ścieżka zakupu ----------
+  newPage();
+  sectionTitle("Jak pomagamy", "Od pierwszej rozmowy do odbioru kluczy");
+  paragraph(
+    "Wiesz, na jakim etapie jesteś, co porównujemy i kto zajmuje się kolejnymi sprawami. Przez cały proces masz polskojęzyczną obsługę Onesta.",
+    10,
+  );
+  y += 4;
+  agencySteps.forEach(({ title: stepTitle, text: stepText }, index) => {
+    font(8.5, false, MUTED);
+    const lines: string[] = doc.splitTextToSize(clean(stepText), WIDTH - 16);
+    const blockH = 5.5 + lines.length * 3.8 + 2.5;
+    ensure(blockH);
+    const top = y;
+    // Numer w kółku i linia łącząca kroki.
+    if (index < agencySteps.length - 1) {
+      doc.setDrawColor(LINE);
+      doc.line(MARGIN + 5, top + 5, MARGIN + 5, top + blockH);
+    }
+    doc.setFillColor(INK);
+    doc.circle(MARGIN + 5, top, 4.5, "F");
+    font(8, true, GOLD_LIGHT);
+    doc.text(`0${index + 1}`, MARGIN + 5, top + 1.4, { align: "center" });
+    font(10.5, true, INK);
+    doc.text(stepTitle, MARGIN + 15, top + 1.6);
+    font(8.5, false, MUTED);
+    let ly = top + 6.8;
+    lines.forEach((line) => {
+      doc.text(line, MARGIN + 15, ly);
+      ly += 3.8;
+    });
+    y = top + blockH;
+  });
+
+  // ---------- Kontakt na koniec ----------
+  const finalH = 40;
+  ensure(finalH + 4);
+  y += 3;
+  doc.setFillColor(INK);
+  doc.roundedRect(MARGIN, y, WIDTH, finalH, 3, 3, "F");
+  font(7.5, true, GOLD_LIGHT);
+  doc.text("Porozmawiajmy o tej ofercie".toLocaleUpperCase("pl-PL"), MARGIN + 8, y + 8.5, { charSpace: 0.6 });
+  font(15, true, "#ffffff");
+  doc.text(clean(contact.name || "Onesta Group"), MARGIN + 8, y + 16.5);
+  font(8, false, GOLD_LIGHT);
+  doc.text(contact.name ? "Agent prowadzący · Onesta Group" : "Biuro Onesta Group", MARGIN + 8, y + 21.5);
+  font(10.5, true, "#ffffff");
+  const phoneText = phone || "+48 576 652 525";
+  doc.text(phoneText, MARGIN + 8, y + 29);
+  const phoneW = doc.getTextWidth(phoneText);
+  font(10, false, "#d9e1ec");
+  doc.text(`·   ${contact.email || "biuro@onesta.com.pl"}`, MARGIN + 8 + phoneW + 3, y + 29);
+  font(8, false, "#aeb9c8");
+  doc.text("Biura: Opole, ul. Niemodlińska 58a  ·  San Javier, Calle Abel 19  ·  onesta.com.pl", MARGIN + 8, y + 35);
+  if (publicUrl) {
+    const label = "Zobacz ofertę online";
+    font(9, true, INK);
+    const w = doc.getTextWidth(label) + 12;
+    const bx = PAGE_W - MARGIN - 8 - w;
+    doc.setFillColor(GOLD_LIGHT);
+    doc.roundedRect(bx, y + 11, w, 10, 5, 5, "F");
+    doc.textWithLink(label, bx + 6, y + 17.6, { url: publicUrl });
+  }
+  y += finalH;
 
   // ---------- Stopka na każdej stronie ----------
   const pageCount = doc.getNumberOfPages();
