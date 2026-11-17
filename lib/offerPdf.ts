@@ -392,11 +392,18 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
   // ---------- Galeria ----------
   const gallery = photos.slice(1);
   if (gallery.length) {
-    newPage();
-    sectionTitle("Galeria", "Wnętrza i otoczenie");
     const gap = 4;
     const cellW = (WIDTH - gap) / 2;
     const cellH = cellW * 0.68;
+    // Galeria zaczyna się zaraz pod opisem, jeśli na stronie mieści się nagłówek i pierwszy rząd zdjęć —
+    // bez pustych 2/3 strony po dłuższym opisie. Na okładce (strona 1) zawsze od nowej strony.
+    const onTextPage = doc.getNumberOfPages() > 1;
+    if (onTextPage && y + 8 + 16 + cellH <= BOTTOM) {
+      y += 8;
+    } else {
+      newPage();
+    }
+    sectionTitle("Galeria", "Wnętrza i otoczenie");
     gallery.forEach((image, index) => {
       const col = index % 2;
       if (col === 0) ensure(cellH);
