@@ -91,25 +91,8 @@ export default function PresentationOfferPage({
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
-  // Długi opis: najpierw mniej więcej połowa (pełne linie), reszta po kliknięciu „Czytaj dalej”.
-  const descriptionParts = (() => {
-    if (!description || description.length < 900) return { short: description, rest: "" };
-    const lines = description.split("\n");
-    let shown = 0;
-    let index = 0;
-    while (index < lines.length && shown < description.length / 2) {
-      shown += lines[index].length + 1;
-      index += 1;
-    }
-    const short = lines.slice(0, index).join("\n").trimEnd();
-    const rest = lines.slice(index).join("\n").trim();
-    if (rest) return { short: `${short}…`, rest };
-    // Opis w jednym akapicie — tniemy na końcu zdania za połową tekstu.
-    const cut = description.indexOf(". ", Math.floor(description.length / 2));
-    return cut > 0 && cut < description.length - 40
-      ? { short: `${description.slice(0, cut + 1)}…`, rest: description.slice(cut + 2) }
-      : { short: description, rest: "" };
-  })();
+  // Długi opis zwijamy: widać początek, dół tekstu zanika, pod spodem „Czytaj dalej”.
+  const descriptionIsLong = description.length >= 900;
   const typeLabel =
     propertyTypeLabel.pl[offer.type || ""] || offer.type || "Nieruchomość";
   const title =
@@ -325,19 +308,33 @@ export default function PresentationOfferPage({
               <section className="rounded-2xl border border-[#ded5c8] bg-white px-6 py-7 shadow-sm sm:px-9 sm:py-9">
                 <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">O nieruchomości</p>
                 <h2 className={`${HomePlayfairSans.className} mt-2 text-[32px] font-semibold`}>Opis oferty</h2>
-                <div className="mt-6 whitespace-pre-line text-[14px] leading-7 text-[#526173] sm:text-[15px]">
-                  {description ? (descriptionExpanded ? description : descriptionParts.short) : "Szczegółowy opis tej nieruchomości nie został jeszcze uzupełniony."}
-                </div>
-                {descriptionParts.rest ? (
-                  <button
-                    type="button"
-                    onClick={() => setDescriptionExpanded((value) => !value)}
-                    aria-expanded={descriptionExpanded}
-                    className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#ddcfbb] bg-[#f8f4ed] px-5 py-2.5 text-[10px] font-extrabold uppercase tracking-[0.1em] text-[#182334] transition hover:border-[#182334]"
+                <div className="relative mt-6">
+                  <div
+                    className={`whitespace-pre-line text-[14px] leading-7 text-[#526173] sm:text-[15px] ${
+                      descriptionIsLong && !descriptionExpanded ? "max-h-[360px] overflow-hidden" : ""
+                    }`}
                   >
-                    {descriptionExpanded ? "Zwiń opis" : "Czytaj dalej"}
-                    <FaChevronRight aria-hidden="true" className={`text-[9px] transition ${descriptionExpanded ? "-rotate-90" : "rotate-90"}`} />
-                  </button>
+                    {description || "Szczegółowy opis tej nieruchomości nie został jeszcze uzupełniony."}
+                  </div>
+                  {descriptionIsLong && !descriptionExpanded ? (
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-b from-white/0 via-white/85 to-white"
+                    />
+                  ) : null}
+                </div>
+                {descriptionIsLong ? (
+                  <div className={descriptionExpanded ? "mt-5" : "relative -mt-2 flex justify-center"}>
+                    <button
+                      type="button"
+                      onClick={() => setDescriptionExpanded((value) => !value)}
+                      aria-expanded={descriptionExpanded}
+                      className="inline-flex items-center gap-2.5 rounded-full bg-[#182334] px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-white shadow-[0_10px_24px_rgba(24,35,52,0.18)] transition hover:bg-[#b8954c]"
+                    >
+                      {descriptionExpanded ? "Zwiń opis" : "Czytaj dalej"}
+                      <FaChevronRight aria-hidden="true" className={`text-[9px] transition ${descriptionExpanded ? "-rotate-90" : "rotate-90"}`} />
+                    </button>
+                  </div>
                 ) : null}
               </section>
 
