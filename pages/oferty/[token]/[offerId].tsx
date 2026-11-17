@@ -6,6 +6,7 @@ import { useState } from "react";
 import {
   FaArrowLeft,
   FaBath,
+  FaCheck,
   FaChevronLeft,
   FaChevronRight,
   FaEnvelope,
@@ -35,7 +36,6 @@ import {
 } from "@/lib/presentationOffer";
 import OfferPdfButton from "@/components/agent/OfferPdfButton";
 import ProjectUnits from "@/components/offer/ProjectUnits";
-import { OfferInquiry } from "@/components/offer/OfferSections";
 import ContactOnPropertyCard from "@/components/SearchEngine/ContactOnPropertyCard";
 import Footer from "@/components/Footer";
 import InterestButton from "@/components/presentation/InterestButton";
@@ -310,12 +310,63 @@ export default function PresentationOfferPage({
               </div>
             </aside>
           </div>
-          {/* Formularz kontaktowy jak na stronach ofert. */}
-          <div className="mx-auto mt-10 max-w-[1240px]">
-            <OfferInquiry locale="pl">
-              <ContactOnPropertyCard propertyRef={offer.external_id} locale="pl" variant="section" />
-            </OfferInquiry>
-          </div>
+          {/* Formularz kontaktowy — na pełną szerokość treści, zdjęcie oferty w tle. */}
+          <section id="zapytanie" className="relative mt-10 overflow-hidden rounded-2xl shadow-[0_20px_55px_rgba(24,35,52,0.18)]">
+            <img
+              src={propertyImageUrl(galleryImages[1] || galleryImages[0], "/logotype_full_new.png")}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0f1826]/95 via-[#182334]/88 to-[#182334]/65" />
+            <div className="relative grid items-center gap-9 px-6 py-10 sm:px-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(400px,480px)] lg:gap-16 lg:px-14 lg:py-16">
+              <div className="text-white">
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#d6b66f]">Porozmawiajmy o tej ofercie</p>
+                <h2 className={`${HomePlayfairSans.className} mt-4 text-[36px] font-semibold leading-[1.08] tracking-[-0.02em] sm:text-[46px] lg:text-[54px]`}>
+                  Chcesz poznać tę nieruchomość bliżej?
+                </h2>
+                <p className="mt-5 max-w-[560px] text-[15px] leading-7 text-slate-200">
+                  Zostaw kontakt — {contact.name ? contact.name.split(" ")[0] : "Twój agent"} odezwie się tego samego
+                  lub następnego dnia roboczego i prześle wszystko, czego potrzebujesz do spokojnej decyzji.
+                </p>
+                <ul className="mt-7 grid gap-3 sm:grid-cols-2">
+                  {[
+                    "Aktualna dostępność i pełny cennik",
+                    "Rzuty, specyfikacja i plan płatności",
+                    "Rozmowa wideo lub oglądanie na miejscu",
+                    "Obsługa po polsku, 0 zł prowizji dla kupującego",
+                  ].map((point) => (
+                    <li key={point} className="flex items-start gap-3 text-[13px] font-semibold leading-6 text-white">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#d6b66f] text-[10px] text-[#182334]">
+                        <FaCheck aria-hidden="true" />
+                      </span>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 inline-flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 px-5 py-4 backdrop-blur">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#d6b66f] text-[#182334]">
+                    <FaRegUser aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-[15px] font-extrabold">{contact.name || "Onesta Group"}</p>
+                    <a href={`tel:${(contact.phone || "+48576652525").replace(/[^+\d]/g, "")}`} className="text-[13px] text-[#e8d3a3] hover:text-white">
+                      {formatPhone(contact.phone || "") || "+48 576 652 525"}
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-white p-6 text-[#182334] shadow-2xl sm:p-8">
+                <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">Formularz kontaktowy</p>
+                <h3 className={`${HomePlayfairSans.className} mt-2 text-[28px] font-semibold`}>Zapytaj o tę ofertę</h3>
+                <p className="mb-5 mt-1 text-[11px] uppercase tracking-[0.08em] text-slate-400">ref. {offer.external_id}</p>
+                <ContactOnPropertyCard propertyRef={offer.external_id} locale="pl" variant="section" />
+              </div>
+            </div>
+          </section>
         </main>
 
         {lightboxIndex !== null ? (
