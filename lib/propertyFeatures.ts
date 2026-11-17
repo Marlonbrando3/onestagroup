@@ -53,7 +53,9 @@ type Rule = {
 const RULES: Rule[] = [
   // Basen i strefy zewnętrzne
   { key: "private-pool", test: /\b(private|prywatny)\b.*\b(pool|swimming|basen)|^(private swimming pool|piscina privada)$/i, pl: "Prywatny basen", en: "Private pool", group: "outdoor", icon: "pool" },
-  { key: "communal-pool", test: /communal pool|pool[\s-]*communal|community[\s-]*pool|comminity pool|^swimming[\s-]*pool$|^pool$|^basen$|^piscina$|^piscina comunitaria$/i, pl: "Basen wspólny", en: "Communal pool", group: "outdoor", icon: "pool" },
+  { key: "communal-pool", test: /communal pool|pool[\s-]*communal|community[\s-]*pool|comminity pool|^piscina comunitaria$/i, pl: "Basen wspólny", en: "Communal pool", group: "outdoor", icon: "pool" },
+  // Samo „Pool” nie mówi, czy basen jest prywatny, czy wspólny — pokazujemy po prostu „Basen”.
+  { key: "pool", test: /^swimming[\s-]*pool$|^pool$|^basen$|^piscina$/i, pl: "Basen", en: "Pool", group: "outdoor", icon: "pool" },
   { key: "indoor-pool", test: /indoor[\s-]*pool|heated pool/i, pl: "Basen kryty / podgrzewany", en: "Indoor / heated pool", group: "outdoor", icon: "pool" },
   { key: "private-garden", test: /garden\s*-\s*private|private garden|prywatny ogród/i, pl: "Prywatny ogród", en: "Private garden", group: "outdoor", icon: "garden" },
   { key: "garden", test: /^(garden|ogród|jardín|jardin)$|garden\s*-\s*communal|communal garden|landscaped|garden[\s-]*(zones|areas)|green zones|^garden$/i, pl: "Ogród / tereny zielone", en: "Garden / green areas", group: "outdoor", icon: "garden" },
@@ -105,9 +107,11 @@ const RULES: Rule[] = [
   { key: "irrigation", test: /irrigation/i, pl: "System nawadniania ogrodu", en: "Irrigation system", group: "outdoor", icon: "garden" },
   { key: "parquet", test: /parquet/i, pl: "Parkiet", en: "Parquet floors", group: "interior", icon: "home" },
   { key: "ceiling-fans", test: /ceiling fans/i, pl: "Wentylatory sufitowe", en: "Ceiling fans", group: "interior", icon: "snow" },
+  { key: "outdoor-kitchen", test: /outside kitchen|outdoor kitchen|summer kitchen/i, pl: "Kuchnia zewnętrzna", en: "Outdoor kitchen", group: "outdoor", icon: "bbq" },
+  { key: "cctv", test: /video surveillance|cctv/i, pl: "Monitoring wideo", en: "Video surveillance", group: "interior", icon: "shield" },
   { key: "alarm", test: /alarm|security door|reinforced door|armou?red door|security grills/i, pl: "Alarm / drzwi antywłamaniowe", en: "Alarm / security door", group: "interior", icon: "shield" },
   { key: "solar", test: /solar (panels|energy)|aerotherm/i, pl: "Panele słoneczne / aerotermia", en: "Solar / aerothermal energy", group: "interior", icon: "bolt" },
-  { key: "shutters", test: /electric shutters/i, pl: "Rolety elektryczne", en: "Electric shutters", group: "interior", icon: "home" },
+  { key: "shutters", test: /electric shutters|motori[sz]ed (blinds|shutters)|electric blinds/i, pl: "Rolety elektryczne", en: "Electric shutters", group: "interior", icon: "home" },
   { key: "access", test: /disabled access|reduced mobility/i, pl: "Dostęp dla osób z niepełnosprawnościami", en: "Accessible", group: "interior", icon: "home" },
   { key: "renovated", test: /renovated|refurbished/i, pl: "Po remoncie", en: "Renovated", group: "interior", icon: "key" },
   { key: "key-ready", test: /key ready/i, pl: "Gotowe do odbioru", en: "Key ready", group: "interior", icon: "key" },
@@ -197,8 +201,9 @@ export function normalizeFeatures(
   if (out.has("unfurnished") || out.has("part-furnished")) out.delete("furnished");
   if (out.has("parking-spaces") || out.has("garage") || out.has("underground-parking")) out.delete("parking");
   if (out.has("first-line")) out.delete("near-beach");
-  if (property?.pool && !out.has("private-pool") && !out.has("communal-pool") && !out.has("indoor-pool")) {
-    out.set("communal-pool", { key: "communal-pool", label: locale === "en" ? "Pool" : "Basen", group: "outdoor", icon: "pool" });
+  if (out.has("private-pool") || out.has("communal-pool") || out.has("indoor-pool")) out.delete("pool");
+  if (property?.pool && !out.has("private-pool") && !out.has("communal-pool") && !out.has("indoor-pool") && !out.has("pool")) {
+    out.set("pool", { key: "pool", label: locale === "en" ? "Pool" : "Basen", group: "outdoor", icon: "pool" });
   }
   return [...out.values()];
 }
