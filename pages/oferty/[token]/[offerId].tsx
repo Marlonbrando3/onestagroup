@@ -8,9 +8,12 @@ import {
   FaBath,
   FaChevronLeft,
   FaChevronRight,
+  FaEnvelope,
   FaExpand,
   FaHome,
   FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaRegUser,
   FaRulerCombined,
   FaSwimmingPool,
   FaTimes,
@@ -35,6 +38,7 @@ import ProjectUnits from "@/components/offer/ProjectUnits";
 import InterestButton from "@/components/presentation/InterestButton";
 import { getProjectUnits, type ProjectUnit } from "@/lib/projectUnits";
 import type { OfferPdfContact } from "@/lib/offerPdf";
+import { formatPhone } from "@/lib/phone";
 
 type PresentationOfferProps = {
   token: string;
@@ -243,6 +247,15 @@ export default function PresentationOfferPage({
                 </div>
               </section>
 
+              <section className="overflow-hidden rounded-2xl border border-[#ded5c8] bg-white shadow-sm">
+                <div className="px-6 py-7 sm:px-9 sm:pt-9">
+                  <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">Lokalizacja</p>
+                  <h2 className={`${HomePlayfairSans.className} mt-2 text-[32px] font-semibold`}>{locationLine || country}</h2>
+                  <p className="mt-3 text-[12px] leading-6 text-slate-500">{[offer.province, country].filter(Boolean).join(" · ")}</p>
+                </div>
+                <iframe title={`Mapa — ${locationLine || country}`} src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed&z=11`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="h-[380px] w-full border-0 lg:h-[420px]" />
+              </section>
+
               <section className="rounded-2xl border border-[#ded5c8] bg-white px-6 py-7 shadow-sm sm:px-9 sm:py-9">
                 <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">Wyposażenie i udogodnienia</p>
                 <h2 className={`${HomePlayfairSans.className} mt-2 text-[32px] font-semibold`}>Atuty oferty</h2>
@@ -265,14 +278,34 @@ export default function PresentationOfferPage({
               />
             </div>
 
-            <section className="overflow-hidden rounded-2xl border border-[#ded5c8] bg-white shadow-sm lg:sticky lg:top-6">
-              <div className="px-6 py-6 sm:px-8">
-                <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">Lokalizacja</p>
-                <h2 className={`${HomePlayfairSans.className} mt-2 text-[29px] font-semibold`}>{locationLine || country}</h2>
-                <p className="mt-3 text-[12px] leading-6 text-slate-500">{[offer.province, country].filter(Boolean).join(" · ")}</p>
+            {/* Kontakt do agenta — na desktopie jedzie z klientem pod przyklejonym paskiem „Podoba Ci się…”. */}
+            <aside className="overflow-hidden rounded-2xl border border-[#ded5c8] bg-white shadow-sm lg:sticky lg:top-[108px]">
+              <div className="bg-[#182334] px-6 py-6 text-white sm:px-8">
+                <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#d6b66f]">Twój agent Onesta</p>
+                <div className="mt-4 flex items-center gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-[#d6b66f]">
+                    <FaRegUser aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <h2 className="truncate text-[20px] font-extrabold">{contact.name || "Onesta Group"}</h2>
+                    <p className="mt-0.5 text-[11px] text-slate-300">{contact.name ? "Agent prowadzący · Onesta Group" : "Biuro Onesta Group"}</p>
+                  </div>
+                </div>
               </div>
-              <iframe title={`Mapa — ${locationLine || country}`} src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed&z=11`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="h-[360px] w-full border-0" />
-            </section>
+              <div className="grid gap-3 px-6 py-6 sm:px-8">
+                <a href={`tel:${(contact.phone || "+48576652525").replace(/[^+\d]/g, "")}`} className="flex min-h-[50px] items-center gap-3 rounded-xl border border-[#e3d9cb] px-4 text-[14px] font-extrabold text-[#182334] transition hover:border-[#182334]">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f3e7d1] text-[12px] text-[#9b7a36]"><FaPhoneAlt aria-hidden="true" /></span>
+                  {formatPhone(contact.phone || "") || "+48 576 652 525"}
+                </a>
+                <a href={`mailto:${contact.email || "biuro@onesta.com.pl"}`} className="flex min-h-[50px] items-center gap-3 rounded-xl border border-[#e3d9cb] px-4 text-[13px] font-bold text-[#182334] transition hover:border-[#182334]">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f3e7d1] text-[12px] text-[#9b7a36]"><FaEnvelope aria-hidden="true" /></span>
+                  <span className="min-w-0 break-all">{contact.email || "biuro@onesta.com.pl"}</span>
+                </a>
+                <p className="mt-1 text-[11px] leading-5 text-slate-500">
+                  Zadzwoń lub napisz — odpowiemy na pytania o tę ofertę, koszty zakupu i termin oglądania.
+                </p>
+              </div>
+            </aside>
           </div>
         </main>
 
