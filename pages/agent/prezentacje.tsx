@@ -196,7 +196,7 @@ export default function AgentPresentationsPage() {
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#eadbbd] border-t-[#182334]" />
             </div>
           ) : visiblePresentations.length ? (
-            <div className="mt-7 grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+            <div className="mt-7 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {visiblePresentations.map((presentation) => (
                 <article key={presentation.id} className="overflow-hidden rounded-2xl border border-[#ddd3c4] bg-white shadow-[0_12px_35px_rgba(24,35,52,0.07)]">
                   <div className="flex items-start justify-between gap-4 border-b border-[#e8e0d5] px-5 py-5">
