@@ -38,7 +38,6 @@ import ProjectUnits from "@/components/offer/ProjectUnits";
 import { getProjectUnits, type ProjectUnit } from "@/lib/projectUnits";
 import {
   CopyRef,
-  OfferAgents,
   OfferFacts,
   OfferFeatures,
   OfferGallery,
@@ -287,7 +286,6 @@ function Property({
                 locale={locale}
                 onAsk={askAboutOffer}
               />
-              <OfferAgents locale={locale} />
             </aside>
           </div>
         </main>

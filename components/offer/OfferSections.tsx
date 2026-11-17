@@ -404,19 +404,34 @@ export function OfferPriceCard({
             : "0 zł prowizji od kupującego — płacisz cenę z oferty, a my prowadzimy zakup po polsku."}
         </span>
       </p>
-      <div className={styles.actions}>
-        <button type="button" className={styles.primary} onClick={onAsk}>
-          <LuMessageCircle aria-hidden="true" />
-          {en ? "Ask about this property" : "Zapytaj o tę ofertę"}
-        </button>
-        <a className={styles.secondary} href={PHONE.href}>
-          <LuPhone aria-hidden="true" />
-          {PHONE.label}
-        </a>
-        <a className={`${styles.secondary} ${styles.whatsapp}`} href={WHATSAPP} target="_blank" rel="noopener noreferrer">
-          <LuMessageCircle aria-hidden="true" />
-          WhatsApp
-        </a>
+      {/* Twoi doradcy — w miejscu dawnych przycisków (zapytanie, telefon, WhatsApp), żeby karta mieściła się na ekranie. */}
+      <div className="mt-5 border-t border-[#e7e0d4] pt-5">
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">
+          {en ? "Your advisors" : "Twoi doradcy"}
+        </p>
+        <div className="mt-3 grid gap-3">
+          {AGENTS.map((a) => (
+            <div key={a.name} className="flex items-center gap-4 rounded-2xl bg-[#f8f5ef] p-3">
+              <div className="relative h-[68px] w-[68px] shrink-0 overflow-hidden rounded-full bg-white">
+                <Image src={a.image} alt={a.name} fill sizes="68px" style={{ objectFit: "cover", objectPosition: "center 25%" }} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[15px] font-bold text-[#182334]">{a.name}</p>
+                <p className="text-[11px] text-[#536074]">{en ? a.roleEn : a.role}</p>
+                <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[12px] font-semibold">
+                  <a href={`tel:${a.phoneHref}`} className="inline-flex items-center gap-1.5 text-[#182334] hover:text-[#947340]">
+                    <LuPhone aria-hidden="true" className="text-[#947340]" />
+                    {a.phone}
+                  </a>
+                  <a href={`mailto:${a.email}`} className="inline-flex items-center gap-1.5 text-[#182334] hover:text-[#947340]">
+                    <LuMail aria-hidden="true" className="text-[#947340]" />
+                    {en ? "Email" : "E-mail"}
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
