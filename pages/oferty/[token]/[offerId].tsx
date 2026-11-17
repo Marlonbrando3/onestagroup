@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import type { GetServerSideProps } from "next";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FaArrowLeft,
   FaBath,
@@ -68,6 +68,29 @@ export default function PresentationOfferPage({
 }: PresentationOfferProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  // Czy belka „Podoba Ci się ta oferta?” jest już przyklejona do góry (znacznik nad nią zniknął z ekranu).
+  const stickySentinelRef = useRef<HTMLDivElement>(null);
+  const [barStuck, setBarStuck] = useState(false);
+  useEffect(() => {
+    const sentinel = stickySentinelRef.current;
+    if (!sentinel) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      setBarStuck(sentinel.getBoundingClientRect().top < 5);
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
   // Długi opis: najpierw mniej więcej połowa (pełne linie), reszta po kliknięciu „Czytaj dalej”.
   const descriptionParts = (() => {
     if (!description || description.length < 900) return { short: description, rest: "" };
@@ -248,25 +271,35 @@ export default function PresentationOfferPage({
             ))}
           </section>
 
-          {/* Przyklejone 5 px od góry — jedzie z klientem do końca strony. Obok przycisk powrotu do prezentacji. */}
-          <div className="sticky top-[5px] z-30 mt-8 flex items-stretch gap-3 lg:grid lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)] lg:gap-7">
-            <section className="flex min-w-0 flex-1 flex-col items-center gap-3 rounded-2xl border border-[#d9a7ab] bg-[#fdf6f5]/95 px-5 py-3 text-center shadow-[0_12px_34px_rgba(142,36,48,0.18)] backdrop-blur sm:flex-row sm:justify-between sm:gap-4 sm:px-8 sm:py-4 sm:text-left">
-              <div>
-                <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#8e2430]">Podoba Ci się ta oferta?</p>
-                <p className="mt-1 hidden text-[14px] font-bold text-[#26364b] lg:block">Daj znać — agent prześle Ci więcej informacji.</p>
-              </div>
-              <div className="w-full sm:w-[280px] sm:shrink-0">
-                <InterestButton token={token} offerId={String(offer.external_id)} variant="wide" />
-              </div>
-            </section>
+          {/* Belka przyklejona 5 px od góry. Gdy się przyklei (jedzie z klientem), z lewej wysuwa się
+              „Wróć do prezentacji”, a belka zwęża się, żeby zrobić mu miejsce. */}
+          <div ref={stickySentinelRef} aria-hidden="true" className="mt-8 h-px" />
+          <div className="sticky top-[5px] z-30 mx-auto flex max-w-[1240px] items-stretch">
             <Link
               href={`/oferty/${token}`}
               aria-label="Wróć do prezentacji"
-              className="flex shrink-0 items-center justify-center gap-2.5 rounded-2xl border border-[#ded5c8] bg-white/95 px-4 text-[10px] font-extrabold uppercase tracking-[0.1em] text-[#182334] shadow-[0_12px_34px_rgba(24,35,52,0.12)] backdrop-blur transition hover:border-[#182334] hover:bg-[#182334] hover:text-white sm:px-6"
+              tabIndex={barStuck ? 0 : -1}
+              aria-hidden={!barStuck}
+              className={`flex shrink-0 items-center justify-center gap-2.5 overflow-hidden whitespace-nowrap rounded-2xl border border-[#ded5c8] bg-white/95 text-[10px] font-extrabold uppercase tracking-[0.1em] text-[#182334] shadow-[0_12px_34px_rgba(24,35,52,0.12)] backdrop-blur transition-all duration-300 hover:border-[#182334] hover:bg-[#182334] hover:text-white ${
+                barStuck
+                  ? "mr-3 w-[56px] opacity-100 sm:w-[210px] lg:w-[290px]"
+                  : "pointer-events-none mr-0 w-0 border-0 opacity-0"
+              }`}
             >
-              <FaArrowLeft aria-hidden="true" />
+              <FaArrowLeft aria-hidden="true" className="shrink-0" />
               <span className="hidden sm:inline">Wróć do prezentacji</span>
             </Link>
+            <section className="flex min-w-0 flex-1 flex-col items-center gap-3 rounded-2xl border border-[#d9a7ab] bg-[#fdf6f5]/95 px-5 py-3 text-center shadow-[0_12px_34px_rgba(142,36,48,0.18)] backdrop-blur sm:flex-row sm:justify-between sm:gap-4 sm:px-8 sm:py-4 sm:text-left">
+              <div className="min-w-0">
+                <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#8e2430]">Podoba Ci się ta oferta?</p>
+                <p className="mt-1 hidden truncate text-[14px] font-bold text-[#26364b] sm:block">
+                  {barStuck ? "Daj znać — agent prześle Ci więcej informacji." : "Daj znać jednym kliknięciem — agent prześle Ci więcej informacji."}
+                </p>
+              </div>
+              <div className="w-full sm:w-[300px] sm:shrink-0">
+                <InterestButton token={token} offerId={String(offer.external_id)} variant="wide" />
+              </div>
+            </section>
           </div>
 
           <div className="mt-10 grid items-start gap-7 lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)]">
