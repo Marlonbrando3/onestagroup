@@ -17,7 +17,7 @@ import { formatPhone } from "./phone";
 export { formatPhone };
 
 // Broszura PDF oferty (prezentacja klienta / panel agenta).
-// Strona 1: logo, duże zdjęcie, tytuł, cena, parametry, agent. Strona 2: opis i udogodnienia.
+// Strona 1: logo, duże zdjęcie, tytuł, cena, parametry, udogodnienia. Strona 2: opis.
 // Kolejne strony: galeria. Zdjęcia idą przez nasz proxy /api/property-image (ta sama domena),
 // bo bezpośrednie pobranie z serwerów deweloperów blokuje przeglądarka (CORS).
 
@@ -317,39 +317,59 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
     y += 25;
   }
 
-  // Agent + link do oferty online.
-  const contactRows = [contact.name, phone, contact.email].filter(Boolean);
-  const cardTop = Math.max(y, 236);
-  const cardH = 30;
-  doc.setFillColor(INK);
-  doc.roundedRect(MARGIN, cardTop, WIDTH, cardH, 3, 3, "F");
-  font(7, true, GOLD_LIGHT);
-  doc.text("TWÓJ AGENT ONESTA", MARGIN + 7, cardTop + 8, { charSpace: 0.5 });
-  if (contactRows.length) {
-    font(12, true, "#ffffff");
-    doc.text(clean(contact.name || "Onesta Group"), MARGIN + 7, cardTop + 15.5);
-    font(9, false, "#d9e1ec");
-    doc.text([phone, contact.email].filter(Boolean).join("   ·   "), MARGIN + 7, cardTop + 22);
-  } else {
-    font(11, true, "#ffffff");
-    doc.text("Onesta Group", MARGIN + 7, cardTop + 15.5);
-    font(9, false, "#d9e1ec");
-    doc.text("biuro@onesta.com.pl   ·   +48 576 652 525", MARGIN + 7, cardTop + 22);
-  }
-  if (publicUrl) {
-    const label = "Zobacz ofertę online";
-    font(9, true, INK);
-    const w = doc.getTextWidth(label) + 12;
-    const bx = PAGE_W - MARGIN - 7 - w;
-    doc.setFillColor(GOLD_LIGHT);
-    doc.roundedRect(bx, cardTop + 10, w, 10, 5, 5, "F");
-    doc.textWithLink(label, bx + 6, cardTop + 16.6, { url: publicUrl });
+  // Udogodnienia (zamiast karty agenta — agent jest w stopce i na ostatniej stronie).
+  // Polskie nazwy ze wspólnego słownika cech; co nie zmieści się na okładce, idzie na stronę 2.
+  const features = featureValues(offer.features);
+  let featureLabels: string[] = [];
+  try {
+    featureLabels = normalizeFeatures(offer.features, "pl", offer).map((item: any) => clean(item.label));
+  } catch {}
+  if (!featureLabels.length) featureLabels = features.map((feature) => clean(featureLabel(feature)));
+
+  const PILL_H = 8.5;
+  const PILL_GAP = 2.5;
+  // Rysuje pastylki od bieżącego y aż do `limit`; zwraca etykiety, które się nie zmieściły.
+  const drawPills = (labels: string[], limit: number) => {
+    let x = MARGIN;
+    let rowTop = y;
+    for (let index = 0; index < labels.length; index++) {
+      font(9, false, INK);
+      const label = labels[index];
+      const w = Math.min(doc.getTextWidth(label) + 13, WIDTH);
+      if (x + w > MARGIN + WIDTH) {
+        x = MARGIN;
+        rowTop += PILL_H + PILL_GAP;
+      }
+      if (rowTop + PILL_H > limit) {
+        y = rowTop;
+        return labels.slice(index);
+      }
+      doc.setFillColor(PAPER);
+      doc.roundedRect(x, rowTop, w, PILL_H, PILL_H / 2, PILL_H / 2, "F");
+      doc.setFillColor(GOLD);
+      doc.circle(x + 5, rowTop + PILL_H / 2, 0.9, "F");
+      doc.text(label, x + 8.5, rowTop + PILL_H / 2 + 1.3);
+      x += w + PILL_GAP;
+    }
+    y = rowTop + PILL_H;
+    return [] as string[];
+  };
+
+  let restFeatures: string[] = [];
+  if (featureLabels.length) {
+    y = Math.max(y + 4, 0);
+    font(7.5, true, GOLD);
+    doc.text("WYPOSAŻENIE I UDOGODNIENIA", MARGIN, y, { charSpace: 0.6 });
+    y += 7;
+    font(15, true);
+    doc.text("Udogodnienia", MARGIN, y);
+    y += 6;
+    restFeatures = drawPills(featureLabels, BOTTOM);
   }
 
-  // ---------- Strona 2: opis i udogodnienia ----------
+  // ---------- Strona 2: opis (i udogodnienia, które nie zmieściły się na okładce) ----------
   const description = descriptionValue(offer.descriptions);
-  const features = featureValues(offer.features);
-  if (description || features.length) {
+  if (description || restFeatures.length) {
     newPage();
     if (description) {
       sectionTitle("O nieruchomości", "Poznaj tę ofertę");
@@ -358,27 +378,13 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
         y += 3;
       }
     }
-    if (features.length) {
+    if (restFeatures.length) {
       y += 4;
-      sectionTitle("Wyposażenie", "Udogodnienia");
-      const colW = (WIDTH - 6) / 2;
-      // Polskie nazwy cech jak na stronie oferty; gdy słownik nie zna cechy — dotychczasowa etykieta.
-      let labels: string[] = [];
-      try {
-        labels = normalizeFeatures(offer.features, "pl", offer).map((item: any) => clean(item.label));
-      } catch {}
-      if (!labels.length) labels = features.map((feature) => clean(featureLabel(feature)));
-      for (let i = 0; i < labels.length; i += 2) {
-        ensure(9);
-        [labels[i], labels[i + 1]].forEach((label, col) => {
-          if (!label) return;
-          const x = MARGIN + col * (colW + 6);
-          doc.setFillColor(GOLD);
-          doc.circle(x + 1.5, y - 1.3, 0.9, "F");
-          font(9.5, false, INK);
-          doc.text(doc.splitTextToSize(label, colW - 6)[0], x + 5, y);
-        });
-        y += 7;
+      sectionTitle("Wyposażenie", "Udogodnienia (cd.)");
+      let rest = restFeatures;
+      while (rest.length) {
+        rest = drawPills(rest, BOTTOM);
+        if (rest.length) newPage();
       }
     }
   }
