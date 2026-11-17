@@ -416,7 +416,9 @@ export default function PresentationEditor({
                 </h2>
               </div>
               <p className="text-[11px] leading-5 text-slate-500">
-                Usuń ofertę krzyżykiem, jeśli nie ma trafić do klienta.
+                Usuń ofertę, klikając{" "}
+                <FaRegTrashAlt aria-label="ikonę kosza" className="inline-block align-[-2px] text-[12px] text-red-500" />, jeśli nie ma
+                trafić do klienta.
               </p>
             </div>
 
