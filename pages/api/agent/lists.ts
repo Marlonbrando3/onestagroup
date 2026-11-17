@@ -37,7 +37,7 @@ export default async function handler(
     const { data, error } = await supabaseServer
       .from("agent_offer_lists")
       .select(
-        "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,offers,created_at,updated_at",
+        "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at",
       )
       .order("updated_at", { ascending: false });
 
@@ -61,6 +61,10 @@ export default async function handler(
   const contactName = cleanText(req.body?.contactName, 120);
   const contactEmail = cleanText(req.body?.contactEmail, 180).toLowerCase();
   const contactPhone = cleanText(req.body?.contactPhone, 60);
+  // Zwrot i imię klienta do nagłówka prezentacji („Oferty wybrane dla Pana Jana Kowalskiego”).
+  const salutationRaw = String(req.body?.clientSalutation || "").trim().toLowerCase();
+  const clientSalutation = ["pani", "pan", "panstwo"].includes(salutationRaw) ? salutationRaw : null;
+  const clientName = cleanText(req.body?.clientName, 120) || null;
 
   if (!presentationName) {
     return res.status(400).json({ error: "Podaj nazwę prezentacji" });
@@ -128,6 +132,8 @@ export default async function handler(
         contact_name: contactName,
         contact_email: contactEmail,
         contact_phone: contactPhone,
+        client_salutation: clientSalutation,
+        client_name: clientName,
         offers: orderedOffers,
       })
       .select("id,public_token,created_at")

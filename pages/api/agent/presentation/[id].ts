@@ -34,7 +34,7 @@ export default async function handler(
   const { data: presentation, error: presentationError } = await supabaseServer
     .from("agent_offer_lists")
     .select(
-      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,offers,created_at,updated_at",
+      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at",
     )
     .eq("id", id)
     .maybeSingle();
@@ -54,6 +54,10 @@ export default async function handler(
   const contactName = cleanText(req.body?.contactName, 120);
   const contactEmail = cleanText(req.body?.contactEmail, 180).toLowerCase();
   const contactPhone = cleanText(req.body?.contactPhone, 60);
+  // Zwrot i imię klienta do nagłówka prezentacji („Oferty wybrane dla Pana Jana Kowalskiego”).
+  const salutationRaw = String(req.body?.clientSalutation || "").trim().toLowerCase();
+  const clientSalutation = ["pani", "pan", "panstwo"].includes(salutationRaw) ? salutationRaw : null;
+  const clientName = cleanText(req.body?.clientName, 120) || null;
   const requestedIds: string[] = Array.isArray(req.body?.propertyIds)
     ? req.body.propertyIds.map((value: unknown) => String(value || "").trim())
     : [];
@@ -103,12 +107,14 @@ export default async function handler(
       contact_name: contactName,
       contact_email: contactEmail,
       contact_phone: contactPhone,
+      client_salutation: clientSalutation,
+      client_name: clientName,
       offers: orderedOffers,
       updated_at: updatedAt,
     })
     .eq("id", id)
     .select(
-      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,offers,created_at,updated_at",
+      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at",
     )
     .single();
 

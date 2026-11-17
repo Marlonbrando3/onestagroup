@@ -36,6 +36,8 @@ export default function PresentationEditor({
   const [currentId, setCurrentId] = useState(presentationId || "");
   const [offers, setOffers] = useState<AgentOffer[]>([]);
   const [presentationName, setPresentationName] = useState("");
+  const [clientSalutation, setClientSalutation] = useState<"" | "pani" | "pan" | "panstwo">("");
+  const [clientName, setClientName] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
@@ -106,6 +108,8 @@ export default function PresentationEditor({
           setPublicToken(presentation?.public_token || "");
           setOffers(Array.isArray(presentation?.offers) ? presentation.offers : []);
           setPresentationName(presentation?.presentation_name || "");
+          setClientSalutation(presentation?.client_salutation || "");
+          setClientName(presentation?.client_name || "");
           setContactName(presentation?.contact_name || presentation?.agent_name || "");
           setContactEmail(presentation?.contact_email || presentation?.agent_email || "");
           setContactPhone(presentation?.contact_phone || "");
@@ -167,6 +171,8 @@ export default function PresentationEditor({
           },
           body: JSON.stringify({
             presentationName,
+            clientSalutation,
+            clientName,
             contactName,
             contactEmail,
             contactPhone,
@@ -247,10 +253,10 @@ export default function PresentationEditor({
                 {presentationId ? "Edycja prezentacji" : "Ostatni krok"}
               </p>
               <h1 className="mt-2 text-[27px] font-extrabold leading-tight">
-                Dane kontaktowe agenta
+                Dane prezentacji
               </h1>
               <p className="mt-3 text-[11px] leading-5 text-slate-300">
-                Te dane zobaczy klient na swojej publicznej liście ofert.
+                Zwrot do klienta i dane agenta zobaczy klient na swojej stronie z ofertami.
               </p>
             </div>
 
@@ -271,6 +277,50 @@ export default function PresentationEditor({
               </label>
 
               <div className="my-1 border-t border-[#e8e0d5]" />
+
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9b7a36]">Dla kogo jest prezentacja</p>
+              <div className="grid gap-2 text-[11px] font-bold text-[#334155]">
+                Zwrot do klienta
+                <div className="grid grid-cols-4 gap-1.5" role="radiogroup" aria-label="Zwrot do klienta">
+                  {([
+                    ["pani", "Pani"],
+                    ["pan", "Pan"],
+                    ["panstwo", "Państwo"],
+                    ["", "Bez zwrotu"],
+                  ] as const).map(([value, label]) => (
+                    <button
+                      key={label}
+                      type="button"
+                      role="radio"
+                      aria-checked={clientSalutation === value}
+                      onClick={() => setClientSalutation(value)}
+                      className={`min-h-[40px] rounded-xl border px-1 text-[10px] font-extrabold transition ${
+                        clientSalutation === value
+                          ? "border-[#182334] bg-[#182334] text-white"
+                          : "border-[#ddd3c4] bg-white text-[#526173] hover:border-[#182334]"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <label className="grid gap-2 text-[11px] font-bold text-[#334155]">
+                Imię i nazwisko klienta
+                <input
+                  maxLength={120}
+                  value={clientName}
+                  onChange={(event) => setClientName(event.target.value)}
+                  className="presentationInput"
+                  placeholder={clientSalutation === "panstwo" ? "np. Anna i Jan Kowalscy" : "np. Jan Kowalski"}
+                />
+                <span className="text-[9px] font-medium leading-4 text-slate-400">
+                  Pojawi się w nagłówku strony, którą zobaczy klient. Można zostawić puste.
+                </span>
+              </label>
+
+              <div className="my-1 border-t border-[#e8e0d5]" />
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9b7a36]">Agent prowadzący</p>
 
               <label className="grid gap-2 text-[11px] font-bold text-[#334155]">
                 Imię i nazwisko

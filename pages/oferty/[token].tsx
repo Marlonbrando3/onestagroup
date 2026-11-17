@@ -1,10 +1,14 @@
 import Head from "next/head";
 import type { GetServerSideProps } from "next";
-import { FaEnvelope, FaPhoneAlt, FaRegUser } from "react-icons/fa";
+import Image from "next/image";
+import { FaCheck, FaEnvelope, FaPhoneAlt, FaRegUser } from "react-icons/fa";
 import Footer from "@/components/Footer";
 import PropertyCard from "@/components/SearchEngine/PropertyCard";
 import InterestButton from "@/components/presentation/InterestButton";
-import { HomeMontserratSans } from "@/fonts/homeFonts";
+import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
+import { imageUrls } from "@/lib/presentationOffer";
+import { propertyImageUrl } from "@/lib/propertyImages";
+import { formatPhone } from "@/lib/phone";
 import type { AgentOffer } from "@/lib/agentOffers";
 import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
@@ -16,7 +20,17 @@ type PublicOfferListProps = {
   contactName: string;
   contactEmail: string;
   contactPhone: string;
+  clientSalutation: "pani" | "pan" | "panstwo" | null;
+  clientName: string;
+  coverImages: string[];
 };
+
+// Teksty nagłówka zależnie od zwrotu wybranego przez agenta.
+const GREETING = {
+  pani: { title: "Pani", withYou: "z Panią", yours: "Pani", label: "Pani" },
+  pan: { title: "Pana", withYou: "z Panem", yours: "Pana", label: "Pan" },
+  panstwo: { title: "Państwa", withYou: "z Państwem", yours: "Państwa", label: "Państwo" },
+} as const;
 
 export default function PublicOfferList({
   token,
@@ -25,7 +39,14 @@ export default function PublicOfferList({
   contactName,
   contactEmail,
   contactPhone,
+  clientSalutation,
+  clientName,
+  coverImages,
 }: PublicOfferListProps) {
+  const greeting = clientSalutation ? GREETING[clientSalutation] : null;
+  const claim = greeting
+    ? `Po rozmowie ${greeting.withYou} wyselekcjonowaliśmy oferty, które — wierzymy — spełnią ${greeting.yours} oczekiwania.`
+    : "Po naszej rozmowie wyselekcjonowaliśmy oferty, które — wierzymy — spełnią Twoje oczekiwania.";
   const formattedDate = new Intl.DateTimeFormat("pl-PL", {
     day: "2-digit",
     month: "long",
@@ -35,7 +56,7 @@ export default function PublicOfferList({
   return (
     <>
       <Head>
-        <title>Oferty wybrane dla Ciebie | Onesta Group</title>
+        <title>{clientName ? `Oferty dla: ${greeting ? `${greeting.label} ` : ""}${clientName}` : greeting ? `Oferty wybrane dla ${greeting.title}` : "Oferty wybrane dla Ciebie"} | Onesta Group</title>
         <meta
           name="description"
           content="Indywidualna lista nieruchomości przygotowana przez Onesta Group."
@@ -43,19 +64,84 @@ export default function PublicOfferList({
         <meta name="robots" content="noindex,nofollow" />
       </Head>
 
-      <main className={`${HomeMontserratSans.className} min-h-screen bg-[#f5f1ea] pb-20 pt-8 text-[#182334] md:pt-10`}>
-        <section className="mx-auto w-11/12 max-w-7xl overflow-hidden rounded-[24px] bg-[#182334] px-6 py-9 text-white shadow-[0_20px_60px_rgba(24,35,52,0.16)] md:px-10 md:py-12">
-          <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#d6b66f]">Onesta Group</p>
-          <div className="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-            <div>
-              <h1 className="text-[34px] font-extrabold tracking-[-0.04em] md:text-[48px]">Oferty wybrane dla Ciebie</h1>
-              <p className="mt-4 max-w-[720px] text-[14px] leading-7 text-slate-300">Poniżej znajduje się indywidualna lista nieruchomości przygotowana przez agenta Onesta.</p>
+      <main className={`${HomeMontserratSans.className} min-h-screen bg-[#f5f1ea] pb-20 pt-6 text-[#182334] md:pt-8`}>
+        {/* Logo i data */}
+        <div className="mx-auto flex w-11/12 max-w-7xl items-center justify-between gap-4">
+          <div className="relative h-[46px] w-[150px]">
+            <Image src="/logotype_full_new.svg" alt="Onesta Group" fill sizes="150px" className="object-contain object-left" priority />
+          </div>
+          <p className="text-right text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9b7a36]">
+            Prezentacja ofert<span className="block text-[10px] font-semibold normal-case tracking-normal text-slate-500">{formattedDate}</span>
+          </p>
+        </div>
+
+        {/* Nagłówek prezentacji */}
+        <section className="mx-auto mt-6 grid w-11/12 max-w-7xl overflow-hidden rounded-[24px] bg-[#182334] text-white shadow-[0_20px_60px_rgba(24,35,52,0.16)] lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+          <div className="relative px-6 py-10 sm:px-10 md:py-14 lg:px-14">
+            <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-[#d6b66f]/10 blur-2xl" />
+            <p className="relative text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#d6b66f]">
+              {clientName ? "Prezentacja przygotowana dla" : "Indywidualna prezentacja ofert"}
+            </p>
+            <h1 className={`${HomePlayfairSans.className} relative mt-4 text-[36px] font-semibold leading-[1.06] tracking-[-0.02em] md:text-[52px]`}>
+              {clientName
+                ? `${greeting ? `${greeting.label} ` : ""}${clientName}`
+                : greeting
+                  ? `Oferty wybrane dla ${greeting.title}`
+                  : "Oferty wybrane dla Ciebie"}
+            </h1>
+            <div className="relative mt-6 h-[3px] w-16 rounded-full bg-[#d6b66f]" aria-hidden="true" />
+            <p className="relative mt-6 max-w-[620px] text-[16px] leading-8 text-slate-200 md:text-[18px]">{claim}</p>
+            <ul className="relative mt-7 grid gap-2.5 text-[13px] text-slate-300">
+              {[
+                "Każdą ofertę otworzysz, by zobaczyć zdjęcia, opis i lokalizację.",
+                "Przycisk „Interesuje mnie ta oferta” — jedno kliknięcie i agent prześle więcej informacji.",
+                "0 zł prowizji dla kupującego i obsługa po polsku od pierwszej rozmowy do odbioru kluczy.",
+              ].map((point) => (
+                <li key={point} className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#d6b66f] text-[8px] text-[#182334]">
+                    <FaCheck aria-hidden="true" />
+                  </span>
+                  {point}
+                </li>
+              ))}
+            </ul>
+            <div className="relative mt-8 flex flex-wrap gap-3">
+              <div className="rounded-xl border border-white/15 bg-white/5 px-5 py-3">
+                <strong className="text-[24px] text-[#d6b66f]">{offers.length}</strong>
+                <span className="ml-2 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-300">
+                  {offers.length === 1 ? "oferta" : offers.length % 10 >= 2 && offers.length % 10 <= 4 && (offers.length % 100 < 10 || offers.length % 100 >= 20) ? "oferty" : "ofert"}
+                </span>
+              </div>
+              {contactName ? (
+                <div className="rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-[12px] text-slate-300">
+                  Przygotował(a)
+                  <strong className="block text-[14px] text-white">{contactName}</strong>
+                </div>
+              ) : null}
             </div>
-            <div className="shrink-0 rounded-xl border border-white/15 bg-white/5 px-5 py-4">
-              <strong className="text-[25px] text-[#d6b66f]">{offers.length}</strong>
-              <span className="ml-2 text-[11px] uppercase tracking-[0.1em] text-slate-300">ofert</span>
-              <p className="mt-1 text-[10px] text-slate-400">Lista z {formattedDate}</p>
-            </div>
+          </div>
+
+          {/* Zdjęcia z wybranych ofert */}
+          <div className="relative hidden min-h-[420px] lg:block">
+            {coverImages.length ? (
+              <div className={`absolute inset-0 grid gap-1 ${coverImages.length > 1 ? "grid-rows-2" : ""} ${coverImages.length > 2 ? "grid-cols-2" : ""}`}>
+                {coverImages.slice(0, 3).map((image, index) => (
+                  <div key={image} className={`relative overflow-hidden ${coverImages.length > 2 && index === 0 ? "col-span-2" : ""}`}>
+                    <img
+                      src={propertyImageUrl(image, "/logotype_full_new.png")}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 h-full w-full object-cover"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-[#2a3a52] to-[#182334]" />
+            )}
+            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#182334] via-[#182334]/10 to-transparent" />
           </div>
         </section>
 
@@ -82,7 +168,7 @@ export default function PublicOfferList({
               ) : null}
               {contactPhone ? (
                 <a href={`tel:${contactPhone.replace(/\s+/g, "")}`} className="flex min-h-[43px] items-center justify-center gap-2 rounded-full bg-[#d6b66f] px-5 text-[10px] font-extrabold uppercase tracking-[0.08em] text-[#182334] transition hover:bg-[#182334] hover:text-white">
-                  <FaPhoneAlt aria-hidden="true" /> {contactPhone}
+                  <FaPhoneAlt aria-hidden="true" /> {formatPhone(contactPhone)}
                 </a>
               ) : null}
             </div>
@@ -141,7 +227,7 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
   const { data, error } = await supabaseServer
     .from("agent_offer_lists")
     .select(
-      "offers,created_at,agent_name,agent_email,contact_name,contact_email,contact_phone",
+      "offers,created_at,agent_name,agent_email,contact_name,contact_email,contact_phone,client_salutation,client_name",
     )
     .eq("public_token", token)
     .maybeSingle();
@@ -158,6 +244,15 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
       contactName: data.contact_name || data.agent_name || "",
       contactEmail: data.contact_email || data.agent_email || "",
       contactPhone: data.contact_phone || "",
+      clientSalutation: ["pani", "pan", "panstwo"].includes(String(data.client_salutation))
+        ? (data.client_salutation as "pani" | "pan" | "panstwo")
+        : null,
+      clientName: String(data.client_name || "").trim(),
+      // Pierwsze zdjęcia z trzech pierwszych ofert — do kolażu w nagłówku.
+      coverImages: (data.offers as AgentOffer[])
+        .map((offer) => imageUrls(offer.images)[0])
+        .filter(Boolean)
+        .slice(0, 3),
     },
   };
 };
