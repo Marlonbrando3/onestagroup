@@ -222,6 +222,63 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
     y += 9;
   };
 
+  // Udogodnienia (zamiast karty agenta — agent jest w stopce i na ostatniej stronie).
+  // Polskie nazwy ze wspólnego słownika cech; co nie zmieści się na okładce, idzie na stronę 2.
+  const features = featureValues(offer.features);
+  let featureLabels: string[] = [];
+  try {
+    featureLabels = normalizeFeatures(offer.features, "pl", offer).map((item: any) => clean(item.label));
+  } catch {}
+  if (!featureLabels.length) featureLabels = features.map((feature) => clean(featureLabel(feature)));
+
+  // Rozmiar pastylek dobierany niżej tak, żeby wszystkie udogodnienia zmieściły się na okładce.
+  let PILL_H = 8.5;
+  let PILL_FONT = 9;
+  const PILL_GAP = 2.5;
+  // Rysuje pastylki od bieżącego y aż do `limit`; zwraca etykiety, które się nie zmieściły.
+  const drawPills = (labels: string[], limit: number) => {
+    let x = MARGIN;
+    let rowTop = y;
+    for (let index = 0; index < labels.length; index++) {
+      font(PILL_FONT, false, INK);
+      const label = labels[index];
+      const w = Math.min(doc.getTextWidth(label) + PILL_H + 4.5, WIDTH);
+      if (x + w > MARGIN + WIDTH) {
+        x = MARGIN;
+        rowTop += PILL_H + PILL_GAP;
+      }
+      if (rowTop + PILL_H > limit) {
+        y = rowTop;
+        return labels.slice(index);
+      }
+      doc.setFillColor(PAPER);
+      doc.roundedRect(x, rowTop, w, PILL_H, PILL_H / 2, PILL_H / 2, "F");
+      doc.setFillColor(GOLD);
+      doc.circle(x + PILL_H / 2 + 0.8, rowTop + PILL_H / 2, 0.9, "F");
+      doc.text(label, x + PILL_H / 2 + 4.3, rowTop + PILL_H / 2 + PILL_FONT * 0.14);
+      x += w + PILL_GAP;
+    }
+    y = rowTop + PILL_H;
+    return [] as string[];
+  };
+
+
+  // Ile rzędów pastylek zajmą etykiety przy danym rozmiarze czcionki.
+  const pillRows = (labels: string[], size: number, height: number) => {
+    let rows = labels.length ? 1 : 0;
+    let x = MARGIN;
+    labels.forEach((label) => {
+      font(size, false, INK);
+      const w = Math.min(doc.getTextWidth(label) + height + 4.5, WIDTH);
+      if (x + w > MARGIN + WIDTH) {
+        rows += 1;
+        x = MARGIN;
+      }
+      x += w + PILL_GAP;
+    });
+    return rows;
+  };
+
   // ---------- Strona 1: okładka ----------
   drawLogo(MARGIN, 11, 11);
   font(7.5, true, GOLD);
@@ -230,7 +287,25 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
   doc.text(date, PAGE_W - MARGIN, 20, { align: "right" });
 
   const heroTop = 30;
-  const heroH = 118;
+  // Wysokość zdjęcia: domyślnie 118 mm, mniejsza, gdy udogodnień jest dużo — wszystkie mają być na okładce.
+  font(20, true);
+  const titleLineCount = Math.min(3, doc.splitTextToSize(clean(title), WIDTH - 60).length);
+  const hasFacts = [offer.surface_built, offer.beds, offer.baths, offer.surface_plot, offer.distance_to_sea_m, offer.pool]
+    .some((value) => value != null && (typeof value === "boolean" || Number(value) > 0));
+  const textBlockH = 12 + 8 + titleLineCount * 8.2 + 9 + (hasFacts ? 25 : 0);
+  const pillsBlockH = (rows: number) => (rows ? 4 + 7 + 6 + rows * (PILL_H + PILL_GAP) - PILL_GAP : 0);
+  const MIN_HERO = 72;
+  const heroFor = () =>
+    Math.min(118, BOTTOM - heroTop - textBlockH - pillsBlockH(pillRows(featureLabels, PILL_FONT, PILL_H)));
+  if (heroFor() < MIN_HERO) {
+    PILL_FONT = 8;
+    PILL_H = 7.5;
+  }
+  if (heroFor() < MIN_HERO) {
+    PILL_FONT = 7.5;
+    PILL_H = 7;
+  }
+  const heroH = Math.max(MIN_HERO, Math.floor(heroFor()));
   if (photos[0]) {
     doc.addImage(coverCrop(photos[0], PAGE_W, heroH), "JPEG", 0, heroTop, PAGE_W, heroH);
   } else {
@@ -316,44 +391,6 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
     });
     y += 25;
   }
-
-  // Udogodnienia (zamiast karty agenta — agent jest w stopce i na ostatniej stronie).
-  // Polskie nazwy ze wspólnego słownika cech; co nie zmieści się na okładce, idzie na stronę 2.
-  const features = featureValues(offer.features);
-  let featureLabels: string[] = [];
-  try {
-    featureLabels = normalizeFeatures(offer.features, "pl", offer).map((item: any) => clean(item.label));
-  } catch {}
-  if (!featureLabels.length) featureLabels = features.map((feature) => clean(featureLabel(feature)));
-
-  const PILL_H = 8.5;
-  const PILL_GAP = 2.5;
-  // Rysuje pastylki od bieżącego y aż do `limit`; zwraca etykiety, które się nie zmieściły.
-  const drawPills = (labels: string[], limit: number) => {
-    let x = MARGIN;
-    let rowTop = y;
-    for (let index = 0; index < labels.length; index++) {
-      font(9, false, INK);
-      const label = labels[index];
-      const w = Math.min(doc.getTextWidth(label) + 13, WIDTH);
-      if (x + w > MARGIN + WIDTH) {
-        x = MARGIN;
-        rowTop += PILL_H + PILL_GAP;
-      }
-      if (rowTop + PILL_H > limit) {
-        y = rowTop;
-        return labels.slice(index);
-      }
-      doc.setFillColor(PAPER);
-      doc.roundedRect(x, rowTop, w, PILL_H, PILL_H / 2, PILL_H / 2, "F");
-      doc.setFillColor(GOLD);
-      doc.circle(x + 5, rowTop + PILL_H / 2, 0.9, "F");
-      doc.text(label, x + 8.5, rowTop + PILL_H / 2 + 1.3);
-      x += w + PILL_GAP;
-    }
-    y = rowTop + PILL_H;
-    return [] as string[];
-  };
 
   let restFeatures: string[] = [];
   if (featureLabels.length) {
