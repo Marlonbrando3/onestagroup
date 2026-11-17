@@ -9,7 +9,13 @@ import {
   featureValues,
   imageUrls,
 } from "./presentationOffer";
-import { optimizedPropertyImageUrl } from "./propertyImages";
+import { propertyImageUrl } from "./propertyImages";
+import { normalizeFeatures } from "./propertyFeatures";
+
+// Broszura PDF oferty (prezentacja klienta / panel agenta).
+// Strona 1: logo, duże zdjęcie, tytuł, cena, parametry, agent. Strona 2: opis i udogodnienia.
+// Kolejne strony: galeria. Zdjęcia idą przez nasz proxy /api/property-image (ta sama domena),
+// bo bezpośrednie pobranie z serwerów deweloperów blokuje przeglądarka (CORS).
 
 export type OfferPdfContact = { name: string; email: string; phone: string };
 type PdfInput = {
@@ -17,15 +23,21 @@ type PdfInput = {
   contact: OfferPdfContact;
   publicUrl?: string;
 };
-type Photo = { data: string; width: number; height: number };
+type Photo = { canvas: HTMLCanvasElement; width: number; height: number };
 
 const INK = "#182334";
 const GOLD = "#9b7a36";
-const MUTED = "#526173";
-const PAPER = "#f4f1eb";
+const GOLD_LIGHT = "#d6b66f";
+const MUTED = "#5f6b7a";
+const LINE = "#e3d9ca";
+const PAPER = "#f6f2ec";
+const PAGE_W = 210;
 const MARGIN = 16;
-const WIDTH = 178;
-const BOTTOM = 270;
+const WIDTH = PAGE_W - MARGIN * 2;
+const BOTTOM = 272;
+const MAX_PHOTOS = 9;
+const LOGO_SRC = "/logotype_full_new.png";
+const PROXY_VERSION = "2";
 
 let fontsPromise: Promise<string[]> | undefined;
 function loadFonts() {
@@ -35,10 +47,7 @@ function loadFonts() {
         const response = await fetch(`/fonts/pdf/NotoSans-${weight}.ttf`, {
           signal: AbortSignal.timeout(20000),
         });
-        if (!response.ok)
-          throw new Error(
-            "Nie udało się załadować czcionek PDF. Spróbuj ponownie.",
-          );
+        if (!response.ok) throw new Error("font");
         const bytes = new Uint8Array(await response.arrayBuffer());
         let binary = "";
         for (let i = 0; i < bytes.length; i += 8192) {
@@ -48,45 +57,44 @@ function loadFonts() {
       }),
     ).catch(() => {
       fontsPromise = undefined;
-      throw new Error(
-        "Nie udało się załadować czcionek PDF. Spróbuj ponownie.",
-      );
+      throw new Error("Nie udało się załadować czcionek PDF. Spróbuj ponownie.");
     });
   }
   return fontsPromise;
 }
 
-async function loadPhoto(source: string): Promise<Photo | null> {
+// Zdjęcie z zewnętrznego serwera zawsze przez nasz proxy (ta sama domena = brak blokady CORS).
+function sameOriginImageUrl(source: unknown) {
+  const url = propertyImageUrl(source);
+  if (/^https?:\/\//i.test(url) && !url.startsWith(window.location.origin)) {
+    return `/api/property-image?url=${encodeURIComponent(url)}&v=${PROXY_VERSION}`;
+  }
+  return url;
+}
+
+async function loadCanvas(url: string, maxSide: number, background?: string): Promise<Photo | null> {
   let objectUrl = "";
   try {
-    // Use the existing allow-listed proxy: no cross-origin canvas or arbitrary server fetches.
-    const response = await fetch(optimizedPropertyImageUrl(source), {
-      signal: AbortSignal.timeout(20000),
-    });
+    const response = await fetch(url, { signal: AbortSignal.timeout(20000) });
     if (!response.ok) return null;
     const blob = await response.blob();
-    if (blob.size > 25 * 1024 * 1024) return null;
+    if (!blob.type.startsWith("image/") || blob.size > 25 * 1024 * 1024) return null;
     objectUrl = URL.createObjectURL(blob);
     const img = new Image();
     img.src = objectUrl;
     await img.decode();
-    const scale = Math.min(
-      1,
-      1600 / Math.max(img.naturalWidth, img.naturalHeight),
-    );
+    const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
     const canvas = document.createElement("canvas");
     canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
     canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
     const context = canvas.getContext("2d");
     if (!context) return null;
-    context.fillStyle = "#ffffff";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    if (background) {
+      context.fillStyle = background;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
     context.drawImage(img, 0, 0, canvas.width, canvas.height);
-    return {
-      data: canvas.toDataURL("image/jpeg", 0.85),
-      width: canvas.width,
-      height: canvas.height,
-    };
+    return { canvas, width: canvas.width, height: canvas.height };
   } catch {
     return null;
   } finally {
@@ -94,271 +102,290 @@ async function loadPhoto(source: string): Promise<Photo | null> {
   }
 }
 
+// Środkowy kadr zdjęcia w proporcjach ramki (jak object-fit: cover).
+function coverCrop(photo: Photo, frameW: number, frameH: number) {
+  const target = frameW / frameH;
+  let sw = photo.width;
+  let sh = photo.height;
+  if (sw / sh > target) sw = Math.round(sh * target);
+  else sh = Math.round(sw / target);
+  const canvas = document.createElement("canvas");
+  canvas.width = sw;
+  canvas.height = sh;
+  canvas
+    .getContext("2d")!
+    .drawImage(photo.canvas, (photo.width - sw) / 2, (photo.height - sh) / 2, sw, sh, 0, 0, sw, sh);
+  return canvas.toDataURL("image/jpeg", 0.86);
+}
+
 export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
-  const sources = imageUrls(offer.images).slice(0, 7);
-  const [fonts, photoResults] = await Promise.all([
+  const sources = imageUrls(offer.images).slice(0, MAX_PHOTOS);
+  const [fonts, logo, photoResults] = await Promise.all([
     loadFonts(),
-    // At most seven images per brochure keeps downloads practical on mobile.
-    Promise.all(sources.map(loadPhoto)),
+    loadCanvas(LOGO_SRC, 1100),
+    Promise.all(sources.map((source) => loadCanvas(sameOriginImageUrl(source), 1800, "#ffffff"))),
   ]);
   const photos = photoResults.filter((photo): photo is Photo => photo !== null);
-  const doc = new jsPDF({
-    unit: "mm",
-    format: "a4",
-    compress: true,
-    putOnlyUsedFonts: true,
-  });
+
+  const doc = new jsPDF({ unit: "mm", format: "a4", compress: true, putOnlyUsedFonts: true });
   fonts.forEach((font, index) => {
     const file = `NotoSans-${index ? "Bold" : "Regular"}.ttf`;
     doc.addFileToVFS(file, font);
     doc.addFont(file, "NotoSans", index ? "bold" : "normal");
   });
-  const type =
-    propertyTypeLabel.pl[offer.type || ""] || offer.type || "Nieruchomość";
-  const country =
-    getCountryLabel(offer.country) || offer.country || "Hiszpania";
-  const title =
-    validTitleOrEmpty(offer.title) ||
-    `${type} - ${offer.town || offer.province || country}`;
-  const reference = String(offer.ref || offer.external_id);
-  const date = new Date().toLocaleDateString("pl-PL");
-  doc.setFont("NotoSans", "normal");
-  doc.setFontSize(10);
-  const contactLines = [contact.name, contact.phone, contact.email]
-    .filter(Boolean)
-    .flatMap((value) => doc.splitTextToSize(value, WIDTH - 12) as string[]);
-  const contactHeight = contactLines.length ? 13 + contactLines.length * 5 : 0;
-  doc.setProperties({
-    title,
-    subject: `Oferta ${reference}`,
-    author: "Onesta Group",
-    creator: "Onesta Group",
-  });
-  let y = 0;
+  const logoData = logo ? logo.canvas.toDataURL("image/png") : null;
 
-  function font(size = 10, bold = false, color = INK) {
+  const type = propertyTypeLabel.pl[offer.type || ""] || offer.type || "Nieruchomość";
+  const country = getCountryLabel(offer.country) || offer.country || "Hiszpania";
+  const title = validTitleOrEmpty(offer.title) || `${type} — ${offer.town || offer.province || country}`;
+  const reference = String(offer.ref || offer.external_id);
+  const location = [...new Set([offer.town, offer.province, country].filter(Boolean))].join(" · ");
+  const date = new Date().toLocaleDateString("pl-PL");
+
+  doc.setProperties({ title, subject: `Oferta ${reference}`, author: "Onesta Group", creator: "Onesta Group" });
+
+  let y = 0;
+  const font = (size = 10, bold = false, color = INK) => {
     doc.setFont("NotoSans", bold ? "bold" : "normal");
     doc.setFontSize(size);
     doc.setTextColor(color);
-  }
-  function page(add = true) {
-    if (add) doc.addPage();
-    doc.setFillColor(INK);
-    doc.rect(0, 0, 210, 3, "F");
-    font(17, true);
-    doc.text("ONESTA", MARGIN, 18);
-    font(7, false, GOLD);
-    doc.text("G R O U P", MARGIN, 23);
-    font(8, false, MUTED);
-    doc.text("NIERUCHOMOŚCI WYBRANE DLA CIEBIE", 194, 18, { align: "right" });
-    doc.setDrawColor("#ddd3c4");
-    doc.line(MARGIN, 28, 194, 28);
-    y = 39;
-  }
-  function space(height: number) {
-    if (y + height > BOTTOM) page();
-  }
-  function text(
-    value: string,
-    size = 10,
-    bold = false,
-    color = INK,
-    width = WIDTH,
-  ) {
-    font(size, bold, color);
-    const lines: string[] = doc.splitTextToSize(
-      value.replace(/\u00a0/g, " "),
-      width,
-    );
-    const lineHeight = size * 0.48;
-    for (const line of lines) {
-      space(lineHeight);
-      font(size, bold, color);
-      doc.text(line, MARGIN, y);
-      y += lineHeight;
+  };
+  const lineHeight = (size: number) => size * 0.42;
+  const clean = (value: string) => value.replace(/ /g, " ");
+
+  const drawLogo = (x: number, top: number, height: number, align: "left" | "right" = "left") => {
+    if (logoData && logo) {
+      const w = (logo.width / logo.height) * height;
+      doc.addImage(logoData, "PNG", align === "right" ? x - w : x, top, w, height);
+      return;
     }
-  }
-  function heading(label: string) {
-    space(20);
-    y += 3;
-    text(label, 17, true);
-    y += 5;
-  }
-  function photo(
-    image: Photo,
-    x: number,
-    top: number,
-    width: number,
-    height: number,
-  ) {
-    // Fit the complete photograph instead of cutting off rooms or floor plans.
+    font(height * 1.6, true);
+    doc.text("ONESTA", x, top + height * 0.8, { align });
+  };
+
+  // Nagłówek kolejnych stron: małe logo + numer oferty.
+  const innerHeader = () => {
+    drawLogo(MARGIN, 11, 8);
+    font(8, false, MUTED);
+    doc.text(`REF. ${reference}`, PAGE_W - MARGIN, 16.5, { align: "right" });
+    doc.setDrawColor(LINE);
+    doc.line(MARGIN, 24, PAGE_W - MARGIN, 24);
+    y = 36;
+  };
+  const newPage = () => {
+    doc.addPage();
+    innerHeader();
+  };
+  const ensure = (height: number) => {
+    if (y + height > BOTTOM) newPage();
+  };
+  const paragraph = (value: string, size = 10, color = MUTED, width = WIDTH, x = MARGIN) => {
+    font(size, false, color);
+    const lines: string[] = doc.splitTextToSize(clean(value), width);
+    for (const line of lines) {
+      ensure(lineHeight(size) + 1);
+      font(size, false, color);
+      doc.text(line, x, y);
+      y += lineHeight(size) + 1.4;
+    }
+  };
+  const sectionTitle = (eyebrow: string, label: string) => {
+    ensure(24);
+    font(7.5, true, GOLD);
+    doc.text(eyebrow.toLocaleUpperCase("pl-PL"), MARGIN, y, { charSpace: 0.6 });
+    y += 7;
+    font(17, true);
+    doc.text(label, MARGIN, y);
+    y += 9;
+  };
+
+  // ---------- Strona 1: okładka ----------
+  drawLogo(MARGIN, 11, 11);
+  font(7.5, true, GOLD);
+  doc.text("OFERTA PRZYGOTOWANA DLA CIEBIE", PAGE_W - MARGIN, 15, { align: "right", charSpace: 0.5 });
+  font(8, false, MUTED);
+  doc.text(date, PAGE_W - MARGIN, 20, { align: "right" });
+
+  const heroTop = 30;
+  const heroH = 118;
+  if (photos[0]) {
+    doc.addImage(coverCrop(photos[0], PAGE_W, heroH), "JPEG", 0, heroTop, PAGE_W, heroH);
+  } else {
     doc.setFillColor(PAPER);
-    doc.rect(x, top, width, height, "F");
-    const scale = Math.min(width / image.width, height / image.height);
-    const w = image.width * scale;
-    const h = image.height * scale;
-    doc.addImage(
-      image.data,
-      "JPEG",
-      x + (width - w) / 2,
-      top + (height - h) / 2,
-      w,
-      h,
-    );
+    doc.rect(0, heroTop, PAGE_W, heroH, "F");
+    drawLogo(PAGE_W / 2 - 30, heroTop + heroH / 2 - 7, 14);
+  }
+  // Etykieta z numerem oferty na zdjęciu.
+  font(8, true, "#ffffff");
+  const refLabel = `REF. ${reference}`;
+  const refW = doc.getTextWidth(refLabel) + 8;
+  doc.setFillColor(INK);
+  doc.roundedRect(MARGIN, heroTop + heroH - 13, refW, 7.5, 3.7, 3.7, "F");
+  doc.text(refLabel, MARGIN + 4, heroTop + heroH - 7.9);
+  if (offer.new_build) {
+    const badge = "RYNEK PIERWOTNY";
+    font(8, true, INK);
+    const w = doc.getTextWidth(badge) + 8;
+    doc.setFillColor(GOLD_LIGHT);
+    doc.roundedRect(MARGIN + refW + 3, heroTop + heroH - 13, w, 7.5, 3.7, 3.7, "F");
+    doc.text(badge, MARGIN + refW + 7, heroTop + heroH - 7.9);
   }
 
-  page(false);
-  text(
-    `${type.toLocaleUpperCase("pl-PL")}  /  REF. ${reference}`,
-    8,
-    true,
-    GOLD,
-  );
-  y += 3;
-  text(title, 22, true);
-  y += 1;
-  text(
-    [...new Set([offer.town, offer.province, country].filter(Boolean))].join(
-      " · ",
-    ),
-    10,
-    false,
-    MUTED,
-  );
-  y += 4;
+  y = heroTop + heroH + 12;
+  font(8, true, GOLD);
+  doc.text(type.toLocaleUpperCase("pl-PL"), MARGIN, y, { charSpace: 0.6 });
+  y += 8;
+  font(20, true);
+  const titleLines: string[] = doc.splitTextToSize(clean(title), WIDTH - 60).slice(0, 3);
+  titleLines.forEach((line) => {
+    doc.text(line, MARGIN, y);
+    y += 8.2;
+  });
+  font(10, false, MUTED);
+  doc.text(doc.splitTextToSize(clean(location), WIDTH - 60)[0] || "", MARGIN, y);
+
+  // Cena po prawej, na wysokości tytułu.
   let price = "Cena na zapytanie";
   if (offer.price != null && Number(offer.price) > 0) {
     const currency = (offer.currency || "EUR").toUpperCase();
     try {
-      price = new Intl.NumberFormat("pl-PL", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-      }).format(Number(offer.price));
+      price = new Intl.NumberFormat("pl-PL", { style: "currency", currency, maximumFractionDigits: 0 })
+        .format(Number(offer.price))
+        .replace(/ /g, " ");
     } catch {
       price = `${Number(offer.price).toLocaleString("pl-PL")} ${currency}`;
     }
   }
-  text(price, 22, true, GOLD);
-  y += 4;
-  // Adapt the hero to longer titles while keeping the agent and link together.
-  const heroHeight = Math.max(
-    42,
-    Math.min(
-      80,
-      BOTTOM -
-        y -
-        7 -
-        49 -
-        (contactHeight ? contactHeight + 7 : 0) -
-        (publicUrl ? 10 : 0),
-    ),
-  );
-  space(heroHeight + 7);
-  if (photos[0]) photo(photos[0], MARGIN, y, WIDTH, heroHeight);
-  else {
-    doc.setFillColor(PAPER);
-    doc.rect(MARGIN, y, WIDTH, heroHeight, "F");
-    font(13, false, MUTED);
-    doc.text("Zdjęcia dostępne u agenta", 105, y + heroHeight / 2, {
-      align: "center",
-    });
-  }
-  y += heroHeight + 7;
+  const priceTop = heroTop + heroH + 12;
+  font(7.5, true, MUTED);
+  doc.text(offer.new_build ? "CENA OD" : "CENA", PAGE_W - MARGIN, priceTop, { align: "right", charSpace: 0.5 });
+  font(19, true, GOLD);
+  doc.text(price, PAGE_W - MARGIN, priceTop + 9, { align: "right" });
+  font(7.5, false, MUTED);
+  doc.text("0% prowizji dla kupującego", PAGE_W - MARGIN, priceTop + 15, { align: "right" });
 
-  const number = (value: number | null, unit = "") =>
-    value == null
-      ? "Brak danych"
-      : `${Number(value).toLocaleString("pl-PL")}${unit}`;
+  // Parametry: tylko te, które są podane.
+  y += 9;
+  const num = (value: number | null | undefined, unit = "") =>
+    value == null || !Number.isFinite(Number(value)) || Number(value) <= 0
+      ? null
+      : `${Number(value).toLocaleString("pl-PL").replace(/ /g, " ")}${unit}`;
   const facts = [
-    ["POWIERZCHNIA", number(offer.surface_built, " m²")],
-    ["SYPIALNIE", number(offer.beds)],
-    ["ŁAZIENKI", number(offer.baths)],
-    ["DZIAŁKA", number(offer.surface_plot, " m²")],
-    ["BASEN", offer.pool == null ? "Brak danych" : offer.pool ? "Tak" : "Nie"],
-    ["DO MORZA", number(offer.distance_to_sea_m, " m")],
-  ];
-  space(42);
-  facts.forEach(([label, value], index) => {
-    const x = MARGIN + (index % 3) * 60;
-    const top = y + Math.floor(index / 3) * 21;
-    doc.setFillColor(PAPER);
-    doc.roundedRect(x, top, 58, 19, 2, 2, "F");
-    font(7, true, MUTED);
-    doc.text(label, x + 4, top + 6);
-    font(11, true);
-    doc.text(value, x + 4, top + 14);
-  });
-  y += 49;
+    ["Powierzchnia", num(offer.surface_built, " m²")],
+    ["Sypialnie", num(offer.beds)],
+    ["Łazienki", num(offer.baths)],
+    ["Działka", num(offer.surface_plot, " m²")],
+    ["Basen", offer.pool == null ? null : offer.pool ? "Tak" : "Nie"],
+    ["Do morza", num(offer.distance_to_sea_m, " m")],
+  ].filter((fact): fact is [string, string] => Boolean(fact[1]));
+  if (facts.length) {
+    const cols = Math.min(facts.length, 6);
+    const gap = 3;
+    const boxW = (WIDTH - gap * (cols - 1)) / cols;
+    facts.slice(0, 6).forEach(([label, value], index) => {
+      const x = MARGIN + index * (boxW + gap);
+      doc.setFillColor(PAPER);
+      doc.roundedRect(x, y, boxW, 18, 2.5, 2.5, "F");
+      font(6.5, true, MUTED);
+      doc.text(label.toLocaleUpperCase("pl-PL"), x + 4, y + 6.5, { charSpace: 0.3 });
+      font(11.5, true);
+      doc.text(value, x + 4, y + 13.5);
+    });
+    y += 25;
+  }
 
-  if (contactHeight) {
-    const height = contactHeight;
-    space(height + 7 + (publicUrl ? 10 : 0));
-    doc.setFillColor(INK);
-    doc.roundedRect(MARGIN, y, WIDTH, height, 2, 2, "F");
-    font(7, true, "#d6b66f");
-    doc.text("TWÓJ AGENT ONESTA", MARGIN + 6, y + 7);
-    font(10, false, "#ffffff");
-    contactLines.forEach((line, i) =>
-      doc.text(line, MARGIN + 6, y + 14 + i * 5),
-    );
-    y += height + 7;
+  // Agent + link do oferty online.
+  const contactRows = [contact.name, contact.phone, contact.email].filter(Boolean);
+  const cardTop = Math.max(y, 236);
+  const cardH = 30;
+  doc.setFillColor(INK);
+  doc.roundedRect(MARGIN, cardTop, WIDTH, cardH, 3, 3, "F");
+  font(7, true, GOLD_LIGHT);
+  doc.text("TWÓJ AGENT ONESTA", MARGIN + 7, cardTop + 8, { charSpace: 0.5 });
+  if (contactRows.length) {
+    font(12, true, "#ffffff");
+    doc.text(clean(contact.name || "Onesta Group"), MARGIN + 7, cardTop + 15.5);
+    font(9, false, "#d9e1ec");
+    doc.text([contact.phone, contact.email].filter(Boolean).join("   ·   "), MARGIN + 7, cardTop + 22);
+  } else {
+    font(11, true, "#ffffff");
+    doc.text("Onesta Group", MARGIN + 7, cardTop + 15.5);
+    font(9, false, "#d9e1ec");
+    doc.text("biuro@onesta.com.pl   ·   +48 576 65 25 25", MARGIN + 7, cardTop + 22);
   }
   if (publicUrl) {
-    space(10);
-    font(9, true, GOLD);
-    doc.textWithLink("Zobacz ofertę online i pełną galerię", MARGIN, y, {
-      url: publicUrl,
-    });
-    y += 8;
+    const label = "Zobacz ofertę online";
+    font(9, true, INK);
+    const w = doc.getTextWidth(label) + 12;
+    const bx = PAGE_W - MARGIN - 7 - w;
+    doc.setFillColor(GOLD_LIGHT);
+    doc.roundedRect(bx, cardTop + 10, w, 10, 5, 5, "F");
+    doc.textWithLink(label, bx + 6, cardTop + 16.6, { url: publicUrl });
   }
 
+  // ---------- Strona 2: opis i udogodnienia ----------
   const description = descriptionValue(offer.descriptions);
   const features = featureValues(offer.features);
   if (description || features.length) {
-    page();
+    newPage();
     if (description) {
-      heading("Poznaj nieruchomość");
-      for (const paragraph of description.split(/\n\s*\n/)) {
-        text(paragraph, 10, false, MUTED);
+      sectionTitle("O nieruchomości", "Poznaj tę ofertę");
+      for (const block of description.split(/\n\s*\n/)) {
+        paragraph(block.trim(), 10);
         y += 3;
       }
     }
     if (features.length) {
-      heading("Wyposażenie i udogodnienia");
-      for (const feature of features) {
-        text(`• ${featureLabel(feature)}`, 10, false, MUTED);
-        y += 1;
+      y += 4;
+      sectionTitle("Wyposażenie", "Udogodnienia");
+      const colW = (WIDTH - 6) / 2;
+      // Polskie nazwy cech jak na stronie oferty; gdy słownik nie zna cechy — dotychczasowa etykieta.
+      let labels: string[] = [];
+      try {
+        labels = normalizeFeatures(offer.features, "pl", offer).map((item: any) => clean(item.label));
+      } catch {}
+      if (!labels.length) labels = features.map((feature) => clean(featureLabel(feature)));
+      for (let i = 0; i < labels.length; i += 2) {
+        ensure(9);
+        [labels[i], labels[i + 1]].forEach((label, col) => {
+          if (!label) return;
+          const x = MARGIN + col * (colW + 6);
+          doc.setFillColor(GOLD);
+          doc.circle(x + 1.5, y - 1.3, 0.9, "F");
+          font(9.5, false, INK);
+          doc.text(doc.splitTextToSize(label, colW - 6)[0], x + 5, y);
+        });
+        y += 7;
       }
     }
   }
 
-  if (photos.length > 1) {
-    page();
-    heading("Wnętrza i otoczenie");
-    const top = y;
-    photos.slice(1).forEach((image, index) => {
-      const x = MARGIN + (index % 2) * 91;
-      const imageY = top + Math.floor(index / 2) * 69;
-      photo(image, x, imageY, 87, 61);
+  // ---------- Galeria ----------
+  const gallery = photos.slice(1);
+  if (gallery.length) {
+    newPage();
+    sectionTitle("Galeria", "Wnętrza i otoczenie");
+    const gap = 4;
+    const cellW = (WIDTH - gap) / 2;
+    const cellH = cellW * 0.68;
+    gallery.forEach((image, index) => {
+      const col = index % 2;
+      if (col === 0) ensure(cellH);
+      const x = MARGIN + col * (cellW + gap);
+      doc.addImage(coverCrop(image, cellW, cellH), "JPEG", x, y, cellW, cellH);
+      if (col === 1 || index === gallery.length - 1) y += cellH + gap;
     });
   }
 
+  // ---------- Stopka na każdej stronie ----------
   const pageCount = doc.getNumberOfPages();
   for (let index = 1; index <= pageCount; index++) {
     doc.setPage(index);
-    doc.setDrawColor("#ddd3c4");
-    doc.line(MARGIN, 278, 194, 278);
+    doc.setDrawColor(LINE);
+    doc.line(MARGIN, 280, PAGE_W - MARGIN, 280);
     font(7, false, MUTED);
-    doc.text(
-      "Ceny i dostępność mogą ulec zmianie. Potwierdź aktualne warunki u agenta.",
-      MARGIN,
-      283,
-    );
-    const shortRef =
-      reference.length > 45 ? `${reference.slice(0, 42)}...` : reference;
-    doc.text(`ONESTA GROUP  ·  ${shortRef}  ·  ${date}`, MARGIN, 289);
-    doc.text(`${index} / ${pageCount}`, 194, 289, { align: "right" });
+    doc.text("Onesta Group  ·  onesta.com.pl  ·  Ceny i dostępność mogą ulec zmianie.", MARGIN, 286);
+    doc.text(`${index} / ${pageCount}`, PAGE_W - MARGIN, 286, { align: "right" });
   }
   return { doc, missingImages: sources.length - photos.length };
 }
