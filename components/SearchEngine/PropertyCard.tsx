@@ -25,6 +25,8 @@ type PropertyProps = {
   detailHrefOverride?: string;
   imagePriority?: boolean;
   appearance?: "default" | "cbtop";
+  /** Strefa agenta: obok naszego numeru (MTI-…) pokaż też numer z feedu, np. REDSP „SP1526”. */
+  showFeedRef?: boolean;
 };
 
 function formatPrice(price: number | string | null | undefined) {
@@ -57,8 +59,14 @@ export default function PropertyCard({
   detailHrefOverride,
   imagePriority = false,
   appearance = "default",
+  showFeedRef = false,
 }: PropertyProps) {
   const [copiedShowed, setCopiedShowed] = useState(false);
+  const feedRefValue = String(property?.ref || "").trim();
+  const feedRef =
+    showFeedRef && feedRefValue && !String(property?.external_id || "").includes(feedRefValue)
+      ? `${property?.source === "METAINMO" ? "REDSP" : "feed"} ${feedRefValue}`
+      : "";
   const isEn = locale === "en";
   const paths = localePath[locale];
 
@@ -325,8 +333,9 @@ export default function PropertyCard({
                   {distanceToSeaLabel}
                 </p>
               )}
-              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7c8796]">
+              <span className="block truncate text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7c8796]">
                 ref. {property?.external_id}
+                {feedRef ? <span className="text-[#9b7a36]"> · {feedRef}</span> : null}
               </span>
             </div>
           </Link>

@@ -283,7 +283,12 @@ export default function AgentPage() {
                       <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#d8bb78] text-[11px] font-extrabold text-[#182334]">{index + 1}</span>
                       <div className="min-w-0">
                         <p className="truncate text-[11px] font-bold text-[#26364b]">{agentOfferLabel(offer)}</p>
-                        <p className="mt-0.5 truncate text-[9px] uppercase tracking-[0.08em] text-[#7b8796]">ref. {offer.external_id}</p>
+                        <p className="mt-0.5 truncate text-[9px] uppercase tracking-[0.08em] text-[#7b8796]">
+                          ref. {offer.external_id}
+                          {offer.ref && !String(offer.external_id).includes(String(offer.ref)) ? (
+                            <span className="text-[#9b7a36]"> · {offer.source === "METAINMO" ? "REDSP" : "feed"} {offer.ref}</span>
+                          ) : null}
+                        </p>
                       </div>
                       <button type="button" onClick={() => toggleOffer(offer)} aria-label={`Usuń ofertę ${index + 1}`} className="flex h-7 w-7 items-center justify-center rounded-full text-[12px] text-slate-400 transition hover:bg-white hover:text-red-600">
                         <FaRegTrashAlt aria-hidden="true" />
@@ -365,7 +370,7 @@ export default function AgentPage() {
                   const selected = selectedIndex !== undefined;
                   return (
                     <div key={property.external_id} className={`relative min-w-0 transition ${selected ? "ring-4 ring-[#d6b66f] ring-offset-2" : ""}`}>
-                      <PropertyCard property={property} />
+                      <PropertyCard property={property} showFeedRef />
                       <button type="button" onClick={() => toggleOffer(property)} aria-label={selected ? "Usuń ofertę z listy" : "Dodaj ofertę do listy"} className={`absolute right-3 top-3 z-30 flex h-11 w-11 items-center justify-center rounded-full border-2 text-[17px] shadow-lg transition ${selected ? "border-white bg-[#182334] text-white" : "border-[#182334] bg-white text-[#182334] hover:bg-[#d6b66f]"}`}>
                         {selected ? <FaCheck aria-hidden="true" /> : <FaPlus aria-hidden="true" />}
                       </button>
