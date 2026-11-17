@@ -25,7 +25,8 @@ type PublicOfferListProps = {
   coverImages: string[];
 };
 
-// Teksty nagłówka zależnie od zwrotu wybranego przez agenta.
+// Teksty nagłówka zależnie od zwrotu wybranego przez agenta. Imię klienta agent wpisuje
+// już w dopełniaczu („Janowskich”, „Jana Kowalskiego”) → „Prezentacja przygotowana dla Państwa Janowskich”.
 const GREETING = {
   pani: { title: "Pani", withYou: "z Panią", yours: "Pani", label: "Pani" },
   pan: { title: "Pana", withYou: "z Panem", yours: "Pana", label: "Pan" },
@@ -56,7 +57,7 @@ export default function PublicOfferList({
   return (
     <>
       <Head>
-        <title>{clientName ? `Oferty dla: ${greeting ? `${greeting.label} ` : ""}${clientName}` : greeting ? `Oferty wybrane dla ${greeting.title}` : "Oferty wybrane dla Ciebie"} | Onesta Group</title>
+        <title>{clientName ? `Prezentacja dla ${greeting ? `${greeting.title} ` : ""}${clientName}` : greeting ? `Oferty wybrane dla ${greeting.title}` : "Oferty wybrane dla Ciebie"} | Onesta Group</title>
         <meta
           name="description"
           content="Indywidualna lista nieruchomości przygotowana przez Onesta Group."
@@ -84,7 +85,7 @@ export default function PublicOfferList({
             </p>
             <h1 className={`${HomePlayfairSans.className} relative mt-4 text-[36px] font-semibold leading-[1.06] tracking-[-0.02em] md:text-[52px]`}>
               {clientName
-                ? `${greeting ? `${greeting.label} ` : ""}${clientName}`
+                ? `${greeting ? `${greeting.title} ` : ""}${clientName}`
                 : greeting
                   ? `Oferty wybrane dla ${greeting.title}`
                   : "Oferty wybrane dla Ciebie"}

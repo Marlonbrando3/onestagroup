@@ -278,46 +278,62 @@ export default function PresentationEditor({
 
               <div className="my-1 border-t border-[#e8e0d5]" />
 
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9b7a36]">Dla kogo jest prezentacja</p>
               <div className="grid gap-2 text-[11px] font-bold text-[#334155]">
-                Zwrot do klienta
-                <div className="grid grid-cols-4 gap-1.5" role="radiogroup" aria-label="Zwrot do klienta">
-                  {([
-                    ["pani", "Pani"],
-                    ["pan", "Pan"],
-                    ["panstwo", "Państwo"],
-                    ["", "Bez zwrotu"],
-                  ] as const).map(([value, label]) => (
-                    <button
-                      key={label}
-                      type="button"
-                      role="radio"
-                      aria-checked={clientSalutation === value}
-                      onClick={() => setClientSalutation(value)}
-                      className={`min-h-[40px] rounded-xl border px-1 text-[10px] font-extrabold transition ${
-                        clientSalutation === value
-                          ? "border-[#182334] bg-[#182334] text-white"
-                          : "border-[#ddd3c4] bg-white text-[#526173] hover:border-[#182334]"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
+                <span>Prezentacja przygotowana dla</span>
+                <div className="grid grid-cols-[112px_minmax(0,1fr)] gap-2">
+                  <select
+                    value={clientSalutation}
+                    onChange={(event) => setClientSalutation(event.target.value as typeof clientSalutation)}
+                    className="presentationInput"
+                    aria-label="Zwrot do klienta"
+                  >
+                    <option value="pani">Pani</option>
+                    <option value="pan">Pana</option>
+                    <option value="panstwo">Państwa</option>
+                    <option value="">bez zwrotu</option>
+                  </select>
+                  <input
+                    maxLength={120}
+                    value={clientName}
+                    onChange={(event) => setClientName(event.target.value)}
+                    className="presentationInput"
+                    aria-label="Imię i nazwisko klienta (kogo?)"
+                    placeholder={
+                      clientSalutation === "panstwo"
+                        ? "np. Janowskich"
+                        : clientSalutation === "pani"
+                          ? "np. Anny Nowak"
+                          : "np. Jana Kowalskiego"
+                    }
+                  />
                 </div>
-              </div>
-              <label className="grid gap-2 text-[11px] font-bold text-[#334155]">
-                Imię i nazwisko klienta
-                <input
-                  maxLength={120}
-                  value={clientName}
-                  onChange={(event) => setClientName(event.target.value)}
-                  className="presentationInput"
-                  placeholder={clientSalutation === "panstwo" ? "np. Anna i Jan Kowalscy" : "np. Jan Kowalski"}
-                />
                 <span className="text-[9px] font-medium leading-4 text-slate-400">
-                  Pojawi się w nagłówku strony, którą zobaczy klient. Można zostawić puste.
+                  Imię i nazwisko wpisz w odmianie (kogo?), np. „Janowskich”, „Jana Kowalskiego”. Można zostawić puste.
                 </span>
-              </label>
+                {(() => {
+                  const title = { pani: "Pani", pan: "Pana", panstwo: "Państwa" } as const;
+                  const withYou = { pani: "z Panią", pan: "z Panem", panstwo: "z Państwem" } as const;
+                  const name = clientName.trim();
+                  const heading = name
+                    ? `${clientSalutation ? `${title[clientSalutation]} ` : ""}${name}`
+                    : clientSalutation
+                      ? `Oferty wybrane dla ${title[clientSalutation]}`
+                      : "Oferty wybrane dla Ciebie";
+                  const claim = clientSalutation
+                    ? `Po rozmowie ${withYou[clientSalutation]} wyselekcjonowaliśmy oferty, które — wierzymy — spełnią ${title[clientSalutation]} oczekiwania.`
+                    : "Po naszej rozmowie wyselekcjonowaliśmy oferty, które — wierzymy — spełnią Twoje oczekiwania.";
+                  return (
+                    <div className="mt-1 rounded-xl bg-[#182334] px-4 py-4 text-white">
+                      <p className="text-[8px] font-extrabold uppercase tracking-[0.16em] text-slate-400">Podgląd nagłówka</p>
+                      <p className="mt-2 text-[8px] font-extrabold uppercase tracking-[0.16em] text-[#d6b66f]">
+                        {name ? "Prezentacja przygotowana dla" : "Indywidualna prezentacja ofert"}
+                      </p>
+                      <p className="mt-1 text-[19px] font-extrabold leading-tight">{heading}</p>
+                      <p className="mt-2 text-[10px] font-medium leading-4 text-slate-300">{claim}</p>
+                    </div>
+                  );
+                })()}
+              </div>
 
               <div className="my-1 border-t border-[#e8e0d5]" />
               <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9b7a36]">Agent prowadzący</p>
