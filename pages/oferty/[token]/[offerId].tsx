@@ -320,16 +320,15 @@ export default function PresentationOfferPage({
               loading="lazy"
               decoding="async"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0f1826]/95 via-[#182334]/88 to-[#182334]/65" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#7c3512]/90 via-[#bd6322]/80 to-[#e8a052]/55" />
             <div className="relative grid items-center gap-9 px-6 py-10 sm:px-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(400px,480px)] lg:gap-16 lg:px-14 lg:py-16">
               <div className="text-white">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#d6b66f]">Porozmawiajmy o tej ofercie</p>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#ffe2b8]">Porozmawiajmy o tej ofercie</p>
                 <h2 className={`${HomePlayfairSans.className} mt-4 text-[36px] font-semibold leading-[1.08] tracking-[-0.02em] sm:text-[46px] lg:text-[54px]`}>
-                  Chcesz poznać tę nieruchomość bliżej?
+                  Potrzebujesz więcej informacji?
                 </h2>
-                <p className="mt-5 max-w-[560px] text-[15px] leading-7 text-slate-200">
-                  Zostaw kontakt — {contact.name ? contact.name.split(" ")[0] : "Twój agent"} odezwie się tego samego
-                  lub następnego dnia roboczego i prześle wszystko, czego potrzebujesz do spokojnej decyzji.
+                <p className="mt-5 max-w-[560px] text-[16px] leading-7 text-white/90">
+                  Zostaw kontakt — agent odezwie się najszybciej, jak to możliwe.
                 </p>
                 <ul className="mt-7 grid gap-3 sm:grid-cols-2">
                   {[
@@ -339,21 +338,26 @@ export default function PresentationOfferPage({
                     "Obsługa po polsku, 0 zł prowizji dla kupującego",
                   ].map((point) => (
                     <li key={point} className="flex items-start gap-3 text-[13px] font-semibold leading-6 text-white">
-                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#d6b66f] text-[10px] text-[#182334]">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-[10px] text-[#9c4e1f]">
                         <FaCheck aria-hidden="true" />
                       </span>
                       {point}
                     </li>
                   ))}
                 </ul>
-                <div className="mt-8 inline-flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 px-5 py-4 backdrop-blur">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#d6b66f] text-[#182334]">
+                <div className="mt-8 inline-flex items-center gap-4 rounded-2xl border border-white/25 bg-black/15 px-5 py-4 backdrop-blur">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-[#9c4e1f]">
                     <FaRegUser aria-hidden="true" />
                   </div>
                   <div>
                     <p className="text-[15px] font-extrabold">{contact.name || "Onesta Group"}</p>
-                    <a href={`tel:${(contact.phone || "+48576652525").replace(/[^+\d]/g, "")}`} className="text-[13px] text-[#e8d3a3] hover:text-white">
+                    <a href={`tel:${(contact.phone || "+48576652525").replace(/[^+\d]/g, "")}`} className="flex items-center gap-2 text-[13px] text-white/90 hover:text-white">
+                      <FaPhoneAlt className="text-[10px]" aria-hidden="true" />
                       {formatPhone(contact.phone || "") || "+48 576 652 525"}
+                    </a>
+                    <a href={`mailto:${contact.email || "biuro@onesta.com.pl"}`} className="flex items-center gap-2 break-all text-[13px] text-white/90 hover:text-white">
+                      <FaEnvelope className="text-[10px]" aria-hidden="true" />
+                      {contact.email || "biuro@onesta.com.pl"}
                     </a>
                   </div>
                 </div>
