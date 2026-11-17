@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaLayerGroup, FaPlus, FaSignOutAlt } from "react-icons/fa";
 import { supabase } from "@/lib/supabaseClient";
+import AgentNotifications from "@/components/agent/AgentNotifications";
 
 type AgentHeaderProps = {
   agentName?: string;
@@ -62,6 +63,8 @@ export default function AgentHeader({ agentName, active }: AgentHeaderProps) {
           </Link>
         </nav>
 
+        <div className="flex items-center gap-2">
+        <AgentNotifications />
         <button
           type="button"
           onClick={logout}
@@ -70,6 +73,7 @@ export default function AgentHeader({ agentName, active }: AgentHeaderProps) {
           <FaSignOutAlt aria-hidden="true" />
           <span className="hidden sm:inline">Wyloguj</span>
         </button>
+        </div>
       </div>
     </header>
   );

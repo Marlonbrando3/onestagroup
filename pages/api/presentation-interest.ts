@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { data: presentation, error } = await supabaseServer
     .from("agent_offer_lists")
-    .select("offers,presentation_name,agent_name,agent_email,contact_name,contact_email")
+    .select("id,offers,presentation_name,agent_user_id,agent_name,agent_email,contact_name,contact_email")
     .eq("public_token", token)
     .maybeSingle();
   if (error || !presentation || !Array.isArray(presentation.offers)) {
@@ -50,10 +50,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const now = Date.now();
   if ((recent.get(key) || 0) > now - REPEAT_WINDOW_MS) return res.status(200).json({ success: true });
 
+  // Powiadomienie w strefie agenta (dzwonek obok „Wyloguj”).
+  const { error: notifyError } = await supabaseServer.from("agent_notifications").insert({
+    agent_user_id: presentation.agent_user_id || null,
+    agent_email: validEmail(presentation.agent_email) || null,
+    kind: "offer_interest",
+    presentation_id: presentation.id,
+    presentation_name: String(presentation.presentation_name || "").trim() || null,
+    public_token: token,
+    offer_external_id: offerId,
+    offer_ref: offer.ref ? String(offer.ref) : null,
+    offer_title: offer.title ? String(offer.title).slice(0, 300) : null,
+  });
+  if (notifyError) console.error("presentation-interest: nie zapisano powiadomienia", notifyError);
+  const notified = !notifyError;
+
   const fromEmail = process.env.FROM_EMAIL;
   const pass = process.env.EMAIL_PASS;
   if (!fromEmail || !pass) {
     console.error("presentation-interest: brak FROM_EMAIL / EMAIL_PASS");
+    if (notified) {
+      recent.set(key, now);
+      return res.status(200).json({ success: true });
+    }
     return res.status(500).json({ success: false });
   }
 
@@ -114,6 +133,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ success: true });
   } catch (err) {
     console.error("presentation-interest: wysyłka nie powiodła się", err);
+    if (notified) {
+      recent.set(key, now);
+      return res.status(200).json({ success: true });
+    }
     return res.status(500).json({ success: false });
   }
 }
