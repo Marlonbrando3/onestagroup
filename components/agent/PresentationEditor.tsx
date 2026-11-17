@@ -423,7 +423,7 @@ export default function PresentationEditor({
               <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
                 {offers.map((offer, index) => (
                   <div key={offer.external_id} className="relative min-w-0">
-                    <PropertyCard property={offer} />
+                    <PropertyCard property={offer} showFeedRef />
                     <span className="absolute left-3 top-3 z-30 flex h-9 min-w-9 items-center justify-center rounded-full bg-[#d6b66f] px-2 text-[11px] font-extrabold text-[#182334] shadow-lg">
                       {index + 1}
                     </span>
