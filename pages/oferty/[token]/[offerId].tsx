@@ -35,6 +35,9 @@ import {
 } from "@/lib/presentationOffer";
 import OfferPdfButton from "@/components/agent/OfferPdfButton";
 import ProjectUnits from "@/components/offer/ProjectUnits";
+import { OfferInquiry } from "@/components/offer/OfferSections";
+import ContactOnPropertyCard from "@/components/SearchEngine/ContactOnPropertyCard";
+import Footer from "@/components/Footer";
 import InterestButton from "@/components/presentation/InterestButton";
 import { getProjectUnits, type ProjectUnit } from "@/lib/projectUnits";
 import type { OfferPdfContact } from "@/lib/offerPdf";
@@ -307,6 +310,12 @@ export default function PresentationOfferPage({
               </div>
             </aside>
           </div>
+          {/* Formularz kontaktowy jak na stronach ofert. */}
+          <div className="mx-auto mt-10 max-w-[1240px]">
+            <OfferInquiry locale="pl">
+              <ContactOnPropertyCard propertyRef={offer.external_id} locale="pl" variant="section" />
+            </OfferInquiry>
+          </div>
         </main>
 
         {lightboxIndex !== null ? (
@@ -339,6 +348,7 @@ export default function PresentationOfferPage({
           </div>
         ) : null}
       </div>
+      <Footer />
     </>
   );
 }
