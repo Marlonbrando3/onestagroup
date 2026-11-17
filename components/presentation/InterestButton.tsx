@@ -65,9 +65,11 @@ export default function InterestButton({ token, offerId, variant = "card" }: Pro
         <div className={`${base} cursor-default bg-[#e8f1ea] text-[#2f6b45]`} role="status">
           <FaCheck aria-hidden="true" /> Agent otrzymał informację
         </div>
-        <p className="mt-2 text-center text-[11px] leading-5 text-slate-500">
-          Dziękujemy! Agent prześle Ci więcej informacji o tej ofercie.
-        </p>
+        {wide ? null : (
+          <p className="mt-2 text-center text-[11px] leading-5 text-slate-500">
+            Dziękujemy! Agent prześle Ci więcej informacji o tej ofercie.
+          </p>
+        )}
       </div>
     );
   }
@@ -78,7 +80,7 @@ export default function InterestButton({ token, offerId, variant = "card" }: Pro
         type="button"
         onClick={send}
         disabled={state === "sending"}
-        className={`${base} bg-[#182334] text-white hover:bg-[#b8954c] disabled:opacity-60`}
+        className={`${base} bg-[#8e2430] text-white shadow-[0_8px_22px_rgba(142,36,48,0.35)] hover:bg-[#6f1a24] hover:shadow-[0_10px_28px_rgba(142,36,48,0.45)] disabled:opacity-60`}
       >
         <FaRegHeart aria-hidden="true" />
         {state === "sending" ? "Wysyłanie…" : "Interesuje mnie ta oferta"}

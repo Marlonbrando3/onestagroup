@@ -222,10 +222,11 @@ export default function PresentationOfferPage({
             ))}
           </section>
 
-          <section className="mx-auto mt-8 flex max-w-[1240px] flex-col items-center gap-4 rounded-2xl border border-[#ded5c8] bg-white px-6 py-6 text-center shadow-sm sm:flex-row sm:justify-between sm:px-8 sm:text-left">
+          {/* Przyklejone 5 px od góry — jedzie z klientem do końca strony. */}
+          <section className="sticky top-[5px] z-30 mx-auto mt-8 flex max-w-[1240px] flex-col items-center gap-3 rounded-2xl border border-[#d9a7ab] bg-[#fdf6f5]/95 px-5 py-3 text-center shadow-[0_12px_34px_rgba(142,36,48,0.18)] backdrop-blur sm:flex-row sm:justify-between sm:gap-4 sm:px-8 sm:py-4 sm:text-left">
             <div>
-              <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">Podoba Ci się ta oferta?</p>
-              <p className="mt-1 text-[14px] font-bold text-[#26364b]">Daj znać jednym kliknięciem — agent prześle Ci więcej informacji.</p>
+              <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#8e2430]">Podoba Ci się ta oferta?</p>
+              <p className="mt-1 hidden text-[14px] font-bold text-[#26364b] sm:block">Daj znać jednym kliknięciem — agent prześle Ci więcej informacji.</p>
             </div>
             <div className="w-full sm:w-[320px] sm:shrink-0">
               <InterestButton token={token} offerId={String(offer.external_id)} variant="wide" />
@@ -273,9 +274,6 @@ export default function PresentationOfferPage({
               <iframe title={`Mapa — ${locationLine || country}`} src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed&z=11`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="h-[360px] w-full border-0" />
             </section>
           </div>
-          <section className="mx-auto mt-10 max-w-[560px] text-center">
-            <InterestButton token={token} offerId={String(offer.external_id)} variant="wide" />
-          </section>
         </main>
 
         {lightboxIndex !== null ? (
