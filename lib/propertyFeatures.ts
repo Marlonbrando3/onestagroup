@@ -56,12 +56,12 @@ const RULES: Rule[] = [
   { key: "communal-pool", test: /communal pool|pool[\s-]*communal|community[\s-]*pool|comminity pool|^swimming[\s-]*pool$|^pool$|^basen$|^piscina$|^piscina comunitaria$/i, pl: "Basen wspólny", en: "Communal pool", group: "outdoor", icon: "pool" },
   { key: "indoor-pool", test: /indoor[\s-]*pool|heated pool/i, pl: "Basen kryty / podgrzewany", en: "Indoor / heated pool", group: "outdoor", icon: "pool" },
   { key: "private-garden", test: /garden\s*-\s*private|private garden|prywatny ogród/i, pl: "Prywatny ogród", en: "Private garden", group: "outdoor", icon: "garden" },
-  { key: "garden", test: /^(garden|ogród|jardín|jardin)$|garden\s*-\s*communal|landscaped|garden[\s-]*(zones|areas)|green zones|^garden$/i, pl: "Ogród / tereny zielone", en: "Garden / green areas", group: "outdoor", icon: "garden" },
+  { key: "garden", test: /^(garden|ogród|jardín|jardin)$|garden\s*-\s*communal|communal garden|landscaped|garden[\s-]*(zones|areas)|green zones|^garden$/i, pl: "Ogród / tereny zielone", en: "Garden / green areas", group: "outdoor", icon: "garden" },
   { key: "solarium", test: /solarium/i, pl: "Solarium", en: "Solarium", group: "outdoor", icon: "sun" },
   { key: "terrace-size", test: /^terrace:\s*(\d+)\s*m/i, pl: (m) => `Taras ${m[1]} m²`, en: (m) => `Terrace ${m[1]} m²`, group: "outdoor", icon: "terrace" },
   { key: "terrace", test: /terrace|terraza|^taras$/i, pl: "Taras", en: "Terrace", group: "outdoor", icon: "terrace" },
   { key: "balcony", test: /balcon/i, pl: "Balkon", en: "Balcony", group: "outdoor", icon: "terrace" },
-  { key: "patio", test: /patio|porch|courtyard|pergola/i, pl: "Patio / zadaszona weranda", en: "Patio / porch", group: "outdoor", icon: "terrace" },
+  { key: "patio", test: /patio|porch|courtyard|pergola|^yard$/i, pl: "Patio / zadaszona weranda", en: "Patio / porch", group: "outdoor", icon: "terrace" },
   { key: "bbq", test: /bbq|barbe(c|q)ue/i, pl: "Grill", en: "Barbecue", group: "outdoor", icon: "bbq" },
   { key: "jacuzzi", test: /jacc?uzz?i/i, pl: "Jacuzzi", en: "Jacuzzi", group: "outdoor", icon: "spa" },
   { key: "spa", test: /^spa$|sauna/i, pl: "Spa / sauna", en: "Spa / sauna", group: "outdoor", icon: "spa" },
@@ -83,10 +83,10 @@ const RULES: Rule[] = [
   { key: "furniture-optional", test: /furniture - optional/i, pl: "Umeblowanie opcjonalne", en: "Furniture optional", group: "interior", icon: "sofa" },
   { key: "part-furnished", test: /part[\s-]*furnished/i, pl: "Częściowo umeblowane", en: "Part furnished", group: "interior", icon: "sofa" },
   { key: "furnished", test: /furnished|^furniture$|umeblowan|amueblado/i, pl: "Umeblowane", en: "Furnished", group: "interior", icon: "sofa" },
-  { key: "kitchen", test: /appliances|equipped kitchen|kitchen - fully fitted|fully fitted|dishwasher|oven|kitchen with island|open kitchen/i, pl: "Wyposażona kuchnia", en: "Equipped kitchen", group: "interior", icon: "kitchen" },
-  { key: "wardrobes", test: /wardrobe|built-in-closets|armarios/i, pl: "Szafy w zabudowie", en: "Fitted wardrobes", group: "interior", icon: "box" },
+  { key: "kitchen", test: /appliances|equipped kitchen|kitchen - fully fitted|fully fitted|dishwasher|oven|kitchen with island|open kitchen|ceramic cooker|freezer|fridge|refrigerator|microwave|fitted kitchen|open plan kitchen|independent kitchen|electrodomesticos/i, pl: "Wyposażona kuchnia", en: "Equipped kitchen", group: "interior", icon: "kitchen" },
+  { key: "wardrobes", test: /wardrobe|built-in-closets|armarios|dressing room/i, pl: "Szafy w zabudowie", en: "Fitted wardrobes", group: "interior", icon: "box" },
   { key: "storage", test: /storage|trastero|storeroom|komórka/i, pl: "Komórka lokatorska", en: "Storage room", group: "interior", icon: "box" },
-  { key: "laundry", test: /laundry|utility room/i, pl: "Pralnia", en: "Laundry room", group: "interior", icon: "home" },
+  { key: "laundry", test: /laundry|utility room|washing room/i, pl: "Pralnia", en: "Laundry room", group: "interior", icon: "home" },
   { key: "basement", test: /basement|under-build|piwnica/i, pl: "Piwnica", en: "Basement", group: "interior", icon: "home" },
   { key: "ensuite", test: /en[\s-]*suite/i, pl: "Łazienka przy sypialni", en: "En-suite bathroom", group: "interior", icon: "home" },
   { key: "glazing", test: /double glaz|doble glazing/i, pl: "Okna z podwójnymi szybami", en: "Double glazing", group: "interior", icon: "home" },
@@ -96,11 +96,20 @@ const RULES: Rule[] = [
   { key: "safe", test: /safe box/i, pl: "Sejf", en: "Safe", group: "interior", icon: "shield" },
   { key: "marble", test: /flooring-marble|marble floor/i, pl: "Podłogi marmurowe", en: "Marble floors", group: "interior", icon: "home" },
   { key: "games-room", test: /games room/i, pl: "Pokój gier", en: "Games room", group: "interior", icon: "home" },
-  { key: "alarm", test: /alarm|security door|reinforced door|security grills/i, pl: "Alarm / drzwi antywłamaniowe", en: "Alarm / security door", group: "interior", icon: "shield" },
+  { key: "extra-wc", test: /^(toilet|wc):\s*\d+$|guest toilet/i, pl: "Dodatkowe WC", en: "Extra WC", group: "interior", icon: "home" },
+  { key: "satellite-tv", test: /satellite tv/i, pl: "Telewizja satelitarna", en: "Satellite TV", group: "interior", icon: "wifi" },
+  { key: "outdoor-lighting", test: /(outdoor|garden|exterior) lighting/i, pl: "Oświetlenie zewnętrzne", en: "Outdoor lighting", group: "outdoor", icon: "sun" },
+  { key: "level-plot", test: /level plot/i, pl: "Płaska działka", en: "Level plot", group: "outdoor", icon: "garden" },
+  { key: "utilities", test: /mains (water|electric)|has main electric|^electricity$/i, pl: "Przyłącza wody i prądu", en: "Mains water & electricity", group: "interior", icon: "bolt" },
+  { key: "condition", test: /^condition\s*-\s*(excellent|good)$/i, pl: (m) => (m[1].toLowerCase() === "excellent" ? "Stan bardzo dobry" : "Stan dobry"), en: (m) => `Condition: ${m[1].toLowerCase()}`, group: "interior", icon: "key" },
+  { key: "irrigation", test: /irrigation/i, pl: "System nawadniania ogrodu", en: "Irrigation system", group: "outdoor", icon: "garden" },
+  { key: "parquet", test: /parquet/i, pl: "Parkiet", en: "Parquet floors", group: "interior", icon: "home" },
+  { key: "ceiling-fans", test: /ceiling fans/i, pl: "Wentylatory sufitowe", en: "Ceiling fans", group: "interior", icon: "snow" },
+  { key: "alarm", test: /alarm|security door|reinforced door|armou?red door|security grills/i, pl: "Alarm / drzwi antywłamaniowe", en: "Alarm / security door", group: "interior", icon: "shield" },
   { key: "solar", test: /solar (panels|energy)|aerotherm/i, pl: "Panele słoneczne / aerotermia", en: "Solar / aerothermal energy", group: "interior", icon: "bolt" },
   { key: "shutters", test: /electric shutters/i, pl: "Rolety elektryczne", en: "Electric shutters", group: "interior", icon: "home" },
   { key: "access", test: /disabled access|reduced mobility/i, pl: "Dostęp dla osób z niepełnosprawnościami", en: "Accessible", group: "interior", icon: "home" },
-  { key: "renovated", test: /renovated/i, pl: "Po remoncie", en: "Renovated", group: "interior", icon: "key" },
+  { key: "renovated", test: /renovated|refurbished/i, pl: "Po remoncie", en: "Renovated", group: "interior", icon: "key" },
   { key: "key-ready", test: /key ready/i, pl: "Gotowe do odbioru", en: "Key ready", group: "interior", icon: "key" },
   { key: "tourist-licence", test: /licensed tourist/i, pl: "Licencja turystyczna", en: "Tourist licence", group: "interior", icon: "key" },
 
@@ -113,16 +122,25 @@ const RULES: Rule[] = [
   // Okolica i widoki
   { key: "first-line", test: /first line|beachfront/i, pl: "Pierwsza linia brzegowa", en: "Frontline beach", group: "area", icon: "waves" },
   { key: "sea-views", test: /sea[\s-]*view|views:\s*sea|views-sea|^sea$|widok na morze|vistas al mar/i, pl: "Widok na morze", en: "Sea views", group: "area", icon: "view" },
-  { key: "mountain-views", test: /mountain[\s-]*views|countryside views|widok na góry/i, pl: "Widok na góry", en: "Mountain views", group: "area", icon: "mountain" },
+  { key: "mountain-views", test: /mountain[\s-]*views|views?\s*-\s*mountain|countryside views|widok na góry/i, pl: "Widok na góry", en: "Mountain views", group: "area", icon: "mountain" },
   { key: "golf", test: /golf/i, pl: "Blisko pola golfowego", en: "Near golf", group: "area", icon: "golf" },
-  { key: "near-beach", test: /near (the )?beach|close to (the )?(beach|sea)|blisko do morza|setting - close to sea/i, pl: "Blisko plaży", en: "Near the beach", group: "area", icon: "waves" },
+  { key: "near-beach", test: /near (the )?beach|close to (the )?(beach|sea)|blisko do morza|setting - close to sea|beachside/i, pl: "Blisko plaży", en: "Near the beach", group: "area", icon: "waves" },
   { key: "shops", test: /commercial cent|shops|amenities|sklep|restaurac/i, pl: "Sklepy i usługi w pobliżu", en: "Shops nearby", group: "area", icon: "pin" },
   { key: "schools", test: /school/i, pl: "Szkoły w pobliżu", en: "Schools nearby", group: "area", icon: "pin" },
-  { key: "transport", test: /bus route|near transport|train station/i, pl: "Komunikacja publiczna", en: "Public transport", group: "area", icon: "pin" },
+  { key: "transport", test: /bus route|near transport|train station|tram stop|metro station/i, pl: "Komunikacja publiczna", en: "Public transport", group: "area", icon: "pin" },
   { key: "parks", test: /childrens? parks?|near trees/i, pl: "Parki i zieleń w pobliżu", en: "Parks nearby", group: "area", icon: "garden" },
   { key: "orientation", test: /^(?:orientation\s*-\s*)?(south[\s-]*east|south[\s-]*west|south|east|west)$/i, pl: (m) => `Wystawa: ${({ "south": "południowa", "south east": "południowo-wschodnia", "south west": "południowo-zachodnia", "east": "wschodnia", "west": "zachodnia" } as Record<string, string>)[m[1].toLowerCase().replace(/-/g, " ").replace(/\s+/g, " ")] || m[1]}`, en: (m) => `Facing ${m[1].toLowerCase()}`, group: "area", icon: "sun" },
   { key: "airport", test: /airport/i, pl: "Dobry dojazd z lotniska", en: "Easy airport access", group: "area", icon: "plane" },
-  { key: "town", test: /near (town|city)|close to town|setting - close to town/i, pl: "Blisko centrum miasta", en: "Close to town", group: "area", icon: "pin" },
+  { key: "hospital", test: /near hospital|hospital/i, pl: "Szpital w pobliżu", en: "Hospital nearby", group: "area", icon: "pin" },
+  { key: "marina", test: /close to (port|marina)|setting - close to marina/i, pl: "Blisko portu / mariny", en: "Close to the marina", group: "area", icon: "waves" },
+  { key: "coastal", test: /^location:\s*coastal$|^coastal$/i, pl: "Lokalizacja nadmorska", en: "Coastal location", group: "area", icon: "waves" },
+  { key: "urbanisation", test: /^(location:\s*)?urbani[sz]ation$/i, pl: "Osiedle mieszkaniowe", en: "Residential complex", group: "area", icon: "home" },
+  { key: "rural", test: /^(location:\s*)?(rural|countryside|campo)$/i, pl: "Spokojna okolica poza miastem", en: "Rural setting", group: "area", icon: "garden" },
+  { key: "mountain", test: /^(location:\s*)?mountain$/i, pl: "Okolica górska", en: "Mountain setting", group: "area", icon: "mountain" },
+  { key: "garden-views", test: /views?:?\s*-?\s*garden/i, pl: "Widok na ogród", en: "Garden views", group: "area", icon: "view" },
+  { key: "city-views", test: /views?[:\s-]*city/i, pl: "Widok na miasto", en: "City views", group: "area", icon: "view" },
+  { key: "views", test: /^great views$|^(views|panoramic views?)$/i, pl: "Piękne widoki", en: "Great views", group: "area", icon: "view" },
+  { key: "town", test: /near (the )?(town|city)( cent(er|re))?|close to town|setting - close to town/i, pl: "Blisko centrum miasta", en: "Close to town", group: "area", icon: "pin" },
 ];
 
 export const FEATURE_GROUP_LABELS: Record<FeatureGroup, { pl: string; en: string }> = {
@@ -132,8 +150,18 @@ export const FEATURE_GROUP_LABELS: Record<FeatureGroup, { pl: string; en: string
   area: { pl: "Okolica i widoki", en: "Area & views" },
 };
 
+// Napisy zepsute przy imporcie (np. „ogrÃ³d”, „GARAÅ»”) → poprawne UTF-8.
+function fixMojibake(value: string) {
+  if (!/[ÃÅÄ][\u0080-\u00ff]/.test(value)) return value;
+  try {
+    return decodeURIComponent(escape(value));
+  } catch {
+    return value;
+  }
+}
+
 function featureStrings(features: unknown): string[] {
-  if (Array.isArray(features)) return features.map((f) => String(f ?? "").trim()).filter(Boolean);
+  if (Array.isArray(features)) return features.map((f) => fixMojibake(String(f ?? "").trim())).filter(Boolean);
   if (typeof features === "string") return features.split(/[,;|]/).map((f) => f.trim()).filter(Boolean);
   return [];
 }

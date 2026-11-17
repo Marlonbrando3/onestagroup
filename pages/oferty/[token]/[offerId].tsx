@@ -31,8 +31,6 @@ import { propertyImageUrl } from "@/lib/propertyImages";
 import {
   imageUrls,
   descriptionValue,
-  featureValues,
-  featureLabel,
 } from "@/lib/presentationOffer";
 import OfferPdfButton from "@/components/agent/OfferPdfButton";
 import ProjectUnits from "@/components/offer/ProjectUnits";
@@ -40,6 +38,7 @@ import ContactOnPropertyCard from "@/components/SearchEngine/ContactOnPropertyCa
 import Footer from "@/components/Footer";
 import InterestButton from "@/components/presentation/InterestButton";
 import { getProjectUnits, type ProjectUnit } from "@/lib/projectUnits";
+import { normalizeFeatures } from "@/lib/propertyFeatures";
 import type { OfferPdfContact } from "@/lib/offerPdf";
 import { formatPhone } from "@/lib/phone";
 
@@ -243,6 +242,22 @@ export default function PresentationOfferPage({
           <div className="mt-10 grid items-start gap-7 lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)]">
             <div className="grid gap-7">
               <section className="rounded-2xl border border-[#ded5c8] bg-white px-6 py-7 shadow-sm sm:px-9 sm:py-9">
+                <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">Wyposażenie i udogodnienia</p>
+                <h2 className={`${HomePlayfairSans.className} mt-2 text-[32px] font-semibold`}>Atuty oferty</h2>
+                {features.length ? (
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {features.map((feature) => (
+                      <span key={feature} className="rounded-full border border-[#ddcfbb] bg-[#f8f4ed] px-4 py-2.5 text-[10px] font-bold text-[#405066]">
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-5 text-[13px] text-slate-500">Brak dodatkowych atutów w danych oferty.</p>
+                )}
+              </section>
+
+              <section className="rounded-2xl border border-[#ded5c8] bg-white px-6 py-7 shadow-sm sm:px-9 sm:py-9">
                 <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">O nieruchomości</p>
                 <h2 className={`${HomePlayfairSans.className} mt-2 text-[32px] font-semibold`}>Opis oferty</h2>
                 <div className="mt-6 whitespace-pre-line text-[14px] leading-7 text-[#526173] sm:text-[15px]">
@@ -259,21 +274,6 @@ export default function PresentationOfferPage({
                 <iframe title={`Mapa — ${locationLine || country}`} src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed&z=11`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="h-[380px] w-full border-0 lg:h-[420px]" />
               </section>
 
-              <section className="rounded-2xl border border-[#ded5c8] bg-white px-6 py-7 shadow-sm sm:px-9 sm:py-9">
-                <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">Wyposażenie i udogodnienia</p>
-                <h2 className={`${HomePlayfairSans.className} mt-2 text-[32px] font-semibold`}>Atuty oferty</h2>
-                {features.length ? (
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {features.map((feature) => (
-                      <span key={feature} className="rounded-full border border-[#ddcfbb] bg-[#f8f4ed] px-4 py-2.5 text-[10px] font-bold text-[#405066]">
-                        {featureLabel(feature)}
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="mt-5 text-[13px] text-slate-500">Brak dodatkowych atutów w danych oferty.</p>
-                )}
-              </section>
               <ProjectUnits
                 units={projectUnits}
                 variant="presentation"
@@ -300,9 +300,9 @@ export default function PresentationOfferPage({
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f3e7d1] text-[12px] text-[#9b7a36]"><FaPhoneAlt aria-hidden="true" /></span>
                   {formatPhone(contact.phone || "") || "+48 576 652 525"}
                 </a>
-                <a href={`mailto:${contact.email || "biuro@onesta.com.pl"}`} className="flex min-h-[50px] items-center gap-3 rounded-xl border border-[#e3d9cb] px-4 text-[13px] font-bold text-[#182334] transition hover:border-[#182334]">
+                <a href={`mailto:${contact.email || "biuro@onesta.com.pl"}`} className="flex min-h-[50px] items-center gap-3 rounded-xl border border-[#e3d9cb] px-4 text-[12px] font-semibold text-[#182334] transition hover:border-[#182334]">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f3e7d1] text-[12px] text-[#9b7a36]"><FaEnvelope aria-hidden="true" /></span>
-                  <span className="min-w-0 break-all">{contact.email || "biuro@onesta.com.pl"}</span>
+                  <span className="min-w-0 [overflow-wrap:anywhere]">{contact.email || "biuro@onesta.com.pl"}</span>
                 </a>
                 <p className="mt-1 text-[11px] leading-5 text-slate-500">
                   Zadzwoń lub napisz — odpowiemy na pytania o tę ofertę, koszty zakupu i termin oglądania.
@@ -481,7 +481,8 @@ export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = as
       offer,
       images: imageUrls(offer.images),
       description: descriptionValue(offer.descriptions),
-      features: featureValues(offer.features),
+      // Atuty po polsku — wspólny słownik cech (lib/propertyFeatures.ts), jak na stronach ofert.
+      features: normalizeFeatures(offer.features, "pl", offer).map((feature) => feature.label),
       projectUnits: await getProjectUnits(offer),
       contact: {
         name: presentation.contact_name || presentation.agent_name || "",
