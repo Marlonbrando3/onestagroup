@@ -44,7 +44,8 @@ export default async function handler(
   const to = from + PAGE_SIZE - 1;
   const search = safeSearchValue(queryText(req.query.search));
   // Numer referencyjny z feedu (<ref>, np. SP1526, N9115) albo nasz numer oferty (MTI-…).
-  const ref = safeSearchValue(queryText(req.query.ref)).replace(/\s+/g, "");
+  // Spacje traktujemy jak dowolny łącznik, np. „MTI 3118” znajdzie MTI-3118-115-10-115.
+  const ref = safeSearchValue(queryText(req.query.ref)).replace(/\s+/g, "%");
   const country = queryText(req.query.country);
   const province = queryText(req.query.province);
   const regions = queryList(req.query.regions);

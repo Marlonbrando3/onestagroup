@@ -326,7 +326,7 @@ export default function AgentPage() {
                 <select value={filters.country} onChange={(event) => setFilters((current) => ({ ...current, country: event.target.value }))} className="agentFilterInput">
                   <option value="all">Wszystkie kraje</option><option value="hiszpania">Hiszpania</option><option value="cypr">Cypr</option>
                 </select>
-                <input value={filters.ref} onChange={(event) => setFilters((current) => ({ ...current, ref: event.target.value }))} placeholder="Nr referencyjny, np. SP1526" className="agentFilterInput" aria-label="Numer referencyjny oferty" />
+                <input value={filters.ref} onChange={(event) => setFilters((current) => ({ ...current, ref: event.target.value }))} placeholder="Nr ref., np. SP1526 lub MTI-3118" className="agentFilterInput" aria-label="Numer referencyjny oferty" />
                 <LocationMultiSelect
                   coasts={coasts}
                   regions={filters.regions}

@@ -3,6 +3,7 @@ import type { GetServerSideProps } from "next";
 import { FaEnvelope, FaPhoneAlt, FaRegUser } from "react-icons/fa";
 import Footer from "@/components/Footer";
 import PropertyCard from "@/components/SearchEngine/PropertyCard";
+import InterestButton from "@/components/presentation/InterestButton";
 import { HomeMontserratSans } from "@/fonts/homeFonts";
 import type { AgentOffer } from "@/lib/agentOffers";
 import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
@@ -90,13 +91,17 @@ export default function PublicOfferList({
 
         <section className="mx-auto mt-8 grid w-11/12 max-w-7xl gap-6 md:grid-cols-2 xl:grid-cols-3">
           {offers.map((offer, index) => (
-            <PropertyCard
-              key={offer.external_id}
-              property={{ ...offer, vacantFromDate: offer.available_from }}
-              detailHrefOverride={`/oferty/${token}/${encodeURIComponent(String(offer.external_id))}`}
-              appearance="cbtop"
-              imagePriority={index === 0}
-            />
+            <div key={offer.external_id} className="flex flex-col gap-4">
+              <PropertyCard
+                property={{ ...offer, vacantFromDate: offer.available_from }}
+                detailHrefOverride={`/oferty/${token}/${encodeURIComponent(String(offer.external_id))}`}
+                appearance="cbtop"
+                imagePriority={index === 0}
+              />
+              <div className="mt-auto">
+                <InterestButton token={token} offerId={String(offer.external_id)} />
+              </div>
+            </div>
           ))}
         </section>
 

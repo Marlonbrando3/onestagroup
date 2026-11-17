@@ -170,7 +170,8 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
   const type = propertyTypeLabel.pl[offer.type || ""] || offer.type || "Nieruchomość";
   const country = getCountryLabel(offer.country) || offer.country || "Hiszpania";
   const title = validTitleOrEmpty(offer.title) || `${type} — ${offer.town || offer.province || country}`;
-  const reference = String(offer.ref || offer.external_id);
+  // Numer oferty z naszej bazy (MTI-…), nie numer z feedu XML.
+  const reference = String(offer.external_id || offer.ref);
   const location = [...new Set([offer.town, offer.province, country].filter(Boolean))].join(" · ");
   const date = new Date().toLocaleDateString("pl-PL");
 
@@ -577,7 +578,7 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
 export async function downloadOfferPdf(input: PdfInput) {
   const { doc, missingImages } = await createOfferPdf(input);
   const ref =
-    String(input.offer.ref || input.offer.external_id)
+    String(input.offer.external_id || input.offer.ref)
       .replace(/[^a-zA-Z0-9_-]+/g, "-")
       .slice(0, 80) || "oferta";
   await doc.save(`Onesta-oferta-${ref}.pdf`, { returnPromise: true });
