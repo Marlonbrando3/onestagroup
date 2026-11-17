@@ -233,7 +233,9 @@ export default function PresentationEditor({
   return (
     <div className={`${HomeMontserratSans.className} min-h-screen bg-[#f4f1eb] text-[#182334]`}>
       <AgentHeader active="editor" agentName={agent?.name} />
-      <main className="mx-auto max-w-[1500px] px-4 py-8 lg:px-8">
+      {/* Na dużych ekranach strona nie przewija się jako całość: „Wróć…” i dane prezentacji stoją,
+          a lewy panel i podgląd ofert mają własne przewijanie. */}
+      <main className="mx-auto max-w-[1500px] px-4 py-8 lg:px-8 xl:flex xl:h-[calc(100dvh-77px)] xl:flex-col xl:overflow-hidden xl:py-6">
         <button
           type="button"
           onClick={() => router.push(presentationId ? "/agent/prezentacje" : "/agent")}
@@ -243,10 +245,10 @@ export default function PresentationEditor({
           {presentationId ? "Wróć do prezentacji" : "Wróć do wyboru ofert"}
         </button>
 
-        <div className="grid items-start gap-7 xl:grid-cols-[370px_minmax(0,1fr)]">
+        <div className="grid items-start gap-7 xl:min-h-0 xl:flex-1 xl:grid-cols-[370px_minmax(0,1fr)] xl:grid-rows-[minmax(0,1fr)]">
           <form
             onSubmit={savePresentation}
-            className="overflow-hidden rounded-2xl border border-[#ddd3c4] bg-white shadow-[0_16px_45px_rgba(24,35,52,0.08)] xl:sticky xl:top-[104px] xl:max-h-[calc(100vh-124px)] xl:overflow-y-auto xl:overscroll-contain"
+            className="onestaScroll overflow-hidden rounded-2xl border border-[#ddd3c4] bg-white shadow-[0_16px_45px_rgba(24,35,52,0.08)] xl:max-h-full xl:overflow-y-auto xl:overscroll-contain"
           >
             <div className="bg-[#182334] px-6 py-6 text-white">
               <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#d6b66f]">
@@ -402,7 +404,7 @@ export default function PresentationEditor({
             </div>
           </form>
 
-          <section className="min-w-0">
+          <section className="onestaScroll min-w-0 xl:h-full xl:overflow-y-auto xl:overscroll-contain xl:pb-6 xl:pr-3">
             <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
               <div>
                 <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#9b7a36]">
@@ -484,6 +486,12 @@ export default function PresentationEditor({
       ) : null}
 
       <style jsx global>{`
+        /* Przewijanie w kolorach strony (złoty suwak na kremowym tle). */
+        .onestaScroll { scrollbar-width: thin; scrollbar-color: #c9a75e #f1ebe1; }
+        .onestaScroll::-webkit-scrollbar { width: 8px; height: 8px; }
+        .onestaScroll::-webkit-scrollbar-track { background: #f1ebe1; border-radius: 999px; }
+        .onestaScroll::-webkit-scrollbar-thumb { background: #c9a75e; border-radius: 999px; border: 2px solid #f1ebe1; }
+        .onestaScroll::-webkit-scrollbar-thumb:hover { background: #9b7a36; }
         .presentationInput { min-height: 48px; width: 100%; border: 1px solid #d9d0c4; border-radius: 10px; background: #fcfbf8; padding: 0 13px; color: #26364b; font-size: 12px; font-weight: 600; outline: none; }
         .presentationInput:focus { border-color: #b8954c; box-shadow: 0 0 0 3px rgba(184,149,76,.12); }
         @media (max-width: 1279px) { form.sticky { position: static; } }
