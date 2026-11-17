@@ -118,7 +118,21 @@ function coverCrop(photo: Photo, frameW: number, frameH: number) {
   return canvas.toDataURL("image/jpeg", 0.86);
 }
 
+// Numer telefonu z kierunkowym: polskie 9 cyfr → „+48 576 652 525”; inne numery bez zmian
+// (z dodanym „+”, jeśli zaczynają się od kodu kraju).
+export function formatPhone(value: string) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  const digits = raw.replace(/\D/g, "");
+  const groups = (d: string) => d.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3");
+  if (digits.length === 9 && !raw.startsWith("+")) return `+48 ${groups(digits)}`;
+  if (digits.length === 11 && digits.startsWith("48")) return `+48 ${groups(digits.slice(2))}`;
+  if (digits.length === 13 && digits.startsWith("0048")) return `+48 ${groups(digits.slice(4))}`;
+  return raw.startsWith("+") || raw.startsWith("00") ? raw.replace(/^00/, "+") : raw;
+}
+
 export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
+  const phone = formatPhone(contact.phone);
   const sources = imageUrls(offer.images).slice(0, MAX_PHOTOS);
   const [fonts, logo, photoResults] = await Promise.all([
     loadFonts(),
@@ -295,7 +309,7 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
   }
 
   // Agent + link do oferty online.
-  const contactRows = [contact.name, contact.phone, contact.email].filter(Boolean);
+  const contactRows = [contact.name, phone, contact.email].filter(Boolean);
   const cardTop = Math.max(y, 236);
   const cardH = 30;
   doc.setFillColor(INK);
@@ -306,12 +320,12 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
     font(12, true, "#ffffff");
     doc.text(clean(contact.name || "Onesta Group"), MARGIN + 7, cardTop + 15.5);
     font(9, false, "#d9e1ec");
-    doc.text([contact.phone, contact.email].filter(Boolean).join("   ·   "), MARGIN + 7, cardTop + 22);
+    doc.text([phone, contact.email].filter(Boolean).join("   ·   "), MARGIN + 7, cardTop + 22);
   } else {
     font(11, true, "#ffffff");
     doc.text("Onesta Group", MARGIN + 7, cardTop + 15.5);
     font(9, false, "#d9e1ec");
-    doc.text("biuro@onesta.com.pl   ·   +48 576 65 25 25", MARGIN + 7, cardTop + 22);
+    doc.text("biuro@onesta.com.pl   ·   +48 576 652 525", MARGIN + 7, cardTop + 22);
   }
   if (publicUrl) {
     const label = "Zobacz ofertę online";
@@ -382,10 +396,16 @@ export async function createOfferPdf({ offer, contact, publicUrl }: PdfInput) {
   for (let index = 1; index <= pageCount; index++) {
     doc.setPage(index);
     doc.setDrawColor(LINE);
-    doc.line(MARGIN, 280, PAGE_W - MARGIN, 280);
+    doc.line(MARGIN, 276, PAGE_W - MARGIN, 276);
+    // Dane agenta prowadzącego (gdy brak — kontakt do biura).
+    const agentLine = contact.name || phone || contact.email
+      ? [contact.name ? `Agent prowadzący: ${clean(contact.name)}` : "Agent prowadzący", phone, contact.email]
+      : ["Onesta Group", "+48 576 652 525", "biuro@onesta.com.pl"];
+    font(8, true, INK);
+    doc.text(agentLine.filter(Boolean).join("   ·   "), MARGIN, 282);
     font(7, false, MUTED);
-    doc.text("Onesta Group  ·  onesta.com.pl  ·  Ceny i dostępność mogą ulec zmianie.", MARGIN, 286);
-    doc.text(`${index} / ${pageCount}`, PAGE_W - MARGIN, 286, { align: "right" });
+    doc.text("Onesta Group  ·  onesta.com.pl  ·  Ceny i dostępność mogą ulec zmianie.", MARGIN, 287.5);
+    doc.text(`${index} / ${pageCount}`, PAGE_W - MARGIN, 287.5, { align: "right" });
   }
   return { doc, missingImages: sources.length - photos.length };
 }
