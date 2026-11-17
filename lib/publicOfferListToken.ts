@@ -2,6 +2,7 @@ import { supabaseServer } from "@/lib/supabaseClient";
 
 const PUBLIC_TOKEN_PATTERN = /^[A-Za-z0-9_-]{20,64}$/;
 
+// Usunięte prezentacje (deleted_at) nie mają już publicznego linku.
 export async function resolvePublicOfferListToken(
   value: unknown,
 ): Promise<string | null> {
@@ -14,6 +15,7 @@ export async function resolvePublicOfferListToken(
     .from("agent_offer_lists")
     .select("public_token")
     .eq("public_token", requestedToken)
+    .is("deleted_at", null)
     .maybeSingle();
 
   if (exactError) return null;
@@ -26,6 +28,7 @@ export async function resolvePublicOfferListToken(
     .from("agent_offer_lists")
     .select("public_token")
     .like("public_token", `${requestedToken}%`)
+    .is("deleted_at", null)
     .limit(2);
 
   if (prefixError || prefixMatches?.length !== 1) return null;

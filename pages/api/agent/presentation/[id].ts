@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { authenticateAgent } from "@/lib/agentAuthServer";
 import type { AgentOffer } from "@/lib/agentOffers";
 import { supabaseServer } from "@/lib/supabaseClient";
+import { CBTOP_SOURCE_PRESENTATION_TOKEN } from "@/lib/cbTopOffers";
 
 const MAX_OFFERS_PER_LIST = 100;
 
@@ -17,7 +18,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "GET" && req.method !== "PUT") {
+  if (req.method !== "GET" && req.method !== "PUT" && req.method !== "DELETE") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
@@ -34,9 +35,10 @@ export default async function handler(
   const { data: presentation, error: presentationError } = await supabaseServer
     .from("agent_offer_lists")
     .select(
-      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at",
+      "id,public_token,agent_user_id,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at",
     )
     .eq("id", id)
+    .is("deleted_at", null)
     .maybeSingle();
 
   if (presentationError) {
@@ -48,6 +50,27 @@ export default async function handler(
 
   if (req.method === "GET") {
     return res.status(200).json({ data: presentation, agent: auth.agent });
+  }
+
+  // Usunięcie prezentacji (miękkie: znika z listy, link przestaje działać; dane zostają w bazie).
+  // Może usunąć autor prezentacji albo Marek.
+  if (req.method === "DELETE") {
+    const isAuthor =
+      presentation.agent_user_id === auth.agent.id ||
+      String(presentation.agent_email || "").toLowerCase() === auth.agent.email.toLowerCase();
+    const isOwner = auth.agent.email.toLowerCase() === "marek.marszalek@onesta.com.pl";
+    if (!isAuthor && !isOwner) {
+      return res.status(403).json({ error: "Prezentację może usunąć tylko jej autor" });
+    }
+    if (presentation.public_token === CBTOP_SOURCE_PRESENTATION_TOKEN) {
+      return res.status(400).json({ error: "Ta prezentacja zasila stronę CBTOP i nie może zostać usunięta" });
+    }
+    const { error } = await supabaseServer
+      .from("agent_offer_lists")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) return res.status(500).json({ error: error.message });
+    return res.status(200).json({ success: true });
   }
 
   const presentationName = cleanText(req.body?.presentationName, 160);

@@ -9,6 +9,7 @@ import {
   FaLayerGroup,
   FaPlus,
   FaSearch,
+  FaTrashAlt,
 } from "react-icons/fa";
 import AgentHeader from "@/components/agent/AgentHeader";
 import { HomeMontserratSans } from "@/fonts/homeFonts";
@@ -53,6 +54,8 @@ export default function AgentPresentationsPage() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [copiedId, setCopiedId] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState("");
+  const [deletingId, setDeletingId] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -137,6 +140,32 @@ export default function AgentPresentationsPage() {
       ].some((value) => String(value || "").toLowerCase().includes(query)),
     );
   }, [presentations, search]);
+
+  // Usuwać może autor prezentacji albo Marek (to samo sprawdza API).
+  const canDelete = (presentation: PresentationSummary) => {
+    const me = String(agent?.email || "").toLowerCase();
+    return Boolean(me) && (me === String(presentation.agent_email || "").toLowerCase() || me === "marek.marszalek@onesta.com.pl");
+  };
+
+  const deletePresentation = async (presentation: PresentationSummary) => {
+    if (!accessToken || deletingId) return;
+    setDeletingId(presentation.id);
+    setErrorMessage("");
+    try {
+      const response = await fetch(`/api/agent/presentation/${presentation.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload?.error || "Nie udało się usunąć prezentacji");
+      setPresentations((current) => current.filter((item) => item.id !== presentation.id));
+      setConfirmDeleteId("");
+    } catch (error: any) {
+      setErrorMessage(error?.message || "Nie udało się usunąć prezentacji");
+    } finally {
+      setDeletingId("");
+    }
+  };
 
   const copyPublicLink = async (presentation: PresentationSummary) => {
     await navigator.clipboard.writeText(
@@ -223,13 +252,51 @@ export default function AgentPresentationsPage() {
                     </div>
                   </div>
 
-                  <div className="grid gap-2 px-5 py-4 text-[10px] text-slate-500">
-                    <p>
-                      Utworzył: <strong className="text-[#334155]">{presentation.agent_name || presentation.agent_email}</strong>
-                    </p>
-                    <p>Ostatnia zmiana: {formatDate(presentation.updated_at || presentation.created_at)}</p>
-                    {presentation.contact_phone ? <p>Telefon w prezentacji: {presentation.contact_phone}</p> : null}
+                  <div className="flex items-end justify-between gap-3 px-5 py-4">
+                    <div className="grid gap-2 text-[10px] text-slate-500">
+                      <p>
+                        Utworzył: <strong className="text-[#334155]">{presentation.agent_name || presentation.agent_email}</strong>
+                      </p>
+                      <p>Ostatnia zmiana: {formatDate(presentation.updated_at || presentation.created_at)}</p>
+                      {presentation.contact_phone ? <p>Telefon w prezentacji: {presentation.contact_phone}</p> : null}
+                    </div>
+                    {canDelete(presentation) ? (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmDeleteId(presentation.id)}
+                        aria-label={`Usuń prezentację ${presentation.presentation_name || ""}`}
+                        title="Usuń prezentację"
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-red-100 bg-red-50 text-[11px] text-red-600 transition hover:border-red-600 hover:bg-red-600 hover:text-white"
+                      >
+                        <FaTrashAlt aria-hidden="true" />
+                      </button>
+                    ) : null}
                   </div>
+
+                  {confirmDeleteId === presentation.id ? (
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-red-100 bg-red-50 px-5 py-3">
+                      <p className="text-[11px] font-semibold leading-4 text-red-700">
+                        Usunąć tę prezentację? Link u klienta przestanie działać.
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setConfirmDeleteId("")}
+                          className="rounded-full border border-[#ddd3c4] bg-white px-4 py-2 text-[9px] font-extrabold uppercase tracking-[0.08em] text-[#334155] hover:border-[#182334]"
+                        >
+                          Anuluj
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deletePresentation(presentation)}
+                          disabled={deletingId === presentation.id}
+                          className="rounded-full bg-red-600 px-4 py-2 text-[9px] font-extrabold uppercase tracking-[0.08em] text-white hover:bg-red-700 disabled:opacity-60"
+                        >
+                          {deletingId === presentation.id ? "Usuwanie…" : "Usuń"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
 
                   <div className="grid grid-cols-3 border-t border-[#e8e0d5] bg-[#fbf8f2]">
                     <Link href={`/agent/prezentacja/${presentation.id}`} className="flex min-h-[50px] items-center justify-center gap-2 border-r border-[#e8e0d5] text-[9px] font-extrabold uppercase tracking-[0.09em] text-[#182334] transition hover:bg-[#182334] hover:text-white">

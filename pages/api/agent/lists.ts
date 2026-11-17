@@ -39,6 +39,7 @@ export default async function handler(
       .select(
         "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at",
       )
+      .is("deleted_at", null)
       .order("updated_at", { ascending: false });
 
     if (error) {
