@@ -280,12 +280,12 @@ export default function PresentationEditor({
 
               <div className="grid gap-2 text-[11px] font-bold text-[#334155]">
                 <span>Prezentacja przygotowana dla</span>
-                <div className="grid grid-cols-[112px_minmax(0,1fr)] gap-2">
+                <div className="grid grid-cols-[138px_minmax(0,1fr)] gap-2">
                   <div className="relative">
                     <select
                       value={clientSalutation}
                       onChange={(event) => setClientSalutation(event.target.value as typeof clientSalutation)}
-                      className="presentationInput w-full cursor-pointer appearance-none !pr-8"
+                      className="presentationInput w-full cursor-pointer appearance-none !pl-3 !pr-8"
                       aria-label="Zwrot do klienta"
                     >
                       <option value="pani">Pani</option>
