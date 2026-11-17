@@ -411,7 +411,8 @@ export default function PresentationEditor({
                   Podgląd zawartości
                 </p>
                 <h2 className="mt-2 text-[30px] font-extrabold tracking-[-0.03em]">
-                  Oferty w prezentacji
+                  Oferty w prezentacji{" "}
+                  <span className="text-[#9b7a36]">({offers.length})</span>
                 </h2>
               </div>
               <p className="text-[11px] leading-5 text-slate-500">
@@ -424,9 +425,6 @@ export default function PresentationEditor({
                 {offers.map((offer, index) => (
                   <div key={offer.external_id} className="relative min-w-0">
                     <PropertyCard property={offer} showFeedRef />
-                    <span className="absolute left-3 top-3 z-30 flex h-9 min-w-9 items-center justify-center rounded-full bg-[#d6b66f] px-2 text-[11px] font-extrabold text-[#182334] shadow-lg">
-                      {index + 1}
-                    </span>
                     <button
                       type="button"
                       onClick={() => removeOffer(String(offer.external_id))}
