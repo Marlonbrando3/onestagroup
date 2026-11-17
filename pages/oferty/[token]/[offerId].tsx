@@ -67,6 +67,26 @@ export default function PresentationOfferPage({
   projectUnits,
 }: PresentationOfferProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  // Długi opis: najpierw mniej więcej połowa (pełne linie), reszta po kliknięciu „Czytaj dalej”.
+  const descriptionParts = (() => {
+    if (!description || description.length < 900) return { short: description, rest: "" };
+    const lines = description.split("\n");
+    let shown = 0;
+    let index = 0;
+    while (index < lines.length && shown < description.length / 2) {
+      shown += lines[index].length + 1;
+      index += 1;
+    }
+    const short = lines.slice(0, index).join("\n").trimEnd();
+    const rest = lines.slice(index).join("\n").trim();
+    if (rest) return { short: `${short}…`, rest };
+    // Opis w jednym akapicie — tniemy na końcu zdania za połową tekstu.
+    const cut = description.indexOf(". ", Math.floor(description.length / 2));
+    return cut > 0 && cut < description.length - 40
+      ? { short: `${description.slice(0, cut + 1)}…`, rest: description.slice(cut + 2) }
+      : { short: description, rest: "" };
+  })();
   const typeLabel =
     propertyTypeLabel.pl[offer.type || ""] || offer.type || "Nieruchomość";
   const title =
@@ -228,16 +248,26 @@ export default function PresentationOfferPage({
             ))}
           </section>
 
-          {/* Przyklejone 5 px od góry — jedzie z klientem do końca strony. */}
-          <section className="sticky top-[5px] z-30 mx-auto mt-8 flex max-w-[1240px] flex-col items-center gap-3 rounded-2xl border border-[#d9a7ab] bg-[#fdf6f5]/95 px-5 py-3 text-center shadow-[0_12px_34px_rgba(142,36,48,0.18)] backdrop-blur sm:flex-row sm:justify-between sm:gap-4 sm:px-8 sm:py-4 sm:text-left">
-            <div>
-              <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#8e2430]">Podoba Ci się ta oferta?</p>
-              <p className="mt-1 hidden text-[14px] font-bold text-[#26364b] sm:block">Daj znać jednym kliknięciem — agent prześle Ci więcej informacji.</p>
-            </div>
-            <div className="w-full sm:w-[320px] sm:shrink-0">
-              <InterestButton token={token} offerId={String(offer.external_id)} variant="wide" />
-            </div>
-          </section>
+          {/* Przyklejone 5 px od góry — jedzie z klientem do końca strony. Obok przycisk powrotu do prezentacji. */}
+          <div className="sticky top-[5px] z-30 mt-8 flex items-stretch gap-3 lg:grid lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)] lg:gap-7">
+            <section className="flex min-w-0 flex-1 flex-col items-center gap-3 rounded-2xl border border-[#d9a7ab] bg-[#fdf6f5]/95 px-5 py-3 text-center shadow-[0_12px_34px_rgba(142,36,48,0.18)] backdrop-blur sm:flex-row sm:justify-between sm:gap-4 sm:px-8 sm:py-4 sm:text-left">
+              <div>
+                <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#8e2430]">Podoba Ci się ta oferta?</p>
+                <p className="mt-1 hidden text-[14px] font-bold text-[#26364b] lg:block">Daj znać — agent prześle Ci więcej informacji.</p>
+              </div>
+              <div className="w-full sm:w-[280px] sm:shrink-0">
+                <InterestButton token={token} offerId={String(offer.external_id)} variant="wide" />
+              </div>
+            </section>
+            <Link
+              href={`/oferty/${token}`}
+              aria-label="Wróć do prezentacji"
+              className="flex shrink-0 items-center justify-center gap-2.5 rounded-2xl border border-[#ded5c8] bg-white/95 px-4 text-[10px] font-extrabold uppercase tracking-[0.1em] text-[#182334] shadow-[0_12px_34px_rgba(24,35,52,0.12)] backdrop-blur transition hover:border-[#182334] hover:bg-[#182334] hover:text-white sm:px-6"
+            >
+              <FaArrowLeft aria-hidden="true" />
+              <span className="hidden sm:inline">Wróć do prezentacji</span>
+            </Link>
+          </div>
 
           <div className="mt-10 grid items-start gap-7 lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)]">
             <div className="grid gap-7">
@@ -261,8 +291,19 @@ export default function PresentationOfferPage({
                 <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#9b7a36]">O nieruchomości</p>
                 <h2 className={`${HomePlayfairSans.className} mt-2 text-[32px] font-semibold`}>Opis oferty</h2>
                 <div className="mt-6 whitespace-pre-line text-[14px] leading-7 text-[#526173] sm:text-[15px]">
-                  {description || "Szczegółowy opis tej nieruchomości nie został jeszcze uzupełniony."}
+                  {description ? (descriptionExpanded ? description : descriptionParts.short) : "Szczegółowy opis tej nieruchomości nie został jeszcze uzupełniony."}
                 </div>
+                {descriptionParts.rest ? (
+                  <button
+                    type="button"
+                    onClick={() => setDescriptionExpanded((value) => !value)}
+                    aria-expanded={descriptionExpanded}
+                    className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#ddcfbb] bg-[#f8f4ed] px-5 py-2.5 text-[10px] font-extrabold uppercase tracking-[0.1em] text-[#182334] transition hover:border-[#182334]"
+                  >
+                    {descriptionExpanded ? "Zwiń opis" : "Czytaj dalej"}
+                    <FaChevronRight aria-hidden="true" className={`text-[9px] transition ${descriptionExpanded ? "-rotate-90" : "rotate-90"}`} />
+                  </button>
+                ) : null}
               </section>
 
               <section className="overflow-hidden rounded-2xl border border-[#ded5c8] bg-white shadow-sm">
