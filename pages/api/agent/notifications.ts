@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const [{ data, error }, { count }] = await Promise.all([
       supabaseServer
         .from("agent_notifications")
-        .select("id,kind,presentation_id,presentation_name,public_token,offer_external_id,offer_ref,offer_title,created_at,read_at")
+        .select("id,kind,presentation_id,presentation_name,public_token,offer_external_id,offer_ref,offer_title,sent_by_name,created_at,read_at")
         .or(mine)
         .order("created_at", { ascending: false })
         .limit(LIMIT),

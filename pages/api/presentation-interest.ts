@@ -7,6 +7,8 @@ import { supabaseServer } from "@/lib/supabaseClient";
 // nazwa prezentacji (np. „Oferty dla pana Marka”), numer oferty z bazy (MTI-…), nr z feedu, link.
 // Ta sama skrzynka i serwer SMTP (LH.pl) co pozostałe formularze (FROM_EMAIL / EMAIL_PASS).
 const FALLBACK_EMAIL = "biuro@onesta.com.pl";
+// Marek Marszałek dostaje powiadomienie o każdym kliknięciu — także z prezentacji innych agentów.
+const ALWAYS_NOTIFY_EMAIL = "marek.marszalek@onesta.com.pl";
 const REPEAT_WINDOW_MS = 10 * 60 * 1000;
 const recent = new Map<string, number>();
 
@@ -50,18 +52,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const now = Date.now();
   if ((recent.get(key) || 0) > now - REPEAT_WINDOW_MS) return res.status(200).json({ success: true });
 
-  // Powiadomienie w strefie agenta (dzwonek obok „Wyloguj”).
-  const { error: notifyError } = await supabaseServer.from("agent_notifications").insert({
-    agent_user_id: presentation.agent_user_id || null,
-    agent_email: validEmail(presentation.agent_email) || null,
-    kind: "offer_interest",
+  // Powiadomienie w strefie agenta (dzwonek obok „Wyloguj”) dla agenta, który przygotował prezentację,
+  // oraz kopia dla Marka, jeśli prezentację przygotował ktoś inny.
+  const creatorEmail = validEmail(presentation.agent_email);
+  const notification = {
     presentation_id: presentation.id,
     presentation_name: String(presentation.presentation_name || "").trim() || null,
     public_token: token,
     offer_external_id: offerId,
     offer_ref: offer.ref ? String(offer.ref) : null,
     offer_title: offer.title ? String(offer.title).slice(0, 300) : null,
-  });
+    sent_by_name: String(presentation.agent_name || presentation.contact_name || "").trim() || creatorEmail || null,
+  };
+  const notificationRows: Record<string, unknown>[] = [
+    { ...notification, kind: "offer_interest", agent_user_id: presentation.agent_user_id || null, agent_email: creatorEmail || null },
+  ];
+  if (creatorEmail.toLowerCase() !== ALWAYS_NOTIFY_EMAIL) {
+    notificationRows.push({ ...notification, kind: "offer_interest_copy", agent_user_id: null, agent_email: ALWAYS_NOTIFY_EMAIL });
+  }
+  const { error: notifyError } = await supabaseServer.from("agent_notifications").insert(notificationRows);
   if (notifyError) console.error("presentation-interest: nie zapisano powiadomienia", notifyError);
   const notified = !notifyError;
 
@@ -76,8 +85,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ success: false });
   }
 
+  // Mail idzie na adres podany w prezentacji (kontakt dla klienta) i do agenta, który ją utworzył.
   const recipients = [
-    ...new Set([validEmail(presentation.agent_email), validEmail(presentation.contact_email)].filter(Boolean)),
+    ...new Set(
+      [validEmail(presentation.contact_email), validEmail(presentation.agent_email)]
+        .filter(Boolean)
+        .map((email) => email.toLowerCase()),
+    ),
   ];
   if (!recipients.length) recipients.push(FALLBACK_EMAIL);
 
@@ -87,31 +101,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const presentationUrl = `${proto}://${host}/oferty/${encodeURIComponent(token)}`;
 
   const presentationName = String(presentation.presentation_name || "").trim() || "prezentacja bez nazwy";
-  const price = Number(offer.price) ? `${Number(offer.price).toLocaleString("pl-PL")} €` : "—";
-  const location = [offer.town, offer.province].filter(Boolean).join(", ") || "—";
-  const when = new Date().toLocaleString("pl-PL", { timeZone: "Europe/Warsaw" });
+  const price = Number(offer.price) ? `${Number(offer.price).toLocaleString("pl-PL")} €` : "";
+  const location = [offer.town, offer.province].filter(Boolean).join(", ");
+  const when = new Date().toLocaleString("pl-PL", {
+    timeZone: "Europe/Warsaw",
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const editorUrl = `${proto}://${host}/agent/prezentacja/${encodeURIComponent(String(presentation.id))}`;
+  const details = [location, price, offer.ref ? `nr z feedu: ${offer.ref}` : ""].filter(Boolean).join(" · ");
 
-  const rows: [string, string][] = [
-    ["Prezentacja", presentationName],
-    ["Numer oferty", offerId],
-    ["Nr z feedu", String(offer.ref || "—")],
-    ["Oferta", String(offer.title || "—")],
-    ["Lokalizacja", location],
-    ["Cena", price],
-    ["Kliknięto", when],
-  ];
-
+  // Ta sama treść co powiadomienie w strefie agenta.
   const html =
-    `<p>Klient kliknął <strong>„Interesuje mnie ta oferta”</strong> w prezentacji ` +
-    `<strong>${escapeHtml(presentationName)}</strong>.</p>` +
-    `<table cellpadding="6" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px">` +
-    rows
-      .map(([k, v]) => `<tr><td style="color:#657475">${escapeHtml(k)}</td><td><strong>${escapeHtml(v)}</strong></td></tr>`)
-      .join("") +
-    `</table>` +
-    `<p><a href="${escapeHtml(offerUrl)}">Zobacz ofertę w prezentacji</a> · ` +
-    `<a href="${escapeHtml(presentationUrl)}">Cała prezentacja</a></p>` +
-    `<p style="color:#657475;font-size:12px">Klient czeka na więcej informacji o tej ofercie.</p>`;
+    `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.55;color:#334155;max-width:560px">` +
+    `<p style="margin:0 0 4px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8e2430;font-weight:bold">Nowe powiadomienie</p>` +
+    `<p style="margin:0 0 16px;font-size:16px;color:#182334">Prezentacja <strong>${escapeHtml(presentationName)}</strong>: ` +
+    `klient kliknął <strong>„Interesuje mnie ta oferta”</strong>.</p>` +
+    `<div style="border:1px solid #ead9d6;background:#fdf6f5;border-radius:12px;padding:14px 16px;margin:0 0 16px">` +
+    `<p style="margin:0;font-size:16px;font-weight:bold"><a href="${escapeHtml(offerUrl)}" style="color:#182334">${escapeHtml(offerId)}</a></p>` +
+    (offer.title ? `<p style="margin:4px 0 0">${escapeHtml(offer.title)}</p>` : "") +
+    (details ? `<p style="margin:4px 0 0;font-size:12px;color:#657475">${escapeHtml(details)}</p>` : "") +
+    `<p style="margin:8px 0 0;font-size:12px;color:#657475">${escapeHtml(when)}` +
+    (presentation.agent_name ? ` · prezentację przygotował(a): ${escapeHtml(presentation.agent_name)}` : "") +
+    `</p></div>` +
+    `<p style="margin:0 0 6px"><a href="${escapeHtml(offerUrl)}" style="color:#8e2430;font-weight:bold">Zobacz ofertę w prezentacji</a> · ` +
+    `<a href="${escapeHtml(presentationUrl)}" style="color:#8e2430">Cała prezentacja</a> · ` +
+    `<a href="${escapeHtml(editorUrl)}" style="color:#8e2430">Otwórz w strefie agenta</a></p>` +
+    `<p style="margin:12px 0 0;font-size:12px;color:#657475">Klient czeka na więcej informacji o tej ofercie.</p>` +
+    `</div>`;
 
   const nodemailer = require("nodemailer");
   const transporter = nodemailer.createTransport({
@@ -126,7 +145,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await transporter.sendMail({
       from: `"Onesta — prezentacje" <${fromEmail}>`,
       to: recipients.join(", "),
-      subject: `Zainteresowanie ofertą ${offerId} — ${presentationName}`,
+      subject: `Prezentacja ${presentationName}: klient zainteresowany ofertą ${offerId}`,
       html,
     });
     recent.set(key, now);

@@ -13,6 +13,7 @@ type AgentNotification = {
   offer_external_id: string | null;
   offer_ref: string | null;
   offer_title: string | null;
+  sent_by_name: string | null;
   created_at: string;
   read_at: string | null;
 };
@@ -182,6 +183,9 @@ export default function AgentNotifications() {
                         )}
                       </p>
                       {item.offer_title ? <p className="truncate text-[11px] text-slate-500">{item.offer_title}</p> : null}
+                      {item.kind === "offer_interest_copy" && item.sent_by_name ? (
+                        <p className="text-[11px] text-slate-500">Prezentację przygotował(a): <strong className="text-[#334155]">{item.sent_by_name}</strong></p>
+                      ) : null}
                       <div className="mt-1.5 flex items-center gap-3 text-[10px] text-slate-400">
                         <span>{timeAgo(item.created_at)}</span>
                         {item.presentation_id ? (
