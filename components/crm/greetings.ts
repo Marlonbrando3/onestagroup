@@ -6,7 +6,6 @@ export const crmGreetings: CrmGreeting[] = [
   { before: "Hola, ", after: "!", emoji: "👋" },
   { before: "Bon voyage, ", after: "!", emoji: "✈️" },
   { before: "Pozdrowienia, ", after: "!", emoji: "🙌" },
-  { before: "Witam serdecznie, ", after: "!", emoji: "🤝" },
   { before: "Witam, ", after: ", ale bez serdecznie", emoji: "😏" },
   { before: "Buenos días, ", after: "!", emoji: "🌞" },
   { before: "Miłej sprzedaży, ", after: "!", emoji: "💼" },
@@ -17,11 +16,15 @@ export const crmGreetings: CrmGreeting[] = [
   { before: "Olé, ", after: "!", emoji: "💃" },
   { before: "Czołem, ", after: "!", emoji: "🫡" },
   { before: "Hej, ", after: "!", emoji: "✌️" },
-  { before: "Hiszpańskie słońce czeka, ", after: "!", emoji: "🌴" },
   { before: "Do dzieła, ", after: "!", emoji: "💪" },
   { before: "Bonjour, ", after: "!", emoji: "🥐" },
   { before: "Siema, ", after: "!", emoji: "😎" },
   { before: "Powodzenia dziś, ", after: "!", emoji: "🍀" },
+  { before: "Co tam dzisiaj robimy, ", after: "?", emoji: "🤔" },
+  { before: "Klienci pytali o Ciebie, ", after: "!", emoji: "📞" },
+  { before: "Jak zdrówko, ", after: "?", emoji: "🍊" },
+  { before: "Jakie plany na dziś, ", after: "?", emoji: "🗓️" },
+  { before: "Co dzisiaj gotujemy, ", after: "?", emoji: "👨‍🍳" },
 ];
 
 const storageKey = "crmGreetingIndex";
