@@ -105,11 +105,6 @@ function activityTypeGlyph(type: CrmActivityType) {
   return glyphs[type] || "•";
 }
 
-function formatContactInfoValue(value: string | number) {
-  if (!value) return "Brak";
-  return String(value);
-}
-
 function getActivityPopupPosition(element: HTMLElement) {
   const rect = element.getBoundingClientRect();
   const popupWidth = Math.min(340, window.innerWidth - 32);
@@ -1344,65 +1339,8 @@ export default function CRMPipelinePage() {
                         >
                           <strong>{contact.name}</strong>
                           <div className="crmContactInfo">
-                            <span className="crmContactInfoTrigger">
-                              <button
-                                aria-label="Preferencje klienta"
-                                type="button"
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  event.stopPropagation();
-                                }}
-                              >
-                                i
-                              </button>
-                              <section className="crmContactInfoPopup">
-                                <dl>
-                                  <div>
-                                    <dt>Kraj</dt>
-                                    <dd>
-                                      {formatContactInfoValue(contact.country)}
-                                    </dd>
-                                  </div>
-                                  <div>
-                                    <dt>Kwota max</dt>
-                                    <dd>
-                                      {contact.maxBudget
-                                        ? crmBudgetFormatter.format(
-                                            contact.maxBudget,
-                                          )
-                                        : "Brak"}
-                                    </dd>
-                                  </div>
-                                  <div>
-                                    <dt>Sypialnie</dt>
-                                    <dd>
-                                      {formatContactInfoValue(contact.bedrooms)}
-                                    </dd>
-                                  </div>
-                                  <div>
-                                    <dt>Łazienki</dt>
-                                    <dd>
-                                      {formatContactInfoValue(
-                                        contact.bathrooms,
-                                      )}
-                                    </dd>
-                                  </div>
-                                  <div>
-                                    <dt>Wybrzeże</dt>
-                                    <dd>
-                                      {formatContactInfoValue(contact.coast)}
-                                    </dd>
-                                  </div>
-                                  <div>
-                                    <dt>Termin zakupu</dt>
-                                    <dd>
-                                      {formatContactInfoValue(
-                                        contact.purchaseTimeline,
-                                      )}
-                                    </dd>
-                                  </div>
-                                </dl>
-                              </section>
+                            <span className="crmContactEuro" aria-hidden="true">
+                              €
                             </span>
                             <span className="crmContactBudget">
                               {contact.maxBudget
@@ -3038,11 +2976,6 @@ export default function CRMPipelinePage() {
           z-index: 35;
         }
 
-        .crmPipelineCard:has(.crmContactInfoTrigger:hover),
-        .crmPipelineCard:has(.crmContactInfoTrigger:focus-within) {
-          z-index: 140;
-        }
-
         .crmPipelineCard:focus-visible {
           border-color: #216e63;
           outline: 2px solid rgba(33, 110, 99, 0.24);
@@ -3081,26 +3014,18 @@ export default function CRMPipelinePage() {
           z-index: 3;
         }
 
-        .crmContactInfoTrigger {
-          display: block;
-          flex: 0 0 auto;
-          position: relative;
-        }
-
-        .crmContactInfoTrigger > button {
+        .crmContactEuro {
           align-items: center;
           background: #eef1f4;
-          border: 0;
           border-radius: 999px;
           color: #4b5563;
           display: flex;
+          flex: 0 0 auto;
           font-size: 11px;
-          font-weight: 900;
+          font-weight: 800;
           height: 18px;
           justify-content: center;
           line-height: 1;
-          padding: 0;
-          flex: 0 0 auto;
           width: 18px;
         }
 
@@ -3115,64 +3040,6 @@ export default function CRMPipelinePage() {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-        }
-
-        .crmContactInfoPopup {
-          background: #ffffff;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          box-shadow: 0 18px 44px rgba(21, 32, 43, 0.18);
-          color: #17202a;
-          display: none;
-          left: -4px;
-          min-width: 230px;
-          opacity: 0;
-          padding: 10px;
-          pointer-events: none;
-          position: absolute;
-          top: 24px;
-          transform: translateY(-4px);
-          transition:
-            opacity 0.14s ease,
-            transform 0.14s ease;
-          z-index: 145;
-        }
-
-        .crmContactInfoTrigger:hover .crmContactInfoPopup,
-        .crmContactInfoTrigger:focus-within .crmContactInfoPopup {
-          display: block;
-          opacity: 1;
-          pointer-events: auto;
-          transform: translateY(0);
-        }
-
-        .crmContactInfoPopup dl {
-          display: grid;
-          gap: 7px;
-          margin: 0;
-        }
-
-        .crmContactInfoPopup div {
-          display: grid;
-          gap: 2px;
-        }
-
-        .crmContactInfoPopup dt,
-        .crmContactInfoPopup dd {
-          margin: 0;
-        }
-
-        .crmContactInfoPopup dt {
-          color: #667085;
-          font-size: 11px;
-          font-weight: 800;
-        }
-
-        .crmContactInfoPopup dd {
-          color: #17202a;
-          font-size: 13px;
-          font-weight: 900;
-          overflow-wrap: anywhere;
         }
 
         .crmActivityDot {
