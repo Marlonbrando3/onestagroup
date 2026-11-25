@@ -2897,7 +2897,6 @@ export default function CRMPipelinePage() {
 
         .crmPipelineColumnHeader.highlightProspect {
           background: #f8f2ea;
-          border-bottom-color: #f2b86b;
         }
 
         .crmPipelineColumnHeader.highlightProspect span {
