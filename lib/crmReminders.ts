@@ -158,6 +158,7 @@ export async function notifyPresentationActivity(
     title,
     body,
     url: `/crm/kontakt/${contact.id}`,
-    tag: `presentation-${contact.id}`,
+    // Unikalny tag: każde wejście to osobne powiadomienie (iPhone przy tym samym tagu podmienia je po cichu).
+    tag: `presentation-${contact.id}-${Date.now()}`,
   });
 }

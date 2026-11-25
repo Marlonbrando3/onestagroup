@@ -5,10 +5,10 @@ import { notifyPresentationActivity } from "@/lib/crmReminders";
 
 // Aktywność klienta w prezentacji /oferty/[token]: otwarcie prezentacji i otwarcie konkretnej oferty.
 // („Interesuje mnie ta oferta” zapisuje /api/presentation-interest.)
-// Te same zdarzenia w ciągu 10 minut liczymy raz (odświeżenie strony, powrót z oferty),
-// ale tylko dopóki agent ich nie zobaczył – każde wejście po otwarciu karty klienta zapala sygnał w lejku na nowo.
-// Powiadomienie push wysyłamy najwyżej raz na 10 minut dla tego samego zdarzenia.
-const DEDUPE_MINUTES = 10;
+// Każde wejście klienta = zdarzenie + powiadomienie push + sygnał w lejku.
+// Powtórki w obrębie jednej karty przeglądarki (powrót z oferty do prezentacji) odsiewa strona klienta
+// (lib/presentationTracking.ts); tutaj tylko krótka blokada na podwójne wysłanie tego samego żądania.
+const DEDUPE_SECONDS = 20;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader("Cache-Control", "no-store");
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { data: list } = await supabaseServer
     .from("agent_offer_lists")
-    .select("id,offers,crm_contact_id")
+    .select("id,offers")
     .eq("public_token", token)
     .maybeSingle();
   if (!list) return res.status(404).json({ success: false });
@@ -41,10 +41,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     offerTitle = offer?.title ? String(offer.title).slice(0, 300) : String(body.offerTitle ?? "").slice(0, 300) || null;
   }
 
-  const since = new Date(Date.now() - DEDUPE_MINUTES * 60 * 1000).toISOString();
+  const since = new Date(Date.now() - DEDUPE_SECONDS * 1000).toISOString();
   let recentQuery = supabaseServer
     .from("presentation_events")
-    .select("id,created_at")
+    .select("id")
     .eq("list_id", list.id)
     .eq("event_type", type)
     .gte("created_at", since)
@@ -52,20 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .limit(1);
   recentQuery = offerId ? recentQuery.eq("offer_external_id", offerId) : recentQuery;
   const { data: recent } = await recentQuery;
-  const recentEvent = recent?.[0];
-  if (recentEvent) {
-    let seenAt: string | null = null;
-    if (list.crm_contact_id) {
-      const { data: contact } = await supabaseServer
-        .from("crm_contacts")
-        .select("presentation_seen_at")
-        .eq("id", list.crm_contact_id)
-        .maybeSingle();
-      seenAt = contact?.presentation_seen_at || null;
-    }
-    const alreadySeen = seenAt && Date.parse(seenAt) >= Date.parse(recentEvent.created_at);
-    if (!alreadySeen) return res.status(200).json({ success: true, deduped: true });
-  }
+  if (recent?.length) return res.status(200).json({ success: true, deduped: true });
 
   const { error } = await supabaseServer.from("presentation_events").insert({
     list_id: list.id,
@@ -78,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ success: false });
   }
   try {
-    if (!recentEvent) await notifyPresentationActivity(list.id, type, offerTitle);
+    await notifyPresentationActivity(list.id, type, offerTitle);
   } catch (pushError) {
     console.error("presentation-event: push", pushError);
   }
