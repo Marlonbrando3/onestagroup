@@ -116,3 +116,12 @@ export const crmCurrency = new Intl.NumberFormat("pl-PL", {
   currency: "EUR",
   maximumFractionDigits: 0,
 });
+
+export type CrmNote = {
+  id: string;
+  contactId: string;
+  body: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+};

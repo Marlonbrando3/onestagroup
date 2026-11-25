@@ -28,7 +28,7 @@ function normalizeCrmPhone(value: string) {
   return value.replace(/[\s\u00a0]+/g, "");
 }
 
-export function useCrmContacts(owner?: string | null, pipelineId?: string) {
+export function useCrmContacts(owner?: string | null, pipelineId?: string, contactId?: string) {
   const [contacts, setContacts] = useState<CrmContact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,6 +66,9 @@ export function useCrmContacts(owner?: string | null, pipelineId?: string) {
     if (owner) {
       params.set("owner", owner);
     }
+    if (contactId) {
+      params.set("id", contactId);
+    }
     if (pipelineId) {
       params.set("pipelineId", pipelineId);
     }
@@ -81,7 +84,7 @@ export function useCrmContacts(owner?: string | null, pipelineId?: string) {
     }
     setContacts(result.contacts || []);
     setIsLoading(false);
-  }, [getAuthHeaders, owner, pipelineId]);
+  }, [getAuthHeaders, owner, pipelineId, contactId]);
 
   useEffect(() => {
     loadContacts();

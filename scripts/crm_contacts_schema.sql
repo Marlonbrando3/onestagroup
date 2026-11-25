@@ -56,3 +56,15 @@ create table if not exists public.crm_activities (
 create index if not exists crm_activities_contact_id_idx on public.crm_activities (contact_id);
 create index if not exists crm_activities_status_idx on public.crm_activities (status);
 create index if not exists crm_activities_due_date_idx on public.crm_activities (due_date);
+
+-- Notatki na osi historii kontaktu (karta klienta)
+create table if not exists public.crm_notes (
+  id uuid primary key default gen_random_uuid(),
+  contact_id uuid not null references public.crm_contacts(id) on delete cascade,
+  body text not null default '',
+  created_by text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists crm_notes_contact_id_created_at_idx on public.crm_notes (contact_id, created_at desc);
+alter table public.crm_notes enable row level security;

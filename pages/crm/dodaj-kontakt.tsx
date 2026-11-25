@@ -19,6 +19,7 @@ const emptyContactForm = {
   coast: "",
   purchaseTimeline: "",
   label: "",
+  summary: "",
 };
 
 export default function CRMAddContactPage() {
@@ -133,6 +134,7 @@ export default function CRMAddContactPage() {
       bathrooms: form.bathrooms,
       coast: form.coast,
       purchaseTimeline: form.purchaseTimeline,
+      note: form.summary.trim(),
       pipelineId: selectedPipelineId === defaultCrmPipeline.id ? null : selectedPipelineId,
       status: selectedStage,
     });
@@ -274,6 +276,15 @@ export default function CRMAddContactPage() {
             </div>
           </div>
 
+          <label className="crmPipelineContactSummary">
+            <span>Podsumowanie informacji o kliencie</span>
+            <textarea
+              placeholder="Kim jest klient, czego szuka, budżet, skąd przyszedł, ważne ustalenia…"
+              value={form.summary}
+              onChange={(event) => setForm({ ...form, summary: event.target.value })}
+            />
+          </label>
+
           {formError ? <p className="crmPipelineContactError">{formError}</p> : null}
           {error ? <p className="crmPipelineContactError">{error}</p> : null}
           {pipelinesError ? <p className="crmPipelineContactError">{pipelinesError}</p> : null}
@@ -372,6 +383,21 @@ export default function CRMAddContactPage() {
           min-height: 40px;
           outline: 0;
           padding: 0 12px;
+          width: 100%;
+        }
+
+        .crmPipelineContactForm textarea {
+          background: #f9fafb;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          color: #17202a;
+          font: inherit;
+          font-size: 13px;
+          line-height: 1.45;
+          min-height: 110px;
+          outline: 0;
+          padding: 10px 12px;
+          resize: vertical;
           width: 100%;
         }
 

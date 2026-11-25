@@ -139,6 +139,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === "GET") {
     const owner = getVisibleCrmOwner(crmUser.email, req.query.owner);
     const pipelineId = String(req.query.pipelineId || "");
+    const contactId = String(req.query.id || "");
     let query = supabaseServer
       .from(tableName)
       .select("*")
@@ -148,7 +149,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       query = query.eq("pipeline_owner", owner);
     }
 
-    if (pipelineId && pipelineId !== "default") {
+    if (contactId) {
+      query = query.eq("id", contactId);
+    } else if (pipelineId && pipelineId !== "default") {
       query = query.eq("pipeline_id", pipelineId);
     } else {
       query = query.is("pipeline_id", null);

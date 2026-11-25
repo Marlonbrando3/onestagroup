@@ -3,33 +3,127 @@ import {
   CrmActivity,
   CrmActivityStatus,
   CrmActivityType,
+  CrmNote,
+  CrmPipeline,
   CrmStatus,
   crmActivityTypes,
   crmCurrency,
-  crmStatuses,
+  defaultCrmPipeline,
 } from "@/components/crm/types";
 import { useCrmActivities } from "@/components/crm/useCrmActivities";
 import { useCrmContacts } from "@/components/crm/useCrmContacts";
+import { useCrmNotes } from "@/components/crm/useCrmNotes";
+import { getCrmUser } from "@/components/crm/users";
+import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const today = new Date().toISOString().slice(0, 10);
+
+type HistoryFilter = "all" | "notes" | CrmActivityType;
+
+type HistoryItem =
+  | { kind: "note"; id: string; date: string; note: CrmNote }
+  | { kind: "activity"; id: string; date: string; activity: CrmActivity };
 
 function formatDate(value: string | null) {
   if (!value) return "Bez terminu";
   return new Intl.DateTimeFormat("pl-PL", { dateStyle: "medium" }).format(new Date(value));
 }
 
-function sortActivities(activities: CrmActivity[]) {
+function formatDateTime(value: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  const isToday = date.toISOString().slice(0, 10) === today;
+  const time = new Intl.DateTimeFormat("pl-PL", { hour: "2-digit", minute: "2-digit" }).format(date);
+  if (isToday) return `Dziś o ${time}`;
+  return `${new Intl.DateTimeFormat("pl-PL", { day: "numeric", month: "long", year: "numeric" }).format(date)}, ${time}`;
+}
+
+function activityMoment(activity: CrmActivity) {
+  if (activity.status === "done" && activity.completedAt) return activity.completedAt;
+  if (activity.dueDate) return `${activity.dueDate}T${activity.dueTime || "00:00"}`;
+  return activity.createdAt;
+}
+
+function sortPlanned(activities: CrmActivity[]) {
   return [...activities].sort((a, b) => {
-    const aDate = a.dueDate ? `${a.dueDate}T${a.dueTime || "00:00"}` : a.createdAt;
-    const bDate = b.dueDate ? `${b.dueDate}T${b.dueTime || "00:00"}` : b.createdAt;
-    return new Date(bDate).getTime() - new Date(aDate).getTime();
+    const aDate = a.dueDate ? `${a.dueDate}T${a.dueTime || "23:59"}` : "9999-12-31";
+    const bDate = b.dueDate ? `${b.dueDate}T${b.dueTime || "23:59"}` : "9999-12-31";
+    return aDate.localeCompare(bDate);
   });
 }
 
 function isActivityOverdue(activity: CrmActivity) {
   return activity.status === "planned" && Boolean(activity.dueDate) && activity.dueDate! < today;
+}
+
+function ActivityIcon({ type }: { type: CrmActivityType | "note" }) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.8,
+    viewBox: "0 0 24 24",
+    width: 16,
+    height: 16,
+    "aria-hidden": true,
+  };
+  if (type === "note") {
+    return (
+      <svg {...common}>
+        <path d="M6 3h9l4 4v14H6z" />
+        <path d="M14 3v5h5M9 12h7M9 16h5" />
+      </svg>
+    );
+  }
+  if (type === "Zadzwoń") {
+    return (
+      <svg {...common}>
+        <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" />
+      </svg>
+    );
+  }
+  if (type === "Wyślij oferty") {
+    return (
+      <svg {...common}>
+        <path d="M3 6h18v12H3z" />
+        <path d="m3 7 9 6 9-6" />
+      </svg>
+    );
+  }
+  if (type === "Spotkanie") {
+    return (
+      <svg {...common}>
+        <circle cx="9" cy="8" r="3" />
+        <circle cx="17" cy="9" r="2.5" />
+        <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.5c2.8 0 5 2.2 5 5" />
+      </svg>
+    );
+  }
+  if (type === "Prezentacja") {
+    return (
+      <svg {...common}>
+        <path d="M3 4h18v12H3zM12 16v4M8 20h8" />
+        <path d="m10 8 4 2-4 2z" />
+      </svg>
+    );
+  }
+  if (type === "Brak kontaktu") {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="m8 8 8 8M16 8l-8 8" />
+      </svg>
+    );
+  }
+  return (
+    <svg {...common}>
+      <path d="M4 12a8 8 0 1 0 2.3-5.7" />
+      <path d="M4 4v4h4M12 8v4l3 2" />
+    </svg>
+  );
 }
 
 export default function CRMContactCardPage() {
@@ -41,7 +135,7 @@ export default function CRMContactCardPage() {
     error: contactsError,
     updateContact,
     updateContactStatus,
-  } = useCrmContacts();
+  } = useCrmContacts(contactId ? undefined : null, undefined, contactId || undefined);
   const {
     activities,
     isLoading: areActivitiesLoading,
@@ -51,15 +145,54 @@ export default function CRMContactCardPage() {
     updateActivityStatus,
     deleteActivity,
   } = useCrmActivities(contactId);
+  const {
+    notes,
+    error: notesError,
+    addNote,
+    updateNote,
+    deleteNote,
+  } = useCrmNotes(contactId);
 
   const contact = contacts.find((item) => item.id === contactId);
-  const plannedActivities = activities.filter((activity) => activity.status === "planned");
-  const doneActivities = activities.filter((activity) => activity.status === "done");
-  const overdueActivities = useMemo(
-    () => sortActivities(activities.filter((activity) => isActivityOverdue(activity))),
+  const [pipeline, setPipeline] = useState<CrmPipeline>(defaultCrmPipeline);
+  const stages = pipeline.stages.length ? pipeline.stages : defaultCrmPipeline.stages;
+  const currentStageIndex = contact ? stages.indexOf(contact.status) : -1;
+
+  const plannedActivities = useMemo(
+    () => sortPlanned(activities.filter((activity) => activity.status === "planned")),
     [activities],
   );
-  const sortedActivities = useMemo(() => sortActivities(activities), [activities]);
+  const doneActivities = useMemo(
+    () => activities.filter((activity) => activity.status === "done"),
+    [activities],
+  );
+
+  const historyItems = useMemo<HistoryItem[]>(() => {
+    const items: HistoryItem[] = [
+      ...notes.map((note) => ({ kind: "note" as const, id: `note-${note.id}`, date: note.createdAt, note })),
+      ...doneActivities.map((activity) => ({
+        kind: "activity" as const,
+        id: `activity-${activity.id}`,
+        date: activityMoment(activity),
+        activity,
+      })),
+    ];
+    return items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [notes, doneActivities]);
+
+  const historyTypeCounts = useMemo(() => {
+    const counts = new Map<CrmActivityType, number>();
+    doneActivities.forEach((activity) => counts.set(activity.type, (counts.get(activity.type) || 0) + 1));
+    return counts;
+  }, [doneActivities]);
+
+  const [historyFilter, setHistoryFilter] = useState<HistoryFilter>("all");
+  const visibleHistory = historyItems.filter((item) => {
+    if (historyFilter === "all") return true;
+    if (historyFilter === "notes") return item.kind === "note";
+    return item.kind === "activity" && item.activity.type === historyFilter;
+  });
+
   const [isEditingContact, setIsEditingContact] = useState(false);
   const [isSavingContact, setIsSavingContact] = useState(false);
   const [contactFormError, setContactFormError] = useState("");
@@ -73,7 +206,6 @@ export default function CRMContactCardPage() {
     bathrooms: "",
     coast: "",
     purchaseTimeline: "",
-    status: "Zakwalifikowano" as CrmStatus,
   });
   const [form, setForm] = useState({
     type: "Zadzwoń" as CrmActivityType,
@@ -82,15 +214,19 @@ export default function CRMContactCardPage() {
     dueTime: "",
     note: "",
   });
-  const [activePanelTab, setActivePanelTab] = useState<"notes" | "task">("notes");
-  const [contactNote, setContactNote] = useState("");
-  const [savedContactNote, setSavedContactNote] = useState("");
-  const [isContactNoteFocused, setIsContactNoteFocused] = useState(false);
-  const [isSavingContactNote, setIsSavingContactNote] = useState(false);
-  const [contactNoteMessage, setContactNoteMessage] = useState("");
-  const [contactNoteError, setContactNoteError] = useState("");
+  const [composerTab, setComposerTab] = useState<"note" | "task">("note");
+  const [newNote, setNewNote] = useState("");
+  const [isSavingNote, setIsSavingNote] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState("");
+  const [editingNoteText, setEditingNoteText] = useState("");
+
+  const [summaryText, setSummaryText] = useState("");
+  const [isEditingSummary, setIsEditingSummary] = useState(false);
+  const [isSavingSummary, setIsSavingSummary] = useState(false);
+  const [summaryError, setSummaryError] = useState("");
+
   const [markNewActivityDone, setMarkNewActivityDone] = useState(false);
-  const [openActivityMenuId, setOpenActivityMenuId] = useState("");
+  const [openMenuId, setOpenMenuId] = useState("");
   const [editingActivityId, setEditingActivityId] = useState("");
   const [isSavingActivityEdit, setIsSavingActivityEdit] = useState(false);
   const [activityEditError, setActivityEditError] = useState("");
@@ -103,7 +239,6 @@ export default function CRMContactCardPage() {
     note: "",
     status: "planned" as CrmActivityStatus,
   });
-  const isContactNoteDirty = contactNote !== savedContactNote;
   const isPageLoading =
     !router.isReady ||
     isContactLoading ||
@@ -111,17 +246,15 @@ export default function CRMContactCardPage() {
     Boolean(contact && initializedContactId !== contact.id);
 
   useEffect(() => {
-    if (!openActivityMenuId) return;
-
-    function closeActivityMenuOnOutsideClick(event: PointerEvent) {
+    if (!openMenuId) return;
+    function closeMenuOnOutsideClick(event: PointerEvent) {
       const target = event.target;
-      if (target instanceof Element && target.closest(".crmHistoryMenu")) return;
-      setOpenActivityMenuId("");
+      if (target instanceof Element && target.closest(".crmItemMenu")) return;
+      setOpenMenuId("");
     }
-
-    document.addEventListener("pointerdown", closeActivityMenuOnOutsideClick);
-    return () => document.removeEventListener("pointerdown", closeActivityMenuOnOutsideClick);
-  }, [openActivityMenuId]);
+    document.addEventListener("pointerdown", closeMenuOnOutsideClick);
+    return () => document.removeEventListener("pointerdown", closeMenuOnOutsideClick);
+  }, [openMenuId]);
 
   useEffect(() => {
     if (!contact) return;
@@ -135,17 +268,36 @@ export default function CRMContactCardPage() {
       bathrooms: contact.bathrooms,
       coast: contact.coast,
       purchaseTimeline: contact.purchaseTimeline,
-      status: contact.status,
     });
-    setContactNote(contact.note || "");
-    setSavedContactNote(contact.note || "");
-    setIsContactNoteFocused(false);
-    setContactNoteError("");
-    setContactNoteMessage("");
+    setSummaryText(contact.note || "");
     setInitializedContactId(contact.id);
   }, [contact]);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const contactPipelineId = contact?.pipelineId || defaultCrmPipeline.id;
+  const contactPipelineOwner = contact?.pipelineOwner || "";
+  useEffect(() => {
+    if (!contactPipelineOwner) return;
+    let ignore = false;
+    async function loadPipeline() {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) return;
+      const response = await fetch(
+        `/api/crm/pipelines?owner=${encodeURIComponent(contactPipelineOwner)}`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      const result = await response.json();
+      if (ignore || !response.ok) return;
+      const loaded = (result.pipelines || []) as CrmPipeline[];
+      setPipeline(loaded.find((item) => item.id === contactPipelineId) || defaultCrmPipeline);
+    }
+    loadPipeline();
+    return () => {
+      ignore = true;
+    };
+  }, [contactPipelineId, contactPipelineOwner]);
+
+  async function handleTaskSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!contactId) return;
     const activity = await addActivity({
@@ -160,6 +312,45 @@ export default function CRMContactCardPage() {
     if (!activity) return;
     setForm({ type: form.type, title: form.type, dueDate: today, dueTime: "", note: "" });
     setMarkNewActivityDone(false);
+  }
+
+  async function handleNoteSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!newNote.trim()) return;
+    setIsSavingNote(true);
+    const saved = await addNote(newNote);
+    setIsSavingNote(false);
+    if (!saved) return;
+    setNewNote("");
+    setHistoryFilter((current) => (current === "all" || current === "notes" ? current : "all"));
+  }
+
+  async function handleNoteEditSave(id: string) {
+    if (!editingNoteText.trim()) return;
+    const saved = await updateNote(id, editingNoteText);
+    if (!saved) return;
+    setEditingNoteId("");
+    setEditingNoteText("");
+  }
+
+  async function handleNoteDelete(id: string) {
+    setOpenMenuId("");
+    if (!window.confirm("Usunąć tę notatkę?")) return;
+    await deleteNote(id);
+  }
+
+  async function handleSummarySave() {
+    if (!contactId) return;
+    setSummaryError("");
+    setIsSavingSummary(true);
+    const updated = await updateContact({ id: contactId, note: summaryText });
+    setIsSavingSummary(false);
+    if (!updated) {
+      setSummaryError("Nie udało się zapisać podsumowania.");
+      return;
+    }
+    setSummaryText(updated.note || "");
+    setIsEditingSummary(false);
   }
 
   function changeType(type: CrmActivityType) {
@@ -179,7 +370,7 @@ export default function CRMContactCardPage() {
   }
 
   function openActivityEdit(activity: CrmActivity) {
-    setOpenActivityMenuId("");
+    setOpenMenuId("");
     setActivityEditError("");
     setEditingActivityId(activity.id);
     setActivityEditForm({
@@ -202,10 +393,9 @@ export default function CRMContactCardPage() {
     event.preventDefault();
     if (!editingActivityId) return;
     if (!activityEditForm.title.trim()) {
-      setActivityEditError("Tytul dzialania jest wymagany.");
+      setActivityEditError("Tytuł działania jest wymagany.");
       return;
     }
-
     setActivityEditError("");
     setIsSavingActivityEdit(true);
     const updatedActivity = await updateActivity({
@@ -223,12 +413,13 @@ export default function CRMContactCardPage() {
   }
 
   async function handleActivityDelete(id: string) {
-    setOpenActivityMenuId("");
+    setOpenMenuId("");
+    if (!window.confirm("Usunąć to działanie?")) return;
     await deleteActivity(id);
   }
 
-  async function handleStatusChange(status: CrmStatus) {
-    if (!contactId) return;
+  async function handleStageClick(status: CrmStatus) {
+    if (!contactId || !contact || contact.status === status) return;
     await updateContactStatus(contactId, status);
   }
 
@@ -236,12 +427,11 @@ export default function CRMContactCardPage() {
     event.preventDefault();
     if (!contactId) return;
     if (!contactForm.name.trim()) {
-      setContactFormError("Imie i nazwisko jest wymagane.");
+      setContactFormError("Imię i nazwisko jest wymagane.");
       return;
     }
-
     setContactFormError("");
-    const normalizedPhone = contactForm.phone.replace(/[\s\u00a0]+/g, "");
+    const normalizedPhone = contactForm.phone.replace(/[\s ]+/g, "");
     setContactForm((current) => ({ ...current, phone: normalizedPhone }));
     setIsSavingContact(true);
     const updatedContact = await updateContact({
@@ -256,34 +446,10 @@ export default function CRMContactCardPage() {
       bathrooms: contactForm.bathrooms,
       coast: contactForm.coast,
       purchaseTimeline: contactForm.purchaseTimeline,
-      status: contactForm.status,
     });
     setIsSavingContact(false);
     if (!updatedContact) return;
     setIsEditingContact(false);
-  }
-
-  async function handleContactNoteSave(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!contactId || !isContactNoteDirty) return;
-
-    setContactNoteError("");
-    setContactNoteMessage("");
-    setIsSavingContactNote(true);
-    const updatedContact = await updateContact({
-      id: contactId,
-      note: contactNote,
-    });
-    setIsSavingContactNote(false);
-    if (!updatedContact) {
-      setContactNoteError("Nie udalo sie zapisac notatki.");
-      return;
-    }
-
-    setContactNote(updatedContact.note || "");
-    setSavedContactNote(updatedContact.note || "");
-    setIsContactNoteFocused(false);
-    setContactNoteMessage("Notatka zapisana.");
   }
 
   function cancelContactEdit() {
@@ -298,12 +464,46 @@ export default function CRMContactCardPage() {
         bathrooms: contact.bathrooms,
         coast: contact.coast,
         purchaseTimeline: contact.purchaseTimeline,
-        status: contact.status,
       });
     }
     setContactFormError("");
     setIsEditingContact(false);
   }
+
+  function renderMenu(id: string, onEdit: () => void, onDelete: () => void) {
+    return (
+      <div className="crmItemMenu">
+        <button
+          aria-expanded={openMenuId === id}
+          aria-label="Opcje"
+          className="crmItemMenuToggle"
+          type="button"
+          onClick={() => setOpenMenuId((current) => (current === id ? "" : id))}
+        >
+          •••
+        </button>
+        {openMenuId === id ? (
+          <div className="crmItemMenuList">
+            <button type="button" onClick={onEdit}>
+              Edytuj
+            </button>
+            <button className="danger" type="button" onClick={onDelete}>
+              Usuń
+            </button>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
+  const ownerLabel = contact ? getCrmUser(contact.pipelineOwner)?.label || contact.pipelineOwner : "";
+  const historyTabs: { key: HistoryFilter; label: string; count: number }[] = [
+    { key: "all", label: "Wszystko", count: historyItems.length },
+    { key: "notes", label: "Notatki", count: notes.length },
+    ...crmActivityTypes
+      .filter((type) => historyTypeCounts.get(type))
+      .map((type) => ({ key: type as HistoryFilter, label: type, count: historyTypeCounts.get(type) || 0 })),
+  ];
 
   return (
     <CrmLayout active="contacts">
@@ -317,499 +517,551 @@ export default function CRMContactCardPage() {
         </section>
       ) : (
         <section className="crmContactPage">
-        {contact ? (
-          <header className="crmContactHeader">
-            <div>
-              <p>Rekord klienta</p>
-              <h1>{contact.name}</h1>
-              <span>{contact.email || contact.phone || "Brak danych kontaktowych"}</span>
-            </div>
-            <strong>{crmCurrency.format(contact.maxBudget || contact.value)}</strong>
-          </header>
-        ) : null}
-
-        {contactsError ? <p className="crmError">{contactsError}</p> : null}
-        {activitiesError ? <p className="crmError">{activitiesError}</p> : null}
-        {!contact && !contactsError ? (
-          <div className="crmContactNotFound">
-            <strong>Nie znaleziono kontaktu</strong>
-            <span>Rekord nie istnieje albo został usunięty.</span>
-          </div>
-        ) : null}
-
-        {contact ? (
-          <div className="crmContactGrid">
-            <aside className="crmContactSummary">
-              <div className="crmSummaryTop">
-                <div className="crmAvatarLarge">{contact.name.slice(0, 1)}</div>
-                {!isEditingContact ? (
-                  <button type="button" onClick={() => setIsEditingContact(true)}>
-                    Edytuj
-                  </button>
-                ) : null}
+          {contact ? (
+            <header className="crmDealHeader">
+              <div className="crmDealTitleRow">
+                <div>
+                  <h1>{contact.name}</h1>
+                  <span className="crmDealSub">
+                    {contact.phone || contact.email || "Brak danych kontaktowych"}
+                  </span>
+                </div>
+                <div className="crmDealHeaderRight">
+                  <span className="crmDealOwner">
+                    <span className="crmOwnerAvatar">{ownerLabel.slice(0, 1)}</span>
+                    <span>
+                      <strong>{ownerLabel}</strong>
+                      <small>Opiekun</small>
+                    </span>
+                  </span>
+                  <strong className="crmDealValue">
+                    {crmCurrency.format(contact.maxBudget || contact.value)}
+                  </strong>
+                </div>
               </div>
 
-              {isEditingContact ? (
-                <form className="crmContactEditForm" onSubmit={handleContactSave}>
-                  <label>
-                    Imie i nazwisko
-                    <input
-                      value={contactForm.name}
-                      onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Email
-                    <input
-                      type="email"
-                      value={contactForm.email}
-                      onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Telefon
-                    <input
-                      value={contactForm.phone}
-                      onChange={(event) => setContactForm({ ...contactForm, phone: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Kwota max EUR
-                    <input
-                      min="0"
-                      type="number"
-                      value={contactForm.maxBudget}
-                      onChange={(event) => setContactForm({ ...contactForm, maxBudget: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Kraj
-                    <input
-                      value={contactForm.country}
-                      onChange={(event) => setContactForm({ ...contactForm, country: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Sypialnie
-                    <input
-                      value={contactForm.bedrooms}
-                      onChange={(event) => setContactForm({ ...contactForm, bedrooms: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Łazienki
-                    <input
-                      value={contactForm.bathrooms}
-                      onChange={(event) => setContactForm({ ...contactForm, bathrooms: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Wybrzeże
-                    <input
-                      value={contactForm.coast}
-                      onChange={(event) => setContactForm({ ...contactForm, coast: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Termin zakupu
-                    <input
-                      value={contactForm.purchaseTimeline}
-                      onChange={(event) =>
-                        setContactForm({ ...contactForm, purchaseTimeline: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    Etap lejka
-                    <select
-                      value={contactForm.status}
-                      onChange={(event) =>
-                        setContactForm({ ...contactForm, status: event.target.value as CrmStatus })
-                      }
-                    >
-                      {crmStatuses.map((status) => (
-                        <option key={status}>{status}</option>
-                      ))}
-                    </select>
-                  </label>
-                  {contactFormError ? <p className="crmError">{contactFormError}</p> : null}
-                  <div className="crmEditActions">
-                    <button disabled={isSavingContact} type="submit">
-                      {isSavingContact ? "Zapisywanie..." : "Zapisz"}
-                    </button>
-                    <button disabled={isSavingContact} type="button" onClick={cancelContactEdit}>
-                      Anuluj
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <>
-                  <h2>{contact.name}</h2>
-                  <dl>
-                    <div>
-                      <dt>Etap lejka</dt>
-                      <dd>
-                        <select
-                          className="crmStatusSelect"
-                          value={contact.status}
-                          onChange={(event) => handleStatusChange(event.target.value as CrmStatus)}
-                        >
-                          {crmStatuses.map((status) => (
-                            <option key={status}>{status}</option>
-                          ))}
-                        </select>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Email</dt>
-                      <dd>{contact.email || "Brak"}</dd>
-                    </div>
-                    <div>
-                      <dt>Telefon</dt>
-                      <dd>{contact.phone || "Brak"}</dd>
-                    </div>
-                    <div>
-                      <dt>Kwota max EUR</dt>
-                      <dd>{contact.maxBudget ? crmCurrency.format(contact.maxBudget) : "Brak"}</dd>
-                    </div>
-                    <div>
-                      <dt>Kraj</dt>
-                      <dd>{contact.country || "Brak"}</dd>
-                    </div>
-                    <div>
-                      <dt>Sypialnie</dt>
-                      <dd>{contact.bedrooms || "Brak"}</dd>
-                    </div>
-                    <div>
-                      <dt>Łazienki</dt>
-                      <dd>{contact.bathrooms || "Brak"}</dd>
-                    </div>
-                    <div>
-                      <dt>Wybrzeże</dt>
-                      <dd>{contact.coast || "Brak"}</dd>
-                    </div>
-                    <div>
-                      <dt>Termin zakupu</dt>
-                      <dd>{contact.purchaseTimeline || "Brak"}</dd>
-                    </div>
-                    <div>
-                      <dt>Planowane</dt>
-                      <dd>{plannedActivities.length}</dd>
-                    </div>
-                    <div>
-                      <dt>Wykonane</dt>
-                      <dd>{doneActivities.length}</dd>
-                    </div>
-                  </dl>
-                </>
-              )}
-            </aside>
-
-            <section className="crmActivityPanel">
-              <div className="crmPanelTabs" aria-label="Widok dodawania">
-                <button
-                  className={activePanelTab === "notes" ? "active" : ""}
-                  type="button"
-                  onClick={() => setActivePanelTab("notes")}
-                >
-                  Notatki
-                </button>
-                <button
-                  className={activePanelTab === "task" ? "active" : ""}
-                  type="button"
-                  onClick={() => setActivePanelTab("task")}
-                >
-                  Zadanie
-                </button>
-              </div>
-
-              {activePanelTab === "notes" ? (
-                <form className="crmContactNoteForm" onSubmit={handleContactNoteSave}>
-                  <textarea
-                    className={
-                      isContactNoteFocused || isContactNoteDirty ? "editing" : "saved"
-                    }
-                    placeholder="Notatka o kliencie, preferencje, ustalenia..."
-                    value={contactNote}
-                    onBlur={() => setIsContactNoteFocused(false)}
-                    onChange={(event) => {
-                      setContactNote(event.target.value);
-                      setContactNoteMessage("");
-                      setContactNoteError("");
-                    }}
-                    onFocus={() => setIsContactNoteFocused(true)}
-                  />
-                  {contactNoteError ? <p className="crmError">{contactNoteError}</p> : null}
-                  {contactNoteMessage ? <p className="crmSuccess">{contactNoteMessage}</p> : null}
-                  <button disabled={isSavingContactNote || !isContactNoteDirty} type="submit">
-                    {isSavingContactNote ? "Zapisywanie..." : "Zapisz notatkę"}
-                  </button>
-                </form>
-              ) : (
-                <>
-                  <div className="crmTaskEditor">
-                    <div className="crmTabs" aria-label="Typ dzialania">
-                      {crmActivityTypes.map((type) => (
-                        <button
-                          className={`${form.type === type ? "active" : ""} ${
-                            type === "Brak kontaktu" ? "crmNoContact" : ""
-                          }`.trim()}
-                          key={type}
-                          type="button"
-                          onClick={() => changeType(type)}
-                        >
-                          {type}
-                        </button>
-                      ))}
-                    </div>
-
-                    <form className="crmActivityForm" onSubmit={handleSubmit}>
-                      <div className="crmTaskScheduleRow">
-                        <input
-                          placeholder="Tytul dzialania"
-                          value={form.title}
-                          onChange={(event) => setForm({ ...form, title: event.target.value })}
-                        />
-                        <input
-                          type="date"
-                          value={form.dueDate}
-                          onChange={(event) => setForm({ ...form, dueDate: event.target.value })}
-                        />
-                        <input
-                          type="time"
-                          value={form.dueTime}
-                          onChange={(event) => setForm({ ...form, dueTime: event.target.value })}
-                        />
-                      </div>
-                      <textarea
-                        placeholder="Notatka, opis, ustalenia..."
-                        value={form.note}
-                        onChange={(event) => setForm({ ...form, note: event.target.value })}
-                      />
-                      <label className="crmCheckboxRow">
-                        <input
-                          checked={markNewActivityDone}
-                          type="checkbox"
-                          onChange={(event) => setMarkNewActivityDone(event.target.checked)}
-                        />
-                        Oznacz zadanie jako wykonane
-                      </label>
-                      <button type="submit">Zapisz dzialanie</button>
-                    </form>
-                  </div>
-                </>
-              )}
-
-              {overdueActivities.length ? (
-                <section className="crmOverduePanel">
-                  <div className="crmOverdueHeader">
-                    <h2>Zaległe zadania</h2>
-                    <span>{overdueActivities.length}</span>
-                  </div>
-                  <div className="crmOverdueList">
-                    {overdueActivities.map((activity) => (
-                      <article
-                        className={`crmOverdueCard ${
-                          openActivityMenuId === `overdue-${activity.id}` ? "menuOpen" : ""
-                        }`}
-                        key={activity.id}
+              <ol className="crmStageBar" aria-label="Etap w lejku">
+                {stages.map((stage, index) => {
+                  const state =
+                    index < currentStageIndex ? "past" : index === currentStageIndex ? "current" : "future";
+                  return (
+                    <li key={stage}>
+                      <button
+                        className={`crmStage ${state}`}
+                        title={`Przenieś na etap: ${stage}`}
+                        type="button"
+                        onClick={() => handleStageClick(stage)}
                       >
-                        <button
-                          aria-label="Oznacz zadanie jako wykonane"
-                          type="button"
-                          onClick={() => updateActivityStatus(activity.id, "done")}
-                        >
-                          ✓
+                        <span>{stage}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+              <p className="crmStageCrumb">
+                {pipeline.name}
+                <span aria-hidden="true">→</span>
+                <strong>{currentStageIndex >= 0 ? contact.status : `${contact.status} (spoza lejka)`}</strong>
+              </p>
+            </header>
+          ) : null}
+
+          {contactsError ? <p className="crmError">{contactsError}</p> : null}
+          {activitiesError ? <p className="crmError">{activitiesError}</p> : null}
+          {notesError ? <p className="crmError">{notesError}</p> : null}
+          {!contact && !contactsError ? (
+            <div className="crmContactNotFound">
+              <strong>Nie znaleziono kontaktu</strong>
+              <span>Rekord nie istnieje albo został usunięty.</span>
+            </div>
+          ) : null}
+
+          {contact ? (
+            <div className="crmContactGrid">
+              <aside className="crmSidebar">
+                <section className="crmSideSection">
+                  <div className="crmSideHeader">
+                    <h2>Podsumowanie</h2>
+                    {!isEditingContact ? (
+                      <button className="crmLinkButton" type="button" onClick={() => setIsEditingContact(true)}>
+                        Edytuj
+                      </button>
+                    ) : null}
+                  </div>
+
+                  {isEditingContact ? (
+                    <form className="crmContactEditForm" onSubmit={handleContactSave}>
+                      {(
+                        [
+                          ["name", "Imię i nazwisko", "text"],
+                          ["email", "Email", "email"],
+                          ["phone", "Telefon", "text"],
+                          ["maxBudget", "Kwota max EUR", "number"],
+                          ["country", "Kraj", "text"],
+                          ["coast", "Wybrzeże", "text"],
+                          ["bedrooms", "Sypialnie", "text"],
+                          ["bathrooms", "Łazienki", "text"],
+                          ["purchaseTimeline", "Termin zakupu", "text"],
+                        ] as const
+                      ).map(([key, label, type]) => (
+                        <label key={key}>
+                          {label}
+                          <input
+                            min={type === "number" ? "0" : undefined}
+                            type={type}
+                            value={contactForm[key]}
+                            onChange={(event) => setContactForm({ ...contactForm, [key]: event.target.value })}
+                          />
+                        </label>
+                      ))}
+                      {contactFormError ? <p className="crmError">{contactFormError}</p> : null}
+                      <div className="crmEditActions">
+                        <button disabled={isSavingContact} type="button" onClick={cancelContactEdit}>
+                          Anuluj
                         </button>
-                        <div>
-                          <strong>{activity.title}</strong>
-                          <p>
-                            {activity.type} · {formatDate(activity.dueDate)}
-                            {activity.dueTime ? `, ${activity.dueTime.slice(0, 5)}` : ""}
-                          </p>
-                          {activity.note ? <small>{activity.note}</small> : null}
-                        </div>
-                        <div className="crmHistoryMenu crmOverdueMenu">
+                        <button className="primary" disabled={isSavingContact} type="submit">
+                          {isSavingContact ? "Zapisywanie..." : "Zapisz"}
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <dl className="crmFactList">
+                      <div>
+                        <dt>Budżet max</dt>
+                        <dd>{contact.maxBudget ? crmCurrency.format(contact.maxBudget) : "—"}</dd>
+                      </div>
+                      <div>
+                        <dt>Telefon</dt>
+                        <dd>{contact.phone ? <a href={`tel:${contact.phone}`}>{contact.phone}</a> : "—"}</dd>
+                      </div>
+                      <div>
+                        <dt>Email</dt>
+                        <dd>{contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : "—"}</dd>
+                      </div>
+                      <div>
+                        <dt>Kraj</dt>
+                        <dd>{contact.country || "—"}</dd>
+                      </div>
+                      <div>
+                        <dt>Wybrzeże</dt>
+                        <dd>{contact.coast || "—"}</dd>
+                      </div>
+                      <div>
+                        <dt>Sypialnie / łazienki</dt>
+                        <dd>
+                          {contact.bedrooms || "—"} / {contact.bathrooms || "—"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Termin zakupu</dt>
+                        <dd>{contact.purchaseTimeline || "—"}</dd>
+                      </div>
+                      <div>
+                        <dt>Źródło</dt>
+                        <dd>{contact.source || "—"}</dd>
+                      </div>
+                      <div>
+                        <dt>Dodano</dt>
+                        <dd>{contact.createdAt ? formatDate(contact.createdAt) : "—"}</dd>
+                      </div>
+                    </dl>
+                  )}
+                </section>
+
+                <section className="crmSideSection">
+                  <div className="crmSideHeader">
+                    <h2>Podsumowanie informacji o kliencie</h2>
+                    {!isEditingSummary ? (
+                      <button className="crmLinkButton" type="button" onClick={() => setIsEditingSummary(true)}>
+                        {summaryText ? "Edytuj" : "Dodaj"}
+                      </button>
+                    ) : null}
+                  </div>
+                  {isEditingSummary ? (
+                    <div className="crmSummaryEditor">
+                      <textarea
+                        autoFocus
+                        placeholder="Kim jest klient, czego szuka, budżet, ważne ustalenia…"
+                        value={summaryText}
+                        onChange={(event) => setSummaryText(event.target.value)}
+                      />
+                      {summaryError ? <p className="crmError">{summaryError}</p> : null}
+                      <div className="crmEditActions">
+                        <button
+                          disabled={isSavingSummary}
+                          type="button"
+                          onClick={() => {
+                            setSummaryText(contact.note || "");
+                            setIsEditingSummary(false);
+                            setSummaryError("");
+                          }}
+                        >
+                          Anuluj
+                        </button>
+                        <button className="primary" disabled={isSavingSummary} type="button" onClick={handleSummarySave}>
+                          {isSavingSummary ? "Zapisywanie..." : "Zapisz"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : summaryText ? (
+                    <p className="crmSummaryText">{summaryText}</p>
+                  ) : (
+                    <p className="crmMuted">Brak podsumowania. Dodaj najważniejsze informacje o kliencie.</p>
+                  )}
+                </section>
+              </aside>
+
+              <section className="crmMainColumn">
+                <div className="crmComposer">
+                  <div className="crmComposerTabs" role="tablist">
+                    <button
+                      className={composerTab === "note" ? "active" : ""}
+                      role="tab"
+                      type="button"
+                      onClick={() => setComposerTab("note")}
+                    >
+                      Notatka
+                    </button>
+                    <button
+                      className={composerTab === "task" ? "active" : ""}
+                      role="tab"
+                      type="button"
+                      onClick={() => setComposerTab("task")}
+                    >
+                      Zadanie
+                    </button>
+                  </div>
+
+                  {composerTab === "note" ? (
+                    <form className="crmNoteComposer" onSubmit={handleNoteSubmit}>
+                      <textarea
+                        placeholder="Dodaj notatkę: przebieg rozmowy, ustalenia, preferencje klienta…"
+                        value={newNote}
+                        onChange={(event) => setNewNote(event.target.value)}
+                      />
+                      <div className="crmComposerActions">
+                        <button disabled={isSavingNote || !newNote} type="button" onClick={() => setNewNote("")}>
+                          Anuluj
+                        </button>
+                        <button className="primary" disabled={isSavingNote || !newNote.trim()} type="submit">
+                          {isSavingNote ? "Zapisywanie..." : "Zapisz"}
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="crmTaskEditor">
+                      <div className="crmTypeChips" aria-label="Typ działania">
+                        {crmActivityTypes.map((type) => (
                           <button
-                            aria-expanded={openActivityMenuId === `overdue-${activity.id}`}
-                            aria-label="Opcje działania"
+                            className={`${form.type === type ? "active" : ""} ${
+                              type === "Brak kontaktu" ? "noContact" : ""
+                            }`.trim()}
+                            key={type}
                             type="button"
-                            onClick={() =>
-                              setOpenActivityMenuId((current) =>
-                                current === `overdue-${activity.id}` ? "" : `overdue-${activity.id}`,
-                              )
-                            }
+                            onClick={() => changeType(type)}
                           >
-                            ...
+                            <ActivityIcon type={type} />
+                            {type}
                           </button>
-                          {openActivityMenuId === `overdue-${activity.id}` ? (
-                            <div className="crmHistoryMenuList">
-                              <button type="button" onClick={() => openActivityEdit(activity)}>
-                                Edytuj
-                              </button>
-                              <button type="button" onClick={() => handleActivityDelete(activity.id)}>
-                                Usuń
-                              </button>
-                            </div>
-                          ) : null}
+                        ))}
+                      </div>
+                      <form className="crmActivityForm" onSubmit={handleTaskSubmit}>
+                        <div className="crmTaskScheduleRow">
+                          <input
+                            placeholder="Tytuł działania"
+                            value={form.title}
+                            onChange={(event) => setForm({ ...form, title: event.target.value })}
+                          />
+                          <input
+                            type="date"
+                            value={form.dueDate}
+                            onChange={(event) => setForm({ ...form, dueDate: event.target.value })}
+                          />
+                          <input
+                            type="time"
+                            value={form.dueTime}
+                            onChange={(event) => setForm({ ...form, dueTime: event.target.value })}
+                          />
                         </div>
-                      </article>
+                        <textarea
+                          placeholder="Opis, ustalenia…"
+                          value={form.note}
+                          onChange={(event) => setForm({ ...form, note: event.target.value })}
+                        />
+                        <div className="crmComposerActions">
+                          <label className="crmCheckboxRow">
+                            <input
+                              checked={markNewActivityDone}
+                              type="checkbox"
+                              onChange={(event) => setMarkNewActivityDone(event.target.checked)}
+                            />
+                            Oznacz jako wykonane
+                          </label>
+                          <button className="primary" type="submit">
+                            Zapisz działanie
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+                </div>
+
+                <section className="crmBlock">
+                  <h2 className="crmBlockTitle">Zaplanowane</h2>
+                  {plannedActivities.length ? (
+                    <div className="crmFocusList">
+                      {plannedActivities.map((activity) => {
+                        const overdue = isActivityOverdue(activity);
+                        const menuId = `focus-${activity.id}`;
+                        return (
+                          <article
+                            className={`crmFocusCard ${overdue ? "overdue" : ""} ${
+                              openMenuId === menuId ? "menuOpen" : ""
+                            }`}
+                            key={activity.id}
+                          >
+                            <span className="crmTimelineIcon">
+                              <ActivityIcon type={activity.type} />
+                            </span>
+                            <button
+                              aria-label="Oznacz jako wykonane"
+                              className="crmCheckCircle"
+                              type="button"
+                              onClick={() => updateActivityStatus(activity.id, "done")}
+                            />
+                            <div className="crmCardBody">
+                              <h3>{activity.title}</h3>
+                              <p className="crmMeta">
+                                <span className={overdue ? "overdueText" : ""}>
+                                  {formatDate(activity.dueDate)}
+                                  {activity.dueTime ? `, ${activity.dueTime.slice(0, 5)}` : ""}
+                                  {overdue ? " · zaległe" : ""}
+                                </span>
+                                <span>{activity.type}</span>
+                                <span>{contact.name}</span>
+                              </p>
+                              {activity.note ? <p className="crmCardNote">{activity.note}</p> : null}
+                            </div>
+                            {renderMenu(
+                              menuId,
+                              () => openActivityEdit(activity),
+                              () => handleActivityDelete(activity.id),
+                            )}
+                          </article>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="crmMuted crmEmptyLine">Brak zaplanowanych działań. Dodaj zadanie powyżej.</p>
+                  )}
+                </section>
+
+                <section className="crmBlock">
+                  <h2 className="crmBlockTitle">Historia</h2>
+                  <div className="crmHistoryTabs" role="tablist">
+                    {historyTabs.map((tab) => (
+                      <button
+                        className={historyFilter === tab.key ? "active" : ""}
+                        key={tab.key}
+                        role="tab"
+                        type="button"
+                        onClick={() => setHistoryFilter(tab.key)}
+                      >
+                        {tab.label}
+                        {tab.key !== "all" ? ` (${tab.count})` : ""}
+                      </button>
                     ))}
                   </div>
-                </section>
-              ) : null}
 
-              <section className="crmTimeline">
-                <div className="crmTimelineHeader">
-                  <h2>Historia komunikacji</h2>
-                  {areActivitiesLoading ? <span>Ladowanie...</span> : <span>{activities.length}</span>}
-                </div>
-                {sortedActivities.map((activity) => (
-                  <div
-                    className={`crmHistoryRow ${openActivityMenuId === activity.id ? "menuOpen" : ""}`}
-                    key={activity.id}
-                  >
-                    <button
-                      aria-label={
-                        activity.status === "done" ? "Oznacz jako niewykonane" : "Oznacz jako wykonane"
+                  <div className="crmTimelineList">
+                    {visibleHistory.map((item) => {
+                      if (item.kind === "note") {
+                        const note = item.note;
+                        const menuId = item.id;
+                        const isEditing = editingNoteId === note.id;
+                        return (
+                          <div className={`crmTimelineRow ${openMenuId === menuId ? "menuOpen" : ""}`} key={item.id}>
+                            <span className="crmTimelineIcon">
+                              <ActivityIcon type="note" />
+                            </span>
+                            <article className="crmNoteCard">
+                              <div className="crmNoteTop">
+                                <p className="crmMeta">
+                                  <span>{formatDateTime(note.createdAt)}</span>
+                                  <span>{note.createdBy || "CRM"}</span>
+                                  {note.updatedAt &&
+                                  new Date(note.updatedAt).getTime() - new Date(note.createdAt).getTime() > 60000 ? (
+                                    <span>edytowano</span>
+                                  ) : null}
+                                </p>
+                                {!isEditing
+                                  ? renderMenu(
+                                      menuId,
+                                      () => {
+                                        setOpenMenuId("");
+                                        setEditingNoteId(note.id);
+                                        setEditingNoteText(note.body);
+                                      },
+                                      () => handleNoteDelete(note.id),
+                                    )
+                                  : null}
+                              </div>
+                              {isEditing ? (
+                                <div className="crmNoteEdit">
+                                  <textarea
+                                    autoFocus
+                                    value={editingNoteText}
+                                    onChange={(event) => setEditingNoteText(event.target.value)}
+                                  />
+                                  <div className="crmComposerActions">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setEditingNoteId("");
+                                        setEditingNoteText("");
+                                      }}
+                                    >
+                                      Anuluj
+                                    </button>
+                                    <button
+                                      className="primary"
+                                      disabled={!editingNoteText.trim()}
+                                      type="button"
+                                      onClick={() => handleNoteEditSave(note.id)}
+                                    >
+                                      Zapisz
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <p className="crmNoteBody">{note.body}</p>
+                              )}
+                            </article>
+                          </div>
+                        );
                       }
-                      className={`crmHistoryCheck ${activity.status}`}
-                      type="button"
-                      onClick={() =>
-                        updateActivityStatus(activity.id, activity.status === "done" ? "planned" : "done")
-                      }
-                    >
-                      {activity.status === "done" ? "✓" : ""}
-                    </button>
-                    <article className={`crmHistoryCard ${activity.status}`}>
-                      <div className="crmHistoryTop">
-                        <div>
-                          <h3>{activity.title}</h3>
-                          {isActivityOverdue(activity) ? <span className="crmOverdue">Zalegle</span> : null}
-                        </div>
-                        <div className="crmHistoryMenu">
-                          <button
-                            aria-expanded={openActivityMenuId === activity.id}
-                            aria-label="Opcje dzialania"
-                            type="button"
-                            onClick={() =>
-                              setOpenActivityMenuId((current) => (current === activity.id ? "" : activity.id))
-                            }
-                          >
-                            ...
-                          </button>
-                          {openActivityMenuId === activity.id ? (
-                            <div className="crmHistoryMenuList">
-                              <button type="button" onClick={() => openActivityEdit(activity)}>
-                                Edytuj
-                              </button>
-                              <button type="button" onClick={() => handleActivityDelete(activity.id)}>
-                                Usuń
-                              </button>
+
+                      const activity = item.activity;
+                      const menuId = item.id;
+                      return (
+                        <div className={`crmTimelineRow ${openMenuId === menuId ? "menuOpen" : ""}`} key={item.id}>
+                          <span className="crmTimelineIcon">
+                            <ActivityIcon type={activity.type} />
+                          </span>
+                          <article className="crmActivityCard">
+                            <button
+                              aria-label="Oznacz jako niewykonane"
+                              className="crmCheckCircle done"
+                              title="Cofnij do zaplanowanych"
+                              type="button"
+                              onClick={() => updateActivityStatus(activity.id, "planned")}
+                            >
+                              ✓
+                            </button>
+                            <div className="crmCardBody">
+                              <h3>{activity.title}</h3>
+                              <p className="crmMeta">
+                                <span>{formatDateTime(activityMoment(activity))}</span>
+                                <span>{activity.type}</span>
+                                <span>{contact.name}</span>
+                              </p>
+                              {activity.note ? <p className="crmCardNote">{activity.note}</p> : null}
                             </div>
-                          ) : null}
+                            {renderMenu(
+                              menuId,
+                              () => openActivityEdit(activity),
+                              () => handleActivityDelete(activity.id),
+                            )}
+                          </article>
                         </div>
+                      );
+                    })}
+
+                    {historyFilter === "all" && contact.createdAt ? (
+                      <div className="crmTimelineRow crmTimelineCreated">
+                        <span className="crmTimelineDot" />
+                        <p>
+                          <strong>Kontakt dodany:</strong> {formatDateTime(contact.createdAt)}
+                        </p>
                       </div>
-                      <div className="crmHistoryMeta">
-                        <span>
-                          {formatDate(activity.dueDate)}
-                          {activity.dueTime ? `, ${activity.dueTime.slice(0, 5)}` : ""}
-                        </span>
-                        <span>Onesta</span>
-                        <span>{contact.name}</span>
-                        <span>{activity.type}</span>
-                      </div>
-                      {activity.note ? <p className="crmHistoryNote">{activity.note}</p> : null}
-                    </article>
+                    ) : null}
+                    {!visibleHistory.length && historyFilter !== "all" ? (
+                      <p className="crmMuted crmEmptyLine">Brak wpisów w tej kategorii.</p>
+                    ) : null}
                   </div>
-                ))}
-                {!areActivitiesLoading && !activities.length ? (
-                  <p className="crmMuted">Brak historii komunikacji dla tego kontaktu.</p>
-                ) : null}
+                </section>
               </section>
-            </section>
-          </div>
-        ) : null}
-      </section>
+            </div>
+          ) : null}
+        </section>
       )}
+
       {editingActivityId ? (
         <div className="crmModalBackdrop" role="presentation">
           <section aria-modal="true" className="crmActivityModal" role="dialog">
             <header>
               <div>
-                <p>Edycja dzialania</p>
-                <h2>{activityEditForm.title || "Dzialanie"}</h2>
+                <p>Edycja działania</p>
+                <h2>{activityEditForm.title || "Działanie"}</h2>
               </div>
               <button aria-label="Zamknij" type="button" onClick={closeActivityEdit}>
                 ×
               </button>
             </header>
-
             <div className="crmTaskEditor">
-              <div className="crmTabs" aria-label="Typ dzialania">
+              <div className="crmTypeChips" aria-label="Typ działania">
                 {crmActivityTypes.map((type) => (
                   <button
                     className={`${activityEditForm.type === type ? "active" : ""} ${
-                      type === "Brak kontaktu" ? "crmNoContact" : ""
+                      type === "Brak kontaktu" ? "noContact" : ""
                     }`.trim()}
                     key={type}
                     type="button"
                     onClick={() => changeEditType(type)}
                   >
+                    <ActivityIcon type={type} />
                     {type}
                   </button>
                 ))}
               </div>
-
               <form className="crmActivityForm" onSubmit={handleActivityEditSubmit}>
                 <div className="crmTaskScheduleRow">
                   <input
-                    placeholder="Tytul dzialania"
+                    placeholder="Tytuł działania"
                     value={activityEditForm.title}
-                    onChange={(event) =>
-                      setActivityEditForm({ ...activityEditForm, title: event.target.value })
-                    }
+                    onChange={(event) => setActivityEditForm({ ...activityEditForm, title: event.target.value })}
                   />
                   <input
                     type="date"
                     value={activityEditForm.dueDate}
-                    onChange={(event) =>
-                      setActivityEditForm({ ...activityEditForm, dueDate: event.target.value })
-                    }
+                    onChange={(event) => setActivityEditForm({ ...activityEditForm, dueDate: event.target.value })}
                   />
                   <input
                     type="time"
                     value={activityEditForm.dueTime}
-                    onChange={(event) =>
-                      setActivityEditForm({ ...activityEditForm, dueTime: event.target.value })
-                    }
+                    onChange={(event) => setActivityEditForm({ ...activityEditForm, dueTime: event.target.value })}
                   />
                 </div>
                 <select
                   value={activityEditForm.status}
                   onChange={(event) =>
-                    setActivityEditForm({
-                      ...activityEditForm,
-                      status: event.target.value as CrmActivityStatus,
-                    })
+                    setActivityEditForm({ ...activityEditForm, status: event.target.value as CrmActivityStatus })
                   }
                 >
-                  <option value="planned">Niewykonane</option>
+                  <option value="planned">Zaplanowane</option>
                   <option value="done">Wykonane</option>
                 </select>
                 <textarea
-                  placeholder="Notatka, opis, ustalenia..."
+                  placeholder="Opis, ustalenia…"
                   value={activityEditForm.note}
-                  onChange={(event) =>
-                    setActivityEditForm({ ...activityEditForm, note: event.target.value })
-                  }
+                  onChange={(event) => setActivityEditForm({ ...activityEditForm, note: event.target.value })}
                 />
                 {activityEditError ? <p className="crmError">{activityEditError}</p> : null}
                 <div className="crmModalActions">
                   <button disabled={isSavingActivityEdit} type="button" onClick={closeActivityEdit}>
                     Anuluj
                   </button>
-                  <button disabled={isSavingActivityEdit} type="submit">
+                  <button className="primary" disabled={isSavingActivityEdit} type="submit">
                     {isSavingActivityEdit ? "Zapisywanie..." : "Zapisz zmiany"}
                   </button>
                 </div>
@@ -818,6 +1070,7 @@ export default function CRMContactCardPage() {
           </section>
         </div>
       ) : null}
+
       <style jsx>{`
         .crmContactLoader {
           align-items: center;
@@ -859,7 +1112,7 @@ export default function CRMContactCardPage() {
         .crmContactNotFound {
           align-items: center;
           background: #ffffff;
-          border: 1px solid #d8dee7;
+          border: 1px solid #e3e6ea;
           border-radius: 8px;
           display: flex;
           flex-direction: column;
@@ -868,631 +1121,658 @@ export default function CRMContactCardPage() {
           min-height: 280px;
           text-align: center;
         }
-        .crmContactNotFound strong {
-          font-size: 18px;
-        }
-        .crmContactNotFound span {
-          color: #667085;
-        }
         .crmContactPage {
+          background: #ffffff;
+          color: #21232c;
           display: grid;
           font-size: 13px;
-          gap: 14px;
-          padding: 0 19px 19px;
+          min-height: 100vh;
         }
-        .crmContactHeader {
-          align-items: center;
-          background: #f4f6f8;
-          box-shadow: 0 8px 14px rgba(21, 32, 43, 0.06);
+        .crmMuted {
+          color: #747678;
+          margin: 0;
+        }
+        .crmError {
+          color: #b42318;
+          margin: 8px 20px 0;
+        }
+
+        /* Header + stage bar */
+        .crmDealHeader {
+          background: #ffffff;
+          border-bottom: 1px solid #e3e6ea;
           display: grid;
-          gap: 11px;
-          grid-template-columns: minmax(0, 1fr) auto;
-          margin: 0 -19px;
-          padding: 10px 19px;
+          gap: 10px;
+          padding: 14px 20px 10px;
           position: sticky;
           top: 0;
           z-index: 30;
         }
-        .crmContactHeader p {
-          color: #216e63;
-          font-size: 10px;
-          font-weight: 800;
-          margin: 0 0 3px;
-          text-transform: uppercase;
+        .crmDealTitleRow {
+          align-items: center;
+          display: flex;
+          gap: 16px;
+          justify-content: space-between;
         }
-        .crmContactHeader h1 {
-          font-size: clamp(22px, 3.2vw, 34px);
-          line-height: 1.08;
+        .crmDealTitleRow h1 {
+          font-size: 24px;
+          font-weight: 600;
+          line-height: 1.15;
           margin: 0;
         }
-        .crmContactHeader span,
-        .crmMuted {
-          color: #667085;
+        .crmDealSub {
+          color: #747678;
+          font-size: 12px;
         }
+        .crmDealHeaderRight {
+          align-items: center;
+          display: flex;
+          gap: 18px;
+        }
+        .crmDealOwner {
+          align-items: center;
+          display: flex;
+          gap: 8px;
+        }
+        .crmDealOwner strong {
+          display: block;
+          font-size: 13px;
+          font-weight: 600;
+        }
+        .crmDealOwner small {
+          color: #747678;
+          font-size: 11px;
+        }
+        .crmOwnerAvatar {
+          align-items: center;
+          background: #e3e6ea;
+          border-radius: 50%;
+          color: #44474b;
+          display: flex;
+          font-weight: 700;
+          height: 30px;
+          justify-content: center;
+          width: 30px;
+        }
+        .crmDealValue {
+          font-size: 18px;
+          font-weight: 700;
+        }
+        .crmStageBar {
+          display: flex;
+          gap: 3px;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
+        .crmStageBar li {
+          flex: 1 1 0;
+          min-width: 0;
+        }
+        .crmStage {
+          align-items: center;
+          background: #e3e6ea;
+          border: 0;
+          clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%, 9px 50%);
+          color: #5b5f66;
+          cursor: pointer;
+          display: flex;
+          font-size: 11px;
+          font-weight: 600;
+          height: 26px;
+          justify-content: center;
+          padding: 0 14px;
+          transition: filter 0.15s ease;
+          width: 100%;
+        }
+        .crmStageBar li:first-child .crmStage {
+          border-radius: 4px 0 0 4px;
+          clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%);
+        }
+        .crmStageBar li:last-child .crmStage {
+          border-radius: 0 4px 4px 0;
+          clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 9px 50%);
+        }
+        .crmStage span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .crmStage.past,
+        .crmStage.current {
+          background: #08a742;
+          color: #ffffff;
+        }
+        .crmStage.current {
+          background: #068a36;
+        }
+        .crmStage:hover {
+          filter: brightness(0.95);
+        }
+        .crmStageCrumb {
+          align-items: center;
+          color: #3c61c4;
+          display: flex;
+          font-size: 12px;
+          gap: 6px;
+          margin: 0;
+        }
+        .crmStageCrumb span {
+          color: #747678;
+        }
+        .crmStageCrumb strong {
+          font-weight: 500;
+        }
+
+        /* Layout */
         .crmContactGrid {
           align-items: start;
           display: grid;
-          gap: 14px;
-          grid-template-columns: 320px minmax(0, 1fr);
+          grid-template-columns: 340px minmax(0, 1fr);
         }
-        .crmContactSummary,
-        .crmActivityPanel {
-          background: #ffffff;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          box-shadow: 0 14px 34px rgba(21, 32, 43, 0.08);
+        .crmSidebar {
+          border-right: 1px solid #e3e6ea;
+          min-height: calc(100vh - 120px);
         }
-        .crmContactSummary {
+        .crmSideSection {
+          border-bottom: 1px solid #e3e6ea;
           display: grid;
           gap: 10px;
-          padding: 14px;
+          padding: 16px 20px;
         }
-        .crmSummaryTop {
-          align-items: start;
+        .crmSideHeader {
+          align-items: center;
           display: flex;
+          gap: 10px;
           justify-content: space-between;
         }
-        .crmSummaryTop button {
-          background: #e7f2ef;
-          border: 1px solid #b8d7d0;
-          border-radius: 8px;
-          color: #155149;
-          font-weight: 800;
-          font-size: 12px;
-          min-height: 30px;
-          padding: 0 10px;
-        }
-        .crmAvatarLarge {
-          align-items: center;
-          background: #216e63;
-          border-radius: 8px;
-          color: #ffffff;
-          display: flex;
-          font-size: 22px;
-          font-weight: 800;
-          height: 51px;
-          justify-content: center;
-          width: 51px;
-        }
-        .crmContactSummary h2,
-        .crmContactSummary p {
+        .crmSideHeader h2,
+        .crmBlockTitle {
+          font-size: 15px;
+          font-weight: 600;
           margin: 0;
         }
-        .crmContactSummary p,
-        .crmContactSummary dt {
-          color: #667085;
+        .crmLinkButton {
+          background: transparent;
+          border: 0;
+          color: #3c61c4;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 500;
+          padding: 2px 4px;
         }
-        .crmContactSummary dl {
+        .crmFactList {
           display: grid;
-          gap: 8px;
-          margin: 6px 0 0;
-        }
-        .crmContactSummary dl > div {
-          border-top: 1px solid #eef1f4;
-          display: grid;
-          gap: 3px;
-          padding-top: 8px;
-        }
-        .crmContactSummary dt,
-        .crmContactSummary dd {
+          gap: 9px;
           margin: 0;
         }
-        .crmContactSummary dd {
-          font-weight: 800;
+        .crmFactList > div {
+          display: grid;
+          gap: 10px;
+          grid-template-columns: 130px minmax(0, 1fr);
+        }
+        .crmFactList dt {
+          color: #747678;
+          margin: 0;
+        }
+        .crmFactList dd {
+          margin: 0;
           overflow-wrap: anywhere;
         }
-        .crmStatusSelect {
-          background: #f9fafb;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          font: inherit;
-          font-weight: 800;
-          min-height: 32px;
-          outline: 0;
-          padding: 0 8px;
-          width: 100%;
+        .crmFactList a {
+          color: #3c61c4;
+          text-decoration: none;
         }
-        .crmContactEditForm {
+        .crmSummaryText {
+          line-height: 1.5;
+          margin: 0;
+          white-space: pre-wrap;
+        }
+        .crmContactEditForm,
+        .crmSummaryEditor {
           display: grid;
           gap: 8px;
         }
         .crmContactEditForm label {
-          color: #667085;
+          color: #747678;
           display: grid;
-          font-size: 10px;
-          font-weight: 800;
-          gap: 5px;
+          font-size: 11px;
+          gap: 4px;
         }
         .crmContactEditForm input,
-        .crmContactEditForm select {
-          background: #f9fafb;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          color: #17202a;
+        .crmSummaryEditor textarea,
+        .crmActivityForm input,
+        .crmActivityForm select,
+        .crmActivityForm textarea,
+        .crmNoteEdit textarea {
+          background: #ffffff;
+          border: 1px solid #c6c8cc;
+          border-radius: 4px;
+          color: #21232c;
           font: inherit;
           min-height: 34px;
           outline: 0;
-          padding: 0 8px;
+          padding: 0 9px;
           width: 100%;
         }
-        .crmEditActions {
+        .crmSummaryEditor textarea,
+        .crmActivityForm textarea,
+        .crmNoteEdit textarea {
+          line-height: 1.45;
+          min-height: 120px;
+          padding: 9px;
+          resize: vertical;
+        }
+        .crmContactEditForm input:focus,
+        .crmSummaryEditor textarea:focus,
+        .crmActivityForm input:focus,
+        .crmActivityForm textarea:focus,
+        .crmNoteEdit textarea:focus {
+          border-color: #3c61c4;
+          box-shadow: 0 0 0 2px rgba(60, 97, 196, 0.15);
+        }
+        .crmEditActions,
+        .crmComposerActions,
+        .crmModalActions {
+          align-items: center;
           display: flex;
-          gap: 6px;
+          gap: 8px;
+          justify-content: flex-end;
         }
-        .crmEditActions button {
-          border-radius: 8px;
-          font-size: 12px;
-          font-weight: 800;
-          min-height: 34px;
-          padding: 0 11px;
+        .crmEditActions button,
+        .crmComposerActions button,
+        .crmModalActions button {
+          background: #ffffff;
+          border: 1px solid #c6c8cc;
+          border-radius: 4px;
+          color: #21232c;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 600;
+          min-height: 32px;
+          padding: 0 12px;
         }
-        .crmEditActions button:first-child {
-          background: #216e63;
-          border: 0;
+        .crmEditActions button.primary,
+        .crmComposerActions button.primary,
+        .crmModalActions button.primary {
+          background: #08a742;
+          border-color: #08a742;
           color: #ffffff;
         }
-        .crmEditActions button:last-child {
-          background: #ffffff;
-          border: 1px solid #d8dee7;
-          color: #1f2937;
-        }
-        .crmEditActions button:disabled {
+        .crmEditActions button:disabled,
+        .crmComposerActions button:disabled,
+        .crmModalActions button:disabled {
           cursor: not-allowed;
-          opacity: 0.7;
+          opacity: 0.55;
         }
-        .crmActivityPanel {
+
+        /* Main column */
+        .crmMainColumn {
+          background: #f7f7f8;
           display: grid;
-          gap: 13px;
-          padding: 14px;
+          gap: 22px;
+          min-height: calc(100vh - 120px);
+          padding: 18px 22px 40px;
         }
-        .crmPanelTabs {
-          align-items: flex-end;
+        .crmComposer {
+          background: #ffffff;
+          border: 1px solid #e3e6ea;
+          border-radius: 8px;
+          box-shadow: 0 1px 2px rgba(33, 35, 44, 0.06);
+          overflow: hidden;
+        }
+        .crmComposerTabs {
+          border-bottom: 1px solid #e3e6ea;
           display: flex;
-          gap: 10px;
+          gap: 4px;
+          padding: 0 10px;
         }
-        .crmPanelTabs button {
+        .crmComposerTabs button {
           background: transparent;
           border: 0;
           border-bottom: 2px solid transparent;
-          border-radius: 0;
-          color: #4b5563;
-          font-size: 12px;
-          font-weight: 900;
-          min-height: 28px;
-          padding: 0 5px;
+          color: #5b5f66;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 600;
+          padding: 11px 10px 9px;
         }
-        .crmPanelTabs button.active {
+        .crmComposerTabs button.active {
+          border-bottom-color: #3c61c4;
+          color: #21232c;
+        }
+        .crmNoteComposer {
+          background: #fff8d8;
+          display: grid;
+          gap: 8px;
+          padding: 12px;
+        }
+        .crmNoteComposer textarea {
           background: transparent;
-          border-bottom-color: #216e63;
-          color: #216e63;
+          border: 0;
+          color: #21232c;
+          font: inherit;
+          line-height: 1.5;
+          min-height: 90px;
+          outline: 0;
+          resize: vertical;
+          width: 100%;
         }
         .crmTaskEditor {
-          align-items: start;
           display: grid;
-          gap: 12px;
-          grid-template-areas: "form types";
-          grid-template-columns: minmax(0, 1fr) 150px;
+          gap: 10px;
+          padding: 12px;
         }
-        .crmTaskEditor > .crmActivityForm {
-          grid-area: form;
-        }
-        .crmTaskEditor > .crmTabs {
-          grid-area: types;
-        }
-        .crmTabs {
-          display: grid;
+        .crmTypeChips {
+          display: flex;
+          flex-wrap: wrap;
           gap: 6px;
-          grid-template-columns: 1fr;
         }
-        .crmTabs button {
-          background: #f9fafb;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          color: #1f2937;
+        .crmTypeChips button {
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #c6c8cc;
+          border-radius: 4px;
+          color: #3b3f45;
+          cursor: pointer;
+          display: inline-flex;
           font-size: 12px;
-          font-weight: 800;
-          min-height: 34px;
+          font-weight: 600;
+          gap: 6px;
+          min-height: 30px;
+          padding: 0 10px;
         }
-        .crmTabs button.active {
-          background: #e7f2ef;
-          border-color: #216e63;
-          color: #155149;
+        .crmTypeChips button.active {
+          background: #eef3fd;
+          border-color: #3c61c4;
+          color: #2b4ba1;
         }
-        .crmTabs button.crmNoContact {
-          background: #bf6b6b;
-          border-color: #ad5d5d;
-          color: #ffffff;
-        }
-        .crmTabs button.crmNoContact.active {
-          background: #a95050;
-          border-color: #934545;
-          color: #ffffff;
+        .crmTypeChips button.noContact.active {
+          background: #fdecec;
+          border-color: #c0392b;
+          color: #a12d22;
         }
         .crmActivityForm {
           display: grid;
           gap: 8px;
-        }
-        .crmContactNoteForm {
-          display: grid;
-          gap: 8px;
-        }
-        .crmContactNoteForm textarea {
-          background: #f9fafb;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          color: #17202a;
-          font: inherit;
-          min-height: 136px;
-          outline: 0;
-          padding: 10px;
-          resize: vertical;
-          transition:
-            background 0.15s ease,
-            border-color 0.15s ease,
-            box-shadow 0.15s ease;
-          width: 100%;
-        }
-        .crmContactNoteForm textarea.editing {
-          background: #ffffff;
-          border-color: #aab6c4;
-          box-shadow: 0 0 0 2px rgba(33, 110, 99, 0.1);
-        }
-        .crmContactNoteForm textarea.saved {
-          background: #f9fafb;
-        }
-        .crmContactNoteForm button {
-          background: #216e63;
-          border: 0;
-          border-radius: 8px;
-          color: #ffffff;
-          font-size: 12px;
-          font-weight: 800;
-          justify-self: start;
-          min-height: 35px;
-          padding: 0 13px;
-        }
-        .crmContactNoteForm button:disabled {
-          background: #d8dde4;
-          color: #7b8491;
-          cursor: not-allowed;
-          opacity: 1;
-        }
-        .crmActivityForm input,
-        .crmActivityForm select,
-        .crmActivityForm textarea {
-          background: #f9fafb;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          font: inherit;
-          min-height: 35px;
-          outline: 0;
-          padding: 0 10px;
-          width: 100%;
-        }
-        .crmActivityForm textarea {
-          min-height: 126px;
-          padding: 10px;
-          resize: vertical;
         }
         .crmTaskScheduleRow {
           display: grid;
           gap: 8px;
           grid-template-columns: minmax(0, 1fr) 150px 110px;
         }
-        .crmTaskScheduleRow > input {
-          min-width: 0;
-        }
-        .crmActivityForm button {
-          background: #216e63;
-          border: 0;
-          border-radius: 8px;
-          color: #ffffff;
-          font-size: 12px;
-          font-weight: 800;
-          justify-self: start;
-          min-height: 35px;
-          padding: 0 13px;
-        }
-        .crmCheckboxRow {
+        .crmComposerActions .crmCheckboxRow {
           align-items: center;
-          color: #4b5563;
+          color: #5b5f66;
           display: flex;
-          font-size: 14px;
-          font-weight: 800;
-          gap: 9px;
+          font-size: 13px;
+          gap: 7px;
+          margin-right: auto;
         }
-        .crmActivityForm .crmCheckboxRow input {
-          accent-color: #216e63;
-          flex: 0 0 auto;
+        .crmCheckboxRow input {
+          accent-color: #08a742;
+          height: 16px;
+          width: 16px;
+        }
+        .crmBlock {
+          display: grid;
+          gap: 10px;
+        }
+        .crmEmptyLine {
+          padding: 4px 2px;
+        }
+        .crmFocusList,
+        .crmTimelineList {
+          display: grid;
+          gap: 10px;
+        }
+        .crmFocusCard,
+        .crmActivityCard {
+          align-items: start;
+          background: #ffffff;
+          border: 1px solid #e3e6ea;
+          border-radius: 8px;
+          box-shadow: 0 1px 2px rgba(33, 35, 44, 0.06);
+          display: grid;
+          gap: 10px;
+          grid-template-columns: 20px minmax(0, 1fr) auto;
+          padding: 12px 12px 12px 14px;
+          position: relative;
+        }
+        .crmFocusCard {
+          grid-template-columns: 32px 20px minmax(0, 1fr) auto;
+          padding-left: 10px;
+        }
+        .crmFocusCard.overdue {
+          border-color: #f0b4ad;
+        }
+        .crmFocusCard.menuOpen,
+        .crmTimelineRow.menuOpen {
+          z-index: 20;
+        }
+        .crmCheckCircle {
+          align-items: center;
+          background: #ffffff;
+          border: 1.5px solid #9ea2a8;
+          border-radius: 50%;
+          color: #ffffff;
+          cursor: pointer;
+          display: flex;
+          font-size: 11px;
+          font-weight: 900;
           height: 18px;
-          min-height: 0;
+          justify-content: center;
+          margin-top: 2px;
           padding: 0;
           width: 18px;
         }
-        .crmOverduePanel {
-          background: #fff7f6;
-          border: 1px solid #f3b8b2;
-          border-radius: 8px;
+        .crmCheckCircle:hover {
+          border-color: #08a742;
+        }
+        .crmCheckCircle.done {
+          background: #08a742;
+          border-color: #08a742;
+        }
+        .crmCardBody {
           display: grid;
-          gap: 8px;
-          margin-top: 67px;
-          padding: 11px;
+          gap: 4px;
+          min-width: 0;
         }
-        .crmOverdueHeader {
-          align-items: center;
-          display: flex;
-          justify-content: space-between;
-        }
-        .crmOverdueHeader h2 {
-          color: #b42318;
-          font-size: 14px;
+        .crmCardBody h3 {
+          font-size: 15px;
+          font-weight: 600;
+          line-height: 1.3;
           margin: 0;
         }
-        .crmOverdueHeader span {
-          background: #fee4e2;
-          border-radius: 999px;
-          color: #b42318;
-          font-size: 10px;
-          font-weight: 900;
-          padding: 2px 6px;
-        }
-        .crmOverdueList {
-          display: grid;
-          gap: 6px;
-        }
-        .crmOverdueCard {
-          align-items: start;
-          background: #ffffff;
-          border: 1px solid #f3c7c2;
-          border-radius: 8px;
-          display: grid;
-          gap: 8px;
-          grid-template-columns: 34px minmax(0, 1fr) auto;
-          padding: 8px;
-          position: relative;
-        }
-        .crmOverdueCard.menuOpen {
-          z-index: 20;
-        }
-        .crmOverdueCard > button {
+        .crmMeta {
           align-items: center;
-          background: #ffffff;
-          border: 2px solid #d92d20;
-          border-radius: 999px;
-          color: #d92d20;
+          color: #747678;
           display: flex;
-          font-size: 13px;
-          font-weight: 900;
-          height: 24px;
-          justify-content: center;
-          line-height: 1;
-          padding: 0;
-          width: 24px;
+          flex-wrap: wrap;
+          font-size: 12px;
+          gap: 6px;
+          margin: 0;
         }
-        .crmOverdueCard strong {
-          display: block;
-          font-size: 17px;
-          font-weight: 700;
-          line-height: 1.2;
+        .crmMeta span:not(:last-child)::after {
+          color: #b4b7bc;
+          content: "·";
+          margin-left: 6px;
         }
-        .crmOverdueMenu > button {
+        .overdueText {
+          color: #c0392b;
+          font-weight: 600;
+        }
+        .crmCardNote {
+          background: #fff8d8;
+          border-radius: 4px;
+          color: #3b3f45;
+          line-height: 1.45;
+          margin: 4px 0 0;
+          padding: 8px 10px;
+          white-space: pre-wrap;
+        }
+
+        /* History */
+        .crmHistoryTabs {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+        }
+        .crmHistoryTabs button {
           background: transparent;
           border: 0;
-          color: #667085;
+          border-radius: 4px;
+          color: #21232c;
+          cursor: pointer;
           font-size: 13px;
-          font-weight: 900;
-          letter-spacing: 1px;
-          min-height: 21px;
-          padding: 0 2px;
+          font-weight: 600;
+          padding: 6px 10px;
         }
-        .crmOverdueCard p {
-          color: #b42318;
-          font-size: 10px;
-          font-weight: 800;
-          margin: 3px 0 0;
+        .crmHistoryTabs button:hover {
+          background: #eceef1;
         }
-        .crmOverdueCard small {
-          color: #667085;
-          display: block;
-          font-size: 10px;
-          font-weight: 700;
-          line-height: 1.35;
-          margin-top: 4px;
+        .crmHistoryTabs button.active {
+          background: #e4ebfa;
+          color: #2b4ba1;
         }
-        .crmTimeline {
-          display: grid;
-          gap: 9px;
-          padding-top: 5px;
-        }
-        .crmTimelineHeader {
-          align-items: center;
-          display: flex;
-          justify-content: space-between;
-        }
-        .crmTimelineHeader h2 {
-          font-size: 150%;
-          font-weight: 800;
-          margin: 0;
-        }
-        .crmTimelineHeader span {
-          background: #eef1f4;
-          border-radius: 999px;
-          color: #4b5563;
-          font-weight: 800;
-          font-size: 10px;
-          padding: 2px 6px;
-        }
-        .crmHistoryRow {
-          align-items: start;
-          display: grid;
-          gap: 10px;
-          grid-template-columns: 38px minmax(0, 1fr);
+        .crmTimelineList {
           position: relative;
         }
-        .crmHistoryRow.menuOpen {
-          z-index: 20;
+        .crmTimelineRow {
+          align-items: start;
+          display: grid;
+          gap: 12px;
+          grid-template-columns: 32px minmax(0, 1fr);
+          position: relative;
         }
-        .crmHistoryRow::before {
-          background: #d9dde5;
-          bottom: -11px;
+        .crmTimelineRow::before {
+          border-left: 1px dashed #c6c8cc;
+          bottom: -12px;
           content: "";
-          left: 18px;
+          left: 15px;
           position: absolute;
-          top: 38px;
-          width: 2px;
+          top: 34px;
         }
-        .crmHistoryRow:last-of-type::before {
+        .crmTimelineRow:last-child::before {
           display: none;
         }
-        .crmHistoryCheck {
+        .crmTimelineIcon {
           align-items: center;
           background: #ffffff;
-          border: 1px solid #d8dee7;
-          border-radius: 999px;
-          box-shadow: 0 3px 10px rgba(21, 32, 43, 0.12);
-          color: #ffffff;
+          border: 1px solid #e3e6ea;
+          border-radius: 50%;
+          color: #5b5f66;
           display: flex;
-          font-size: 15px;
-          font-weight: 900;
-          height: 38px;
+          height: 32px;
           justify-content: center;
-          line-height: 1;
           position: relative;
-          width: 38px;
+          width: 32px;
           z-index: 1;
         }
-        .crmHistoryCheck.done {
-          background: #2f9157;
-          border-color: #2f9157;
+        .crmFocusCard .crmTimelineIcon {
+          height: 28px;
+          width: 28px;
         }
-        .crmHistoryCard {
-          background: #ffffff;
-          border: 1px solid #d8dee7;
+        .crmNoteCard {
+          background: #fff8d8;
+          border: 1px solid #f3e3a1;
           border-radius: 8px;
-          box-shadow: 0 6px 18px rgba(21, 32, 43, 0.08);
-          overflow: visible;
+          display: grid;
+          gap: 6px;
+          padding: 10px 12px 12px 14px;
           position: relative;
         }
-        .crmHistoryCard.done h3 {
-          color: #242a31;
-        }
-        .crmHistoryTop {
-          align-items: start;
+        .crmNoteTop {
+          align-items: center;
           display: flex;
           gap: 8px;
           justify-content: space-between;
-          padding: 10px 11px 5px;
         }
-        .crmHistoryTop h3 {
-          font-size: 17px;
-          font-weight: 700;
-          line-height: 1.15;
+        .crmNoteBody {
+          color: #21232c;
+          line-height: 1.5;
+          margin: 0;
+          white-space: pre-wrap;
+        }
+        .crmNoteEdit {
+          display: grid;
+          gap: 8px;
+        }
+        .crmTimelineCreated {
+          align-items: center;
+          color: #5b5f66;
+        }
+        .crmTimelineCreated p {
           margin: 0;
         }
-        .crmHistoryTop button {
+        .crmTimelineCreated strong {
+          font-weight: 600;
+        }
+        .crmTimelineDot {
+          background: #ffffff;
+          border: 1.5px solid #c6c8cc;
+          border-radius: 50%;
+          height: 12px;
+          justify-self: center;
+          width: 12px;
+        }
+
+        /* Item menu */
+        .crmItemMenu {
+          position: relative;
+        }
+        .crmItemMenuToggle {
           background: transparent;
           border: 0;
-          color: #667085;
-          font: inherit;
-          font-size: 13px;
-          font-weight: 900;
+          border-radius: 4px;
+          color: #747678;
+          cursor: pointer;
+          font-size: 10px;
           letter-spacing: 1px;
-          min-height: 21px;
-          padding: 0 2px;
+          padding: 4px 6px;
         }
-        .crmHistoryMenu {
-          position: relative;
-          z-index: 30;
+        .crmItemMenuToggle:hover {
+          background: rgba(33, 35, 44, 0.06);
         }
-        .crmHistoryMenuList {
+        .crmItemMenuList {
           background: #ffffff;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          box-shadow: 0 12px 28px rgba(21, 32, 43, 0.14);
+          border: 1px solid #e3e6ea;
+          border-radius: 6px;
+          box-shadow: 0 8px 24px rgba(33, 35, 44, 0.16);
           display: grid;
-          min-width: 118px;
+          min-width: 120px;
           padding: 4px;
           position: absolute;
           right: 0;
-          top: 22px;
+          top: 26px;
           z-index: 40;
         }
-        .crmHistoryMenuList button {
+        .crmItemMenuList button {
           background: transparent;
           border: 0;
-          border-radius: 6px;
-          color: #1f2937;
-          font-size: 10px;
-          font-weight: 800;
-          letter-spacing: 0;
-          min-height: 24px;
-          padding: 0 6px;
+          border-radius: 4px;
+          color: #21232c;
+          cursor: pointer;
+          font-size: 13px;
+          padding: 7px 10px;
           text-align: left;
         }
-        .crmHistoryMenuList button:hover {
-          background: #f4f6f8;
+        .crmItemMenuList button:hover {
+          background: #f1f2f4;
         }
-        .crmHistoryMenuList button:last-child {
-          color: #b42318;
+        .crmItemMenuList button.danger {
+          color: #c0392b;
         }
-        .crmOverdue {
-          background: #fee4e2;
-          border-radius: 4px;
-          color: #b42318;
-          display: inline-flex;
-          font-size: 8px;
-          font-weight: 900;
-          margin-top: 4px;
-          padding: 2px 5px;
-          text-transform: uppercase;
-        }
-        .crmHistoryMeta {
-          align-items: center;
-          color: #667085;
-          display: flex;
-          flex-wrap: wrap;
-          font-size: 10px;
-          font-weight: 700;
-          gap: 5px;
-          padding: 0 11px 10px;
-        }
-        .crmHistoryMeta span:not(:last-child)::after {
-          color: #98a2b3;
-          content: "·";
-          margin-left: 5px;
-        }
-        .crmHistoryNote {
-          background: #fff6d7;
-          border-radius: 0 0 8px 8px;
-          border-top: 1px solid #eadfba;
-          color: #242a31;
-          font-size: 11px;
-          font-weight: 700;
-          line-height: 1.45;
-          margin: 0;
-          padding: 10px 11px;
-        }
-        .crmError {
-          color: #b42318;
-          margin: 0;
-        }
-        .crmSuccess {
-          color: #216e63;
-          font-weight: 800;
-          margin: 0;
-        }
+
+        /* Modal */
         .crmModalBackdrop {
           align-items: center;
-          background: rgba(15, 23, 42, 0.52);
-          bottom: 0;
+          background: rgba(15, 23, 42, 0.5);
           display: flex;
-          font-size: 13px;
+          inset: 0;
           justify-content: center;
-          left: 0;
           padding: 19px;
           position: fixed;
-          right: 0;
-          top: 0;
           z-index: 80;
         }
         .crmActivityModal {
@@ -1500,91 +1780,61 @@ export default function CRMContactCardPage() {
           border-radius: 8px;
           box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
           display: grid;
-          gap: 13px;
+          gap: 6px;
           max-height: calc(100vh - 48px);
-          max-width: 860px;
           overflow: auto;
-          padding: 14px;
-          width: min(860px, 100%);
+          padding: 16px;
+          width: min(760px, 100%);
         }
         .crmActivityModal header {
           align-items: start;
           display: flex;
-          gap: 13px;
           justify-content: space-between;
         }
         .crmActivityModal header p {
-          color: #216e63;
-          font-size: 10px;
-          font-weight: 900;
-          margin: 0 0 3px;
-          text-transform: uppercase;
+          color: #747678;
+          font-size: 12px;
+          margin: 0 0 2px;
         }
         .crmActivityModal header h2 {
-          font-size: 19px;
+          font-size: 18px;
+          font-weight: 600;
           margin: 0;
         }
         .crmActivityModal header > button {
-          background: #f4f6f8;
-          border: 1px solid #d8dee7;
-          border-radius: 8px;
-          color: #1f2937;
-          font-size: 22px;
-          height: 34px;
-          line-height: 1;
-          width: 34px;
-        }
-        .crmActivityModal .crmActivityForm textarea {
-          min-height: 105px;
-        }
-        .crmModalActions {
-          display: flex;
-          gap: 8px;
-          justify-content: flex-end;
-        }
-        .crmModalActions button {
-          border-radius: 8px;
-          font-size: 12px;
-          font-weight: 800;
-          min-height: 35px;
-          padding: 0 13px;
-        }
-        .crmModalActions button:first-child {
-          background: #ffffff;
-          border: 1px solid #d8dee7;
-          color: #1f2937;
-        }
-        .crmModalActions button:last-child {
-          background: #216e63;
+          background: transparent;
           border: 0;
-          color: #ffffff;
+          cursor: pointer;
+          font-size: 24px;
+          line-height: 1;
         }
-        .crmModalActions button:disabled {
-          cursor: not-allowed;
-          opacity: 0.7;
+        .crmActivityModal .crmTaskEditor {
+          padding: 6px 0 0;
         }
+
         @media (max-width: 1000px) {
-          .crmContactGrid,
-          .crmContactHeader,
-          .crmTaskScheduleRow,
-          .crmTabs {
+          .crmContactGrid {
             grid-template-columns: 1fr;
           }
-          .crmTaskEditor {
-            grid-template-areas:
-              "form"
-              "types";
+          .crmSidebar {
+            border-right: 0;
+            min-height: 0;
+          }
+          .crmDealTitleRow {
+            align-items: start;
+            flex-direction: column;
+          }
+          .crmStageBar {
+            overflow-x: auto;
+          }
+          .crmStageBar li {
+            flex: 0 0 auto;
+          }
+          .crmStage {
+            min-width: 120px;
+          }
+          .crmTaskScheduleRow {
             grid-template-columns: 1fr;
-          }
-          .crmHistoryRow {
-            grid-template-columns: 1fr;
-          }
-          .crmHistoryRow::before {
-            display: none;
-          }
-          .crmHistoryCheck {
-            height: 42px;
-            width: 42px;
           }
         }
       `}</style>
