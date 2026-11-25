@@ -347,7 +347,8 @@ export default function CRMContactCardPage() {
     dueTime: "",
     note: "",
   });
-  const [composerTab, setComposerTab] = useState<"note" | "task">("note");
+  const [composerTab, setComposerTab] = useState<"note" | "task">("task");
+  const [isComposerOpen, setIsComposerOpen] = useState(false);
   const [newNote, setNewNote] = useState("");
   const [isSavingNote, setIsSavingNote] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState("");
@@ -445,6 +446,14 @@ export default function CRMContactCardPage() {
     if (!activity) return;
     setForm({ type: form.type, title: form.type, dueDate: today, dueTime: "", note: "" });
     setMarkNewActivityDone(false);
+    setIsComposerOpen(false);
+  }
+
+  function cancelComposer() {
+    setForm({ type: "Zadzwoń", title: "Zadzwoń", dueDate: today, dueTime: "", note: "" });
+    setMarkNewActivityDone(false);
+    setNewNote("");
+    setIsComposerOpen(false);
   }
 
   async function handleNoteSubmit(event: FormEvent<HTMLFormElement>) {
@@ -455,6 +464,7 @@ export default function CRMContactCardPage() {
     setIsSavingNote(false);
     if (!saved) return;
     setNewNote("");
+    setIsComposerOpen(false);
     setHistoryFilter((current) => (current === "all" || current === "notes" ? current : "all"));
   }
 
@@ -892,35 +902,50 @@ export default function CRMContactCardPage() {
               </aside>
 
               <section className="crmMainColumn">
-                <div className="crmComposer">
+                <div className={`crmComposer ${isComposerOpen ? "open" : ""}`.trim()}>
                   <div className="crmComposerTabs" role="tablist">
                     <button
-                      className={composerTab === "note" ? "active" : ""}
-                      role="tab"
-                      type="button"
-                      onClick={() => setComposerTab("note")}
-                    >
-                      Notatka
-                    </button>
-                    <button
+                      aria-selected={composerTab === "task"}
                       className={composerTab === "task" ? "active" : ""}
                       role="tab"
                       type="button"
                       onClick={() => setComposerTab("task")}
                     >
-                      Zadanie
+                      <svg aria-hidden="true" fill="none" height="15" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="15">
+                        <rect height="16" rx="2" width="18" x="3" y="5" />
+                        <path d="M3 10h18M8 3v4M16 3v4" />
+                      </svg>
+                      Aktywność
+                    </button>
+                    <button
+                      aria-selected={composerTab === "note"}
+                      className={composerTab === "note" ? "active" : ""}
+                      role="tab"
+                      type="button"
+                      onClick={() => setComposerTab("note")}
+                    >
+                      <svg aria-hidden="true" fill="none" height="15" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="15">
+                        <path d="M5 4h14v11l-5 5H5z" />
+                        <path d="M14 20v-5h5M8 9h8M8 13h4" />
+                      </svg>
+                      Notatki
                     </button>
                   </div>
 
-                  {composerTab === "note" ? (
+                  {!isComposerOpen ? (
+                    <button className="crmComposerPlaceholder" type="button" onClick={() => setIsComposerOpen(true)}>
+                      {composerTab === "task" ? "Kliknij, aby dodać aktywność…" : "Kliknij, aby dodać notatkę…"}
+                    </button>
+                  ) : composerTab === "note" ? (
                     <form className="crmNoteComposer" onSubmit={handleNoteSubmit}>
                       <textarea
-                        placeholder="Dodaj notatkę: przebieg rozmowy, ustalenia, preferencje klienta…"
+                        autoFocus
+                        placeholder="Przebieg rozmowy, ustalenia, preferencje klienta…"
                         value={newNote}
                         onChange={(event) => setNewNote(event.target.value)}
                       />
                       <div className="crmComposerActions">
-                        <button disabled={isSavingNote || !newNote} type="button" onClick={() => setNewNote("")}>
+                        <button disabled={isSavingNote} type="button" onClick={cancelComposer}>
                           Anuluj
                         </button>
                         <button className="primary" disabled={isSavingNote || !newNote.trim()} type="submit">
@@ -929,60 +954,108 @@ export default function CRMContactCardPage() {
                       </div>
                     </form>
                   ) : (
-                    <div className="crmTaskEditor">
-                      <div className="crmTypeChips" aria-label="Typ działania">
-                        {crmActivityTypes.map((type) => (
-                          <button
-                            className={`${form.type === type ? "active" : ""} ${
-                              type === "Brak kontaktu" ? "noContact" : ""
-                            }`.trim()}
-                            key={type}
-                            type="button"
-                            onClick={() => changeType(type)}
-                          >
-                            <ActivityIcon type={type} />
-                            {type}
-                          </button>
-                        ))}
+                    <form className="crmActivityComposer" onSubmit={handleTaskSubmit}>
+                      <div className="crmComposerRow">
+                        <span className="crmComposerRowIcon" />
+                        <input
+                          autoFocus
+                          className="crmComposerTitle"
+                          placeholder="Tytuł działania"
+                          value={form.title}
+                          onChange={(event) => setForm({ ...form, title: event.target.value })}
+                        />
                       </div>
-                      <form className="crmActivityForm" onSubmit={handleTaskSubmit}>
-                        <div className="crmTaskScheduleRow">
+                      <div className="crmComposerRow">
+                        <span className="crmComposerRowIcon" />
+                        <div className="crmTypeSegment" aria-label="Typ działania">
+                          {crmActivityTypes.map((type) => (
+                            <button
+                              className={`${form.type === type ? "active" : ""} ${
+                                type === "Brak kontaktu" ? "noContact" : ""
+                              }`.trim()}
+                              key={type}
+                              type="button"
+                              onClick={() => changeType(type)}
+                            >
+                              <ActivityIcon type={type} />
+                              {type}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="crmComposerRow">
+                        <span className="crmComposerRowIcon" title="Termin">
+                          <svg aria-hidden="true" fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="18">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 7v5l3 2" />
+                          </svg>
+                        </span>
+                        <div className="crmComposerWhen">
                           <input
-                            placeholder="Tytuł działania"
-                            value={form.title}
-                            onChange={(event) => setForm({ ...form, title: event.target.value })}
-                          />
-                          <input
+                            aria-label="Data"
                             type="date"
                             value={form.dueDate}
                             onChange={(event) => setForm({ ...form, dueDate: event.target.value })}
                           />
                           <input
+                            aria-label="Godzina"
                             type="time"
                             value={form.dueTime}
                             onChange={(event) => setForm({ ...form, dueTime: event.target.value })}
                           />
                         </div>
+                      </div>
+                      <div className="crmComposerRow">
+                        <span className="crmComposerRowIcon" title="Notatka">
+                          <svg aria-hidden="true" fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="18">
+                            <path d="M5 4h14v11l-5 5H5z" />
+                            <path d="M14 20v-5h5" />
+                          </svg>
+                        </span>
                         <textarea
-                          placeholder="Opis, ustalenia…"
+                          className="crmComposerNote"
+                          placeholder="Notatka do działania: o czym rozmawiać, co ustalono…"
                           value={form.note}
                           onChange={(event) => setForm({ ...form, note: event.target.value })}
                         />
-                        <div className="crmComposerActions">
-                          <label className="crmCheckboxRow">
-                            <input
-                              checked={markNewActivityDone}
-                              type="checkbox"
-                              onChange={(event) => setMarkNewActivityDone(event.target.checked)}
-                            />
-                            Oznacz jako wykonane
-                          </label>
-                          <button className="primary" type="submit">
-                            Zapisz działanie
+                      </div>
+                      <div className="crmComposerRow">
+                        <span className="crmComposerRowIcon" title="Status">
+                          <svg aria-hidden="true" fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="18">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="m8 12 3 3 5-6" />
+                          </svg>
+                        </span>
+                        <div className="crmStatusSegment" role="radiogroup" aria-label="Status">
+                          <button
+                            aria-checked={!markNewActivityDone}
+                            className={!markNewActivityDone ? "active" : ""}
+                            role="radio"
+                            type="button"
+                            onClick={() => setMarkNewActivityDone(false)}
+                          >
+                            Zaplanowane
+                          </button>
+                          <button
+                            aria-checked={markNewActivityDone}
+                            className={markNewActivityDone ? "active done" : ""}
+                            role="radio"
+                            type="button"
+                            onClick={() => setMarkNewActivityDone(true)}
+                          >
+                            Wykonane
                           </button>
                         </div>
-                      </form>
-                    </div>
+                      </div>
+                      <div className="crmComposerFooter">
+                        <button type="button" onClick={cancelComposer}>
+                          Anuluj
+                        </button>
+                        <button className="primary" type="submit">
+                          Zapisz
+                        </button>
+                      </div>
+                    </form>
                   )}
                 </div>
 
@@ -1716,14 +1789,175 @@ export default function CRMContactCardPage() {
           background: #f7f7f8;
           display: grid;
           gap: 22px;
+          grid-auto-rows: max-content;
           padding: 18px 22px 40px;
+        }
+        .crmMainColumn > * {
+          min-height: min-content;
         }
         .crmComposer {
           background: #ffffff;
           border: 1px solid #e3e6ea;
           border-radius: 8px;
           box-shadow: 0 1px 2px rgba(33, 35, 44, 0.06);
+          flex-shrink: 0;
           overflow: hidden;
+        }
+        .crmComposerTabs button {
+          align-items: center;
+          display: inline-flex;
+          gap: 6px;
+        }
+        .crmComposerPlaceholder {
+          background: #ffffff;
+          border: 0;
+          color: #8a8d93;
+          cursor: text;
+          display: block;
+          font: inherit;
+          font-size: 13px;
+          padding: 16px 16px 18px;
+          text-align: left;
+          width: 100%;
+        }
+        .crmComposerPlaceholder:hover {
+          background: #fafbfc;
+          color: #5b5f66;
+        }
+        .crmActivityComposer {
+          display: grid;
+          gap: 10px;
+          padding: 14px 16px 0;
+        }
+        .crmComposerRow {
+          align-items: start;
+          display: grid;
+          gap: 10px;
+          grid-template-columns: 22px minmax(0, 1fr);
+        }
+        .crmComposerRowIcon {
+          align-items: center;
+          color: #5b5f66;
+          display: flex;
+          height: 34px;
+          justify-content: center;
+        }
+        .crmComposerTitle,
+        .crmComposerWhen input,
+        .crmComposerNote {
+          background: #ffffff;
+          border: 1px solid #d5d9de;
+          border-radius: 6px;
+          color: #21232c;
+          font: inherit;
+          font-size: 13px;
+          padding: 8px 10px;
+        }
+        .crmComposerTitle {
+          font-size: 17px;
+          padding: 8px 12px;
+          width: 100%;
+        }
+        .crmComposerTitle:focus,
+        .crmComposerWhen input:focus,
+        .crmComposerNote:focus {
+          border-color: #3c61c4;
+          box-shadow: 0 0 0 3px rgba(60, 97, 196, 0.14);
+          outline: none;
+        }
+        .crmTypeSegment,
+        .crmStatusSegment {
+          border: 1px solid #d5d9de;
+          border-radius: 6px;
+          display: inline-flex;
+          flex-wrap: wrap;
+          justify-self: start;
+          overflow: hidden;
+        }
+        .crmTypeSegment button,
+        .crmStatusSegment button {
+          align-items: center;
+          background: #ffffff;
+          border: 0;
+          border-right: 1px solid #e3e6ea;
+          color: #3b3e45;
+          cursor: pointer;
+          display: inline-flex;
+          font: inherit;
+          font-size: 13px;
+          font-weight: 600;
+          gap: 6px;
+          padding: 7px 11px;
+        }
+        .crmTypeSegment button:last-child,
+        .crmStatusSegment button:last-child {
+          border-right: 0;
+        }
+        .crmTypeSegment button:hover,
+        .crmStatusSegment button:hover {
+          background: #f4f6f8;
+        }
+        .crmTypeSegment button.active,
+        .crmStatusSegment button.active {
+          background: #eaf0fc;
+          box-shadow: inset 0 0 0 1px #3c61c4;
+          color: #2b4fae;
+        }
+        .crmTypeSegment button.noContact.active {
+          background: #fdeeee;
+          box-shadow: inset 0 0 0 1px #c94a4a;
+          color: #a83434;
+        }
+        .crmStatusSegment button.active.done {
+          background: #e8f6ee;
+          box-shadow: inset 0 0 0 1px #2f9e62;
+          color: #1f7a48;
+        }
+        .crmComposerWhen {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .crmComposerWhen input[type="date"] {
+          min-width: 160px;
+        }
+        .crmComposerWhen input[type="time"] {
+          min-width: 110px;
+        }
+        .crmComposerNote {
+          background: #fff8d8;
+          border-color: #f0e2a6;
+          line-height: 1.5;
+          min-height: 92px;
+          resize: vertical;
+          width: 100%;
+        }
+        .crmComposerFooter {
+          border-top: 1px solid #e3e6ea;
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+          margin: 4px -16px 0;
+          padding: 10px 16px;
+        }
+        .crmComposerFooter button {
+          background: #ffffff;
+          border: 1px solid #d5d9de;
+          border-radius: 6px;
+          color: #21232c;
+          cursor: pointer;
+          font: inherit;
+          font-size: 13px;
+          font-weight: 600;
+          padding: 7px 14px;
+        }
+        .crmComposerFooter button.primary {
+          background: #2f9e62;
+          border-color: #2f9e62;
+          color: #ffffff;
+        }
+        .crmComposerFooter button.primary:hover {
+          background: #27875a;
         }
         .crmComposerTabs {
           border-bottom: 1px solid #e3e6ea;
