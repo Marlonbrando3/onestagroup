@@ -29,6 +29,7 @@ export type CrmContact = {
   source: string;
   lastContact: string;
   createdAt?: string;
+  hasHistory?: boolean;
 };
 
 export const crmStatuses: CrmStatus[] = [

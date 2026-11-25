@@ -1375,6 +1375,11 @@ export default function CRMPipelinePage() {
                           tabIndex={0}
                         >
                           <strong>{contact.name}</strong>
+                          {!isActivitiesLoading &&
+                          contact.hasHistory === false &&
+                          !activities.some((item) => item.contactId === contact.id) ? (
+                            <span className="crmNewLeadBadge">Nowy lead</span>
+                          ) : null}
                           <div className="crmContactInfo">
                             <span className="crmContactEuro" aria-hidden="true">
                               €
@@ -3074,6 +3079,19 @@ export default function CRMPipelinePage() {
           max-width: calc(100% - 32px);
           position: absolute;
           z-index: 3;
+        }
+
+        .crmNewLeadBadge {
+          background: #3c61c4;
+          border-radius: 999px;
+          color: #ffffff;
+          font-size: 10px;
+          font-weight: 800;
+          justify-self: start;
+          letter-spacing: 0.04em;
+          line-height: 1;
+          padding: 4px 8px;
+          text-transform: uppercase;
         }
 
         .crmContactEuro {

@@ -163,7 +163,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return handleSupabaseError(res, error);
     }
 
-    return res.status(200).json({ contacts: (data || []).map(mapContact) });
+    const rows = data || [];
+    const ids = rows.map((row) => row.id);
+    const withHistory = new Set<string>();
+    if (ids.length) {
+      const [activitiesResult, notesResult] = await Promise.all([
+        supabaseServer.from("crm_activities").select("contact_id").in("contact_id", ids),
+        supabaseServer.from("crm_notes").select("contact_id").in("contact_id", ids),
+      ]);
+      (activitiesResult.data || []).forEach((row) => withHistory.add(row.contact_id));
+      (notesResult.data || []).forEach((row) => withHistory.add(row.contact_id));
+    }
+
+    return res.status(200).json({
+      contacts: rows.map((row) => ({ ...mapContact(row), hasHistory: withHistory.has(row.id) })),
+    });
   }
 
   if (req.method === "POST") {
