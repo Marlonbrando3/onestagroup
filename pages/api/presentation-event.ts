@@ -4,8 +4,8 @@ import { supabaseServer } from "@/lib/supabaseClient";
 
 // Aktywność klienta w prezentacji /oferty/[token]: otwarcie prezentacji i otwarcie konkretnej oferty.
 // („Interesuje mnie ta oferta” zapisuje /api/presentation-interest.)
-// Te same zdarzenia w ciągu 30 minut liczymy raz (odświeżenie strony, powrót z oferty).
-const DEDUPE_MINUTES = 30;
+// Te same zdarzenia w ciągu 10 minut liczymy raz (odświeżenie strony, powrót z oferty).
+const DEDUPE_MINUTES = 10;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader("Cache-Control", "no-store");

@@ -3375,7 +3375,9 @@ export default function CRMPipelinePage() {
           position: absolute;
         }
 
+        /* „Kogut” – spokojne przenikanie niebieskiego i czerwonego, fale w obu kolorach */
         .crmPresentationSignal span:first-child {
+          animation: crmSignalSiren 2.8s ease-in-out infinite;
           background: #3c61c4;
           box-shadow: 0 0 8px 2px rgba(60, 97, 196, 0.55);
           inset: 4px;
@@ -3383,13 +3385,26 @@ export default function CRMPipelinePage() {
 
         .crmPresentationSignal span:nth-child(2),
         .crmPresentationSignal span:nth-child(3) {
-          animation: crmSignalWave 2.2s ease-out infinite;
+          animation: crmSignalWave 2.8s ease-out infinite;
           border: 2px solid rgba(60, 97, 196, 0.55);
           opacity: 0;
         }
 
         .crmPresentationSignal span:nth-child(3) {
-          animation-delay: 1.1s;
+          animation-delay: 1.4s;
+          border-color: rgba(229, 72, 77, 0.55);
+        }
+
+        @keyframes crmSignalSiren {
+          0%,
+          100% {
+            background: #3c61c4;
+            box-shadow: 0 0 8px 2px rgba(60, 97, 196, 0.55);
+          }
+          50% {
+            background: #e5484d;
+            box-shadow: 0 0 8px 2px rgba(229, 72, 77, 0.55);
+          }
         }
 
         @keyframes crmSignalWave {
