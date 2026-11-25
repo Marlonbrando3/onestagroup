@@ -2896,15 +2896,12 @@ export default function CRMPipelinePage() {
         }
 
         .crmPipelineColumnHeader.highlightProspect {
-          background: #fff3df;
+          background: #f8f2ea;
           border-bottom-color: #f2b86b;
-          box-shadow:
-            inset 3px 0 0 #f59e0b,
-            0 1px 0 rgba(255, 255, 255, 0.75);
         }
 
         .crmPipelineColumnHeader.highlightProspect span {
-          color: #9a5b00;
+          color: #8a6c45;
         }
 
         .crmPipelineColumnHeader strong {
