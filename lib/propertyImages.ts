@@ -1,6 +1,5 @@
 import { isAllowedPropertyImageUrl } from "./propertyImageSources";
 const FALLBACK_PROPERTY_IMAGE = "/placeholder.jpg";
-const PROPERTY_IMAGE_PROXY_VERSION = "2";
 
 export function propertyImageUrl(
   image: unknown,
@@ -29,17 +28,21 @@ export function propertyImageUrl(
   return fallback;
 }
 
-export function optimizedPropertyImageUrl(image: unknown): string {
+// Czy zdjęcie może iść przez optymalizację (Netlify Image CDN)? Tak dla plików lokalnych
+// i hostów z listy (lib/propertyImageSources.ts + netlify.toml). Zdjęcia z innych serwerów
+// (np. nowa agencja w feedzie) pokazujemy bez optymalizacji, prosto ze źródła — od razu, bez mrugania.
+export function isOptimizedPropertyImage(image: unknown): boolean {
   const sourceUrl = propertyImageUrl(image);
-
-  if (sourceUrl.startsWith("https://") || sourceUrl.startsWith("http://")) {
-    // Allow-listed hosts go straight to next/image (Netlify Image CDN, no function call).
-    // Anything else keeps the old proxy, which rejects it and the card falls back to a plain <img>.
-    try {
-      if (isAllowedPropertyImageUrl(new URL(sourceUrl))) return sourceUrl;
-    } catch {}
-    return `/api/property-image?url=${encodeURIComponent(sourceUrl)}&v=${PROPERTY_IMAGE_PROXY_VERSION}`;
+  if (!(sourceUrl.startsWith("https://") || sourceUrl.startsWith("http://"))) return true;
+  try {
+    return isAllowedPropertyImageUrl(new URL(sourceUrl));
+  } catch {
+    return false;
   }
+}
 
-  return sourceUrl;
+export function optimizedPropertyImageUrl(image: unknown): string {
+  // Hosty z listy idą do next/image (Netlify Image CDN), pozostałe zwracamy bez zmian —
+  // komponent ustawia wtedy `unoptimized` (patrz isOptimizedPropertyImage).
+  return propertyImageUrl(image);
 }

@@ -35,7 +35,7 @@ import {
 } from "@/lib/cbTopTracking";
 import { subscribeToCookieYesConsent } from "@/lib/cookieConsent";
 import { propertyTypeLabel } from "@/lib/i18n";
-import { optimizedPropertyImageUrl } from "@/lib/propertyImages";
+import { isOptimizedPropertyImage, optimizedPropertyImageUrl } from "@/lib/propertyImages";
 import { getCoastLabelFromProvince, getCountryLabel } from "@/lib/regionMap";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { validTitleOrEmpty } from "@/lib/titlesDictionary";
@@ -208,6 +208,7 @@ function PropertyCard({
           <Image
             fill
             src={displayImageUrl(images[0])}
+            unoptimized={!isOptimizedPropertyImage(displayImageUrl(images[0]))}
             alt={`${title} — zdjęcie nieruchomości`}
             sizes="(max-width: 767px) 92vw, (max-width: 1199px) 44vw, 390px"
             quality={70}
@@ -535,6 +536,7 @@ function PropertyModal({
               key={activeImage}
               fill
               src={displayImageUrl(activeImage)}
+              unoptimized={!isOptimizedPropertyImage(displayImageUrl(activeImage))}
               alt={`${title} — zdjęcie ${imageIndex + 1}`}
               sizes="(max-width: 1023px) 100vw, 58vw"
               quality={75}
@@ -619,6 +621,7 @@ function PropertyModal({
                       <Image
                         fill
                         src={displayImageUrl(image)}
+                        unoptimized={!isOptimizedPropertyImage(displayImageUrl(image))}
                         alt=""
                         sizes="92px"
                         quality={70}

@@ -5,7 +5,7 @@ import { FiMapPin } from "react-icons/fi";
 import Link from "next/link";
 import Image from "next/image";
 import { localePath, SiteLocale } from "@/lib/i18n";
-import { optimizedPropertyImageUrl } from "@/lib/propertyImages";
+import { isOptimizedPropertyImage, optimizedPropertyImageUrl } from "@/lib/propertyImages";
 
 const OPTIMIZED_IMAGE_TIMEOUT_MS = 8_000;
 
@@ -347,7 +347,7 @@ export default function ResultsSlider({
                     onLoadCapture={() => markSlideLoaded(activeSlide.key)}
                     onLoad={() => markSlideLoaded(activeSlide.key)}
                     onError={() => handleSlideError(activeSlide.key)}
-                    unoptimized={directSlides.has(activeSlide.key)}
+                    unoptimized={directSlides.has(activeSlide.key) || !isOptimizedPropertyImage(activeSlide.url)}
                   />
                 )}
                 <span className="absolute inset-0 bg-gradient-to-t from-[#111827]/95 via-[#111827]/70 to-[#111827]/35" />
@@ -393,7 +393,7 @@ export default function ResultsSlider({
                   onLoadCapture={() => markSlideLoaded(activeSlide.key)}
                   onLoad={() => markSlideLoaded(activeSlide.key)}
                   onError={() => handleSlideError(activeSlide.key)}
-                  unoptimized={directSlides.has(activeSlide.key)}
+                  unoptimized={directSlides.has(activeSlide.key) || !isOptimizedPropertyImage(activeSlide.url)}
                   {...(imagePriority && index === 0
                     ? { preload: true }
                     : { loading: "lazy" as const })}
@@ -425,7 +425,7 @@ export default function ResultsSlider({
                   onLoadCapture={() => markSlideLoaded(nextSlide.key)}
                   onLoad={() => markSlideLoaded(nextSlide.key)}
                   onError={() => handleSlideError(nextSlide.key)}
-                  unoptimized={directSlides.has(nextSlide.key)}
+                  unoptimized={directSlides.has(nextSlide.key) || !isOptimizedPropertyImage(nextSlide.url)}
                 />
               </div>
             )}

@@ -7,7 +7,7 @@ import { BiArea } from 'react-icons/bi';
 import { HomeMontserratSans, HomePlayfairSans } from '@/fonts/homeFonts';
 import { AgentOffer } from '@/lib/agentOffers';
 import { LEAD_BUDGETS, getLeadBudget } from '@/lib/leadforms';
-import { optimizedPropertyImageUrl } from '@/lib/propertyImages';
+import { isOptimizedPropertyImage, optimizedPropertyImageUrl } from '@/lib/propertyImages';
 import { propertyTypeLabel } from '@/lib/i18n';
 import { validTitleOrEmpty } from '@/lib/titlesDictionary';
 import styles from '@/styles/leadforms.module.css';
@@ -27,7 +27,7 @@ function OfferCard({ offer, index, onChoose }: { offer: AgentOffer; index: numbe
   return <article className={styles.card}>
     <div className={styles.gallery} onTouchStart={e => { startX.current = e.touches[0].clientX; }} onTouchEnd={e => { if (startX.current !== null && images.length > 1 && Math.abs(e.changedTouches[0].clientX - startX.current) > 45) move(e.changedTouches[0].clientX < startX.current ? 1 : -1); startX.current = null; }}>
       <button className={styles.photoButton} onClick={() => onChoose(offer)} aria-label={`Zapytaj o: ${title(offer)}`} aria-haspopup="dialog">
-        {images.length && !failed ? <Image fill src={optimizedPropertyImageUrl(images[photo])} alt={`${title(offer)} — zdjęcie ${photo + 1}`} sizes="(max-width: 650px) 94vw, (max-width: 1000px) 46vw, 380px" onError={() => setFailed(true)} className={styles.propertyImage} /> : <span className={styles.imageFallback}>Zdjęcia dostępne u doradcy</span>}
+        {images.length && !failed ? <Image fill unoptimized={!isOptimizedPropertyImage(images[photo])} src={optimizedPropertyImageUrl(images[photo])} alt={`${title(offer)} — zdjęcie ${photo + 1}`} sizes="(max-width: 650px) 94vw, (max-width: 1000px) 46vw, 380px" onError={() => setFailed(true)} className={styles.propertyImage} /> : <span className={styles.imageFallback}>Zdjęcia dostępne u doradcy</span>}
       </button>
       <span className={styles.badge}>POLECANE · {String(index + 1).padStart(2, '0')}</span>
       {images.length > 1 && <><button className={`${styles.arrow} ${styles.prev}`} onClick={() => move(-1)} aria-label="Poprzednie zdjęcie"><FiChevronLeft /></button><button className={`${styles.arrow} ${styles.next}`} onClick={() => move(1)} aria-label="Następne zdjęcie"><FiChevronRight /></button><span className={styles.photoCount}>{photo + 1} / {images.length}</span></>}

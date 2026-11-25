@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import {
+  isOptimizedPropertyImage,
   optimizedPropertyImageUrl,
   propertyImageUrl,
 } from "@/lib/propertyImages";
@@ -46,6 +47,7 @@ export default function PropertyDetailImage({
       fetchPriority={main ? "high" : undefined}
       className={className}
       onClick={onClick}
+      unoptimized={!isOptimizedPropertyImage(image)}
       onError={() => setDirect(true)}
     />
   );
