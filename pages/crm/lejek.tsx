@@ -103,6 +103,14 @@ function formatActivityShortDate(activity: CrmActivity) {
   return `${activity.dueDate < today ? "Zaległe: " : ""}${date}${time}`;
 }
 
+// Buźka w tytule okna „Zadania na dziś” zależna od liczby zadań
+function getDailyTasksMood(count: number) {
+  if (count === 0) return "😎";
+  if (count <= 7) return "🫡";
+  if (count <= 12) return "😧";
+  return "😱";
+}
+
 function activityTypeGlyph(type: CrmActivityType) {
   const glyphs: Record<string, string> = {
     "Zadzwoń": "☎",
@@ -1641,7 +1649,10 @@ export default function CRMPipelinePage() {
                     }).format(new Date())}
                   </p>
                   <h2 id="crm-daily-tasks-title">
-                    Twoje zadania na dziś ({dailyTasks.length})
+                    Twoje zadania na dziś ({dailyTasks.length}){" "}
+                    <span className="crmDailyTasksMood" aria-hidden="true">
+                      {getDailyTasksMood(dailyTasks.length)}
+                    </span>
                   </h2>
                 </div>
                 <button
@@ -3729,6 +3740,12 @@ export default function CRMPipelinePage() {
 
         .crmDailyTasks {
           width: min(600px, 100%);
+        }
+
+        .crmDailyTasksMood {
+          font-size: 22px;
+          line-height: 1;
+          vertical-align: -2px;
         }
 
         .crmDailyTasks header p {
