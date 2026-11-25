@@ -2768,11 +2768,11 @@ export default function CRMPipelinePage() {
           align-items: stretch;
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 4px;
           min-height: 0;
           overflow-x: hidden;
           overflow-y: auto;
-          padding: 6px 5px;
+          padding: 4px;
         }
 
         .crmPipelineCards::-webkit-scrollbar {
@@ -2839,9 +2839,9 @@ export default function CRMPipelinePage() {
           display: grid;
           flex: 0 0 auto;
           gap: 4px;
-          min-height: 64px;
+          min-height: 58px;
           min-width: 0;
-          padding: 10px 11px 34px;
+          padding: 8px 10px 31px;
           position: relative;
           text-align: left;
           transition:
@@ -2889,14 +2889,14 @@ export default function CRMPipelinePage() {
         }
 
         .crmCardActivity {
-          bottom: 9px;
+          bottom: 8px;
           position: absolute;
-          right: 9px;
+          right: 8px;
         }
 
         .crmContactInfo {
           align-items: center;
-          bottom: 9px;
+          bottom: 8px;
           display: flex;
           gap: 6px;
           left: 10px;
