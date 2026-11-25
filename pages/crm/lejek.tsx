@@ -1218,6 +1218,20 @@ export default function CRMPipelinePage() {
                 probability === null || typeof probability === "undefined"
                   ? "brak"
                   : `${probability}%`;
+              const columnBudget = column.contacts.reduce(
+                (sum, contact) => sum + (contact.maxBudget || 0),
+                0,
+              );
+              const columnCount = column.contacts.length;
+              const columnCountLabel = `${columnCount} ${
+                columnCount === 1
+                  ? "klient"
+                  : columnCount % 10 >= 2 &&
+                      columnCount % 10 <= 4 &&
+                      (columnCount % 100 < 12 || columnCount % 100 > 14)
+                    ? "klienci"
+                    : "klientów"
+              }`;
 
               return (
                 <section
@@ -1235,7 +1249,14 @@ export default function CRMPipelinePage() {
                     }`}
                   >
                     <strong title={column.status}>{column.status}</strong>
-                    <span title={probabilityLabel}>⚖ {probabilityLabel}</span>
+                    <span>
+                      {columnBudget ? crmBudgetFormatter.format(columnBudget) : "0 €"}
+                      {" · "}
+                      {columnCountLabel}
+                    </span>
+                    <small title="Prawdopodobieństwo zakupu na tym etapie">
+                      ⚖ {probabilityLabel}
+                    </small>
                   </div>
                   <div className="crmPipelineCards">
                     {column.contacts.map((contact) => {
@@ -2706,9 +2727,9 @@ export default function CRMPipelinePage() {
           border-bottom: 1px solid #dfe4ea;
           box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
           display: grid;
-          gap: 4px;
+          gap: 3px;
           min-width: 0;
-          padding: 8px 8px 9px;
+          padding: 10px 10px 10px;
           position: sticky;
           top: 0;
           z-index: 4;
@@ -2727,24 +2748,35 @@ export default function CRMPipelinePage() {
         }
 
         .crmPipelineColumnHeader strong {
+          color: #21232c;
           display: -webkit-box;
-          font-size: 13px;
-          line-height: 1.15;
-          min-height: 30px;
+          font-size: 15px;
+          font-weight: 700;
+          line-height: 1.2;
+          min-height: 36px;
           overflow: hidden;
           overflow-wrap: anywhere;
           -webkit-box-orient: vertical;
           -webkit-line-clamp: 2;
         }
 
-        .crmPipelineColumnHeader span {
+        .crmPipelineColumnHeader span,
+        .crmPipelineColumnHeader small {
           align-items: center;
-          color: #4b5563;
+          color: #5b5f66;
           display: flex;
-          font-size: 11px;
-          font-weight: 700;
+          font-size: 12px;
+          font-weight: 600;
           min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
           white-space: nowrap;
+        }
+
+        .crmPipelineColumnHeader small {
+          color: #8a8e94;
+          font-size: 11px;
+          font-weight: 600;
         }
 
         .crmPipelineCards {
