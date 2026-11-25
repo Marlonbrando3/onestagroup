@@ -28,16 +28,22 @@ export const crmGreetings: CrmGreeting[] = [
 
 const storageKey = "crmGreetingIndex";
 
-// Jedno losowe powitanie na sesję przeglądarki (nowe po ponownym zalogowaniu / nowej karcie).
+// Nowe losowe powitanie przy każdym wejściu na lejek (nigdy dwa razy to samo pod rząd).
 export function pickCrmGreeting(): CrmGreeting {
+  let previous = -1;
   try {
-    const stored = window.sessionStorage.getItem(storageKey);
-    const index = stored === null ? NaN : Number(stored);
-    if (Number.isInteger(index) && crmGreetings[index]) return crmGreetings[index];
-    const next = Math.floor(Math.random() * crmGreetings.length);
-    window.sessionStorage.setItem(storageKey, String(next));
-    return crmGreetings[next];
+    previous = Number(window.sessionStorage.getItem(storageKey) ?? -1);
   } catch {
-    return crmGreetings[Math.floor(Math.random() * crmGreetings.length)];
+    previous = -1;
   }
+  let next = Math.floor(Math.random() * crmGreetings.length);
+  if (crmGreetings.length > 1 && next === previous) {
+    next = (next + 1 + Math.floor(Math.random() * (crmGreetings.length - 1))) % crmGreetings.length;
+  }
+  try {
+    window.sessionStorage.setItem(storageKey, String(next));
+  } catch {
+    // pamięć przeglądarki niedostępna – nic nie szkodzi
+  }
+  return crmGreetings[next];
 }
