@@ -973,6 +973,11 @@ export default function CRMPipelinePage() {
     setActivities((current) =>
       current.map((item) => (item.id === activity.id ? result.activity : item)),
     );
+    if (nextStatus === "done") {
+      // Po odhaczeniu zadania od razu proponujemy zaplanowanie kolejnego.
+      openAddActivityPopup(activity.contactId);
+      return;
+    }
     setOpenActivityMode("details");
     setOpenActivityContactId(activity.contactId);
   }
