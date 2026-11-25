@@ -203,6 +203,9 @@ export default function CRMPipelinePage() {
   const [deletePipelineCountdown, setDeletePipelineCountdown] = useState(0);
   const [isDeletingPipeline, setIsDeletingPipeline] = useState(false);
   const [contactSearchQuery, setContactSearchQuery] = useState("");
+  const [contactFilter, setContactFilter] = useState<
+    "all" | "today" | "overdue" | "noTasks"
+  >("all");
   const [isContactSearchOpen, setIsContactSearchOpen] = useState(false);
   const [highlightedContactIndex, setHighlightedContactIndex] = useState(0);
   const didDrag = useRef(false);
@@ -231,9 +234,36 @@ export default function CRMPipelinePage() {
     !activePipeline.isDefault &&
     normalizeCrmEmail(activePipeline.ownerEmail) === currentUserEmail;
 
+  const plannedByContact = useMemo(() => {
+    const grouped = new Map<string, CrmActivity[]>();
+    activities.forEach((activity) => {
+      if (activity.status !== "planned") return;
+      grouped.set(activity.contactId, [
+        ...(grouped.get(activity.contactId) || []),
+        activity,
+      ]);
+    });
+    return grouped;
+  }, [activities]);
+
+  function matchesContactFilter(contact: CrmContact) {
+    if (contactFilter === "all") return true;
+    const planned = plannedByContact.get(contact.id) || [];
+    if (contactFilter === "noTasks") return planned.length === 0;
+    if (contactFilter === "today") {
+      return planned.some((activity) => activity.dueDate === today);
+    }
+    if (contactFilter === "overdue") {
+      return planned.some(
+        (activity) => Boolean(activity.dueDate) && activity.dueDate! < today,
+      );
+    }
+    return true;
+  }
+
   const columns = pipelineStages.map((status) => {
     const stageContacts = contacts.filter(
-      (contact) => contact.status === status,
+      (contact) => contact.status === status && matchesContactFilter(contact),
     );
     return {
       status,
@@ -1152,6 +1182,20 @@ export default function CRMPipelinePage() {
           >
             Szansa sprzedaży
           </button>
+          <label className="crmPipelineFilter">
+            <span>Filtr</span>
+            <select
+              value={contactFilter}
+              onChange={(event) =>
+                setContactFilter(event.target.value as typeof contactFilter)
+              }
+            >
+              <option value="all">Wszystkie szanse w lejku</option>
+              <option value="today">Działania na dzisiaj</option>
+              <option value="overdue">Zaległe działania</option>
+              <option value="noTasks">Klienci bez zaplanowanych działań</option>
+            </select>
+          </label>
           {canEditActivePipeline ? (
             <>
               <button
@@ -1886,12 +1930,26 @@ export default function CRMPipelinePage() {
 
         .crmPipelineTopbar {
           align-items: center;
-          background: #f4f6f8;
-          border-radius: 8px;
+          background: transparent;
           display: flex;
           gap: 10px;
           min-height: 38px;
-          padding: 6px 8px;
+          padding: 0;
+        }
+
+        .crmPipelineTopbar select {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235b5f66' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+          background-position: right 10px center;
+          background-repeat: no-repeat;
+          cursor: pointer;
+        }
+
+        .crmPipelineFilter {
+          margin-left: auto !important;
+        }
+
+        .crmPipelineFilter select {
+          min-width: 260px;
         }
 
         .crmPipelineTopbar label {
