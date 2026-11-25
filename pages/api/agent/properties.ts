@@ -55,6 +55,9 @@ export default async function handler(
   const bedsMin = queryNumber(req.query.bedsMin);
   const priceMin = queryNumber(req.query.priceMin);
   const priceMax = queryNumber(req.query.priceMax);
+  // Maks. odległość do morza (m) — dane ma tylko rynek pierwotny w Hiszpanii (REDSP);
+  // oferty bez tej informacji przy aktywnym filtrze są pomijane.
+  const seaMax = queryNumber(req.query.seaMax);
   const sort = queryText(req.query.sort) || "updated_desc";
 
   let query = supabaseServer
@@ -93,6 +96,7 @@ export default async function handler(
   if (bedsMin !== null && bedsMin > 0) query = query.gte("beds", bedsMin);
   if (priceMin !== null && priceMin >= 0) query = query.gte("price", priceMin);
   if (priceMax !== null && priceMax > 0) query = query.lte("price", priceMax);
+  if (seaMax !== null && seaMax > 0) query = query.lte("distance_to_sea_m", seaMax);
 
   if (sort === "price_asc") {
     query = query.order("price", { ascending: true, nullsFirst: false });

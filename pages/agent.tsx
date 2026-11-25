@@ -40,6 +40,7 @@ type Filters = {
   bedsMin: string;
   priceMin: string;
   priceMax: string;
+  seaMax: string;
   sort: string;
 };
 
@@ -54,6 +55,7 @@ const emptyFilters: Filters = {
   bedsMin: "",
   priceMin: "",
   priceMax: "",
+  seaMax: "",
   sort: "updated_desc",
 };
 
@@ -331,7 +333,12 @@ export default function AgentPage() {
                 <select value={filters.country} onChange={(event) => setFilters((current) => ({ ...current, country: event.target.value }))} className="agentFilterInput">
                   <option value="all">Wszystkie kraje</option><option value="hiszpania">Hiszpania</option><option value="cypr">Cypr</option>
                 </select>
-                <input value={filters.ref} onChange={(event) => setFilters((current) => ({ ...current, ref: event.target.value }))} placeholder="Nr ref., np. SP1526 lub MTI-3118" className="agentFilterInput" aria-label="Numer referencyjny oferty" />
+                <div className="relative">
+                  <span className="pointer-events-none absolute -top-[15px] left-1 text-[9px] font-bold text-[#9b7a36]">
+                    * dotyczy tylko rynku pierwotnego w Hiszpanii
+                  </span>
+                  <input type="number" min="0" step="50" value={filters.seaMax} onChange={(event) => setFilters((current) => ({ ...current, seaMax: event.target.value }))} placeholder="Do morza max (m) *" className="agentFilterInput" aria-label="Maksymalna odległość do morza w metrach (tylko rynek pierwotny w Hiszpanii)" />
+                </div>
                 <LocationMultiSelect
                   coasts={coasts}
                   regions={filters.regions}
@@ -353,9 +360,12 @@ export default function AgentPage() {
                 <input type="number" min="0" value={filters.priceMin} onChange={(event) => setFilters((current) => ({ ...current, priceMin: event.target.value }))} placeholder="Cena od €" className="agentFilterInput" />
                 <input type="number" min="0" value={filters.priceMax} onChange={(event) => setFilters((current) => ({ ...current, priceMax: event.target.value }))} placeholder="Cena do €" className="agentFilterInput" />
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button type="submit" className="rounded-full bg-[#182334] px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-white transition hover:bg-[#b8954c]">Zastosuj filtry</button>
-                <button type="button" onClick={clearFilters} className="rounded-full border border-[#d7cbbc] bg-white px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#526173] transition hover:border-[#182334]">Wyczyść</button>
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap gap-2">
+                  <button type="submit" className="rounded-full bg-[#182334] px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-white transition hover:bg-[#b8954c]">Zastosuj filtry</button>
+                  <button type="button" onClick={clearFilters} className="rounded-full border border-[#d7cbbc] bg-white px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#526173] transition hover:border-[#182334]">Wyczyść</button>
+                </div>
+                <input value={filters.ref} onChange={(event) => setFilters((current) => ({ ...current, ref: event.target.value }))} placeholder="Nr ref., np. SP1526 lub MTI-3118" className="agentFilterInput w-full sm:!w-[300px]" aria-label="Numer referencyjny oferty" />
               </div>
             </form>
 
