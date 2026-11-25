@@ -1124,9 +1124,11 @@ export default function CRMContactCardPage() {
         .crmContactPage {
           background: #ffffff;
           color: #21232c;
-          display: grid;
+          display: flex;
+          flex-direction: column;
           font-size: 13px;
-          min-height: 100vh;
+          height: 100vh;
+          overflow: hidden;
         }
         .crmMuted {
           color: #747678;
@@ -1143,9 +1145,9 @@ export default function CRMContactCardPage() {
           border-bottom: 1px solid #e3e6ea;
           display: grid;
           gap: 10px;
+          flex: 0 0 auto;
           padding: 14px 20px 10px;
-          position: sticky;
-          top: 0;
+          position: relative;
           z-index: 30;
         }
         .crmDealTitleRow {
@@ -1266,13 +1268,39 @@ export default function CRMContactCardPage() {
 
         /* Layout */
         .crmContactGrid {
-          align-items: start;
           display: grid;
+          flex: 1 1 auto;
           grid-template-columns: 340px minmax(0, 1fr);
+          min-height: 0;
+        }
+        .crmSidebar,
+        .crmMainColumn {
+          min-height: 0;
+          overflow-y: auto;
+          overscroll-behavior: contain;
         }
         .crmSidebar {
           border-right: 1px solid #e3e6ea;
-          min-height: calc(100vh - 120px);
+        }
+        .crmSidebar::-webkit-scrollbar,
+        .crmMainColumn::-webkit-scrollbar {
+          width: 4px;
+        }
+        .crmSidebar::-webkit-scrollbar-track,
+        .crmMainColumn::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .crmSidebar::-webkit-scrollbar-thumb,
+        .crmMainColumn::-webkit-scrollbar-thumb {
+          background: #c7cfd8;
+          border-radius: 999px;
+        }
+        @supports (-moz-appearance: none) {
+          .crmSidebar,
+          .crmMainColumn {
+            scrollbar-color: #c7cfd8 transparent;
+            scrollbar-width: thin;
+          }
         }
         .crmSideSection {
           border-bottom: 1px solid #e3e6ea;
@@ -1408,10 +1436,10 @@ export default function CRMContactCardPage() {
 
         /* Main column */
         .crmMainColumn {
+          align-content: start;
           background: #f7f7f8;
           display: grid;
           gap: 22px;
-          min-height: calc(100vh - 120px);
           padding: 18px 22px 40px;
         }
         .crmComposer {
@@ -1813,12 +1841,19 @@ export default function CRMContactCardPage() {
         }
 
         @media (max-width: 1000px) {
+          .crmContactPage {
+            height: auto;
+            overflow: visible;
+          }
           .crmContactGrid {
             grid-template-columns: 1fr;
           }
+          .crmSidebar,
+          .crmMainColumn {
+            overflow: visible;
+          }
           .crmSidebar {
             border-right: 0;
-            min-height: 0;
           }
           .crmDealTitleRow {
             align-items: start;
