@@ -11,6 +11,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import AgentHeader from "@/components/agent/AgentHeader";
+import CrmContactPicker, { type PickedCrmContact } from "@/components/agent/CrmContactPicker";
 import PropertyCard from "@/components/SearchEngine/PropertyCard";
 import { HomeMontserratSans } from "@/fonts/homeFonts";
 import type { AgentOffer } from "@/lib/agentOffers";
@@ -38,6 +39,7 @@ export default function PresentationEditor({
   const [presentationName, setPresentationName] = useState("");
   const [clientSalutation, setClientSalutation] = useState<"" | "pani" | "pan" | "panstwo">("");
   const [clientName, setClientName] = useState("");
+  const [crmContact, setCrmContact] = useState<PickedCrmContact | null>(null);
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
@@ -110,6 +112,11 @@ export default function PresentationEditor({
           setPresentationName(presentation?.presentation_name || "");
           setClientSalutation(presentation?.client_salutation || "");
           setClientName(presentation?.client_name || "");
+          setCrmContact(
+            presentation?.crm_contact?.id
+              ? { id: presentation.crm_contact.id, name: presentation.crm_contact.name || "Klient" }
+              : null,
+          );
           setContactName(presentation?.contact_name || presentation?.agent_name || "");
           setContactEmail(presentation?.contact_email || presentation?.agent_email || "");
           setContactPhone(presentation?.contact_phone || "");
@@ -173,6 +180,7 @@ export default function PresentationEditor({
             presentationName,
             clientSalutation,
             clientName,
+            crmContactId: crmContact?.id || null,
             contactName,
             contactEmail,
             contactPhone,
@@ -342,6 +350,15 @@ export default function PresentationEditor({
                   );
                 })()}
               </div>
+
+              <CrmContactPicker
+                accessToken={accessToken}
+                value={crmContact}
+                onChange={(value) => {
+                  setCrmContact(value);
+                  setGeneratedUrl("");
+                }}
+              />
 
               <div className="my-1 border-t border-[#e8e0d5]" />
               <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9b7a36]">Agent prowadzący</p>

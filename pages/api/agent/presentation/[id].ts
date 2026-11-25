@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { authenticateAgent } from "@/lib/agentAuthServer";
+import { resolveCrmContactLink } from "@/lib/crmContactLink";
 import type { AgentOffer } from "@/lib/agentOffers";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { CBTOP_SOURCE_PRESENTATION_TOKEN } from "@/lib/cbTopOffers";
@@ -35,7 +36,7 @@ export default async function handler(
   const { data: presentation, error: presentationError } = await supabaseServer
     .from("agent_offer_lists")
     .select(
-      "id,public_token,agent_user_id,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at",
+      "id,public_token,agent_user_id,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,crm_contact:crm_contacts(id,name)",
     )
     .eq("id", id)
     .is("deleted_at", null)
@@ -89,6 +90,17 @@ export default async function handler(
   if (!presentationName) {
     return res.status(400).json({ error: "Podaj nazwę prezentacji" });
   }
+  // Bez zmiany powiązania (np. edycja prezentacji kolegi z klientem z jego lejka) nie sprawdzamy dostępu.
+  const currentCrmContactId = (presentation as any).crm_contact?.id || null;
+  const requestedCrmContactId =
+    typeof req.body?.crmContactId === "undefined" ? undefined : req.body.crmContactId || null;
+  const crmLink = await resolveCrmContactLink(
+    auth.agent.email,
+    requestedCrmContactId === currentCrmContactId ? undefined : requestedCrmContactId,
+  );
+  if (!crmLink.ok) {
+    return res.status(400).json({ error: crmLink.error });
+  }
   if (!contactName || !contactEmail || !contactPhone) {
     return res.status(400).json({
       error: "Uzupełnij imię i nazwisko, e-mail oraz numer telefonu",
@@ -134,10 +146,11 @@ export default async function handler(
       client_name: clientName,
       offers: orderedOffers,
       updated_at: updatedAt,
+      ...(crmLink.contactId !== undefined ? { crm_contact_id: crmLink.contactId } : {}),
     })
     .eq("id", id)
     .select(
-      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at",
+      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,crm_contact:crm_contacts(id,name)",
     )
     .single();
 

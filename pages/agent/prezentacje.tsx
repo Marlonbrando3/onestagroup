@@ -33,6 +33,7 @@ type PresentationSummary = {
   created_at: string;
   updated_at: string;
   offersCount: number;
+  crm_contact?: { id: string; name: string | null } | null;
 };
 
 function formatDate(value: string) {
@@ -240,6 +241,18 @@ export default function AgentPresentationsPage() {
                         <p className="mt-1 truncate text-[10px] font-semibold text-slate-500">
                           {presentation.contact_name || presentation.agent_name || "Onesta Group"}
                         </p>
+                        {presentation.crm_contact?.id ? (
+                          <a
+                            className="mt-1.5 inline-flex max-w-full items-center gap-1.5 truncate rounded-full bg-[#eef6f3] px-2.5 py-1 text-[10px] font-extrabold text-[#155149] hover:underline"
+                            href={`/crm/kontakt/${presentation.crm_contact.id}`}
+                            onClick={(event) => event.stopPropagation()}
+                            rel="noreferrer"
+                            target="_blank"
+                            title="Klient w CRM"
+                          >
+                            CRM: {presentation.crm_contact.name || "Klient"}
+                          </a>
+                        ) : null}
                       </div>
                     </div>
                     <div className="shrink-0 rounded-xl bg-[#f4efe6] px-3 py-2 text-center">

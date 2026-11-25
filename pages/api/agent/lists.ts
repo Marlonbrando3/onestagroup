@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { authenticateAgent } from "@/lib/agentAuthServer";
+import { resolveCrmContactLink } from "@/lib/crmContactLink";
 import { AGENT_OFFER_COLUMNS, AgentOffer } from "@/lib/agentOffers";
 import { supabaseServer } from "@/lib/supabaseClient";
 
@@ -37,7 +38,7 @@ export default async function handler(
     const { data, error } = await supabaseServer
       .from("agent_offer_lists")
       .select(
-        "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at",
+        "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,crm_contact:crm_contacts(id,name)",
       )
       .is("deleted_at", null)
       .order("updated_at", { ascending: false });
@@ -69,6 +70,10 @@ export default async function handler(
 
   if (!presentationName) {
     return res.status(400).json({ error: "Podaj nazwę prezentacji" });
+  }
+  const crmLink = await resolveCrmContactLink(auth.agent.email, req.body?.crmContactId);
+  if (!crmLink.ok) {
+    return res.status(400).json({ error: crmLink.error });
   }
   if (!contactName || !contactEmail || !contactPhone) {
     return res.status(400).json({
@@ -136,6 +141,7 @@ export default async function handler(
         client_salutation: clientSalutation,
         client_name: clientName,
         offers: orderedOffers,
+        ...(crmLink.contactId !== undefined ? { crm_contact_id: crmLink.contactId } : {}),
       })
       .select("id,public_token,created_at")
       .single();
