@@ -20,7 +20,7 @@ export const crmUsers: CrmUser[] = [
   {
     email: "karolina@fenomen.nieruchomosci.pl",
     label: "Karolina Bakowicz",
-    role: "user",
+    role: "admin",
   },
 ];
 
@@ -36,7 +36,7 @@ export function getCrmUser(email?: string | null) {
 }
 
 export function isCrmAdmin(email?: string | null) {
-  return normalizeCrmEmail(email) === normalizeCrmEmail(crmAdminEmail);
+  return getCrmUser(email)?.role === "admin";
 }
 
 export function canAccessCrm(email?: string | null) {
