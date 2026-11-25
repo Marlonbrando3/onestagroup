@@ -81,6 +81,31 @@ function formatActivityDate(activity: CrmActivity) {
   return activity.dueTime ? `${date}, ${activity.dueTime.slice(0, 5)}` : date;
 }
 
+function formatActivityShortDate(activity: CrmActivity) {
+  if (!activity.dueDate) return "Bez terminu";
+  const time = activity.dueTime ? `, ${activity.dueTime.slice(0, 5)}` : "";
+  if (activity.dueDate === today) return `Dzisiaj${time}`;
+  const tomorrow = new Date(`${today}T12:00:00`);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  if (activity.dueDate === tomorrow.toISOString().slice(0, 10)) return `Jutro${time}`;
+  const date = new Intl.DateTimeFormat("pl-PL", { day: "numeric", month: "short" }).format(
+    new Date(activity.dueDate),
+  );
+  return `${activity.dueDate < today ? "Zaległe: " : ""}${date}${time}`;
+}
+
+function activityTypeGlyph(type: CrmActivityType) {
+  const glyphs: Record<string, string> = {
+    "Zadzwoń": "☎",
+    "Wyślij oferty": "✉",
+    "Follow up": "↻",
+    Spotkanie: "👥",
+    Prezentacja: "▶",
+    "Brak kontaktu": "✕",
+  };
+  return glyphs[type] || "•";
+}
+
 function formatContactInfoValue(value: string | number) {
   if (!value) return "Brak";
   return String(value);
@@ -88,12 +113,12 @@ function formatContactInfoValue(value: string | number) {
 
 function getActivityPopupPosition(element: HTMLElement) {
   const rect = element.getBoundingClientRect();
-  const popupWidth = Math.min(520, Math.max(380, window.innerWidth - 140));
+  const popupWidth = Math.min(340, window.innerWidth - 32);
   const gap = 12;
   const left =
     rect.right + gap + popupWidth <= window.innerWidth - 16
       ? rect.right + gap
-      : Math.max(104, rect.left - popupWidth - gap);
+      : Math.max(16, rect.left - popupWidth - gap);
   const top = Math.min(Math.max(18, rect.top - 12), window.innerHeight - 128);
 
   return { left, top };
@@ -250,6 +275,49 @@ export default function CRMPipelinePage() {
 
     return new Map(entries as [string, CrmActivity][]);
   }, [activities]);
+
+  const plannedActivitiesByContactId = useMemo(() => {
+    const grouped = new Map<string, CrmActivity[]>();
+    activities.forEach((activity) => {
+      if (activity.status !== "planned") return;
+      grouped.set(activity.contactId, [
+        ...(grouped.get(activity.contactId) || []),
+        activity,
+      ]);
+    });
+    grouped.forEach((items, key) => grouped.set(key, sortActivitiesByDueDate(items)));
+    return grouped;
+  }, [activities]);
+
+  const addActivityContact = openActivityMode === "add"
+    ? contacts.find((contact) => contact.id === openActivityContactId) || null
+    : null;
+
+  useEffect(() => {
+    if (!openActivityContactId || openActivityMode !== "details") return;
+
+    function closeTaskPopoverOnOutsideClick(event: PointerEvent) {
+      const target = event.target;
+      if (
+        target instanceof Element &&
+        (target.closest(".crmTaskPopover") || target.closest(".crmCardActivity"))
+      ) {
+        return;
+      }
+      setOpenActivityContactId("");
+    }
+
+    function closeTaskPopoverOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpenActivityContactId("");
+    }
+
+    document.addEventListener("pointerdown", closeTaskPopoverOnOutsideClick);
+    document.addEventListener("keydown", closeTaskPopoverOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeTaskPopoverOnOutsideClick);
+      document.removeEventListener("keydown", closeTaskPopoverOnEscape);
+    };
+  }, [openActivityContactId, openActivityMode]);
 
   useEffect(() => {
     let ignore = false;
@@ -800,26 +868,6 @@ export default function CRMPipelinePage() {
     setOpenActivityMode("details");
   }
 
-  function toggleMissingActivityPopup(
-    event: MouseEvent<HTMLElement>,
-    contactId: string,
-  ) {
-    setActivityPopupPosition(getActivityPopupPosition(event.currentTarget));
-    setActivityFormError("");
-    setActivityForm({
-      type: "Zadzwoń",
-      title: "Zadzwoń",
-      dueDate: today,
-      dueTime: "",
-      note: "",
-      completed: false,
-    });
-    setOpenActivityMode("add");
-    setOpenActivityContactId((current) =>
-      current === contactId && openActivityMode === "add" ? "" : contactId,
-    );
-  }
-
   function openAddActivityPopup(contactId: string) {
     setActivityFormError("");
     setActivityForm({
@@ -922,32 +970,11 @@ export default function CRMPipelinePage() {
       return;
     }
 
-    const updatedActivities = activities.map((item) =>
-      item.id === activity.id ? result.activity : item,
+    setActivities((current) =>
+      current.map((item) => (item.id === activity.id ? result.activity : item)),
     );
-    setActivities(updatedActivities);
-    if (nextStatus === "done") {
-      const hasMorePlannedActivities = updatedActivities.some(
-        (item) =>
-          item.contactId === activity.contactId && item.status === "planned",
-      );
-      if (hasMorePlannedActivities) {
-        setOpenActivityMode("details");
-        setOpenActivityContactId(activity.contactId);
-        return;
-      }
-      setActivityFormError("");
-      setActivityForm({
-        type: "Zadzwoń",
-        title: "Zadzwoń",
-        dueDate: today,
-        dueTime: "",
-        note: "",
-        completed: false,
-      });
-      setOpenActivityMode("add");
-      setOpenActivityContactId(activity.contactId);
-    }
+    setOpenActivityMode("details");
+    setOpenActivityContactId(activity.contactId);
   }
 
   return (
@@ -1308,329 +1335,83 @@ export default function CRMPipelinePage() {
                                 className="crmActivityLoader"
                               />
                             </div>
-                          ) : activity ? (
-                            <div className="crmCardActivity">
-                              <button
-                                aria-label={`Najstarsze zadanie: ${activity.title}`}
-                                className={`crmActivityDot ${getActivityTone(activity)}`}
-                                type="button"
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  event.stopPropagation();
-                                  openActivityDetailsPopup(event, contact.id);
-                                }}
-                              />
-                              {isActivityOpen ? (
-                                <section
-                                  className="crmActivityBanner"
-                                  style={{
-                                    left: activityPopupPosition.left,
-                                    top: activityPopupPosition.top,
-                                  }}
-                                  onClick={(event) => event.stopPropagation()}
-                                >
-                                  <button
-                                    aria-label="Zamknij pop-up zadania"
-                                    className="crmActivityBannerClose"
-                                    type="button"
-                                    onClick={closeActivityPopup}
-                                  >
-                                    ×
-                                  </button>
-                                  {openActivityMode === "details" ? (
-                                    <>
-                                      <div className="crmActivityBannerTop">
-                                        <button
-                                          aria-label={
-                                            activity.status === "done"
-                                              ? "Oznacz zadanie jako niewykonane"
-                                              : "Oznacz zadanie jako wykonane"
-                                          }
-                                          className={`crmActivityBannerCheck ${activity.status} ${getActivityTone(
-                                            activity,
-                                          )}`}
-                                          type="button"
-                                          onClick={(event) => {
-                                            event.preventDefault();
-                                            event.stopPropagation();
-                                            toggleActivityStatus(activity);
-                                          }}
-                                        >
-                                          {activity.status === "done"
-                                            ? "✓"
-                                            : ""}
-                                        </button>
-                                        <div>
-                                          <strong>{activity.title}</strong>
-                                          <p>
-                                            {getActivityLabel(activity)} ·{" "}
-                                            {formatActivityDate(activity)} ·
-                                            Onesta
-                                          </p>
-                                        </div>
-                                      </div>
-                                      {activity.note ? (
-                                        <small>{activity.note}</small>
-                                      ) : null}
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          openAddActivityPopup(contact.id)
-                                        }
-                                      >
-                                        + Zaplanuj działanie
-                                      </button>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <div className="crmActivityBannerTop">
-                                        <span className="crmActivityBannerCheck today" />
-                                        <div>
-                                          <strong>Zaplanuj działanie</strong>
-                                          <p>
-                                            Dodaj kolejne zadanie bez otwierania
-                                            rekordu
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="crmActivityTypeTabs"
-                                        aria-label="Typ zadania"
-                                      >
-                                        {crmActivityTypes.map((type) => (
-                                          <button
-                                            className={
-                                              activityForm.type === type
-                                                ? "active"
-                                                : ""
-                                            }
-                                            key={type}
-                                            type="button"
-                                            onClick={() =>
-                                              changeActivityType(type)
-                                            }
-                                          >
-                                            {type}
-                                          </button>
-                                        ))}
-                                      </div>
-                                      <form
-                                        className="crmPipelineActivityForm"
-                                        onSubmit={(event) =>
-                                          addActivityFromPipeline(
-                                            event,
-                                            contact.id,
-                                          )
-                                        }
-                                      >
-                                        <input
-                                          placeholder="Tytul zadania"
-                                          value={activityForm.title}
-                                          onChange={(event) =>
-                                            setActivityForm({
-                                              ...activityForm,
-                                              title: event.target.value,
-                                            })
-                                          }
-                                        />
-                                        <div className="crmPipelineActivityDate">
-                                          <input
-                                            type="date"
-                                            value={activityForm.dueDate}
-                                            onChange={(event) =>
-                                              setActivityForm({
-                                                ...activityForm,
-                                                dueDate: event.target.value,
-                                              })
-                                            }
-                                          />
-                                          <input
-                                            type="time"
-                                            value={activityForm.dueTime}
-                                            onChange={(event) =>
-                                              setActivityForm({
-                                                ...activityForm,
-                                                dueTime: event.target.value,
-                                              })
-                                            }
-                                          />
-                                        </div>
-                                        <textarea
-                                          placeholder="Notatka, opis, ustalenia..."
-                                          value={activityForm.note}
-                                          onChange={(event) =>
-                                            setActivityForm({
-                                              ...activityForm,
-                                              note: event.target.value,
-                                            })
-                                          }
-                                        />
-                                        <label className="crmPipelineActivityCheckbox">
-                                          <input
-                                            checked={activityForm.completed}
-                                            type="checkbox"
-                                            onChange={(event) =>
-                                              setActivityForm({
-                                                ...activityForm,
-                                                completed: event.target.checked,
-                                              })
-                                            }
-                                          />
-                                          Oznacz zadanie jako wykonane
-                                        </label>
-                                        {activityFormError ? (
-                                          <p>{activityFormError}</p>
-                                        ) : null}
-                                        <button
-                                          disabled={isSavingNewActivity}
-                                          type="submit"
-                                        >
-                                          {isSavingNewActivity
-                                            ? "Zapisywanie..."
-                                            : "Zapisz zadanie"}
-                                        </button>
-                                      </form>
-                                    </>
-                                  )}
-                                </section>
-                              ) : null}
-                            </div>
                           ) : (
                             <div className="crmCardActivity">
-                              <button
-                                aria-label="Brak zaplanowanego zadania"
-                                className="crmMissingTask"
-                                type="button"
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  event.stopPropagation();
-                                  toggleMissingActivityPopup(event, contact.id);
-                                }}
-                              >
-                                !
-                              </button>
-                              {isActivityOpen ? (
+                              {activity ? (
+                                <button
+                                  aria-label={`Zadania klienta: ${activity.title}`}
+                                  className={`crmActivityDot ${getActivityTone(activity)}`}
+                                  type="button"
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    openActivityDetailsPopup(event, contact.id);
+                                  }}
+                                />
+                              ) : (
+                                <button
+                                  aria-label="Brak zaplanowanego zadania"
+                                  className="crmMissingTask"
+                                  type="button"
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    openActivityDetailsPopup(event, contact.id);
+                                  }}
+                                >
+                                  !
+                                </button>
+                              )}
+                              {isActivityOpen && openActivityMode === "details" ? (
                                 <section
-                                  className="crmActivityBanner crmAddActivityBanner"
+                                  className="crmTaskPopover"
                                   style={{
                                     left: activityPopupPosition.left,
                                     top: activityPopupPosition.top,
                                   }}
                                   onClick={(event) => event.stopPropagation()}
                                 >
+                                  {(plannedActivitiesByContactId.get(contact.id) || []).length ? (
+                                    <ul className="crmTaskPopoverList">
+                                      {(plannedActivitiesByContactId.get(contact.id) || []).map(
+                                        (item) => (
+                                          <li key={item.id}>
+                                            <button
+                                              aria-label="Oznacz zadanie jako wykonane"
+                                              className={`crmTaskPopoverCheck ${getActivityTone(item)}`}
+                                              title="Oznacz jako wykonane"
+                                              type="button"
+                                              onClick={(event) => {
+                                                event.preventDefault();
+                                                event.stopPropagation();
+                                                toggleActivityStatus(item);
+                                              }}
+                                            />
+                                            <span className="crmTaskPopoverType" aria-hidden="true">
+                                              {activityTypeGlyph(item.type)}
+                                            </span>
+                                            <span className="crmTaskPopoverText">
+                                              <strong title={item.title}>{item.title}</strong>
+                                              <small className={getActivityTone(item)}>
+                                                {formatActivityShortDate(item)} · {item.type}
+                                              </small>
+                                            </span>
+                                          </li>
+                                        ),
+                                      )}
+                                    </ul>
+                                  ) : (
+                                    <p className="crmTaskPopoverEmpty">
+                                      Brak zaplanowanych zadań
+                                    </p>
+                                  )}
                                   <button
-                                    aria-label="Zamknij pop-up zadania"
-                                    className="crmActivityBannerClose"
+                                    className="crmTaskPopoverAdd"
                                     type="button"
-                                    onClick={closeActivityPopup}
+                                    onClick={() => openAddActivityPopup(contact.id)}
                                   >
-                                    ×
+                                    <span aria-hidden="true">+</span> Zaplanuj zadanie
                                   </button>
-                                  <div className="crmActivityBannerTop">
-                                    <span className="crmMissingTask static">
-                                      !
-                                    </span>
-                                    <div>
-                                      <strong>
-                                        Brak zaplanowanego zadania
-                                      </strong>
-                                      <p>
-                                        Dodaj zadanie bez otwierania rekordu
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="crmActivityTypeTabs"
-                                    aria-label="Typ zadania"
-                                  >
-                                    {crmActivityTypes.map((type) => (
-                                      <button
-                                        className={
-                                          activityForm.type === type
-                                            ? "active"
-                                            : ""
-                                        }
-                                        key={type}
-                                        type="button"
-                                        onClick={() => changeActivityType(type)}
-                                      >
-                                        {type}
-                                      </button>
-                                    ))}
-                                  </div>
-                                  <form
-                                    className="crmPipelineActivityForm"
-                                    onSubmit={(event) =>
-                                      addActivityFromPipeline(event, contact.id)
-                                    }
-                                  >
-                                    <input
-                                      placeholder="Tytul zadania"
-                                      value={activityForm.title}
-                                      onChange={(event) =>
-                                        setActivityForm({
-                                          ...activityForm,
-                                          title: event.target.value,
-                                        })
-                                      }
-                                    />
-                                    <div className="crmPipelineActivityDate">
-                                      <input
-                                        type="date"
-                                        value={activityForm.dueDate}
-                                        onChange={(event) =>
-                                          setActivityForm({
-                                            ...activityForm,
-                                            dueDate: event.target.value,
-                                          })
-                                        }
-                                      />
-                                      <input
-                                        type="time"
-                                        value={activityForm.dueTime}
-                                        onChange={(event) =>
-                                          setActivityForm({
-                                            ...activityForm,
-                                            dueTime: event.target.value,
-                                          })
-                                        }
-                                      />
-                                    </div>
-                                    <textarea
-                                      placeholder="Notatka, opis, ustalenia..."
-                                      value={activityForm.note}
-                                      onChange={(event) =>
-                                        setActivityForm({
-                                          ...activityForm,
-                                          note: event.target.value,
-                                        })
-                                      }
-                                    />
-                                    <label className="crmPipelineActivityCheckbox">
-                                      <input
-                                        checked={activityForm.completed}
-                                        type="checkbox"
-                                        onChange={(event) =>
-                                          setActivityForm({
-                                            ...activityForm,
-                                            completed: event.target.checked,
-                                          })
-                                        }
-                                      />
-                                      Oznacz zadanie jako wykonane
-                                    </label>
-                                    {activityFormError ? (
-                                      <p>{activityFormError}</p>
-                                    ) : null}
-                                    <button
-                                      disabled={isSavingNewActivity}
-                                      type="submit"
-                                    >
-                                      {isSavingNewActivity
-                                        ? "Zapisywanie..."
-                                        : "Zapisz zadanie"}
-                                    </button>
-                                  </form>
                                 </section>
                               ) : null}
                             </div>
@@ -1652,6 +1433,101 @@ export default function CRMPipelinePage() {
             })}
           </div>
         )}
+        {addActivityContact ? (
+          <div
+            className="crmTaskModalBackdrop"
+            role="presentation"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget && !isSavingNewActivity) {
+                closeActivityPopup();
+              }
+            }}
+          >
+            <section
+              aria-labelledby="crm-task-modal-title"
+              aria-modal="true"
+              className="crmTaskModal"
+              role="dialog"
+            >
+              <header>
+                <div>
+                  <p>Nowe zadanie</p>
+                  <h2 id="crm-task-modal-title">{addActivityContact.name}</h2>
+                </div>
+                <button
+                  aria-label="Zamknij"
+                  className="crmActivityBannerClose"
+                  type="button"
+                  onClick={closeActivityPopup}
+                >
+                  ×
+                </button>
+              </header>
+              <div className="crmActivityTypeTabs" aria-label="Typ zadania">
+                {crmActivityTypes.map((type) => (
+                  <button
+                    className={activityForm.type === type ? "active" : ""}
+                    key={type}
+                    type="button"
+                    onClick={() => changeActivityType(type)}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+              <form
+                className="crmPipelineActivityForm"
+                onSubmit={(event) => addActivityFromPipeline(event, addActivityContact.id)}
+              >
+                <input
+                  autoFocus
+                  placeholder="Tytuł zadania"
+                  value={activityForm.title}
+                  onChange={(event) =>
+                    setActivityForm({ ...activityForm, title: event.target.value })
+                  }
+                />
+                <div className="crmPipelineActivityDate">
+                  <input
+                    type="date"
+                    value={activityForm.dueDate}
+                    onChange={(event) =>
+                      setActivityForm({ ...activityForm, dueDate: event.target.value })
+                    }
+                  />
+                  <input
+                    type="time"
+                    value={activityForm.dueTime}
+                    onChange={(event) =>
+                      setActivityForm({ ...activityForm, dueTime: event.target.value })
+                    }
+                  />
+                </div>
+                <textarea
+                  placeholder="Notatka, opis, ustalenia..."
+                  value={activityForm.note}
+                  onChange={(event) =>
+                    setActivityForm({ ...activityForm, note: event.target.value })
+                  }
+                />
+                <label className="crmPipelineActivityCheckbox">
+                  <input
+                    checked={activityForm.completed}
+                    type="checkbox"
+                    onChange={(event) =>
+                      setActivityForm({ ...activityForm, completed: event.target.checked })
+                    }
+                  />
+                  Oznacz zadanie jako wykonane
+                </label>
+                {activityFormError ? <p>{activityFormError}</p> : null}
+                <button disabled={isSavingNewActivity} type="submit">
+                  {isSavingNewActivity ? "Zapisywanie..." : "Zapisz zadanie"}
+                </button>
+              </form>
+            </section>
+          </div>
+        ) : null}
         <section
           aria-hidden={!draggedId}
           aria-label="Akcje przeciagania"
@@ -3280,8 +3156,175 @@ export default function CRMPipelinePage() {
           text-align: left;
         }
 
-        .crmAddActivityBanner {
-          min-width: min(420px, calc(100vw - 140px));
+        .crmTaskPopover {
+          background: #ffffff;
+          border: 1px solid #e3e6ea;
+          border-radius: 10px;
+          box-shadow: 0 12px 32px rgba(21, 32, 43, 0.18);
+          color: #21232c;
+          display: grid;
+          max-height: calc(100vh - 40px);
+          overflow: hidden;
+          position: fixed;
+          width: min(340px, calc(100vw - 32px));
+          z-index: 120;
+        }
+
+        .crmTaskPopoverList {
+          display: grid;
+          list-style: none;
+          margin: 0;
+          max-height: 320px;
+          overflow-y: auto;
+          padding: 4px 0;
+        }
+
+        .crmTaskPopoverList li {
+          align-items: center;
+          display: grid;
+          gap: 10px;
+          grid-template-columns: 18px 18px minmax(0, 1fr);
+          padding: 9px 14px;
+        }
+
+        .crmTaskPopoverList li + li {
+          border-top: 1px solid #f0f1f3;
+        }
+
+        .crmTaskPopoverCheck {
+          background: #ffffff;
+          border: 1.5px solid #9ea2a8;
+          border-radius: 999px;
+          cursor: pointer;
+          height: 18px;
+          padding: 0;
+          width: 18px;
+        }
+
+        .crmTaskPopoverCheck:hover {
+          background: #e6f6ec;
+          border-color: #08a742;
+        }
+
+        .crmTaskPopoverCheck.overdue {
+          border-color: #dc3b38;
+        }
+
+        .crmTaskPopoverType {
+          color: #5b5f66;
+          font-size: 14px;
+          line-height: 1;
+          text-align: center;
+        }
+
+        .crmTaskPopoverText {
+          display: grid;
+          gap: 2px;
+          min-width: 0;
+        }
+
+        .crmTaskPopoverText strong {
+          font-size: 14px;
+          font-weight: 600;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .crmTaskPopoverText small {
+          color: #747678;
+          font-size: 12px;
+        }
+
+        .crmTaskPopoverText small.overdue {
+          color: #c0392b;
+          font-weight: 600;
+        }
+
+        .crmTaskPopoverText small.today {
+          color: #08a742;
+          font-weight: 600;
+        }
+
+        .crmTaskPopoverEmpty {
+          color: #747678;
+          font-size: 13px;
+          margin: 0;
+          padding: 14px;
+        }
+
+        .crmTaskPopoverAdd {
+          align-items: center;
+          background: #ffffff;
+          border: 0;
+          border-top: 1px solid #e3e6ea;
+          color: #21232c;
+          cursor: pointer;
+          display: flex;
+          font: inherit;
+          font-size: 14px;
+          font-weight: 500;
+          gap: 10px;
+          padding: 12px 14px;
+          text-align: left;
+        }
+
+        .crmTaskPopoverAdd span {
+          font-size: 18px;
+          line-height: 1;
+          width: 18px;
+        }
+
+        .crmTaskPopoverAdd:hover {
+          background: #f7f7f8;
+        }
+
+        .crmTaskModalBackdrop {
+          align-items: center;
+          background: rgba(15, 23, 42, 0.45);
+          display: flex;
+          inset: 0;
+          justify-content: center;
+          padding: 20px;
+          position: fixed;
+          z-index: 140;
+        }
+
+        .crmTaskModal {
+          background: #ffffff;
+          border-radius: 10px;
+          box-shadow: 0 24px 70px rgba(15, 23, 42, 0.3);
+          display: grid;
+          gap: 12px;
+          max-height: calc(100vh - 40px);
+          overflow-y: auto;
+          padding: 18px;
+          position: relative;
+          width: min(560px, 100%);
+        }
+
+        .crmTaskModal header {
+          align-items: start;
+          display: flex;
+          justify-content: space-between;
+          padding-right: 30px;
+        }
+
+        .crmTaskModal header p {
+          color: #747678;
+          font-size: 12px;
+          font-weight: 700;
+          margin: 0 0 2px;
+          text-transform: uppercase;
+        }
+
+        .crmTaskModal header h2 {
+          font-size: 20px;
+          margin: 0;
+        }
+
+        .crmTaskModal .crmActivityTypeTabs {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
         .crmActivityTypeTabs {
