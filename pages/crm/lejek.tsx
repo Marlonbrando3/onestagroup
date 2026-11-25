@@ -7,7 +7,6 @@ import {
   CrmStatus,
   customCrmPipelineDraftStages,
   crmActivityTypes,
-  crmStageProbabilities,
   crmStatuses,
   defaultCrmPipeline,
 } from "@/components/crm/types";
@@ -1213,11 +1212,6 @@ export default function CRMPipelinePage() {
         ) : (
           <div className="crmPipelineBoard">
             {columns.map((column) => {
-              const probability = crmStageProbabilities[column.status];
-              const probabilityLabel =
-                probability === null || typeof probability === "undefined"
-                  ? "brak"
-                  : `${probability}%`;
               const columnBudget = column.contacts.reduce(
                 (sum, contact) => sum + (contact.maxBudget || 0),
                 0,
@@ -1254,9 +1248,6 @@ export default function CRMPipelinePage() {
                       {" · "}
                       {columnCountLabel}
                     </span>
-                    <small title="Prawdopodobieństwo zakupu na tym etapie">
-                      ⚖ {probabilityLabel}
-                    </small>
                   </div>
                   <div className="crmPipelineCards">
                     {column.contacts.map((contact) => {
@@ -2729,7 +2720,7 @@ export default function CRMPipelinePage() {
           display: grid;
           gap: 3px;
           min-width: 0;
-          padding: 10px 10px 10px;
+          padding: 9px 10px 8px;
           position: sticky;
           top: 0;
           z-index: 4;
@@ -2760,8 +2751,7 @@ export default function CRMPipelinePage() {
           -webkit-line-clamp: 2;
         }
 
-        .crmPipelineColumnHeader span,
-        .crmPipelineColumnHeader small {
+        .crmPipelineColumnHeader span {
           align-items: center;
           color: #5b5f66;
           display: flex;
@@ -2773,21 +2763,16 @@ export default function CRMPipelinePage() {
           white-space: nowrap;
         }
 
-        .crmPipelineColumnHeader small {
-          color: #8a8e94;
-          font-size: 11px;
-          font-weight: 600;
-        }
 
         .crmPipelineCards {
           align-items: stretch;
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 6px;
           min-height: 0;
           overflow-x: hidden;
           overflow-y: auto;
-          padding: 8px;
+          padding: 6px 5px;
         }
 
         .crmPipelineCards::-webkit-scrollbar {
