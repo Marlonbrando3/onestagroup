@@ -69,8 +69,12 @@ const nextConfig: NextConfig = {
       // Next pozwala tu na max 50 wzorców, a hostów jest ~90, więc produkcyjna
       // lista jest w netlify.toml ([images] remote_images, ta sama co w
       // lib/propertyImageSources.ts). Next sprawdza hosty tylko w trybie dev.
+      // W dev dopuszczamy też http:// – część feedów (np. hotpropertiesinspain.com) podaje zdjęcia po http.
       ...(process.env.NODE_ENV === "development"
-        ? [{ protocol: "https" as const, hostname: "**" }]
+        ? [
+            { protocol: "https" as const, hostname: "**" },
+            { protocol: "http" as const, hostname: "**" },
+          ]
         : []),
       {
         protocol: "https",
