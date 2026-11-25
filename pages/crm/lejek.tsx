@@ -216,6 +216,7 @@ export default function CRMPipelinePage() {
   }, []);
 
   const [isDailyTasksOpen, setIsDailyTasksOpen] = useState(false);
+  const [activitiesReloadKey, setActivitiesReloadKey] = useState(0);
   const [dailyTasksChecked, setDailyTasksChecked] = useState(false);
   const [contactFilter, setContactFilter] = useState<
     "all" | "today" | "overdue" | "noTasks"
@@ -574,7 +575,7 @@ export default function CRMPipelinePage() {
     return () => {
       ignore = true;
     };
-  }, [selectedPipelineId, visibleOwner]);
+  }, [selectedPipelineId, visibleOwner, activitiesReloadKey]);
 
   useEffect(() => {
     if (!deletePipelineConfirmation) return;
@@ -1297,6 +1298,19 @@ export default function CRMPipelinePage() {
           >
             Szansa sprzedaży
           </button>
+          <button
+            className="crmDailyTasksButton"
+            type="button"
+            onClick={() => {
+              // świeże dane z bazy przy każdym otwarciu
+              setActivitiesReloadKey((current) => current + 1);
+              reload();
+              setIsDailyTasksOpen(true);
+            }}
+          >
+            Zadania na dziś
+            {!isActivitiesLoading ? <span>{dailyTasks.length}</span> : null}
+          </button>
           <label className="crmPipelineFilter">
             <span>Filtr</span>
             <select
@@ -1639,7 +1653,9 @@ export default function CRMPipelinePage() {
                   ×
                 </button>
               </header>
-              {dailyTasks.length ? (
+              {isActivitiesLoading ? (
+                <p className="crmTaskPopoverEmpty">Pobieram aktualne zadania…</p>
+              ) : dailyTasks.length ? (
                 <ul className="crmDailyTaskList">
                   {dailyTasks.map((task) => {
                     const taskContact = contacts.find((item) => item.id === task.contactId);
@@ -2124,8 +2140,39 @@ export default function CRMPipelinePage() {
           cursor: pointer;
         }
 
+        .crmDailyTasksButton {
+          align-items: center;
+          background: #fdf3d3;
+          border: 1px solid #f0d98c;
+          border-radius: 6px;
+          color: #6b4e00;
+          cursor: pointer;
+          display: inline-flex;
+          font: inherit;
+          font-size: 12px;
+          font-weight: 800;
+          gap: 7px;
+          margin-left: auto;
+          min-height: 34px;
+          padding: 0 12px;
+        }
+
+        .crmDailyTasksButton:hover {
+          background: #fbeab3;
+        }
+
+        .crmDailyTasksButton span {
+          background: #ffffff;
+          border-radius: 999px;
+          color: #6b4e00;
+          font-size: 11px;
+          min-width: 20px;
+          padding: 2px 6px;
+          text-align: center;
+        }
+
         .crmPipelineFilter {
-          margin-left: auto !important;
+          margin-left: 0 !important;
         }
 
         .crmPipelineFilter select {
