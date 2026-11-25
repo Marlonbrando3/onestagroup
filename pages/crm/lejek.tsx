@@ -3115,10 +3115,17 @@ export default function CRMPipelinePage() {
           color: #ffffff;
           cursor: pointer;
           display: flex;
-          height: 15px;
+          flex: 0 0 auto;
+          height: 16px;
           justify-content: center;
+          line-height: 0;
           padding: 0;
-          width: 15px;
+          width: 16px;
+        }
+
+        .crmActivityDot svg {
+          display: block;
+          flex: 0 0 auto;
         }
 
         .crmActivityDot:hover {
