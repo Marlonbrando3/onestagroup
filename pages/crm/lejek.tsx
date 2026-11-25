@@ -2775,13 +2775,22 @@ export default function CRMPipelinePage() {
           padding: 4px;
         }
 
+        .crmPipelineCards {
+          scrollbar-color: #c7cfd8 transparent;
+          scrollbar-width: thin;
+        }
+
         .crmPipelineCards::-webkit-scrollbar {
-          width: 8px;
+          width: 4px;
+        }
+
+        .crmPipelineCards::-webkit-scrollbar-track {
+          background: transparent;
         }
 
         .crmPipelineCards::-webkit-scrollbar-thumb {
           background: #c7cfd8;
-          border: 2px solid #f4f6f8;
+          border: 1px solid #f4f6f8;
           border-radius: 999px;
         }
 
