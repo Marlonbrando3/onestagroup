@@ -1408,13 +1408,13 @@ export default function CRMPipelinePage() {
                                   <svg
                                     aria-hidden="true"
                                     fill="none"
-                                    height="14"
+                                    height="12"
                                     stroke="currentColor"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth="3.4"
                                     viewBox="0 0 24 24"
-                                    width="14"
+                                    width="12"
                                   >
                                     <path
                                       d={
@@ -3115,10 +3115,10 @@ export default function CRMPipelinePage() {
           color: #ffffff;
           cursor: pointer;
           display: flex;
-          height: 18px;
+          height: 15px;
           justify-content: center;
           padding: 0;
-          width: 18px;
+          width: 15px;
         }
 
         .crmActivityDot:hover {
