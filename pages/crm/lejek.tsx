@@ -214,6 +214,9 @@ export default function CRMPipelinePage() {
   useEffect(() => {
     setGreeting(pickCrmGreeting());
   }, []);
+
+  const [isDailyTasksOpen, setIsDailyTasksOpen] = useState(false);
+  const [dailyTasksChecked, setDailyTasksChecked] = useState(false);
   const [contactFilter, setContactFilter] = useState<
     "all" | "today" | "overdue" | "noTasks"
   >("all");
@@ -328,6 +331,74 @@ export default function CRMPipelinePage() {
     grouped.forEach((items, key) => grouped.set(key, sortActivitiesByDueDate(items)));
     return grouped;
   }, [activities]);
+
+  const dailyTasks = useMemo(() => {
+    const contactIds = new Set(contacts.map((contact) => contact.id));
+    return sortActivitiesByDueDate(
+      activities.filter(
+        (activity) =>
+          activity.status === "planned" &&
+          contactIds.has(activity.contactId) &&
+          Boolean(activity.dueDate) &&
+          activity.dueDate! <= today,
+      ),
+    );
+  }, [activities, contacts]);
+
+  useEffect(() => {
+    if (dailyTasksChecked || !currentUserEmail) return;
+    if (isActivitiesLoading || isContactsLoading) return;
+    setDailyTasksChecked(true);
+    if (!dailyTasks.length) return;
+    const storageKey = `crmDailyTasksShown:${currentUserEmail}`;
+    try {
+      if (window.localStorage.getItem(storageKey) === today) return;
+      window.localStorage.setItem(storageKey, today);
+    } catch {
+      // brak dostępu do pamięci przeglądarki – pokaż i tak
+    }
+    setIsDailyTasksOpen(true);
+  }, [
+    currentUserEmail,
+    dailyTasks.length,
+    dailyTasksChecked,
+    isActivitiesLoading,
+    isContactsLoading,
+  ]);
+
+  useEffect(() => {
+    if (!isDailyTasksOpen) return;
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsDailyTasksOpen(false);
+    }
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [isDailyTasksOpen]);
+
+  async function completeDailyTask(activity: CrmActivity) {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) return;
+    setActivities((current) =>
+      current.map((item) => (item.id === activity.id ? { ...item, status: "done" } : item)),
+    );
+    const response = await fetch("/api/crm/activities", {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ id: activity.id, status: "done" }),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      setActivities((current) =>
+        current.map((item) => (item.id === activity.id ? activity : item)),
+      );
+      setActivitiesError(result.error || "Nie udalo sie zmienic zadania.");
+      return;
+    }
+    setActivities((current) =>
+      current.map((item) => (item.id === activity.id ? result.activity : item)),
+    );
+  }
 
   const addActivityContact = openActivityMode === "add" || openActivityMode === "edit"
     ? contacts.find((contact) => contact.id === openActivityContactId) || null
@@ -1532,6 +1603,94 @@ export default function CRMPipelinePage() {
             })}
           </div>
         )}
+        {isDailyTasksOpen ? (
+          <div
+            className="crmTaskModalBackdrop"
+            role="presentation"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setIsDailyTasksOpen(false);
+            }}
+          >
+            <section
+              aria-labelledby="crm-daily-tasks-title"
+              aria-modal="true"
+              className="crmTaskModal crmDailyTasks"
+              role="dialog"
+            >
+              <header>
+                <div>
+                  <p>
+                    {new Intl.DateTimeFormat("pl-PL", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                    }).format(new Date())}
+                  </p>
+                  <h2 id="crm-daily-tasks-title">
+                    Twoje zadania na dziś ({dailyTasks.length})
+                  </h2>
+                </div>
+                <button
+                  aria-label="Zamknij"
+                  className="crmActivityBannerClose"
+                  type="button"
+                  onClick={() => setIsDailyTasksOpen(false)}
+                >
+                  ×
+                </button>
+              </header>
+              {dailyTasks.length ? (
+                <ul className="crmDailyTaskList">
+                  {dailyTasks.map((task) => {
+                    const taskContact = contacts.find((item) => item.id === task.contactId);
+                    const tone = getActivityTone(task);
+                    return (
+                      <li className={tone} key={task.id}>
+                        <button
+                          aria-label="Oznacz zadanie jako wykonane"
+                          className={`crmTaskPopoverCheck ${tone}`}
+                          title="Oznacz jako wykonane"
+                          type="button"
+                          onClick={() => completeDailyTask(task)}
+                        />
+                        <span className="crmTaskPopoverType" aria-hidden="true">
+                          {activityTypeGlyph(task.type)}
+                        </span>
+                        <button
+                          className="crmDailyTaskText"
+                          type="button"
+                          onClick={() => {
+                            setIsDailyTasksOpen(false);
+                            router.push(`/crm/kontakt/${task.contactId}`);
+                          }}
+                        >
+                          <strong>{task.title}</strong>
+                          <small>
+                            {taskContact?.name || "Klient"} · {task.type}
+                          </small>
+                        </button>
+                        <span className={`crmDailyTaskWhen ${tone}`}>
+                          {tone === "overdue" && task.dueDate! < today
+                            ? formatActivityShortDate(task).replace("Zaległe: ", "")
+                            : task.dueTime
+                              ? task.dueTime.slice(0, 5)
+                              : "dziś"}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="crmTaskPopoverEmpty">Wszystko zrobione. Brawo! 🎉</p>
+              )}
+              <div className="crmDailyTasksFooter">
+                <button type="button" onClick={() => setIsDailyTasksOpen(false)}>
+                  Do roboty
+                </button>
+              </div>
+            </section>
+          </div>
+        ) : null}
         {addActivityContact ? (
           <div
             className="crmTaskModalBackdrop"
@@ -3519,6 +3678,107 @@ export default function CRMPipelinePage() {
         .crmTaskModal header h2 {
           font-size: 20px;
           margin: 0;
+        }
+
+        .crmDailyTasks {
+          width: min(600px, 100%);
+        }
+
+        .crmDailyTasks header p {
+          text-transform: none;
+        }
+
+        .crmDailyTaskList {
+          border: 1px solid #e3e6ea;
+          border-radius: 8px;
+          display: grid;
+          list-style: none;
+          margin: 0;
+          max-height: min(420px, calc(100vh - 260px));
+          overflow-y: auto;
+          padding: 0;
+        }
+
+        .crmDailyTaskList li {
+          align-items: center;
+          display: grid;
+          gap: 10px;
+          grid-template-columns: 18px 18px minmax(0, 1fr) auto;
+          padding: 10px 12px;
+        }
+
+        .crmDailyTaskList li + li {
+          border-top: 1px solid #f0f1f3;
+        }
+
+        .crmDailyTaskList li.overdue {
+          background: #fdf5f5;
+        }
+
+        .crmDailyTaskText {
+          background: transparent;
+          border: 0;
+          color: #21232c;
+          cursor: pointer;
+          display: grid;
+          font: inherit;
+          gap: 2px;
+          min-width: 0;
+          padding: 0;
+          text-align: left;
+        }
+
+        .crmDailyTaskText strong {
+          font-size: 14px;
+          font-weight: 600;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .crmDailyTaskText:hover strong {
+          color: #2b4ba1;
+        }
+
+        .crmDailyTaskText small {
+          color: #747678;
+          font-size: 12px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .crmDailyTaskWhen {
+          color: #5b5f66;
+          font-size: 12px;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+
+        .crmDailyTaskWhen.overdue {
+          color: #c0392b;
+        }
+
+        .crmDailyTaskWhen.today {
+          color: #08a742;
+        }
+
+        .crmDailyTasksFooter {
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .crmDailyTasksFooter button {
+          background: #216e63;
+          border: 0;
+          border-radius: 6px;
+          color: #ffffff;
+          cursor: pointer;
+          font: inherit;
+          font-size: 14px;
+          font-weight: 800;
+          min-height: 38px;
+          padding: 0 18px;
         }
 
         .crmTaskModal .crmActivityTypeTabs {
