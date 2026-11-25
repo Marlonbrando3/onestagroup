@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { canAccessCrm, isCrmAdmin } from "./users";
+import CrmAppHead from "./CrmAppHead";
 
 type CrmLayoutProps = {
   active: "contacts" | "add" | "pipeline" | "mailing";
@@ -160,6 +161,7 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
 
   return (
     <main className="crmShell">
+      <CrmAppHead />
       <aside className="crmSidebar" aria-label="CRM">
         <div className="crmBrand">
           <div className="crmBrandMark">

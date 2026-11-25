@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
+import { notifyPresentationActivity } from "@/lib/crmReminders";
 
 // Przycisk „Interesuje mnie ta oferta” w prezentacji /oferty/[token].
 // Klient nic nie wpisuje — wysyłamy mail do agenta, który przygotował prezentację:
@@ -93,6 +94,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     offer_title: offer.title ? String(offer.title).slice(0, 300) : null,
   });
   if (eventError) console.error("presentation-interest: nie zapisano zdarzenia CRM", eventError);
+  try {
+    await notifyPresentationActivity(
+      presentation.id,
+      "interest",
+      offer.title ? String(offer.title) : offerId,
+    );
+  } catch (pushError) {
+    console.error("presentation-interest: push", pushError);
+  }
   if (notifyError) console.error("presentation-interest: nie zapisano powiadomienia", notifyError);
   const notified = !notifyError;
 

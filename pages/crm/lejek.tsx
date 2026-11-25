@@ -20,6 +20,7 @@ import {
 import { supabase } from "@/lib/supabaseClient";
 import { CrmGreeting, pickCrmGreeting } from "@/components/crm/greetings";
 import CrmActivityBell from "@/components/crm/CrmActivityBell";
+import CrmPushToggle from "@/components/crm/CrmPushToggle";
 import { useRouter } from "next/router";
 import {
   DragEvent,
@@ -1246,6 +1247,7 @@ export default function CRMPipelinePage() {
                     </span>
                   </span>
                 ) : null}
+                <CrmPushToggle />
                 <CrmActivityBell />
                 <span className="crmAppHeaderAvatar" aria-hidden="true">
                   {currentCrmUser.label.slice(0, 1)}

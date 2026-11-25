@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
+import { notifyPresentationActivity } from "@/lib/crmReminders";
 
 // Aktywność klienta w prezentacji /oferty/[token]: otwarcie prezentacji i otwarcie konkretnej oferty.
 // („Interesuje mnie ta oferta” zapisuje /api/presentation-interest.)
@@ -59,6 +60,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (error) {
     console.error("presentation-event: nie zapisano zdarzenia", error);
     return res.status(500).json({ success: false });
+  }
+  try {
+    await notifyPresentationActivity(list.id, type, offerTitle);
+  } catch (pushError) {
+    console.error("presentation-event: push", pushError);
   }
   return res.status(200).json({ success: true });
 }
