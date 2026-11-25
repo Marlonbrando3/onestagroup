@@ -2816,15 +2816,15 @@ export default function CRMPipelinePage() {
 
         .crmPipelineCard {
           background: #ffffff;
-          border: 0;
+          border: 1px solid #dcdfe4;
           border-radius: 8px;
-          color: #17202a;
+          color: #21232c;
           display: grid;
           flex: 0 0 auto;
-          gap: 2px;
-          min-height: 52px;
+          gap: 4px;
+          min-height: 64px;
           min-width: 0;
-          padding: 7px 7px 28px;
+          padding: 10px 11px 34px;
           position: relative;
           text-align: left;
           transition:
@@ -2833,11 +2833,12 @@ export default function CRMPipelinePage() {
             opacity 0.15s ease;
           width: 100%;
           z-index: 1;
-          box-shadow: 0 5px 14px rgba(21, 32, 43, 0.08);
+          box-shadow: 0 1px 3px rgba(21, 32, 43, 0.08);
         }
 
         .crmPipelineCard:hover {
-          box-shadow: 0 8px 20px rgba(21, 32, 43, 0.12);
+          border-color: #c3c7cd;
+          box-shadow: 0 4px 12px rgba(21, 32, 43, 0.12);
         }
 
         .crmPipelineCard.activityOpen {
@@ -2861,25 +2862,27 @@ export default function CRMPipelinePage() {
         }
 
         .crmPipelineCard strong {
-          font-size: 12px;
-          line-height: 1.2;
+          font-size: 14px;
+          font-weight: 700;
+          letter-spacing: -0.005em;
+          line-height: 1.3;
           overflow-wrap: normal;
           white-space: normal;
           word-break: normal;
         }
 
         .crmCardActivity {
-          bottom: 6px;
+          bottom: 9px;
           position: absolute;
-          right: 6px;
+          right: 9px;
         }
 
         .crmContactInfo {
           align-items: center;
-          bottom: 6px;
+          bottom: 9px;
           display: flex;
-          gap: 4px;
-          left: 6px;
+          gap: 6px;
+          left: 10px;
           max-width: calc(100% - 32px);
           position: absolute;
           z-index: 3;
@@ -2898,23 +2901,23 @@ export default function CRMPipelinePage() {
           border-radius: 999px;
           color: #4b5563;
           display: flex;
-          font-size: 10px;
+          font-size: 11px;
           font-weight: 900;
-          height: 16px;
+          height: 18px;
           justify-content: center;
           line-height: 1;
           padding: 0;
           flex: 0 0 auto;
-          width: 16px;
+          width: 18px;
         }
 
         .crmContactBudget {
-          color: #4b5563;
+          color: #3b3f45;
           display: block;
-          font-size: 10px;
-          font-weight: 900;
+          font-size: 12px;
+          font-weight: 700;
           line-height: 1;
-          max-width: 68px;
+          max-width: 110px;
           min-width: 0;
           overflow: hidden;
           text-overflow: ellipsis;
