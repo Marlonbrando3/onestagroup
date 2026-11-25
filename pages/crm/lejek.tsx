@@ -61,8 +61,17 @@ function sortActivitiesByDueDate(activities: CrmActivity[]) {
 }
 
 function getActivityTone(activity: CrmActivity) {
-  if (!activity.dueDate || activity.dueDate === today) return "today";
-  return activity.dueDate < today ? "overdue" : "future";
+  // overdue: termin minął (także dzisiaj po godzinie), today: dzisiaj i jeszcze przed czasem,
+  // future: późniejszy dzień albo brak terminu
+  if (!activity.dueDate) return "future";
+  if (activity.dueDate < today) return "overdue";
+  if (activity.dueDate > today) return "future";
+  if (activity.dueTime) {
+    const now = new Date();
+    const nowTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    if (activity.dueTime.slice(0, 5) < nowTime) return "overdue";
+  }
+  return "today";
 }
 
 function getActivityLabel(activity: CrmActivity) {
@@ -144,7 +153,7 @@ export default function CRMPipelinePage() {
   const [isActivitiesLoading, setIsActivitiesLoading] = useState(true);
   const [activitiesError, setActivitiesError] = useState("");
   const [openActivityContactId, setOpenActivityContactId] = useState("");
-  const [openActivityMode, setOpenActivityMode] = useState<"details" | "add">(
+  const [openActivityMode, setOpenActivityMode] = useState<"details" | "add" | "edit">(
     "details",
   );
   const [activityPopupPosition, setActivityPopupPosition] = useState({
@@ -152,6 +161,7 @@ export default function CRMPipelinePage() {
     top: 76,
   });
   const [isSavingNewActivity, setIsSavingNewActivity] = useState(false);
+  const [editingActivityId, setEditingActivityId] = useState("");
   const [activityFormError, setActivityFormError] = useState("");
   const [activityForm, setActivityForm] = useState({
     type: "Zadzwoń" as CrmActivityType,
@@ -313,7 +323,7 @@ export default function CRMPipelinePage() {
     return grouped;
   }, [activities]);
 
-  const addActivityContact = openActivityMode === "add"
+  const addActivityContact = openActivityMode === "add" || openActivityMode === "edit"
     ? contacts.find((contact) => contact.id === openActivityContactId) || null
     : null;
 
@@ -587,6 +597,7 @@ export default function CRMPipelinePage() {
 
   function closeActivityPopup() {
     setOpenActivityContactId("");
+    setEditingActivityId("");
     setOpenActivityMode("details");
     setActivityFormError("");
   }
@@ -892,7 +903,23 @@ export default function CRMPipelinePage() {
     setOpenActivityMode("details");
   }
 
+  function openEditActivityPopup(activity: CrmActivity) {
+    setActivityFormError("");
+    setEditingActivityId(activity.id);
+    setActivityForm({
+      type: activity.type,
+      title: activity.title,
+      dueDate: activity.dueDate || today,
+      dueTime: activity.dueTime ? activity.dueTime.slice(0, 5) : "",
+      note: activity.note || "",
+      completed: activity.status === "done",
+    });
+    setOpenActivityMode("edit");
+    setOpenActivityContactId(activity.contactId);
+  }
+
   function openAddActivityPopup(contactId: string) {
+    setEditingActivityId("");
     setActivityFormError("");
     setActivityForm({
       type: "Zadzwoń",
@@ -926,14 +953,15 @@ export default function CRMPipelinePage() {
 
     setActivityFormError("");
     setIsSavingNewActivity(true);
+    const isEditing = openActivityMode === "edit" && Boolean(editingActivityId);
     const response = await fetch("/api/crm/activities", {
-      method: "POST",
+      method: isEditing ? "PATCH" : "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        contactId,
+        ...(isEditing ? { id: editingActivityId } : { contactId }),
         type: activityForm.type,
         title: activityForm.title,
         dueDate: activityForm.dueDate,
@@ -949,9 +977,18 @@ export default function CRMPipelinePage() {
       return;
     }
 
-    setActivities((current) => [result.activity, ...current]);
-    setOpenActivityContactId("");
-    setOpenActivityMode("details");
+    if (isEditing) {
+      setActivities((current) =>
+        current.map((item) => (item.id === result.activity.id ? result.activity : item)),
+      );
+      setEditingActivityId("");
+      setOpenActivityMode("details");
+      setOpenActivityContactId(contactId);
+    } else {
+      setActivities((current) => [result.activity, ...current]);
+      setOpenActivityContactId("");
+      setOpenActivityMode("details");
+    }
     setActivityForm({
       type: "Zadzwoń",
       title: "Zadzwoń",
@@ -1367,7 +1404,27 @@ export default function CRMPipelinePage() {
                                     event.stopPropagation();
                                     openActivityDetailsPopup(event, contact.id);
                                   }}
-                                />
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    fill="none"
+                                    height="10"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="3.2"
+                                    viewBox="0 0 24 24"
+                                    width="10"
+                                  >
+                                    <path
+                                      d={
+                                        getActivityTone(activity) === "overdue"
+                                          ? "m15 6-6 6 6 6"
+                                          : "m9 6 6 6-6 6"
+                                      }
+                                    />
+                                  </svg>
+                                </button>
                               ) : (
                                 <button
                                   aria-label="Brak zaplanowanego zadania"
@@ -1410,12 +1467,17 @@ export default function CRMPipelinePage() {
                                             <span className="crmTaskPopoverType" aria-hidden="true">
                                               {activityTypeGlyph(item.type)}
                                             </span>
-                                            <span className="crmTaskPopoverText">
+                                            <button
+                                              className="crmTaskPopoverText"
+                                              title="Otwórz i edytuj zadanie"
+                                              type="button"
+                                              onClick={() => openEditActivityPopup(item)}
+                                            >
                                               <strong title={item.title}>{item.title}</strong>
                                               <small className={getActivityTone(item)}>
                                                 {formatActivityShortDate(item)} · {item.type}
                                               </small>
-                                            </span>
+                                            </button>
                                           </li>
                                         ),
                                       )}
@@ -1471,7 +1533,7 @@ export default function CRMPipelinePage() {
             >
               <header>
                 <div>
-                  <p>Nowe zadanie</p>
+                  <p>{openActivityMode === "edit" ? "Edycja zadania" : "Nowe zadanie"}</p>
                   <h2 id="crm-task-modal-title">{addActivityContact.name}</h2>
                 </div>
                 <button
@@ -1542,7 +1604,11 @@ export default function CRMPipelinePage() {
                 </label>
                 {activityFormError ? <p>{activityFormError}</p> : null}
                 <button disabled={isSavingNewActivity} type="submit">
-                  {isSavingNewActivity ? "Zapisywanie..." : "Zapisz zadanie"}
+                  {isSavingNewActivity
+                    ? "Zapisywanie..."
+                    : openActivityMode === "edit"
+                      ? "Zapisz zmiany"
+                      : "Zapisz zadanie"}
                 </button>
               </form>
             </section>
@@ -3043,23 +3109,32 @@ export default function CRMPipelinePage() {
         }
 
         .crmActivityDot {
+          align-items: center;
           border: 0;
           border-radius: 999px;
-          box-shadow: 0 3px 9px rgba(21, 32, 43, 0.16);
-          height: 16px;
-          width: 16px;
+          color: #ffffff;
+          cursor: pointer;
+          display: flex;
+          height: 18px;
+          justify-content: center;
+          padding: 0;
+          width: 18px;
+        }
+
+        .crmActivityDot:hover {
+          filter: brightness(0.92);
         }
 
         .crmActivityDot.overdue {
-          background: #dc3b38;
+          background: #e5484d;
         }
 
         .crmActivityDot.today {
-          background: #b9bdc4;
+          background: #08a742;
         }
 
         .crmActivityDot.future {
-          background: #2f9157;
+          background: #b4b8be;
         }
 
         .crmActivityLoader {
@@ -3286,9 +3361,26 @@ export default function CRMPipelinePage() {
         }
 
         .crmTaskPopoverText {
+          background: transparent;
+          border: 0;
+          border-radius: 6px;
+          color: inherit;
+          cursor: pointer;
           display: grid;
+          font: inherit;
           gap: 2px;
+          margin: -4px -6px;
           min-width: 0;
+          padding: 4px 6px;
+          text-align: left;
+        }
+
+        .crmTaskPopoverText:hover {
+          background: #f1f3f5;
+        }
+
+        .crmTaskPopoverText:hover strong {
+          color: #2b4ba1;
         }
 
         .crmTaskPopoverText strong {
