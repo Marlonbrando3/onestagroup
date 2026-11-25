@@ -1,9 +1,18 @@
 import { CRM_PUSH_TEST_USERS, sendCrmPush, sendCrmPushOnce } from "@/lib/crmPush";
 import { supabaseServer } from "@/lib/supabaseClient";
+import { getCrmUserSettings } from "@/lib/crmUserSettings";
+import type { CrmNotificationSettings } from "@/components/crm/notificationSettings";
 
 // Automatyczne powiadomienia CRM uruchamiane co 5 minut (netlify/functions/crm-reminders.mts).
-const REMIND_BEFORE_MIN = 15;
-const MORNING_SUMMARY = { hour: 8, minute: 30 };
+// Każda osoba ma własne ustawienia (/crm/konto → crm_user_settings).
+
+function leadText(diff: number, time: string) {
+  if (diff <= 0) return "Teraz";
+  if (diff < 60) return `Za ${diff} min`;
+  if (diff >= 720) return `Jutro o ${time}`;
+  const hours = Math.round(diff / 6) / 10;
+  return `Za ${String(hours).replace(".", ",")} godz.`;
+}
 
 function warsawNow() {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -47,22 +56,30 @@ export async function runCrmReminders() {
     .select("id,name,pipeline_owner")
     .in("id", contactIds);
   const contactById = new Map((contacts || []).map((row) => [row.id, row]));
+  const settingsCache = new Map<string, CrmNotificationSettings>();
+  async function settingsFor(email: string) {
+    if (!settingsCache.has(email)) settingsCache.set(email, await getCrmUserSettings(email));
+    return settingsCache.get(email)!;
+  }
+  const tomorrow = addDays(now.date, 1);
 
-  // 1. Przypomnienie 15 min przed zadaniem z godziną (dzisiaj)
+  // 1. Przypomnienia przed zadaniem z godziną – wyprzedzenie wg ustawień danego rodzaju zadania
   for (const activity of planned) {
-    if (activity.due_date !== now.date || !activity.due_time) continue;
-    const [hour, minute] = String(activity.due_time).split(":").map(Number);
-    const dueMinutes = hour * 60 + minute;
-    const diff = dueMinutes - now.minutes;
-    if (diff > REMIND_BEFORE_MIN || diff < -5) continue;
+    if (!activity.due_time || (activity.due_date !== now.date && activity.due_date !== tomorrow)) continue;
     const contact = contactById.get(activity.contact_id);
     if (!contact?.pipeline_owner) continue;
+    const reminder = (await settingsFor(contact.pipeline_owner)).reminders[activity.type];
+    if (!reminder?.enabled) continue;
+    const [hour, minute] = String(activity.due_time).split(":").map(Number);
+    const dueMinutes = (activity.due_date === tomorrow ? 1440 : 0) + hour * 60 + minute;
+    const diff = dueMinutes - now.minutes;
+    if (diff > reminder.minutesBefore || diff < -5) continue;
     const time = String(activity.due_time).slice(0, 5);
     reminders += await sendCrmPushOnce(
       `reminder:${activity.id}:${activity.due_date}:${time}`,
       contact.pipeline_owner,
       {
-        title: diff > 0 ? `Za ${diff} min: ${activity.title}` : `Teraz: ${activity.title}`,
+        title: `${leadText(diff, time)}: ${activity.title}`,
         body: `${contact.name || "Klient"} · ${activity.type} · ${time}`,
         url: `/crm/kontakt/${activity.contact_id}`,
         tag: `reminder-${activity.id}`,
@@ -70,8 +87,8 @@ export async function runCrmReminders() {
     );
   }
 
-  // 2. Poranne podsumowanie (od 8:30)
-  if (now.minutes >= MORNING_SUMMARY.hour * 60 + MORNING_SUMMARY.minute && now.minutes < 12 * 60) {
+  // 2. Poranne podsumowanie – o godzinie ustawionej przez daną osobę
+  {
     const perUser = new Map<string, { today: number; overdue: number }>();
     for (const activity of planned) {
       if (!activity.due_date || activity.due_date > now.date) continue;
@@ -83,6 +100,11 @@ export async function runCrmReminders() {
       perUser.set(owner, counts);
     }
     for (const [email, counts] of perUser) {
+      const summary = (await settingsFor(email)).summary;
+      if (!summary.enabled) continue;
+      const [summaryHour, summaryMinute] = summary.time.split(":").map(Number);
+      const summaryAt = summaryHour * 60 + summaryMinute;
+      if (now.minutes < summaryAt || now.minutes >= summaryAt + 180) continue;
       const total = counts.today + counts.overdue;
       summaries += await sendCrmPushOnce(`summary:${email}:${now.date}`, email, {
         title: `Dzień dobry! Masz dziś ${total} ${total === 1 ? "zadanie" : total < 5 ? "zadania" : "zadań"}`,
@@ -117,6 +139,10 @@ export async function notifyPresentationActivity(
     .eq("id", list.crm_contact_id)
     .maybeSingle();
   if (!contact?.pipeline_owner) return;
+  const presentationSettings = (await getCrmUserSettings(contact.pipeline_owner)).presentation;
+  const wanted =
+    type === "interest" ? presentationSettings.interest : type === "offer_view" ? presentationSettings.offerView : presentationSettings.open;
+  if (!wanted) return;
   const name = contact.name || "Klient";
   const title =
     type === "interest"

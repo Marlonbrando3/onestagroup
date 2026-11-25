@@ -10,7 +10,7 @@ function urlBase64ToUint8Array(base64: string) {
 
 type Status = "loading" | "hidden" | "unsupported" | "needsInstall" | "off" | "on" | "blocked";
 
-export default function CrmPushToggle() {
+export default function CrmPushToggle({ inline = false }: { inline?: boolean }) {
   const [status, setStatus] = useState<Status>("loading");
   const [isOpen, setIsOpen] = useState(false);
   const [mobileTop, setMobileTop] = useState<number | null>(null);
@@ -124,7 +124,103 @@ export default function CrmPushToggle() {
     }
   }
 
-  if (status === "loading" || status === "hidden") return null;
+  if (status === "loading" || (status === "hidden" && !inline)) return null;
+
+  const panelBody = (
+    <>
+          <strong>Powiadomienia na telefon</strong>
+          {status === "needsInstall" ? (
+            <p>
+              Na iPhonie: otwórz CRM w <b>Safari</b> → Udostępnij → <b>„Do ekranu początkowego”</b>, uruchom aplikację z
+              ikonki i wróć tutaj.
+            </p>
+          ) : status === "unsupported" ? (
+            <p>Ta przeglądarka nie obsługuje powiadomień. Na iPhonie użyj Safari i zainstaluj CRM na ekranie początkowym.</p>
+          ) : status === "blocked" ? (
+            <p>Powiadomienia są zablokowane. Włącz je w Ustawieniach telefonu → Powiadomienia → Onesta CRM.</p>
+          ) : status === "on" ? (
+            <>
+              <p>
+                Włączone na tym urządzeniu. Co i kiedy dostajesz, ustawisz w <a href="/crm/konto">Moim koncie</a>.
+              </p>
+              <div className="crmPushActions">
+                <button disabled={busy} type="button" onClick={sendTest}>
+                  Wyślij test
+                </button>
+                <button className="secondary" disabled={busy} type="button" onClick={disable}>
+                  Wyłącz
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p>Włącz, aby dostawać powiadomienia o aktywności klientów w prezentacjach i przypomnienia o zadaniach.</p>
+              <div className="crmPushActions">
+                <button disabled={busy} type="button" onClick={enable}>
+                  {busy ? "Włączanie…" : "Włącz powiadomienia"}
+                </button>
+              </div>
+            </>
+          )}
+          {message ? <small>{message}</small> : null}
+    </>
+  );
+
+  if (inline) {
+    return (
+      <section className="crmPushInline">
+        {status === "hidden" ? (
+          <>
+            <strong>Powiadomienia na telefon</strong>
+            <p>Powiadomienia push są jeszcze w testach i wkrótce będą dostępne także dla Ciebie.</p>
+          </>
+        ) : (
+          panelBody
+        )}
+        <style jsx>{`
+          .crmPushInline {
+            display: grid;
+            gap: 10px;
+          }
+          .crmPushInline :global(strong) {
+            color: #21232c;
+            font-size: 15px;
+          }
+          .crmPushInline :global(p) {
+            color: #5b5f66;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 0;
+          }
+          .crmPushInline :global(small) {
+            color: #2b4ba1;
+            font-size: 12px;
+          }
+          .crmPushInline :global(.crmPushActions) {
+            display: flex;
+            gap: 8px;
+          }
+          .crmPushInline :global(.crmPushActions button) {
+            background: #216e63;
+            border: 0;
+            border-radius: 6px;
+            color: #ffffff;
+            cursor: pointer;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            min-height: 36px;
+            padding: 0 14px;
+          }
+          .crmPushInline :global(.crmPushActions button.secondary) {
+            background: #ffffff;
+            border: 1px solid #c6c8cc;
+            color: #21232c;
+          }
+        `}</style>
+      </section>
+    );
+  }
 
   return (
     <div className="crmPush" ref={wrapperRef}>
@@ -150,39 +246,7 @@ export default function CrmPushToggle() {
           className="crmPushPanel"
           style={mobileTop !== null ? { position: "fixed", left: 12, right: 12, top: mobileTop, width: "auto" } : undefined}
         >
-          <strong>Powiadomienia na telefon</strong>
-          {status === "needsInstall" ? (
-            <p>
-              Na iPhonie: otwórz CRM w <b>Safari</b> → Udostępnij → <b>„Do ekranu początkowego”</b>, uruchom aplikację z
-              ikonki i wróć tutaj.
-            </p>
-          ) : status === "unsupported" ? (
-            <p>Ta przeglądarka nie obsługuje powiadomień. Na iPhonie użyj Safari i zainstaluj CRM na ekranie początkowym.</p>
-          ) : status === "blocked" ? (
-            <p>Powiadomienia są zablokowane. Włącz je w Ustawieniach telefonu → Powiadomienia → Onesta CRM.</p>
-          ) : status === "on" ? (
-            <>
-              <p>Włączone na tym urządzeniu. Dostaniesz powiadomienie o aktywności klientów i 15 min przed zadaniem.</p>
-              <div className="crmPushActions">
-                <button disabled={busy} type="button" onClick={sendTest}>
-                  Wyślij test
-                </button>
-                <button className="secondary" disabled={busy} type="button" onClick={disable}>
-                  Wyłącz
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <p>Włącz, aby dostawać powiadomienia o aktywności klientów w prezentacjach i przypomnienia o zadaniach.</p>
-              <div className="crmPushActions">
-                <button disabled={busy} type="button" onClick={enable}>
-                  {busy ? "Włączanie…" : "Włącz powiadomienia"}
-                </button>
-              </div>
-            </>
-          )}
-          {message ? <small>{message}</small> : null}
+          {panelBody}
         </section>
       ) : null}
       <style jsx>{`

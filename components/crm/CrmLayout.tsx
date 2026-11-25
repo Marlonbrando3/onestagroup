@@ -7,7 +7,7 @@ import { canAccessCrm, isCrmAdmin } from "./users";
 import CrmAppHead from "./CrmAppHead";
 
 type CrmLayoutProps = {
-  active: "contacts" | "add" | "pipeline" | "mailing";
+  active: "contacts" | "add" | "pipeline" | "mailing" | "account";
   children: ReactNode;
 };
 
