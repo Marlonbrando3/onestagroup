@@ -212,6 +212,9 @@ export default function CrmPushToggle({ inline = false }: { inline?: boolean }) 
             min-height: 36px;
             padding: 0 14px;
           }
+          .crmPushInline :global(.crmPushActions button:disabled) {
+            opacity: 0.6;
+          }
           .crmPushInline :global(.crmPushActions button.secondary) {
             background: #ffffff;
             border: 1px solid #c6c8cc;
@@ -298,25 +301,25 @@ export default function CrmPushToggle({ inline = false }: { inline?: boolean }) 
           width: 300px;
           z-index: 150;
         }
-        .crmPushPanel strong {
+        .crmPushPanel :global(strong) {
           color: #21232c;
           font-size: 14px;
         }
-        .crmPushPanel p {
+        .crmPushPanel :global(p) {
           color: #5b5f66;
           font-size: 13px;
           line-height: 1.45;
           margin: 0;
         }
-        .crmPushPanel small {
+        .crmPushPanel :global(small) {
           color: #2b4ba1;
           font-size: 12px;
         }
-        .crmPushActions {
+        .crmPushPanel :global(.crmPushActions) {
           display: flex;
           gap: 8px;
         }
-        .crmPushActions button {
+        .crmPushPanel :global(.crmPushActions button) {
           background: #216e63;
           border: 0;
           border-radius: 6px;
@@ -328,12 +331,12 @@ export default function CrmPushToggle({ inline = false }: { inline?: boolean }) 
           min-height: 34px;
           padding: 0 12px;
         }
-        .crmPushActions button.secondary {
+        .crmPushPanel :global(.crmPushActions button.secondary) {
           background: #ffffff;
           border: 1px solid #c6c8cc;
           color: #21232c;
         }
-        .crmPushActions button:disabled {
+        .crmPushPanel :global(.crmPushActions button:disabled) {
           opacity: 0.6;
         }
       `}</style>
