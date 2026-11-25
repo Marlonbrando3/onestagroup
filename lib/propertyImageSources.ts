@@ -1,6 +1,23 @@
 // Zmieniasz listę? Zaktualizuj też [images] remote_images w netlify.toml
 // (Netlify Image CDN pobiera zdjęcia tylko z hostów z tamtej listy).
 const PROPERTY_IMAGE_PROTOCOLS_BY_HOST = new Map<string, ReadonlySet<string>>([
+  // Dodane 25.11.2026 (hosty z bazy, których brakowało – np. titaniumproperties.es, rynek wtórny)
+  ["uesmcrsqfdzndbfisxsb.supabase.co", new Set(["https:"])],
+  ["titaniumproperties.es", new Set(["https:"])],
+  ["img.annagawlowska.realestate", new Set(["https:"])],
+  ["crm.mediter.com", new Set(["https:"])],
+  ["respacio-4c53102df1c9de6eca4f00689a84fb6b.s3.eu-west-3.amazonaws.com", new Set(["https:"])],
+  ["www.elportetinmobiliaria.com", new Set(["https:"])],
+  ["livemedcoast.com", new Set(["https:"])],
+  ["images.bencookrealestate.com", new Set(["https:"])],
+  ["palmhouses.eu", new Set(["https:"])],
+  ["cdn.sanity.io", new Set(["https:"])],
+  ["agentplus-s3.s3.eu-west-2.amazonaws.com", new Set(["https:"])],
+  ["img.inmotek.net", new Set(["https:"])],
+  ["base44.app", new Set(["https:"])],
+  ["villaspainofmoraira.com", new Set(["https:"])],
+  ["gertreypens.com", new Set(["https:"])],
+  ["psestates.es", new Set(["https:"])],
   ["123immo.es", new Set(["https:"])],
   ["agencymgam.com", new Set(["https:"])],
   ["api.bennecke.com", new Set(["https:"])],
