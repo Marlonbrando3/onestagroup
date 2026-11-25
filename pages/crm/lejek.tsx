@@ -3014,7 +3014,7 @@ export default function CRMPipelinePage() {
         .crmPipelineCard {
           background: #ffffff;
           border: 1px solid #dcdfe4;
-          border-radius: 8px;
+          border-radius: 7px;
           color: #21232c;
           display: grid;
           flex: 0 0 auto;
