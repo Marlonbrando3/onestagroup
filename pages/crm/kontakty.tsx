@@ -27,8 +27,8 @@ export default function CRMContactsPage() {
             <p>Kontakty</p>
             <h1>Lista kontaktow</h1>
           </div>
-          <Link className="crmPrimaryButton" href="/crm/dodaj-kontakt">
-            Dodaj kontakt
+          <Link className="crmPrimaryButton" href="/crm">
+            + Szansa sprzedaży w lejku
           </Link>
         </header>
 

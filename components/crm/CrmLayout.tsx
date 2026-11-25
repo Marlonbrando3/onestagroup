@@ -19,16 +19,6 @@ function ContactsIcon() {
   );
 }
 
-function AddContactIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <circle cx="10" cy="9" r="3" />
-      <path d="M4 19c.8-3.1 3-5 6-5s5.2 1.9 6 5" />
-      <path d="M18 8v6M15 11h6" />
-    </svg>
-  );
-}
-
 function PipelineIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -189,15 +179,6 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
           >
             <ContactsIcon />
             <span className="crmTooltip">Kontakty</span>
-          </Link>
-          <Link
-            aria-label="Dodaj klienta"
-            className={`crmNavItem ${active === "add" ? "active" : ""}`}
-            href="/crm/dodaj-kontakt"
-            title="Dodaj klienta"
-          >
-            <AddContactIcon />
-            <span className="crmTooltip">Dodaj klienta</span>
           </Link>
           <Link
             aria-label="Lejek"

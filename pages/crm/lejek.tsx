@@ -48,6 +48,7 @@ const emptyPipelineContactForm = {
   coast: "",
   purchaseTimeline: "",
   label: "",
+  summary: "",
 };
 
 const emptyPipelineDraftName = "Nowy lejek";
@@ -928,6 +929,7 @@ export default function CRMPipelinePage() {
         bathrooms: pipelineContactForm.bathrooms,
         coast: pipelineContactForm.coast,
         purchaseTimeline: pipelineContactForm.purchaseTimeline,
+        note: pipelineContactForm.summary.trim(),
         pipelineOwner:
           visibleOwner === "all" || visibleOwner === null
             ? currentUserEmail
@@ -1134,7 +1136,6 @@ export default function CRMPipelinePage() {
       <section className="crmPipelinePage">
         <header className="crmAppHeader">
           <div className="crmAppHeaderTitle">
-            <span>CRM</span>
             <h1>Szanse sprzedaży</h1>
           </div>
           <div className="crmAppHeaderSearch">
@@ -2071,6 +2072,19 @@ export default function CRMPipelinePage() {
                   </label>
                 </div>
               </div>
+              <label className="crmPipelineContactSummary">
+                <span>Podsumowanie informacji o kliencie</span>
+                <textarea
+                  placeholder="Kim jest klient, czego szuka, budżet, skąd przyszedł, ważne ustalenia…"
+                  value={pipelineContactForm.summary}
+                  onChange={(event) =>
+                    setPipelineContactForm({
+                      ...pipelineContactForm,
+                      summary: event.target.value,
+                    })
+                  }
+                />
+              </label>
               {pipelineContactFormError ? (
                 <p className="crmPipelineContactError">
                   {pipelineContactFormError}
@@ -2850,6 +2864,21 @@ export default function CRMPipelinePage() {
           color: #4b5563;
           font-size: 11px;
           font-weight: 900;
+        }
+
+        .crmPipelineContactForm textarea {
+          background: #f9fafb;
+          border: 1px solid #d8dee7;
+          border-radius: 8px;
+          color: #17202a;
+          font: inherit;
+          font-size: 13px;
+          line-height: 1.45;
+          min-height: 96px;
+          outline: 0;
+          padding: 10px 12px;
+          resize: vertical;
+          width: 100%;
         }
 
         .crmPipelineContactForm input,
