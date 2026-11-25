@@ -184,7 +184,7 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
           <Link
             aria-label="Kontakty"
             className={`crmNavItem ${active === "contacts" ? "active" : ""}`}
-            href="/crm"
+            href="/crm/kontakty"
             title="Kontakty"
           >
             <ContactsIcon />
@@ -202,7 +202,7 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
           <Link
             aria-label="Lejek"
             className={`crmNavItem ${active === "pipeline" ? "active" : ""}`}
-            href="/crm/lejek"
+            href="/crm"
             title="Lejek"
           >
             <PipelineIcon />
