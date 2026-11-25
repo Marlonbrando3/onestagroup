@@ -30,6 +30,8 @@ export type CrmContact = {
   lastContact: string;
   createdAt?: string;
   hasHistory?: boolean;
+  lastPresentationEventAt?: string | null;
+  presentationSeenAt?: string | null;
 };
 
 export const crmStatuses: CrmStatus[] = [
@@ -125,4 +127,29 @@ export type CrmNote = {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type CrmPresentation = {
+  id: string;
+  name: string;
+  clientName: string;
+  agentName: string;
+  createdAt: string;
+  token: string;
+  offersCount: number;
+  crmContactId: string | null;
+};
+
+export type CrmPresentationEvent = {
+  id: string;
+  type: "open" | "offer_view" | "interest";
+  offerId: string | null;
+  offerTitle: string;
+  createdAt: string;
+  presentationId?: string;
+  presentationName: string;
+  token: string;
+  contactId?: string;
+  contactName?: string;
+  unread?: boolean;
 };

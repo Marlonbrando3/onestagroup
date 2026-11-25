@@ -12,6 +12,7 @@ import { formatPhone } from "@/lib/phone";
 import type { AgentOffer } from "@/lib/agentOffers";
 import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
+import { usePresentationTracking } from "@/lib/presentationTracking";
 
 type PublicOfferListProps = {
   token: string;
@@ -44,6 +45,7 @@ export default function PublicOfferList({
   clientName,
   coverImages,
 }: PublicOfferListProps) {
+  usePresentationTracking(token, "open");
   const greeting = clientSalutation ? GREETING[clientSalutation] : null;
   const claim = greeting
     ? `Po rozmowie ${greeting.withYou} wyselekcjonowaliśmy oferty, które — wierzymy — spełnią ${greeting.yours} oczekiwania.`

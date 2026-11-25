@@ -5,6 +5,8 @@ import {
   CrmActivityType,
   CrmNote,
   CrmPipeline,
+  CrmPresentation,
+  CrmPresentationEvent,
   CrmStatus,
   crmActivityTypes,
   crmCurrency,
@@ -20,11 +22,25 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const today = new Date().toISOString().slice(0, 10);
 
-type HistoryFilter = "all" | "notes" | CrmActivityType;
+type HistoryFilter = "all" | "notes" | "presentations" | CrmActivityType;
 
 type HistoryItem =
   | { kind: "note"; id: string; date: string; note: CrmNote }
-  | { kind: "activity"; id: string; date: string; activity: CrmActivity };
+  | { kind: "activity"; id: string; date: string; activity: CrmActivity }
+  | { kind: "presentation"; id: string; date: string; event: CrmPresentationEvent };
+
+function presentationEventText(event: CrmPresentationEvent) {
+  if (event.type === "interest") {
+    return {
+      title: "Klient kliknął „Interesuje mnie ta oferta”",
+      detail: event.offerTitle || event.offerId || "",
+    };
+  }
+  if (event.type === "offer_view") {
+    return { title: "Klient obejrzał ofertę", detail: event.offerTitle || event.offerId || "" };
+  }
+  return { title: "Klient otworzył prezentację", detail: event.presentationName };
+}
 
 function formatDate(value: string | null) {
   if (!value) return "Bez terminu";
@@ -58,7 +74,7 @@ function isActivityOverdue(activity: CrmActivity) {
   return activity.status === "planned" && Boolean(activity.dueDate) && activity.dueDate! < today;
 }
 
-function ActivityIcon({ type }: { type: CrmActivityType | "note" }) {
+function ActivityIcon({ type }: { type: CrmActivityType | "note" | "presentation" }) {
   const common = {
     fill: "none",
     stroke: "currentColor",
@@ -70,6 +86,14 @@ function ActivityIcon({ type }: { type: CrmActivityType | "note" }) {
     height: 16,
     "aria-hidden": true,
   };
+  if (type === "presentation") {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="2" />
+        <path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.6 5.6a9 9 0 0 0 0 12.8M18.4 5.6a9 9 0 0 1 0 12.8" />
+      </svg>
+    );
+  }
   if (type === "note") {
     return (
       <svg {...common}>
@@ -154,6 +178,108 @@ export default function CRMContactCardPage() {
   } = useCrmNotes(contactId);
 
   const contact = contacts.find((item) => item.id === contactId);
+  const [linkedPresentations, setLinkedPresentations] = useState<CrmPresentation[]>([]);
+  const [presentationEvents, setPresentationEvents] = useState<CrmPresentationEvent[]>([]);
+  const [presentationsError, setPresentationsError] = useState("");
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+  const [presentationQuery, setPresentationQuery] = useState("");
+  const [presentationResults, setPresentationResults] = useState<CrmPresentation[]>([]);
+  const [isSearchingPresentations, setIsSearchingPresentations] = useState(false);
+
+  async function crmFetch(url: string, init?: RequestInit) {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) throw new Error("Zaloguj się ponownie.");
+    const response = await fetch(url, {
+      ...init,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        ...(init?.headers || {}),
+      },
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Wystąpił błąd.");
+    return result;
+  }
+
+  async function loadContactPresentations(markSeen = false) {
+    if (!contactId) return;
+    try {
+      const result = await crmFetch(
+        `/api/crm/presentations?contactId=${encodeURIComponent(contactId)}${markSeen ? "&markSeen=1" : ""}`,
+      );
+      setLinkedPresentations(result.presentations || []);
+      setPresentationEvents(result.events || []);
+      setPresentationsError("");
+    } catch (error) {
+      setPresentationsError(error instanceof Error ? error.message : "Nie udało się pobrać prezentacji.");
+    }
+  }
+
+  useEffect(() => {
+    loadContactPresentations(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contactId]);
+
+  useEffect(() => {
+    if (!isLinkModalOpen) return;
+    let ignore = false;
+    setIsSearchingPresentations(true);
+    const timer = window.setTimeout(async () => {
+      try {
+        const result = await crmFetch(
+          `/api/crm/presentations?q=${encodeURIComponent(presentationQuery)}`,
+        );
+        if (!ignore) setPresentationResults(result.presentations || []);
+      } catch (error) {
+        if (!ignore) {
+          setPresentationsError(error instanceof Error ? error.message : "Nie udało się wyszukać prezentacji.");
+        }
+      } finally {
+        if (!ignore) setIsSearchingPresentations(false);
+      }
+    }, 250);
+    return () => {
+      ignore = true;
+      window.clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLinkModalOpen, presentationQuery]);
+
+  async function linkPresentation(presentation: CrmPresentation) {
+    if (
+      presentation.crmContactId &&
+      presentation.crmContactId !== contactId &&
+      !window.confirm("Ta prezentacja jest powiązana z innym klientem. Przepiąć ją do tego kontaktu?")
+    ) {
+      return;
+    }
+    try {
+      await crmFetch("/api/crm/presentations", {
+        method: "POST",
+        body: JSON.stringify({ presentationId: presentation.id, contactId }),
+      });
+      setIsLinkModalOpen(false);
+      setPresentationQuery("");
+      await loadContactPresentations(true);
+    } catch (error) {
+      setPresentationsError(error instanceof Error ? error.message : "Nie udało się powiązać prezentacji.");
+    }
+  }
+
+  async function unlinkPresentation(presentation: CrmPresentation) {
+    if (!window.confirm(`Odłączyć prezentację „${presentation.name}” od tego klienta?`)) return;
+    try {
+      await crmFetch("/api/crm/presentations", {
+        method: "DELETE",
+        body: JSON.stringify({ presentationId: presentation.id }),
+      });
+      await loadContactPresentations();
+    } catch (error) {
+      setPresentationsError(error instanceof Error ? error.message : "Nie udało się odłączyć prezentacji.");
+    }
+  }
   const [pipeline, setPipeline] = useState<CrmPipeline>(defaultCrmPipeline);
   const stages = pipeline.stages.length ? pipeline.stages : defaultCrmPipeline.stages;
   const currentStageIndex = contact ? stages.indexOf(contact.status) : -1;
@@ -176,9 +302,15 @@ export default function CRMContactCardPage() {
         date: activityMoment(activity),
         activity,
       })),
+      ...presentationEvents.map((event) => ({
+        kind: "presentation" as const,
+        id: `presentation-${event.id}`,
+        date: event.createdAt,
+        event,
+      })),
     ];
     return items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [notes, doneActivities]);
+  }, [notes, doneActivities, presentationEvents]);
 
   const historyTypeCounts = useMemo(() => {
     const counts = new Map<CrmActivityType, number>();
@@ -190,6 +322,7 @@ export default function CRMContactCardPage() {
   const visibleHistory = historyItems.filter((item) => {
     if (historyFilter === "all") return true;
     if (historyFilter === "notes") return item.kind === "note";
+    if (historyFilter === "presentations") return item.kind === "presentation";
     return item.kind === "activity" && item.activity.type === historyFilter;
   });
 
@@ -500,6 +633,9 @@ export default function CRMContactCardPage() {
   const historyTabs: { key: HistoryFilter; label: string; count: number }[] = [
     { key: "all", label: "Wszystko", count: historyItems.length },
     { key: "notes", label: "Notatki", count: notes.length },
+    ...(presentationEvents.length
+      ? [{ key: "presentations" as HistoryFilter, label: "Prezentacje", count: presentationEvents.length }]
+      : []),
     ...crmActivityTypes
       .filter((type) => historyTypeCounts.get(type))
       .map((type) => ({ key: type as HistoryFilter, label: type, count: historyTypeCounts.get(type) || 0 })),
@@ -707,6 +843,50 @@ export default function CRMContactCardPage() {
                     <p className="crmSummaryText">{summaryText}</p>
                   ) : (
                     <p className="crmMuted">Brak podsumowania. Dodaj najważniejsze informacje o kliencie.</p>
+                  )}
+                </section>
+
+                <section className="crmSideSection">
+                  <div className="crmSideHeader">
+                    <h2>Prezentacje</h2>
+                    <button className="crmLinkButton" type="button" onClick={() => setIsLinkModalOpen(true)}>
+                      + Skojarz z prezentacją
+                    </button>
+                  </div>
+                  {presentationsError ? <p className="crmError crmInlineError">{presentationsError}</p> : null}
+                  {linkedPresentations.length ? (
+                    <ul className="crmLinkedPresentations">
+                      {linkedPresentations.map((presentation) => {
+                        const lastEvent = presentationEvents.find(
+                          (event) => event.presentationId === presentation.id,
+                        );
+                        return (
+                          <li key={presentation.id}>
+                            <div>
+                              <a href={`/oferty/${presentation.token}`} rel="noreferrer" target="_blank">
+                                {presentation.name}
+                              </a>
+                              <small>
+                                {presentation.offersCount} ofert · {formatDate(presentation.createdAt)}
+                                {lastEvent ? ` · ostatnia aktywność: ${formatDateTime(lastEvent.createdAt)}` : " · brak aktywności"}
+                              </small>
+                            </div>
+                            <button
+                              aria-label="Odłącz prezentację"
+                              title="Odłącz prezentację"
+                              type="button"
+                              onClick={() => unlinkPresentation(presentation)}
+                            >
+                              ×
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="crmMuted">
+                      Brak powiązanych prezentacji. Po skojarzeniu zobaczysz tu i w historii, kiedy klient otwiera prezentację i oferty.
+                    </p>
                   )}
                 </section>
               </aside>
@@ -941,6 +1121,40 @@ export default function CRMContactCardPage() {
                         );
                       }
 
+                      if (item.kind === "presentation") {
+                        const text = presentationEventText(item.event);
+                        return (
+                          <div className="crmTimelineRow" key={item.id}>
+                            <span className={`crmTimelineIcon presentation ${item.event.type}`}>
+                              <ActivityIcon type="presentation" />
+                            </span>
+                            <article className={`crmPresentationEvent ${item.event.type}`}>
+                              <div className="crmCardBody">
+                                <h3>{text.title}</h3>
+                                {text.detail ? (
+                                  item.event.type !== "open" && item.event.offerId ? (
+                                    <a
+                                      className="crmPresentationEventLink"
+                                      href={`/oferty/${item.event.token}/${item.event.offerId}`}
+                                      rel="noreferrer"
+                                      target="_blank"
+                                    >
+                                      {text.detail}
+                                    </a>
+                                  ) : (
+                                    <p className="crmPresentationEventDetail">{text.detail}</p>
+                                  )
+                                ) : null}
+                                <p className="crmMeta">
+                                  <span>{formatDateTime(item.event.createdAt)}</span>
+                                  <span>Prezentacja: {item.event.presentationName}</span>
+                                </p>
+                              </div>
+                            </article>
+                          </div>
+                        );
+                      }
+
                       const activity = item.activity;
                       const menuId = item.id;
                       return (
@@ -995,6 +1209,68 @@ export default function CRMContactCardPage() {
           ) : null}
         </section>
       )}
+
+      {isLinkModalOpen ? (
+        <div
+          className="crmModalBackdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setIsLinkModalOpen(false);
+          }}
+        >
+          <section aria-modal="true" className="crmActivityModal crmLinkModal" role="dialog">
+            <header>
+              <div>
+                <p>Skojarz z prezentacją</p>
+                <h2>{contact?.name || "Klient"}</h2>
+              </div>
+              <button aria-label="Zamknij" type="button" onClick={() => setIsLinkModalOpen(false)}>
+                ×
+              </button>
+            </header>
+            <input
+              autoFocus
+              className="crmLinkSearch"
+              placeholder="Szukaj: nazwa prezentacji, imię klienta, agent…"
+              value={presentationQuery}
+              onChange={(event) => setPresentationQuery(event.target.value)}
+            />
+            <div className="crmLinkResults">
+              {isSearchingPresentations && !presentationResults.length ? (
+                <p className="crmMuted">Szukam prezentacji…</p>
+              ) : presentationResults.length ? (
+                presentationResults.map((presentation) => {
+                  const isLinkedHere = presentation.crmContactId === contactId;
+                  const isLinkedElsewhere = Boolean(presentation.crmContactId) && !isLinkedHere;
+                  return (
+                    <button
+                      className={isLinkedHere ? "linked" : ""}
+                      disabled={isLinkedHere}
+                      key={presentation.id}
+                      type="button"
+                      onClick={() => linkPresentation(presentation)}
+                    >
+                      <span>
+                        <strong>{presentation.name}</strong>
+                        <small>
+                          {[presentation.clientName && `dla: ${presentation.clientName}`, presentation.agentName, `${presentation.offersCount} ofert`, formatDate(presentation.createdAt)]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </small>
+                      </span>
+                      <em>
+                        {isLinkedHere ? "Powiązana" : isLinkedElsewhere ? "Inny klient – przepnij" : "Skojarz"}
+                      </em>
+                    </button>
+                  );
+                })
+              ) : (
+                <p className="crmMuted">Nie znaleziono prezentacji.</p>
+              )}
+            </div>
+          </section>
+        </div>
+      ) : null}
 
       {editingActivityId ? (
         <div className="crmModalBackdrop" role="presentation">
@@ -1743,6 +2019,150 @@ export default function CRMContactCardPage() {
           height: 12px;
           justify-self: center;
           width: 12px;
+        }
+
+        /* Presentations */
+        .crmInlineError {
+          margin: 0;
+        }
+        .crmLinkedPresentations {
+          display: grid;
+          gap: 8px;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
+        .crmLinkedPresentations li {
+          align-items: start;
+          border: 1px solid #e3e6ea;
+          border-radius: 6px;
+          display: grid;
+          gap: 8px;
+          grid-template-columns: minmax(0, 1fr) auto;
+          padding: 8px 10px;
+        }
+        .crmLinkedPresentations a {
+          color: #3c61c4;
+          font-weight: 600;
+          text-decoration: none;
+        }
+        .crmLinkedPresentations small {
+          color: #747678;
+          display: block;
+          font-size: 11px;
+          margin-top: 2px;
+        }
+        .crmLinkedPresentations button {
+          background: transparent;
+          border: 0;
+          color: #9ea2a8;
+          cursor: pointer;
+          font-size: 18px;
+          line-height: 1;
+          padding: 0 2px;
+        }
+        .crmLinkedPresentations button:hover {
+          color: #c0392b;
+        }
+        .crmTimelineIcon.presentation {
+          color: #3c61c4;
+        }
+        .crmTimelineIcon.presentation.interest {
+          background: #e6f6ec;
+          border-color: #9fd9b5;
+          color: #08a742;
+        }
+        .crmPresentationEvent {
+          background: #ffffff;
+          border: 1px solid #d9e2f6;
+          border-left: 3px solid #3c61c4;
+          border-radius: 8px;
+          padding: 10px 12px;
+        }
+        .crmPresentationEvent.interest {
+          background: #f3fbf6;
+          border-color: #bfe6cd;
+          border-left-color: #08a742;
+        }
+        .crmPresentationEventLink {
+          color: #3c61c4;
+          font-weight: 500;
+          text-decoration: none;
+        }
+        .crmPresentationEventLink:hover {
+          text-decoration: underline;
+        }
+        .crmPresentationEventDetail {
+          color: #3b3f45;
+          margin: 0;
+        }
+        .crmLinkModal {
+          width: min(640px, 100%);
+        }
+        .crmLinkSearch {
+          border: 1px solid #c6c8cc;
+          border-radius: 6px;
+          font: inherit;
+          font-size: 14px;
+          margin-top: 8px;
+          min-height: 38px;
+          outline: 0;
+          padding: 0 12px;
+          width: 100%;
+        }
+        .crmLinkSearch:focus {
+          border-color: #3c61c4;
+          box-shadow: 0 0 0 2px rgba(60, 97, 196, 0.15);
+        }
+        .crmLinkResults {
+          border: 1px solid #e3e6ea;
+          border-radius: 8px;
+          display: grid;
+          margin-top: 8px;
+          max-height: 420px;
+          overflow-y: auto;
+        }
+        .crmLinkResults > p {
+          padding: 14px;
+        }
+        .crmLinkResults button {
+          align-items: center;
+          background: #ffffff;
+          border: 0;
+          border-bottom: 1px solid #f0f1f3;
+          cursor: pointer;
+          display: grid;
+          font: inherit;
+          gap: 12px;
+          grid-template-columns: minmax(0, 1fr) auto;
+          padding: 10px 12px;
+          text-align: left;
+        }
+        .crmLinkResults button:hover:not(:disabled) {
+          background: #f5f7fb;
+        }
+        .crmLinkResults button:disabled {
+          cursor: default;
+        }
+        .crmLinkResults strong {
+          display: block;
+          font-weight: 600;
+        }
+        .crmLinkResults small {
+          color: #747678;
+          display: block;
+          font-size: 12px;
+          margin-top: 2px;
+        }
+        .crmLinkResults em {
+          color: #3c61c4;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+        .crmLinkResults button.linked em {
+          color: #08a742;
         }
 
         /* Item menu */

@@ -68,3 +68,23 @@ create table if not exists public.crm_notes (
 );
 create index if not exists crm_notes_contact_id_created_at_idx on public.crm_notes (contact_id, created_at desc);
 alter table public.crm_notes enable row level security;
+
+-- Aktywność klientów w prezentacjach (/oferty) widoczna w CRM
+alter table public.agent_offer_lists add column if not exists crm_contact_id uuid references public.crm_contacts(id) on delete set null;
+create index if not exists agent_offer_lists_crm_contact_id_idx on public.agent_offer_lists (crm_contact_id);
+alter table public.crm_contacts add column if not exists presentation_seen_at timestamptz;
+create table if not exists public.presentation_events (
+  id uuid primary key default gen_random_uuid(),
+  list_id uuid not null references public.agent_offer_lists(id) on delete cascade,
+  event_type text not null check (event_type in ('open','offer_view','interest')),
+  offer_external_id text,
+  offer_title text,
+  created_at timestamptz not null default now()
+);
+create index if not exists presentation_events_list_id_created_at_idx on public.presentation_events (list_id, created_at desc);
+alter table public.presentation_events enable row level security;
+create table if not exists public.crm_event_reads (
+  user_email text primary key,
+  last_seen_at timestamptz not null default now()
+);
+alter table public.crm_event_reads enable row level security;

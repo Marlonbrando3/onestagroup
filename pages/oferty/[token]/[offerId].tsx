@@ -41,6 +41,7 @@ import { getProjectUnits, type ProjectUnit } from "@/lib/projectUnits";
 import { normalizeFeatures } from "@/lib/propertyFeatures";
 import type { OfferPdfContact } from "@/lib/offerPdf";
 import { formatPhone } from "@/lib/phone";
+import { usePresentationTracking } from "@/lib/presentationTracking";
 
 type PresentationOfferProps = {
   token: string;
@@ -98,6 +99,7 @@ export default function PresentationOfferPage({
   const title =
     validTitleOrEmpty(offer.title) ||
     `${typeLabel} w ${offer.town || offer.province || "Hiszpanii"}`;
+  usePresentationTracking(token, "offer_view", String(offer.external_id || ""), title);
   const coast = getCoastLabelFromProvince(offer.province);
   const country = getCountryLabel(offer.country) || offer.country || "Hiszpania";
   const locationLine = [coast, offer.town].filter(Boolean).join(", ");

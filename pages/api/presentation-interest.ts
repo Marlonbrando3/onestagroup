@@ -85,6 +85,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     notificationRows.push({ ...notification, kind: "offer_interest_copy", agent_user_id: null, agent_email: ALWAYS_NOTIFY_EMAIL });
   }
   const { error: notifyError } = await supabaseServer.from("agent_notifications").insert(notificationRows);
+  // Aktywność klienta widoczna też w CRM (historia kontaktu, dzwonek, sygnał w lejku).
+  const { error: eventError } = await supabaseServer.from("presentation_events").insert({
+    list_id: presentation.id,
+    event_type: "interest",
+    offer_external_id: offerId,
+    offer_title: offer.title ? String(offer.title).slice(0, 300) : null,
+  });
+  if (eventError) console.error("presentation-interest: nie zapisano zdarzenia CRM", eventError);
   if (notifyError) console.error("presentation-interest: nie zapisano powiadomienia", notifyError);
   const notified = !notifyError;
 

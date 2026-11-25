@@ -19,6 +19,7 @@ import {
 } from "@/components/crm/users";
 import { supabase } from "@/lib/supabaseClient";
 import { CrmGreeting, pickCrmGreeting } from "@/components/crm/greetings";
+import CrmActivityBell from "@/components/crm/CrmActivityBell";
 import { useRouter } from "next/router";
 import {
   DragEvent,
@@ -1245,6 +1246,7 @@ export default function CRMPipelinePage() {
                     </span>
                   </span>
                 ) : null}
+                <CrmActivityBell />
                 <span className="crmAppHeaderAvatar" aria-hidden="true">
                   {currentCrmUser.label.slice(0, 1)}
                 </span>
@@ -1481,6 +1483,19 @@ export default function CRMPipelinePage() {
                           tabIndex={0}
                         >
                           <strong>{contact.name}</strong>
+                          {contact.lastPresentationEventAt &&
+                          (!contact.presentationSeenAt ||
+                            contact.lastPresentationEventAt > contact.presentationSeenAt) ? (
+                            <span
+                              aria-label="Nowa aktywność klienta w prezentacji"
+                              className="crmPresentationSignal"
+                              title="Nowa aktywność klienta w prezentacji – otwórz kartę, żeby zobaczyć szczegóły"
+                            >
+                              <span />
+                              <span />
+                              <span />
+                            </span>
+                          ) : null}
                           {!isActivitiesLoading &&
                           contact.hasHistory === false &&
                           !activities.some((item) => item.contactId === contact.id) ? (
@@ -3318,6 +3333,7 @@ export default function CRMPipelinePage() {
         }
 
         .crmPipelineCard strong {
+          padding-right: 14px;
           font-size: 14px;
           font-weight: 700;
           letter-spacing: -0.005em;
@@ -3342,6 +3358,57 @@ export default function CRMPipelinePage() {
           max-width: calc(100% - 32px);
           position: absolute;
           z-index: 3;
+        }
+
+        .crmPresentationSignal {
+          height: 16px;
+          pointer-events: auto;
+          position: absolute;
+          right: 9px;
+          top: 9px;
+          width: 16px;
+        }
+
+        .crmPresentationSignal span {
+          border-radius: 999px;
+          inset: 0;
+          position: absolute;
+        }
+
+        .crmPresentationSignal span:first-child {
+          background: #3c61c4;
+          box-shadow: 0 0 8px 2px rgba(60, 97, 196, 0.55);
+          inset: 4px;
+        }
+
+        .crmPresentationSignal span:nth-child(2),
+        .crmPresentationSignal span:nth-child(3) {
+          animation: crmSignalWave 2.2s ease-out infinite;
+          border: 2px solid rgba(60, 97, 196, 0.55);
+          opacity: 0;
+        }
+
+        .crmPresentationSignal span:nth-child(3) {
+          animation-delay: 1.1s;
+        }
+
+        @keyframes crmSignalWave {
+          0% {
+            opacity: 0.9;
+            transform: scale(0.35);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.6);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .crmPresentationSignal span:nth-child(2),
+          .crmPresentationSignal span:nth-child(3) {
+            animation: none;
+            opacity: 0.4;
+          }
         }
 
         .crmNewLeadBadge {

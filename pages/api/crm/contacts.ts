@@ -175,8 +175,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       (notesResult.data || []).forEach((row) => withHistory.add(row.contact_id));
     }
 
+    // Ostatnia aktywność klienta w powiązanych prezentacjach (sygnał w lejku)
+    const lastPresentationEvent = new Map<string, string>();
+    if (ids.length) {
+      const { data: linkedLists } = await supabaseServer
+        .from("agent_offer_lists")
+        .select("id,crm_contact_id")
+        .in("crm_contact_id", ids);
+      const contactByList = new Map((linkedLists || []).map((row) => [row.id, row.crm_contact_id]));
+      if (contactByList.size) {
+        const { data: eventRows } = await supabaseServer
+          .from("presentation_events")
+          .select("list_id,created_at")
+          .in("list_id", Array.from(contactByList.keys()))
+          .order("created_at", { ascending: false })
+          .limit(1000);
+        (eventRows || []).forEach((row) => {
+          const contactId = contactByList.get(row.list_id);
+          if (contactId && !lastPresentationEvent.has(contactId)) {
+            lastPresentationEvent.set(contactId, row.created_at);
+          }
+        });
+      }
+    }
+
     return res.status(200).json({
-      contacts: rows.map((row) => ({ ...mapContact(row), hasHistory: withHistory.has(row.id) })),
+      contacts: rows.map((row) => ({
+        ...mapContact(row),
+        hasHistory: withHistory.has(row.id),
+        lastPresentationEventAt: lastPresentationEvent.get(row.id) || null,
+        presentationSeenAt: row.presentation_seen_at || null,
+      })),
     });
   }
 
