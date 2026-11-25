@@ -5,8 +5,9 @@ import { supabaseServer } from "@/lib/supabaseClient";
 // Powiadomienia push aplikacji Onesta CRM (PWA).
 // Zmienne: NEXT_PUBLIC_VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, opcjonalnie VAPID_SUBJECT.
 
-// Na czas testów powiadomienia trafiają tylko do tych osób (pusta lista = do wszystkich).
-export const CRM_PUSH_TEST_USERS = ["marek.marszalek@onesta.com.pl"];
+// Ograniczenie powiadomień do wybranych osób (pusta lista = wszyscy użytkownicy CRM).
+// Od 25.11.2026 włączone dla wszystkich.
+export const CRM_PUSH_TEST_USERS: string[] = [];
 
 export type CrmPushPayload = { title: string; body: string; url?: string; tag?: string };
 
