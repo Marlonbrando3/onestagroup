@@ -27,6 +27,11 @@ export default function LoginCrm() {
       return;
     }
 
+    try {
+      // nowe logowanie = nowe losowe powitanie w nagłówku CRM
+      window.sessionStorage.removeItem("crmGreetingIndex");
+    } catch {}
+
     const requestedRedirect =
       typeof router.query.redirect === "string" ? router.query.redirect : "/crm";
     const safeRedirect =

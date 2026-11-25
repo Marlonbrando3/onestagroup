@@ -18,6 +18,7 @@ import {
   normalizeCrmEmail,
 } from "@/components/crm/users";
 import { supabase } from "@/lib/supabaseClient";
+import { CrmGreeting, pickCrmGreeting } from "@/components/crm/greetings";
 import { useRouter } from "next/router";
 import {
   DragEvent,
@@ -208,6 +209,11 @@ export default function CRMPipelinePage() {
   const [deletePipelineCountdown, setDeletePipelineCountdown] = useState(0);
   const [isDeletingPipeline, setIsDeletingPipeline] = useState(false);
   const [contactSearchQuery, setContactSearchQuery] = useState("");
+  const [greeting, setGreeting] = useState<CrmGreeting | null>(null);
+
+  useEffect(() => {
+    setGreeting(pickCrmGreeting());
+  }, []);
   const [contactFilter, setContactFilter] = useState<
     "all" | "today" | "overdue" | "noTasks"
   >("all");
@@ -1148,10 +1154,16 @@ export default function CRMPipelinePage() {
           <div className="crmAppHeaderGreeting">
             {currentCrmUser ? (
               <>
-                <span>
-                  Dobrego dnia,{" "}
-                  <strong>{currentCrmUser.label.split(" ")[0]}</strong>!
-                </span>
+                {greeting ? (
+                  <span>
+                    {greeting.before}
+                    <strong>{currentCrmUser.label.split(" ")[0]}</strong>
+                    {greeting.after}{" "}
+                    <span className="crmAppHeaderEmoji" aria-hidden="true">
+                      {greeting.emoji}
+                    </span>
+                  </span>
+                ) : null}
                 <span className="crmAppHeaderAvatar" aria-hidden="true">
                   {currentCrmUser.label.slice(0, 1)}
                 </span>
@@ -2045,6 +2057,11 @@ export default function CRMPipelinePage() {
         .crmAppHeaderGreeting strong {
           color: #21232c;
           font-weight: 700;
+        }
+
+        .crmAppHeaderEmoji {
+          font-size: 16px;
+          line-height: 1;
         }
 
         .crmAppHeaderAvatar {
