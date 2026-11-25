@@ -1308,7 +1308,7 @@ export default function CRMPipelinePage() {
               setIsDailyTasksOpen(true);
             }}
           >
-            Zadania na dziś
+            Wyświetl zadania na dziś
             {!isActivitiesLoading ? <span>{dailyTasks.length}</span> : null}
           </button>
           <label className="crmPipelineFilter">
