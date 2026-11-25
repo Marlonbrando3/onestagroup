@@ -1701,7 +1701,7 @@ export default function CRMPipelinePage() {
               )}
               <div className="crmDailyTasksFooter">
                 <button type="button" onClick={() => setIsDailyTasksOpen(false)}>
-                  Do roboty
+                  No to działamy 😄
                 </button>
               </div>
             </section>
