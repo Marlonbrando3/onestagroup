@@ -6,7 +6,6 @@ export const crmGreetings: CrmGreeting[] = [
   { before: "Hola, ", after: "!", emoji: "👋" },
   { before: "Bon voyage, ", after: "!", emoji: "✈️" },
   { before: "Pozdrowienia, ", after: "!", emoji: "🙌" },
-  { before: "Witam, ", after: ", ale bez serdecznie", emoji: "😏" },
   { before: "Buenos días, ", after: "!", emoji: "🌞" },
   { before: "Miłej sprzedaży, ", after: "!", emoji: "💼" },
   { before: "Kawa już jest, ", after: "?", emoji: "☕" },
