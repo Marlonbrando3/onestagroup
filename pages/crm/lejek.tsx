@@ -161,7 +161,7 @@ export default function CRMPipelinePage() {
     updateContactStatus,
     deleteContact,
     reload,
-  } = useCrmContacts(visibleOwner, selectedPipelineId);
+  } = useCrmContacts(visibleOwner, selectedPipelineId, undefined, 60000);
   const [activities, setActivities] = useState<CrmActivity[]>([]);
   const [isActivitiesLoading, setIsActivitiesLoading] = useState(true);
   const [activitiesError, setActivitiesError] = useState("");
@@ -1515,7 +1515,7 @@ export default function CRMPipelinePage() {
                           <strong>{contact.name}</strong>
                           {contact.lastPresentationEventAt &&
                           (!contact.presentationSeenAt ||
-                            contact.lastPresentationEventAt > contact.presentationSeenAt) ? (
+                            Date.parse(contact.lastPresentationEventAt) > Date.parse(contact.presentationSeenAt)) ? (
                             <span
                               aria-label="Nowa aktywność klienta w prezentacji"
                               className="crmPresentationSignal"

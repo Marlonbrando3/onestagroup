@@ -28,7 +28,12 @@ function normalizeCrmPhone(value: string) {
   return value.replace(/[\s\u00a0]+/g, "");
 }
 
-export function useCrmContacts(owner?: string | null, pipelineId?: string, contactId?: string) {
+export function useCrmContacts(
+  owner?: string | null,
+  pipelineId?: string,
+  contactId?: string,
+  autoRefreshMs?: number,
+) {
   const [contacts, setContacts] = useState<CrmContact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +94,43 @@ export function useCrmContacts(owner?: string | null, pipelineId?: string, conta
   useEffect(() => {
     loadContacts();
   }, [loadContacts]);
+
+  // Ciche odświeżanie (lejek): po powrocie do karty/aplikacji i co autoRefreshMs – nowe sygnały z prezentacji bez przeładowania.
+  useEffect(() => {
+    if (!autoRefreshMs || owner === null) return;
+    let busy = false;
+    async function refreshSilently() {
+      if (busy || document.visibilityState !== "visible") return;
+      busy = true;
+      try {
+        const authHeaders = await getAuthHeaders();
+        if (!authHeaders) return;
+        const params = new URLSearchParams();
+        if (owner) params.set("owner", owner);
+        if (pipelineId) params.set("pipelineId", pipelineId);
+        const query = params.toString() ? `?${params.toString()}` : "";
+        const response = await fetch(`/api/crm/contacts${query}`, { headers: authHeaders });
+        if (!response.ok) return;
+        const result = await response.json();
+        if (Array.isArray(result.contacts)) setContacts(result.contacts);
+      } catch {
+        // cicho – spróbujemy przy następnym odświeżeniu
+      } finally {
+        busy = false;
+      }
+    }
+    const interval = window.setInterval(refreshSilently, autoRefreshMs);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refreshSilently();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+    };
+  }, [autoRefreshMs, getAuthHeaders, owner, pipelineId]);
 
   async function addContact(payload: NewContactPayload) {
     setError(null);
