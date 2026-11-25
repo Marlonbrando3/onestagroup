@@ -9,6 +9,8 @@ import CrmAppHead from "./CrmAppHead";
 type CrmLayoutProps = {
   active: "contacts" | "add" | "pipeline" | "mailing" | "account";
   children: ReactNode;
+  // Na telefonie: cały CRM mieści się w wysokości ekranu (lejek przewija się wewnątrz)
+  fitScreen?: boolean;
 };
 
 function ContactsIcon() {
@@ -49,7 +51,7 @@ function LogoutIcon() {
   );
 }
 
-export default function CrmLayout({ active, children }: CrmLayoutProps) {
+export default function CrmLayout({ active, children, fitScreen = false }: CrmLayoutProps) {
   const router = useRouter();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -160,7 +162,7 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
   }
 
   return (
-    <main className="crmShell">
+    <main className={`crmShell ${fitScreen ? "fitScreen" : ""}`}>
       <CrmAppHead />
       <aside className="crmSidebar" aria-label="CRM">
         <div className="crmBrand">
@@ -346,6 +348,18 @@ export default function CrmLayout({ active, children }: CrmLayoutProps) {
         @media (max-width: 900px) {
           .crmShell {
             grid-template-columns: 1fr;
+          }
+
+          .crmShell.fitScreen {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+          }
+
+          .crmShell.fitScreen .crmSidebar {
+            flex: 0 0 auto;
           }
 
           .crmSidebar {

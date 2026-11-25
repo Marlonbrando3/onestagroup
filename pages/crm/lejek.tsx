@@ -222,6 +222,15 @@ export default function CRMPipelinePage() {
   const [isDeletingPipeline, setIsDeletingPipeline] = useState(false);
   const [contactSearchQuery, setContactSearchQuery] = useState("");
   const [greeting, setGreeting] = useState<CrmGreeting | null>(null);
+  const [isTopbarCollapsed, setIsTopbarCollapsed] = useState(false);
+
+  useEffect(() => {
+    try {
+      setIsTopbarCollapsed(window.localStorage.getItem("crmTopbarCollapsed") === "1");
+    } catch {
+      // brak dostępu do pamięci przeglądarki
+    }
+  }, []);
 
   useEffect(() => {
     setGreeting(pickCrmGreeting());
@@ -1135,7 +1144,7 @@ export default function CRMPipelinePage() {
   }
 
   return (
-    <CrmLayout active="pipeline">
+    <CrmLayout active="pipeline" fitScreen>
       <section className="crmPipelinePage">
         <header className="crmAppHeader">
           <div className="crmAppHeaderTitle">
@@ -1255,7 +1264,27 @@ export default function CRMPipelinePage() {
             ) : null}
           </div>
         </header>
-        <div className="crmPipelineTopbar">
+        <button
+          aria-expanded={!isTopbarCollapsed}
+          className="crmTopbarToggle"
+          type="button"
+          onClick={() => {
+            const next = !isTopbarCollapsed;
+            setIsTopbarCollapsed(next);
+            try {
+              window.localStorage.setItem("crmTopbarCollapsed", next ? "1" : "0");
+            } catch {
+              // bez pamięci przeglądarki – nic nie szkodzi
+            }
+          }}
+        >
+          <span>
+            {activePipeline.name}
+            {contactFilter !== "all" ? " · filtr aktywny" : ""}
+          </span>
+          <span aria-hidden="true">{isTopbarCollapsed ? "Pokaż filtry ▾" : "Zwiń ▴"}</span>
+        </button>
+        <div className={`crmPipelineTopbar ${isTopbarCollapsed ? "collapsed" : ""}`}>
           {isPipelineEditorOpen ? (
             <label>
               <span>Właściciel</span>
@@ -4072,13 +4101,44 @@ export default function CRMPipelinePage() {
           }
         }
 
+        .crmTopbarToggle {
+          display: none;
+        }
+
         @media (max-width: 760px) {
-          /* Telefon: strona przewija się w pionie, lejek ma stałą wysokość i przewija się w poziomie */
+          /* Telefon: cała strona w wysokości ekranu, kolumny lejka przewijają się w środku */
           .crmPipelinePage {
+            flex: 1 1 auto;
+            gap: 8px;
             height: auto;
-            min-height: 100vh;
-            overflow: visible;
-            padding: 14px 12px 18px;
+            min-height: 0;
+            overflow: hidden;
+            padding: 14px 12px calc(8px + env(safe-area-inset-bottom));
+          }
+
+          .crmTopbarToggle {
+            align-items: center;
+            background: #f4f6f8;
+            border: 1px solid #e3e6ea;
+            border-radius: 8px;
+            color: #21232c;
+            display: flex;
+            flex: 0 0 auto;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            justify-content: space-between;
+            min-height: 38px;
+            padding: 0 12px;
+          }
+
+          .crmTopbarToggle span:last-child {
+            color: #3c61c4;
+            font-size: 12px;
+          }
+
+          .crmPipelineTopbar.collapsed {
+            display: none;
           }
 
           .crmAppHeader {
@@ -4125,9 +4185,10 @@ export default function CRMPipelinePage() {
           }
 
           .crmPipelineBoard {
-            flex: 0 0 auto;
+            flex: 1 1 auto;
             grid-auto-columns: calc((100vw - 29px) / 2);
-            height: 72vh;
+            height: auto;
+            min-height: 0;
             scroll-snap-type: x mandatory;
           }
 
