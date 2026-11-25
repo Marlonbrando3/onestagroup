@@ -26,6 +26,7 @@ export default function CrmActivityBell() {
   const [items, setItems] = useState<CrmPresentationEvent[]>([]);
   const [unread, setUnread] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [mobileTop, setMobileTop] = useState<number | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const getToken = useCallback(async () => {
@@ -71,6 +72,9 @@ export default function CrmActivityBell() {
 
   async function toggle() {
     const next = !isOpen;
+    // Na telefonie panel na całą szerokość ekranu, tuż pod przyciskiem.
+    const rect = wrapperRef.current?.getBoundingClientRect();
+    setMobileTop(window.innerWidth <= 760 && rect ? Math.round(rect.bottom + 8) : null);
     setIsOpen(next);
     if (next) {
       await load();
@@ -105,7 +109,15 @@ export default function CrmActivityBell() {
         {unread ? <span>{unread > 99 ? "99+" : unread}</span> : null}
       </button>
       {isOpen ? (
-        <section className="crmBellPanel" aria-label="Powiadomienia">
+        <section
+          className="crmBellPanel"
+          aria-label="Powiadomienia"
+          style={
+            mobileTop !== null
+              ? { position: "fixed", left: 12, right: 12, top: mobileTop, width: "auto", maxHeight: `calc(100vh - ${mobileTop + 16}px)` }
+              : undefined
+          }
+        >
           <header>
             <strong>Aktywność klientów</strong>
             <small>w powiązanych prezentacjach</small>

@@ -4074,8 +4074,20 @@ export default function CRMPipelinePage() {
         }
 
         @media (max-width: 760px) {
+          /* Telefon: strona przewija się w pionie, lejek ma stałą wysokość i przewija się w poziomie */
+          .crmPipelinePage {
+            height: auto;
+            min-height: 100vh;
+            overflow: visible;
+            padding: 14px 12px 18px;
+          }
+
           .crmAppHeader {
+            flex: 0 0 auto;
+            gap: 10px;
             grid-template-columns: 1fr;
+            margin: -14px -12px 0;
+            padding: 10px 12px;
           }
 
           .crmAppHeaderGreeting {
@@ -4084,7 +4096,44 @@ export default function CRMPipelinePage() {
 
           .crmPipelineTopbar {
             align-items: stretch;
-            flex-direction: column;
+            display: grid;
+            flex: 0 0 auto;
+            gap: 8px;
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .crmPipelineTopbar > label,
+          .crmPipelineTopbar > button {
+            min-width: 0;
+          }
+
+          .crmPipelineTopbar > label {
+            display: grid;
+            gap: 4px;
+          }
+
+          .crmPipelineTopbar select {
+            min-width: 0;
+          }
+
+          .crmPipelineFilter {
+            grid-column: 1 / -1;
+          }
+
+          .crmDailyTasksButton {
+            justify-content: center;
+            margin-left: 0;
+          }
+
+          .crmPipelineBoard {
+            flex: 0 0 auto;
+            grid-auto-columns: calc((100vw - 29px) / 2);
+            height: 72vh;
+            scroll-snap-type: x mandatory;
+          }
+
+          .crmPipelineColumn {
+            scroll-snap-align: start;
           }
 
           .crmPipelineTopbar label,

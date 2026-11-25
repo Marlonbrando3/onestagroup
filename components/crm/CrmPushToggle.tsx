@@ -13,6 +13,7 @@ type Status = "loading" | "hidden" | "unsupported" | "needsInstall" | "off" | "o
 export default function CrmPushToggle() {
   const [status, setStatus] = useState<Status>("loading");
   const [isOpen, setIsOpen] = useState(false);
+  const [mobileTop, setMobileTop] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -132,7 +133,11 @@ export default function CrmPushToggle() {
         className={`crmPushButton ${status === "on" ? "on" : ""}`}
         title="Powiadomienia na telefon"
         type="button"
-        onClick={() => setIsOpen((current) => !current)}
+        onClick={() => {
+          const rect = wrapperRef.current?.getBoundingClientRect();
+          setMobileTop(window.innerWidth <= 760 && rect ? Math.round(rect.bottom + 8) : null);
+          setIsOpen((current) => !current);
+        }}
       >
         <svg aria-hidden="true" fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.9" viewBox="0 0 24 24" width="18">
           <rect x="7" y="2.5" width="10" height="19" rx="2.5" />
@@ -141,7 +146,10 @@ export default function CrmPushToggle() {
         {status === "on" ? <span /> : null}
       </button>
       {isOpen ? (
-        <section className="crmPushPanel">
+        <section
+          className="crmPushPanel"
+          style={mobileTop !== null ? { position: "fixed", left: 12, right: 12, top: mobileTop, width: "auto" } : undefined}
+        >
           <strong>Powiadomienia na telefon</strong>
           {status === "needsInstall" ? (
             <p>
