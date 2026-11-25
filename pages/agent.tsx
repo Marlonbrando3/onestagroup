@@ -361,11 +361,11 @@ export default function AgentPage() {
                 <input type="number" min="0" value={filters.priceMax} onChange={(event) => setFilters((current) => ({ ...current, priceMax: event.target.value }))} placeholder="Cena do €" className="agentFilterInput" />
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-wrap gap-2">
-                  <button type="submit" className="rounded-full bg-[#182334] px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-white transition hover:bg-[#b8954c]">Zastosuj filtry</button>
-                  <button type="button" onClick={clearFilters} className="rounded-full border border-[#d7cbbc] bg-white px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#526173] transition hover:border-[#182334]">Wyczyść</button>
-                </div>
                 <input value={filters.ref} onChange={(event) => setFilters((current) => ({ ...current, ref: event.target.value }))} placeholder="Nr ref., np. SP1526 lub MTI-3118" className="agentFilterInput w-full sm:!w-[300px]" aria-label="Numer referencyjny oferty" />
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" onClick={clearFilters} className="rounded-full border border-[#d7cbbc] bg-white px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#526173] transition hover:border-[#182334]">Wyczyść</button>
+                  <button type="submit" className="rounded-full bg-[#182334] px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-white transition hover:bg-[#b8954c]">Zastosuj filtry</button>
+                </div>
               </div>
             </form>
 
