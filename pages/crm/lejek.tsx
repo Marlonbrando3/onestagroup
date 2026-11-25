@@ -2775,9 +2775,11 @@ export default function CRMPipelinePage() {
           padding: 4px;
         }
 
-        .crmPipelineCards {
-          scrollbar-color: #c7cfd8 transparent;
-          scrollbar-width: thin;
+        @supports (-moz-appearance: none) {
+          .crmPipelineCards {
+            scrollbar-color: #c7cfd8 transparent;
+            scrollbar-width: thin;
+          }
         }
 
         .crmPipelineCards::-webkit-scrollbar {
