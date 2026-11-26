@@ -159,7 +159,7 @@ export async function ingestLead(input: LmIncomingLead): Promise<LmIngestResult>
     .select("id");
   let sms: LmIngestResult["sms"];
   if (claimed?.length) {
-    let links = { cbTop: "", costaBlanca: "" };
+    let links = { cbTop: "", costaBlanca: "", chat: "" };
     try {
       links = await createTrackedOfferLinks(leadId, contactId, !settings.sms.simulationMode);
     } catch (error) {
@@ -172,6 +172,7 @@ export async function ingestLead(input: LmIncomingLead): Promise<LmIngestResult>
       company: settings.companyName,
       cbTopLink: links.cbTop,
       costaBlancaLink: links.costaBlanca,
+      chatLink: links.chat,
     });
     const delivery = await sendLmSms({
       recipient: phone,

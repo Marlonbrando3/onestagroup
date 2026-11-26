@@ -6,6 +6,7 @@ import { sendCrmPush } from "@/lib/crmPush";
 
 const TRACKED_OFFERS = {
   costa_blanca: { label: "TOP 20 Costa Blanca", destinationUrl: "https://onesta.com.pl/cbtop" },
+  chat: { label: "Czat ofertowy", destinationUrl: "https://onesta.com.pl/czat" },
 } as const;
 type OfferKey = keyof typeof TRACKED_OFFERS;
 
@@ -78,12 +79,15 @@ export async function createTrackedOfferLinks(leadId: string, contactId: string,
   const token = await createToken(leadId, contactId, "costa_blanca");
   const url = `${siteOrigin()}/r/${token}`;
   const link = shorten ? `[%idzdo:${url}%]` : url;
-  return { cbTop: link, costaBlanca: link };
+  const chatToken = await createToken(leadId, contactId, "chat");
+  const chatUrl = `${siteOrigin()}/czat/${chatToken}`;
+  return { cbTop: link, costaBlanca: link, chat: shorten ? `[%idzdo:${chatUrl}%]` : chatUrl };
 }
 
 export async function resolveLmTrackedLink(token: string) {
   const payload = await readLmTrackingToken(token);
   if (!payload) return null;
+  if (payload.offerKey === "chat") return `${TRACKED_OFFERS.chat.destinationUrl}/${token}`;
   const destination = new URL(TRACKED_OFFERS[payload.offerKey].destinationUrl);
   destination.hash = new URLSearchParams({ lm: token }).toString();
   return destination.toString();
@@ -106,6 +110,24 @@ export const LM_EVENT_PUSH: Partial<Record<LmTrackedEvent, string>> = {
   email_click: "✉️ kliknął(a) e-mail",
   urgent_contact_request: "🚨 PROSI O PILNY KONTAKT",
 };
+
+// Zapis zdarzenia czatu (otwarcie / wybór) – wywoływane z lib/leadManager/chat.ts
+export async function insertLmEvent(input: {
+  contactId: string;
+  leadId?: string | null;
+  event: LmTrackedEvent | "chat_open" | "chat_completed";
+  title: string;
+  detail?: string;
+}) {
+  if (!supabaseServer) return;
+  await supabaseServer.from("lm_tracking_events").insert({
+    crm_contact_id: input.contactId,
+    lead_id: input.leadId || null,
+    event: input.event,
+    title: input.title.slice(0, 300),
+    detail: input.detail ? input.detail.slice(0, 2000) : null,
+  });
+}
 
 export async function recordLmTrackingEvent(input: { token: string; event: string; context?: string; offerId?: string }) {
   if (!supabaseServer) return null;

@@ -1265,7 +1265,13 @@ export default function CRMContactCardPage() {
                                 {item.lm.detail ? <p className="crmLmDetail">{item.lm.detail}</p> : null}
                                 <p className="crmMeta">
                                   <span>{formatDateTime(item.lm.createdAt)}</span>
-                                  <span>{item.lm.kind === "tracking" ? "Strona /cbtop (link z SMS-a)" : "Lead Manager"}</span>
+                                  <span>
+                                    {item.lm.kind !== "tracking"
+                                      ? "Lead Manager"
+                                      : String(item.lm.event || "").startsWith("chat_")
+                                        ? "Czat ofertowy"
+                                        : "Strona /cbtop (link z SMS-a)"}
+                                  </span>
                                 </p>
                               </div>
                             </article>

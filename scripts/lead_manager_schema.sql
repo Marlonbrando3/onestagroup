@@ -97,3 +97,33 @@ alter table public.lm_log enable row level security;
 alter table public.lm_tracking_events enable row level security;
 revoke all on table public.lm_settings, public.lm_leads, public.lm_sms_deliveries, public.lm_log, public.lm_tracking_events from anon, authenticated;
 grant all on table public.lm_settings, public.lm_leads, public.lm_sms_deliveries, public.lm_log, public.lm_tracking_events to service_role;
+
+-- Czat ofertowy (link z SMS-a → /czat/<token>, 2 pytania → prezentacja z puli), 26.11.2026
+create table if not exists public.lm_chat_config (
+  id smallint primary key default 1 check (id = 1),
+  config jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+insert into public.lm_chat_config (id) values (1) on conflict (id) do nothing;
+
+create table if not exists public.lm_chat_results (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  lead_id uuid references public.lm_leads(id) on delete set null,
+  crm_contact_id uuid references public.crm_contacts(id) on delete cascade,
+  answers jsonb not null default '[]'::jsonb,
+  source_list_id uuid references public.agent_offer_lists(id) on delete set null,
+  list_id uuid references public.agent_offer_lists(id) on delete set null,
+  public_token text
+);
+create index if not exists lm_chat_results_contact_idx on public.lm_chat_results (crm_contact_id, created_at desc);
+
+alter table public.lm_tracking_events drop constraint if exists lm_tracking_events_event_check;
+alter table public.lm_tracking_events add constraint lm_tracking_events_event_check check (event in (
+  'sms_link_open','property_open','property_like','contact_form_submit','whatsapp_click','phone_click','email_click','urgent_contact_request','chat_open','chat_completed'
+));
+
+alter table public.lm_chat_config enable row level security;
+alter table public.lm_chat_results enable row level security;
+revoke all on table public.lm_chat_config, public.lm_chat_results from anon, authenticated;
+grant all on table public.lm_chat_config, public.lm_chat_results to service_role;

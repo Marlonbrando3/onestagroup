@@ -43,6 +43,21 @@ type LeadRow = {
 type SmsRow = { id: string; created_at: string; audience: string; recipient: string; status: string; error: string | null };
 
 type SecretKey = "appSecret" | "pageAccessToken" | "apiToken";
+type ChatOption = { id: string; label: string };
+type ChatQuestion = { id: string; text: string; options: ChatOption[] };
+type ChatConfig = {
+  enabled: boolean;
+  agentName: string;
+  agentSubtitle: string;
+  greeting: string;
+  questions: ChatQuestion[];
+  rules: Record<string, string>;
+  defaultListId: string;
+  finalText: string;
+};
+type ChatPresentation = { id: string; name: string; token: string; offersCount: number };
+
+const optionId = () => Math.random().toString(36).slice(2, 8);
 
 const WEBHOOK_URL = "https://onesta.com.pl/api/leadmanager/meta-webhook";
 
@@ -65,6 +80,10 @@ export default function LeadManagerPage() {
   const [testPhone, setTestPhone] = useState("");
   const [testLead, setTestLead] = useState({ name: "Test Lead Manager", phone: "", email: "" });
   const [copied, setCopied] = useState(false);
+  const [chatConfig, setChatConfig] = useState<ChatConfig | null>(null);
+  const [chatPresentations, setChatPresentations] = useState<ChatPresentation[]>([]);
+  const [chatMessage, setChatMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const [isSavingChat, setIsSavingChat] = useState(false);
   const [metaPages, setMetaPages] = useState<Array<{ id: string; name: string; subscribed: boolean }>>([]);
   const [revealed, setRevealed] = useState<Record<SecretKey, boolean>>({ appSecret: false, pageAccessToken: false, apiToken: false });
   const [revealBusy, setRevealBusy] = useState<SecretKey | "">("");
@@ -158,7 +177,39 @@ export default function LeadManagerPage() {
       .then((result) => applySettings(result.settings))
       .catch((reason) => setError(reason instanceof Error ? reason.message : "Błąd."));
     loadDiagnostics();
+    api("/api/crm/leadmanager/chat-config")
+      .then((result) => {
+        setChatConfig(result.config);
+        setChatPresentations(result.presentations || []);
+      })
+      .catch(() => undefined);
   }, [api, loadDiagnostics]);
+
+  async function saveChat() {
+    if (!chatConfig) return;
+    setIsSavingChat(true);
+    setChatMessage(null);
+    try {
+      const result = await api("/api/crm/leadmanager/chat-config", {
+        method: "PUT",
+        body: JSON.stringify({ config: chatConfig }),
+      });
+      setChatConfig(result.config);
+      setChatMessage({ ok: true, text: "Zapisano czat ofertowy." });
+    } catch (reason) {
+      setChatMessage({ ok: false, text: reason instanceof Error ? reason.message : "Nie udało się zapisać." });
+    } finally {
+      setIsSavingChat(false);
+    }
+  }
+
+  function updateQuestion(index: number, patch: Partial<ChatQuestion>) {
+    if (!chatConfig) return;
+    setChatConfig({
+      ...chatConfig,
+      questions: chatConfig.questions.map((question, current) => (current === index ? { ...question, ...patch } : question)),
+    });
+  }
 
   async function save() {
     if (!settings) return;
@@ -404,7 +455,7 @@ export default function LeadManagerPage() {
                 <label className="lmField lmWide">
                   <span>
                     Treść SMS-a. Zmienne: {"{{name}}"} (imię i nazwisko), {"{{firstName}}"} (imię), {"{{company}}"},{" "}
-                    {"{{cbTopLink}}"} (link do TOP 20 ze śledzeniem)
+                    {"{{chatLink}}"} (czat „wygeneruj oferty”), {"{{cbTopLink}}"} (link do TOP 20 ze śledzeniem)
                   </span>
                   <textarea
                     rows={8}
@@ -438,6 +489,173 @@ export default function LeadManagerPage() {
               <button className="primary" disabled={isSaving} type="button" onClick={save}>
                 {isSaving ? "Zapisywanie…" : "Zapisz konfigurację"}
               </button>
+            </div>
+
+            <div className="lmCard">
+              <div className="lmCardHead">
+                <h2>Czat ofertowy (link „wygeneruj oferty” w SMS-ie)</h2>
+                {chatConfig ? (
+                  <label className="lmSwitch">
+                    <input
+                      checked={chatConfig.enabled}
+                      type="checkbox"
+                      onChange={(event) => setChatConfig({ ...chatConfig, enabled: event.target.checked })}
+                    />
+                    <span>Włączony</span>
+                  </label>
+                ) : null}
+              </div>
+              <p className="lmHint">
+                Wstaw {"{{chatLink}}"} w treść SMS-a powitalnego. Klient po kliknięciu odpowiada na 2 pytania i dostaje prezentację
+                przypisaną do jego odpowiedzi – jako własną kopię skojarzoną z jego kartą w CRM (widzisz, co ogląda, a Ty dostajesz push).
+                Pula = prezentacje ze strefy agenta, które nie są przypisane do żadnego klienta.
+              </p>
+              {chatConfig ? (
+                <>
+                  <div className="lmGrid">
+                    <label className="lmField">
+                      <span>Imię i nazwisko w nagłówku czatu</span>
+                      <input
+                        value={chatConfig.agentName}
+                        onChange={(event) => setChatConfig({ ...chatConfig, agentName: event.target.value })}
+                      />
+                    </label>
+                    <label className="lmField">
+                      <span>Podpis pod imieniem</span>
+                      <input
+                        value={chatConfig.agentSubtitle}
+                        onChange={(event) => setChatConfig({ ...chatConfig, agentSubtitle: event.target.value })}
+                      />
+                    </label>
+                    <label className="lmField lmWide">
+                      <span>Powitanie ({"{{firstName}}"} = „, Jan” – imię klienta z przecinkiem)</span>
+                      <textarea
+                        rows={3}
+                        value={chatConfig.greeting}
+                        onChange={(event) => setChatConfig({ ...chatConfig, greeting: event.target.value })}
+                      />
+                    </label>
+                  </div>
+
+                  {chatConfig.questions.map((question, questionIndex) => (
+                    <div className="lmQuestion" key={questionIndex}>
+                      <label className="lmField">
+                        <span>Pytanie {questionIndex + 1}</span>
+                        <input value={question.text} onChange={(event) => updateQuestion(questionIndex, { text: event.target.value })} />
+                      </label>
+                      <div className="lmOptions">
+                        {question.options.map((option, optionIndex) => (
+                          <div className="lmOption" key={option.id}>
+                            <input
+                              value={option.label}
+                              onChange={(event) =>
+                                updateQuestion(questionIndex, {
+                                  options: question.options.map((item, current) =>
+                                    current === optionIndex ? { ...item, label: event.target.value } : item,
+                                  ),
+                                })
+                              }
+                            />
+                            <button
+                              aria-label="Usuń odpowiedź"
+                              disabled={question.options.length <= 2}
+                              type="button"
+                              onClick={() =>
+                                updateQuestion(questionIndex, { options: question.options.filter((_, current) => current !== optionIndex) })
+                              }
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          className="lmLink"
+                          disabled={question.options.length >= 8}
+                          type="button"
+                          onClick={() =>
+                            updateQuestion(questionIndex, { options: [...question.options, { id: optionId(), label: "Nowa odpowiedź" }] })
+                          }
+                        >
+                          + Dodaj odpowiedź
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="lmField">
+                    <span>Która prezentacja dla jakich odpowiedzi</span>
+                    <div className="lmRules">
+                      {chatConfig.questions[0].options.flatMap((first) =>
+                        chatConfig.questions[1].options.map((second) => {
+                          const key = `${first.id}|${second.id}`;
+                          return (
+                            <div className="lmRule" key={key}>
+                              <span>
+                                {first.label} <b>+</b> {second.label}
+                              </span>
+                              <select
+                                value={chatConfig.rules[key] || ""}
+                                onChange={(event) => {
+                                  const rules = { ...chatConfig.rules };
+                                  if (event.target.value) rules[key] = event.target.value;
+                                  else delete rules[key];
+                                  setChatConfig({ ...chatConfig, rules });
+                                }}
+                              >
+                                <option value="">— jak domyślna —</option>
+                                {chatPresentations.map((presentation) => (
+                                  <option key={presentation.id} value={presentation.id}>
+                                    {presentation.name} ({presentation.offersCount})
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          );
+                        }),
+                      )}
+                      <div className="lmRule lmRuleDefault">
+                        <span>Domyślna (gdy nic nie przypisano)</span>
+                        <select
+                          value={chatConfig.defaultListId}
+                          onChange={(event) => setChatConfig({ ...chatConfig, defaultListId: event.target.value })}
+                        >
+                          <option value="">— brak —</option>
+                          {chatPresentations.map((presentation) => (
+                            <option key={presentation.id} value={presentation.id}>
+                              {presentation.name} ({presentation.offersCount})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    {!chatPresentations.length ? (
+                      <small>Brak prezentacji w puli – utwórz je w strefie agenta (bez przypisanego klienta).</small>
+                    ) : null}
+                  </div>
+
+                  <label className="lmField">
+                    <span>Wiadomość przed linkiem do prezentacji</span>
+                    <textarea
+                      rows={2}
+                      value={chatConfig.finalText}
+                      onChange={(event) => setChatConfig({ ...chatConfig, finalText: event.target.value })}
+                    />
+                  </label>
+
+                  <div className="lmActions">
+                    <button className="primary" disabled={isSavingChat} type="button" onClick={saveChat}>
+                      {isSavingChat ? "Zapisywanie…" : "Zapisz czat"}
+                    </button>
+                    <a className="lmPreview" href="/czat" rel="noreferrer" target="_blank">
+                      Podgląd czatu ↗
+                    </a>
+                    <small>Podgląd bez linku z SMS-a nie zapisuje nic w CRM.</small>
+                  </div>
+                  {chatMessage ? <p className={`lmResult ${chatMessage.ok ? "ok" : "fail"}`}>{chatMessage.text}</p> : null}
+                </>
+              ) : (
+                <p className="lmHint">Ładowanie…</p>
+              )}
             </div>
 
             <div className="lmCard">
@@ -696,6 +914,71 @@ export default function LeadManagerPage() {
           flex: 0 0 auto;
           padding: 0 10px;
         }
+        .lmQuestion {
+          border-top: 1px solid #eef0f2;
+          display: grid;
+          gap: 8px;
+          padding-top: 12px;
+        }
+        .lmOptions {
+          align-items: center;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .lmOption {
+          display: flex;
+          gap: 4px;
+        }
+        .lmOption input {
+          width: 170px;
+        }
+        .lmOption button {
+          padding: 0 10px;
+        }
+        .lmRules {
+          border: 1px solid #e3e6ea;
+          border-radius: 8px;
+          display: grid;
+        }
+        .lmRule {
+          align-items: center;
+          border-top: 1px solid #eef0f2;
+          display: grid;
+          gap: 10px;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+          padding: 8px 10px;
+        }
+        .lmRule:first-child {
+          border-top: 0;
+        }
+        .lmRule span {
+          font-size: 13px;
+        }
+        .lmRule b {
+          color: #8a8d93;
+          font-weight: 600;
+        }
+        .lmRuleDefault {
+          background: #f7f8fa;
+        }
+        .lmPage select {
+          background: #ffffff;
+          border: 1px solid #d5d9de;
+          border-radius: 6px;
+          color: #21232c;
+          font: inherit;
+          font-size: 13px;
+          min-height: 36px;
+          padding: 0 8px;
+          width: 100%;
+        }
+        .lmPreview {
+          color: #3c61c4;
+          font-size: 13px;
+          font-weight: 600;
+          text-decoration: none;
+        }
         .lmCopy {
           align-items: center;
           background: #f4f6f8;
@@ -868,6 +1151,9 @@ export default function LeadManagerPage() {
           }
           .lmActions input {
             flex: 1 1 100%;
+          }
+          .lmRule {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>
