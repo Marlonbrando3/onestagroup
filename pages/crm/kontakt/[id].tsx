@@ -22,12 +22,23 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const today = new Date().toISOString().slice(0, 10);
 
-type HistoryFilter = "all" | "notes" | "presentations" | CrmActivityType;
+type HistoryFilter = "all" | "notes" | "presentations" | "leadmanager" | CrmActivityType;
+
+// Wpis z Lead Managera: zgłoszenie z Facebooka, SMS powitalny, aktywność na /cbtop
+type LeadActivityItem = {
+  id: string;
+  kind: "lead" | "sms" | "tracking";
+  event?: string;
+  createdAt: string;
+  title: string;
+  detail: string;
+};
 
 type HistoryItem =
   | { kind: "note"; id: string; date: string; note: CrmNote }
   | { kind: "activity"; id: string; date: string; activity: CrmActivity }
-  | { kind: "presentation"; id: string; date: string; event: CrmPresentationEvent };
+  | { kind: "presentation"; id: string; date: string; event: CrmPresentationEvent }
+  | { kind: "lm"; id: string; date: string; lm: LeadActivityItem };
 
 function presentationEventText(event: CrmPresentationEvent) {
   if (event.type === "interest") {
@@ -180,6 +191,7 @@ export default function CRMContactCardPage() {
   const contact = contacts.find((item) => item.id === contactId);
   const [linkedPresentations, setLinkedPresentations] = useState<CrmPresentation[]>([]);
   const [presentationEvents, setPresentationEvents] = useState<CrmPresentationEvent[]>([]);
+  const [leadActivity, setLeadActivity] = useState<LeadActivityItem[]>([]);
   const [presentationsError, setPresentationsError] = useState("");
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const [presentationQuery, setPresentationQuery] = useState("");
@@ -219,6 +231,22 @@ export default function CRMContactCardPage() {
 
   useEffect(() => {
     loadContactPresentations(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contactId]);
+
+  useEffect(() => {
+    if (!contactId) return;
+    let ignore = false;
+    crmFetch(`/api/crm/lead-activity?contactId=${encodeURIComponent(contactId)}`)
+      .then((result) => {
+        if (!ignore) setLeadActivity(result.items || []);
+      })
+      .catch(() => {
+        // historia z Lead Managera jest dodatkiem – brak nie blokuje karty
+      });
+    return () => {
+      ignore = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactId]);
 
@@ -308,9 +336,10 @@ export default function CRMContactCardPage() {
         date: event.createdAt,
         event,
       })),
+      ...leadActivity.map((lm) => ({ kind: "lm" as const, id: `lm-${lm.id}`, date: lm.createdAt, lm })),
     ];
     return items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [notes, doneActivities, presentationEvents]);
+  }, [notes, doneActivities, presentationEvents, leadActivity]);
 
   const historyTypeCounts = useMemo(() => {
     const counts = new Map<CrmActivityType, number>();
@@ -323,6 +352,7 @@ export default function CRMContactCardPage() {
     if (historyFilter === "all") return true;
     if (historyFilter === "notes") return item.kind === "note";
     if (historyFilter === "presentations") return item.kind === "presentation";
+    if (historyFilter === "leadmanager") return item.kind === "lm";
     return item.kind === "activity" && item.activity.type === historyFilter;
   });
 
@@ -645,6 +675,9 @@ export default function CRMContactCardPage() {
     { key: "notes", label: "Notatki", count: notes.length },
     ...(presentationEvents.length
       ? [{ key: "presentations" as HistoryFilter, label: "Prezentacje", count: presentationEvents.length }]
+      : []),
+    ...(leadActivity.length
+      ? [{ key: "leadmanager" as HistoryFilter, label: "Facebook i SMS", count: leadActivity.length }]
       : []),
     ...crmActivityTypes
       .filter((type) => historyTypeCounts.get(type))
@@ -1189,6 +1222,45 @@ export default function CRMContactCardPage() {
                               ) : (
                                 <p className="crmNoteBody">{note.body}</p>
                               )}
+                            </article>
+                          </div>
+                        );
+                      }
+
+                      if (item.kind === "lm") {
+                        const tone =
+                          item.lm.kind === "lead"
+                            ? "lead"
+                            : item.lm.kind === "sms"
+                              ? "sms"
+                              : item.lm.event === "urgent_contact_request"
+                                ? "urgent"
+                                : "tracking";
+                        return (
+                          <div className="crmTimelineRow" key={item.id}>
+                            <span className={`crmTimelineIcon lm ${tone}`}>
+                              {item.lm.kind === "lead" ? (
+                                <svg aria-hidden="true" fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="14">
+                                  <circle cx="9" cy="8" r="4" />
+                                  <path d="M2 21a7 7 0 0 1 14 0M19 8v6M16 11h6" />
+                                </svg>
+                              ) : item.lm.kind === "sms" ? (
+                                <svg aria-hidden="true" fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="14">
+                                  <path d="M4 5h16v11H9l-5 4z" />
+                                </svg>
+                              ) : (
+                                <ActivityIcon type="presentation" />
+                              )}
+                            </span>
+                            <article className={`crmLmEvent ${tone}`}>
+                              <div className="crmCardBody">
+                                <h3>{item.lm.title}</h3>
+                                {item.lm.detail ? <p className="crmLmDetail">{item.lm.detail}</p> : null}
+                                <p className="crmMeta">
+                                  <span>{formatDateTime(item.lm.createdAt)}</span>
+                                  <span>{item.lm.kind === "tracking" ? "Strona /cbtop (link z SMS-a)" : "Lead Manager"}</span>
+                                </p>
+                              </div>
                             </article>
                           </div>
                         );
@@ -2317,6 +2389,44 @@ export default function CRMContactCardPage() {
           background: #f3fbf6;
           border-color: #bfe6cd;
           border-left-color: #08a742;
+        }
+        .crmTimelineIcon.lm.lead {
+          background: #eef3ff;
+          border-color: #c9d6f6;
+          color: #1877f2;
+        }
+        .crmTimelineIcon.lm.sms {
+          color: #5b5f66;
+        }
+        .crmTimelineIcon.lm.urgent {
+          background: #fdeeee;
+          border-color: #f0b8b8;
+          color: #c0392b;
+        }
+        .crmLmEvent {
+          background: #ffffff;
+          border: 1px solid #e3e6ea;
+          border-left: 3px solid #9aa3ad;
+          border-radius: 8px;
+          padding: 10px 12px;
+        }
+        .crmLmEvent.lead {
+          border-color: #d6e2fb;
+          border-left-color: #1877f2;
+        }
+        .crmLmEvent.tracking {
+          border-color: #d9e2f6;
+          border-left-color: #3c61c4;
+        }
+        .crmLmEvent.urgent {
+          background: #fff6f5;
+          border-color: #f3c6c1;
+          border-left-color: #c0392b;
+        }
+        .crmLmDetail {
+          color: #3b3f45;
+          margin: 0;
+          white-space: pre-wrap;
         }
         .crmPresentationEventLink {
           color: #3c61c4;

@@ -34,18 +34,10 @@ export type CbTopTrackingConsentSyncResult =
   | "pending"
   | "rejected";
 
+// Od 26.11.2026 Lead Manager działa w CRM onesta – zdarzenia trafiają do tej samej domeny
+// (stare tokeny serwer przekazuje do poprzedniej aplikacji).
 function trackingEndpoint() {
-  const configured = process.env.NEXT_PUBLIC_LEAD_MANAGER_URL?.trim();
-  const baseUrl = configured || "https://leadmanager-iota.vercel.app";
-  if (!baseUrl) return "";
-
-  try {
-    const url = new URL(baseUrl);
-    if (url.protocol !== "https:" && url.protocol !== "http:") return "";
-    return `${url.origin}/api/tracking/event`;
-  } catch {
-    return "";
-  }
+  return "/api/leadmanager/tracking";
 }
 
 function validToken(value: string | null) {
@@ -122,7 +114,7 @@ export function trackCbTopInteraction(payload: CbTopTrackingPayload) {
 
   void fetch(endpoint, {
     method: "POST",
-    mode: "cors",
+    mode: "same-origin",
     keepalive: true,
     headers: { "Content-Type": "text/plain;charset=UTF-8" },
     body: JSON.stringify({ token, ...payload }),
@@ -152,7 +144,7 @@ export async function reportCbTopPropertyLike(offerId: string) {
   try {
     const response = await fetch(endpoint, {
       method: "POST",
-      mode: "cors",
+      mode: "same-origin",
       keepalive: true,
       headers: { "Content-Type": "text/plain;charset=UTF-8" },
       body: JSON.stringify({
@@ -195,7 +187,7 @@ export async function requestCbTopUrgentContact() {
   try {
     const response = await fetch(endpoint, {
       method: "POST",
-      mode: "cors",
+      mode: "same-origin",
       headers: { "Content-Type": "text/plain;charset=UTF-8" },
       body: JSON.stringify({
         token,

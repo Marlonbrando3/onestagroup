@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { canAccessCrm, isCrmAdmin, normalizeCrmEmail } from "@/components/crm/users";
+import { canAccessCrm, isCrmAdmin, isCrmSuperadmin, normalizeCrmEmail } from "@/components/crm/users";
 import { supabaseServer } from "@/lib/supabaseClient";
 
 export type CrmRequestUser = { email: string; isAdmin: boolean };
@@ -37,4 +37,15 @@ export async function canAccessCrmContact(user: CrmRequestUser, contactId: strin
   if (!user.isAdmin) query = query.eq("pipeline_owner", user.email);
   const { data, error } = await query.maybeSingle();
   return !error && Boolean(data);
+}
+
+// Tylko superadmin (konfiguracja techniczna: Lead Manager, integracje)
+export async function requireCrmSuperadmin(req: NextApiRequest, res: NextApiResponse) {
+  const user = await requireCrmUser(req, res);
+  if (!user) return null;
+  if (!isCrmSuperadmin(user.email)) {
+    res.status(403).json({ error: "Ta sekcja jest dostępna tylko dla superadmina." });
+    return null;
+  }
+  return user;
 }

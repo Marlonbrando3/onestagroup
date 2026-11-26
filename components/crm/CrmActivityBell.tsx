@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 // Dzwonek w nagłówku CRM: aktywność klientów w powiązanych prezentacjach.
 function describe(event: CrmPresentationEvent) {
+  if (event.type === "lead" || event.type === "tracking") return { verb: event.verb || "", detail: event.offerTitle };
   if (event.type === "interest") return { verb: "kliknął „Interesuje mnie”", detail: event.offerTitle };
   if (event.type === "offer_view") return { verb: "obejrzał ofertę", detail: event.offerTitle };
   return { verb: "otworzył prezentację", detail: event.presentationName };
@@ -120,7 +121,7 @@ export default function CrmActivityBell() {
         >
           <header>
             <strong>Aktywność klientów</strong>
-            <small>w powiązanych prezentacjach</small>
+            <small>prezentacje i leady z Facebooka</small>
           </header>
           {items.length ? (
             <ul>

@@ -1,4 +1,5 @@
-export type CrmUserRole = "admin" | "user";
+// superadmin = admin + konfiguracja techniczna (Lead Manager, integracje)
+export type CrmUserRole = "superadmin" | "admin" | "user";
 
 export type CrmUser = {
   email: string;
@@ -10,7 +11,7 @@ export const crmUsers: CrmUser[] = [
   {
     email: "marek.marszalek@onesta.com.pl",
     label: "Marek Marszałek",
-    role: "admin",
+    role: "superadmin",
   },
   {
     email: "p.krzywanski@onesta.com.pl",
@@ -36,7 +37,12 @@ export function getCrmUser(email?: string | null) {
 }
 
 export function isCrmAdmin(email?: string | null) {
-  return getCrmUser(email)?.role === "admin";
+  const role = getCrmUser(email)?.role;
+  return role === "admin" || role === "superadmin";
+}
+
+export function isCrmSuperadmin(email?: string | null) {
+  return getCrmUser(email)?.role === "superadmin";
 }
 
 export function canAccessCrm(email?: string | null) {

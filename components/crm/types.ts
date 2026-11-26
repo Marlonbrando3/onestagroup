@@ -142,7 +142,9 @@ export type CrmPresentation = {
 
 export type CrmPresentationEvent = {
   id: string;
-  type: "open" | "offer_view" | "interest";
+  type: "open" | "offer_view" | "interest" | "lead" | "tracking";
+  // Dla zdarzeń Lead Managera (lead / tracking): gotowy opis
+  verb?: string;
   offerId: string | null;
   offerTitle: string;
   createdAt: string;

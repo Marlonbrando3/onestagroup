@@ -3,11 +3,11 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { canAccessCrm, isCrmAdmin } from "./users";
+import { canAccessCrm, isCrmAdmin, isCrmSuperadmin } from "./users";
 import CrmAppHead from "./CrmAppHead";
 
 type CrmLayoutProps = {
-  active: "contacts" | "add" | "pipeline" | "mailing" | "account";
+  active: "contacts" | "add" | "pipeline" | "mailing" | "account" | "leadmanager";
   children: ReactNode;
   // Na telefonie: cały CRM mieści się w wysokości ekranu (lejek przewija się wewnątrz)
   fitScreen?: boolean;
@@ -41,6 +41,16 @@ function MailingIcon() {
   );
 }
 
+function LeadManagerIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+      <circle cx="12" cy="12" r="4" />
+      <path d="M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" />
+    </svg>
+  );
+}
+
 function LogoutIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -55,6 +65,7 @@ export default function CrmLayout({ active, children, fitScreen = false }: CrmLa
   const router = useRouter();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSuperadmin, setIsSuperadmin] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -69,11 +80,13 @@ export default function CrmLayout({ active, children, fitScreen = false }: CrmLa
         return;
       }
       const admin = isCrmAdmin(data.user.email);
-      if (active === "mailing" && !admin) {
+      const superadmin = isCrmSuperadmin(data.user.email);
+      if ((active === "mailing" && !admin) || (active === "leadmanager" && !superadmin)) {
         router.push("/crm");
         return;
       }
       setIsAdmin(admin);
+      setIsSuperadmin(superadmin);
       setIsCheckingAuth(false);
     });
   }, [active, router]);
@@ -202,6 +215,17 @@ export default function CrmLayout({ active, children, fitScreen = false }: CrmLa
             >
               <MailingIcon />
               <span className="crmTooltip">Mailing</span>
+            </Link>
+          ) : null}
+          {isSuperadmin ? (
+            <Link
+              aria-label="Lead Manager"
+              className={`crmNavItem ${active === "leadmanager" ? "active" : ""}`}
+              href="/crm/leadmanager"
+              title="Lead Manager – konfiguracja"
+            >
+              <LeadManagerIcon />
+              <span className="crmTooltip">Lead Manager</span>
             </Link>
           ) : null}
         </nav>

@@ -41,20 +41,65 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .maybeSingle();
   const lastSeenAt = read?.last_seen_at || null;
 
-  if (!visibleLists.length) {
-    return res.status(200).json({ items: [], unread: 0, lastSeenAt });
-  }
-
   const listById = new Map(visibleLists.map((row) => [row.id, row]));
-  const { data: events, error } = await supabaseServer
-    .from("presentation_events")
-    .select("id,list_id,event_type,offer_external_id,offer_title,created_at")
-    .in("list_id", visibleLists.map((row) => row.id))
-    .order("created_at", { ascending: false })
-    .limit(60);
+  const { data: events, error } = visibleLists.length
+    ? await supabaseServer
+        .from("presentation_events")
+        .select("id,list_id,event_type,offer_external_id,offer_title,created_at")
+        .in("list_id", visibleLists.map((row) => row.id))
+        .order("created_at", { ascending: false })
+        .limit(60)
+    : { data: [], error: null };
   if (error) return res.status(500).json({ error: error.message });
 
-  const items = (events || []).map((row) => {
+  // Lead Manager: nowe leady z Facebooka i aktywność na /cbtop
+  const visibleContactIds = Array.from(contactNames.keys());
+  const [leadRows, trackingRows] = visibleContactIds.length
+    ? await Promise.all([
+        supabaseServer
+          .from("lm_leads")
+          .select("id,crm_contact_id,form_name,duplicate_of_existing,created_at")
+          .in("crm_contact_id", visibleContactIds)
+          .order("created_at", { ascending: false })
+          .limit(40),
+        supabaseServer
+          .from("lm_tracking_events")
+          .select("id,crm_contact_id,title,detail,created_at")
+          .in("crm_contact_id", visibleContactIds)
+          .order("created_at", { ascending: false })
+          .limit(40),
+      ])
+    : [{ data: [] as any[] }, { data: [] as any[] }];
+  const lmItems = [
+    ...(leadRows.data || []).map((row: any) => ({
+      id: `lead-${row.id}`,
+      type: "lead" as const,
+      verb: row.duplicate_of_existing ? "zgłosił(a) się ponownie z Facebooka" : "– nowy lead z Facebooka",
+      offerId: null,
+      offerTitle: row.form_name || "",
+      createdAt: row.created_at,
+      contactId: row.crm_contact_id,
+      contactName: contactNames.get(row.crm_contact_id) || "Klient",
+      presentationName: "",
+      token: "",
+      unread: !lastSeenAt || Date.parse(row.created_at) > Date.parse(lastSeenAt),
+    })),
+    ...(trackingRows.data || []).map((row: any) => ({
+      id: `track-${row.id}`,
+      type: "tracking" as const,
+      verb: String(row.title || "").replace(/^./, (letter: string) => letter.toLocaleLowerCase("pl-PL")),
+      offerId: null,
+      offerTitle: row.detail || "",
+      createdAt: row.created_at,
+      contactId: row.crm_contact_id,
+      contactName: contactNames.get(row.crm_contact_id) || "Klient",
+      presentationName: "",
+      token: "",
+      unread: !lastSeenAt || Date.parse(row.created_at) > Date.parse(lastSeenAt),
+    })),
+  ];
+
+  const presentationItems = (events || []).map((row: any) => {
     const list = listById.get(row.list_id)!;
     return {
       id: row.id,
@@ -66,9 +111,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       contactName: contactNames.get(list.crm_contact_id) || "Klient",
       presentationName: String(list.presentation_name || "").trim() || "Prezentacja",
       token: list.public_token,
-      unread: !lastSeenAt || row.created_at > lastSeenAt,
+      unread: !lastSeenAt || Date.parse(row.created_at) > Date.parse(lastSeenAt),
     };
   });
+
+  const items = [...presentationItems, ...lmItems]
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    .slice(0, 60);
 
   return res.status(200).json({
     items,
