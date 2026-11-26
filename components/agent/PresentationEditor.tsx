@@ -39,6 +39,9 @@ export default function PresentationEditor({
   const [presentationName, setPresentationName] = useState("");
   const [clientSalutation, setClientSalutation] = useState<"" | "pani" | "pan" | "panstwo">("");
   const [clientName, setClientName] = useState("");
+  // Wzorzec = prezentacja do puli czatu ofertowego: bez klienta, z tytułem dla odbiorcy (tylko Marek)
+  const [isTemplate, setIsTemplate] = useState(false);
+  const [publicTitle, setPublicTitle] = useState("");
   const [crmContact, setCrmContact] = useState<PickedCrmContact | null>(null);
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -112,6 +115,8 @@ export default function PresentationEditor({
           setPresentationName(presentation?.presentation_name || "");
           setClientSalutation(presentation?.client_salutation || "");
           setClientName(presentation?.client_name || "");
+          setIsTemplate(Boolean(presentation?.is_template));
+          setPublicTitle(presentation?.public_title || "");
           setCrmContact(
             presentation?.crm_contact?.id
               ? { id: presentation.crm_contact.id, name: presentation.crm_contact.name || "Klient" }
@@ -124,6 +129,7 @@ export default function PresentationEditor({
           const stored = window.sessionStorage.getItem("agent-presentation-draft");
           const parsed = stored ? JSON.parse(stored) : [];
           setOffers(Array.isArray(parsed) ? parsed : []);
+          if (router.query.wzorzec === "1") setIsTemplate(true);
           setContactName((current) => current || payload.agent?.name || "");
           setContactEmail((current) => current || payload.agent?.email || "");
         }
@@ -180,7 +186,9 @@ export default function PresentationEditor({
             presentationName,
             clientSalutation,
             clientName,
-            crmContactId: crmContact?.id || null,
+            isTemplate,
+            publicTitle,
+            crmContactId: isTemplate ? null : crmContact?.id || null,
             contactName,
             contactEmail,
             contactPhone,
@@ -266,11 +274,44 @@ export default function PresentationEditor({
                 Dane prezentacji
               </h1>
               <p className="mt-3 text-[11px] leading-5 text-slate-300">
-                Zwrot do klienta i dane agenta zobaczy klient na swojej stronie z ofertami.
+                {isTemplate
+                  ? "Wzorzec trafia do puli czatu ofertowego – zobaczą go różne osoby, dlatego bez danych klienta."
+                  : "Zwrot do klienta i dane agenta zobaczy klient na swojej stronie z ofertami."}
               </p>
             </div>
 
             <div className="grid gap-4 p-6">
+              {agent?.email?.toLowerCase() === "marek.marszalek@onesta.com.pl" || isTemplate ? (
+                <div className="grid gap-2 text-[11px] font-bold text-[#334155]">
+                  <span>Rodzaj prezentacji</span>
+                  <div className="grid grid-cols-2 overflow-hidden rounded-xl border border-[#ddd3c4]">
+                    {[
+                      { value: false, label: "Dla klienta" },
+                      { value: true, label: "Wzorzec (czat)" },
+                    ].map((option) => (
+                      <button
+                        key={option.label}
+                        type="button"
+                        disabled={agent?.email?.toLowerCase() !== "marek.marszalek@onesta.com.pl"}
+                        onClick={() => {
+                          setIsTemplate(option.value);
+                          setGeneratedUrl("");
+                        }}
+                        className={`min-h-[40px] text-[11px] font-extrabold uppercase tracking-[0.08em] transition ${
+                          isTemplate === option.value ? "bg-[#182334] text-white" : "bg-white text-[#526173] hover:bg-[#f5f1ea]"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-[9px] font-medium leading-4 text-slate-400">
+                    {isTemplate
+                      ? "Wzorzec nie jest przypisany do klienta. Z linku z czatu widać w CRM, kto go oglądał; bez linku – brak śledzenia i przycisku „Interesuje mnie”."
+                      : "Prezentacja dla konkretnego klienta – można ją skojarzyć z jego kartą w CRM."}
+                  </span>
+                </div>
+              ) : null}
               <label className="grid gap-2 text-[11px] font-bold text-[#334155]">
                 Nazwa prezentacji
                 <input
@@ -279,7 +320,7 @@ export default function PresentationEditor({
                   value={presentationName}
                   onChange={(event) => setPresentationName(event.target.value)}
                   className="presentationInput"
-                  placeholder="np. Apartamenty dla Państwa Kowalskich"
+                  placeholder={isTemplate ? "np. Pula: 400–500 tys. · Costa del Sol" : "np. Apartamenty dla Państwa Kowalskich"}
                 />
                 <span className="text-[9px] font-medium leading-4 text-slate-400">
                   Nazwa jest widoczna w panelu prezentacji i pomaga ją później odnaleźć.
@@ -287,6 +328,29 @@ export default function PresentationEditor({
               </label>
 
               <div className="my-1 border-t border-[#e8e0d5]" />
+
+              {isTemplate ? (
+                <div className="grid gap-2 text-[11px] font-bold text-[#334155]">
+                  <span>Tytuł widoczny dla klienta</span>
+                  <input
+                    required
+                    maxLength={160}
+                    value={publicTitle}
+                    onChange={(event) => setPublicTitle(event.target.value)}
+                    className="presentationInput"
+                    placeholder="np. Apartamenty z widokiem na morze na Costa del Sol"
+                  />
+                  <div className="mt-1 rounded-xl bg-[#182334] px-4 py-4 text-white">
+                    <p className="text-[8px] font-extrabold uppercase tracking-[0.16em] text-slate-400">Podgląd nagłówka</p>
+                    <p className="mt-2 text-[8px] font-extrabold uppercase tracking-[0.16em] text-[#d6b66f]">Wybrane oferty</p>
+                    <p className="mt-1 text-[19px] font-extrabold leading-tight">{publicTitle.trim() || "Oferty wybrane dla Ciebie"}</p>
+                    <p className="mt-2 text-[10px] font-medium leading-4 text-slate-300">
+                      Na podstawie Twoich odpowiedzi wybraliśmy oferty, które — wierzymy — mogą spełnić Twoje oczekiwania.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+              <>
 
               <div className="grid gap-2 text-[11px] font-bold text-[#334155]">
                 <span>Prezentacja przygotowana dla</span>
@@ -359,6 +423,8 @@ export default function PresentationEditor({
                   setGeneratedUrl("");
                 }}
               />
+              </>
+              )}
 
               <div className="my-1 border-t border-[#e8e0d5]" />
               <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9b7a36]">Agent prowadzący</p>

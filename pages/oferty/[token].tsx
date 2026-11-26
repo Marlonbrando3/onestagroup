@@ -13,6 +13,7 @@ import type { AgentOffer } from "@/lib/agentOffers";
 import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { usePresentationTracking } from "@/lib/presentationTracking";
+import { resolveLeadKey } from "@/lib/leadManager/tracking";
 
 type PublicOfferListProps = {
   token: string;
@@ -24,6 +25,10 @@ type PublicOfferListProps = {
   clientSalutation: "pani" | "pan" | "panstwo" | null;
   clientName: string;
   coverImages: string[];
+  // Wzorzec (pula czatu): własny tytuł, bez imienia klienta; śledzenie i „Interesuje mnie” tylko z linkiem leada (?k=…)
+  isTemplate: boolean;
+  publicTitle: string;
+  leadKey: string;
 };
 
 // Teksty nagłówka zależnie od zwrotu wybranego przez agenta. Imię klienta agent wpisuje
@@ -44,12 +49,26 @@ export default function PublicOfferList({
   clientSalutation,
   clientName,
   coverImages,
+  isTemplate,
+  publicTitle,
+  leadKey,
 }: PublicOfferListProps) {
-  usePresentationTracking(token, "open");
+  usePresentationTracking(token, "open", undefined, undefined, { isTemplate, leadKey });
+  const canInterest = !isTemplate || Boolean(leadKey);
+  const keyQuery = leadKey ? `?k=${encodeURIComponent(leadKey)}` : "";
   const greeting = clientSalutation ? GREETING[clientSalutation] : null;
-  const claim = greeting
-    ? `Po rozmowie ${greeting.withYou} wyselekcjonowaliśmy oferty, które — wierzymy — spełnią ${greeting.yours} oczekiwania.`
-    : "Po naszej rozmowie wyselekcjonowaliśmy oferty, które — wierzymy — spełnią Twoje oczekiwania.";
+  const claim = isTemplate
+    ? "Na podstawie Twoich odpowiedzi wybraliśmy oferty, które — wierzymy — mogą spełnić Twoje oczekiwania."
+    : greeting
+      ? `Po rozmowie ${greeting.withYou} wyselekcjonowaliśmy oferty, które — wierzymy — spełnią ${greeting.yours} oczekiwania.`
+      : "Po naszej rozmowie wyselekcjonowaliśmy oferty, które — wierzymy — spełnią Twoje oczekiwania.";
+  const headingText = isTemplate
+    ? publicTitle || "Oferty wybrane dla Ciebie"
+    : clientName
+      ? `${greeting ? `${greeting.title} ` : ""}${clientName}`
+      : greeting
+        ? `Oferty wybrane dla ${greeting.title}`
+        : "Oferty wybrane dla Ciebie";
   const formattedDate = new Intl.DateTimeFormat("pl-PL", {
     day: "2-digit",
     month: "long",
@@ -59,7 +78,7 @@ export default function PublicOfferList({
   return (
     <>
       <Head>
-        <title>{clientName ? `Prezentacja dla ${greeting ? `${greeting.title} ` : ""}${clientName}` : greeting ? `Oferty wybrane dla ${greeting.title}` : "Oferty wybrane dla Ciebie"} | Onesta Group</title>
+        <title>{isTemplate ? headingText : clientName ? `Prezentacja dla ${greeting ? `${greeting.title} ` : ""}${clientName}` : greeting ? `Oferty wybrane dla ${greeting.title}` : "Oferty wybrane dla Ciebie"} | Onesta Group</title>
         <meta
           name="description"
           content="Indywidualna lista nieruchomości przygotowana przez Onesta Group."
@@ -83,21 +102,19 @@ export default function PublicOfferList({
           <div className="relative px-6 py-10 sm:px-10 md:py-14 lg:px-14">
             <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-[#d6b66f]/10 blur-2xl" />
             <p className="relative text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#d6b66f]">
-              {clientName ? "Prezentacja przygotowana dla" : "Indywidualna prezentacja ofert"}
+              {isTemplate ? "Wybrane oferty" : clientName ? "Prezentacja przygotowana dla" : "Indywidualna prezentacja ofert"}
             </p>
             <h1 className={`${HomePlayfairSans.className} relative mt-4 text-[36px] font-semibold leading-[1.06] tracking-[-0.02em] md:text-[52px]`}>
-              {clientName
-                ? `${greeting ? `${greeting.title} ` : ""}${clientName}`
-                : greeting
-                  ? `Oferty wybrane dla ${greeting.title}`
-                  : "Oferty wybrane dla Ciebie"}
+              {headingText}
             </h1>
             <div className="relative mt-6 h-[3px] w-16 rounded-full bg-[#d6b66f]" aria-hidden="true" />
             <p className="relative mt-6 max-w-[620px] text-[16px] leading-8 text-slate-200 md:text-[18px]">{claim}</p>
             <ul className="relative mt-7 grid gap-2.5 text-[13px] text-slate-300">
               {[
                 "Każdą ofertę otworzysz, by zobaczyć zdjęcia, opis i lokalizację.",
-                "Przycisk „Interesuje mnie ta oferta” — jedno kliknięcie i agent prześle więcej informacji.",
+                canInterest
+                  ? "Przycisk „Interesuje mnie ta oferta” — jedno kliknięcie i agent prześle więcej informacji."
+                  : "Zadzwoń lub napisz do nas — przekażemy więcej informacji o każdej ofercie.",
                 "0 zł prowizji dla kupującego i obsługa po polsku od pierwszej rozmowy do odbioru kluczy.",
               ].map((point) => (
                 <li key={point} className="flex items-start gap-3">
@@ -183,13 +200,15 @@ export default function PublicOfferList({
             <div key={offer.external_id} className="flex flex-col gap-4">
               <PropertyCard
                 property={{ ...offer, vacantFromDate: offer.available_from }}
-                detailHrefOverride={`/oferty/${token}/${encodeURIComponent(String(offer.external_id))}`}
+                detailHrefOverride={`/oferty/${token}/${encodeURIComponent(String(offer.external_id))}${keyQuery}`}
                 appearance="cbtop"
                 imagePriority={index === 0}
               />
-              <div className="mt-auto">
-                <InterestButton token={token} offerId={String(offer.external_id)} />
-              </div>
+              {canInterest ? (
+                <div className="mt-auto">
+                  <InterestButton token={token} offerId={String(offer.external_id)} leadKey={leadKey} />
+                </div>
+              ) : null}
             </div>
           ))}
         </section>
@@ -218,10 +237,11 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
   const token = await resolvePublicOfferListToken(requestedToken);
   if (!token) return { notFound: true };
 
+  const requestedKey = typeof context.query.k === "string" ? context.query.k : "";
   if (token !== requestedToken) {
     return {
       redirect: {
-        destination: `/oferty/${encodeURIComponent(token)}`,
+        destination: `/oferty/${encodeURIComponent(token)}${requestedKey ? `?k=${encodeURIComponent(requestedKey)}` : ""}`,
         permanent: false,
       },
     };
@@ -230,7 +250,7 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
   const { data, error } = await supabaseServer
     .from("agent_offer_lists")
     .select(
-      "offers,created_at,agent_name,agent_email,contact_name,contact_email,contact_phone,client_salutation,client_name",
+      "offers,created_at,agent_name,agent_email,contact_name,contact_email,contact_phone,client_salutation,client_name,is_template,public_title",
     )
     .eq("public_token", token)
     .maybeSingle();
@@ -239,9 +259,15 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
     return { notFound: true };
   }
 
+  const isTemplate = Boolean((data as any).is_template);
+  const leadKey = isTemplate && requestedKey && (await resolveLeadKey(requestedKey)) ? requestedKey : "";
+
   return {
     props: {
       token,
+      isTemplate,
+      publicTitle: String((data as any).public_title || "").trim(),
+      leadKey,
       offers: data.offers as AgentOffer[],
       createdAt: data.created_at,
       contactName: data.contact_name || data.agent_name || "",

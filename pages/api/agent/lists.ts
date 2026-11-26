@@ -6,6 +6,7 @@ import { AGENT_OFFER_COLUMNS, AgentOffer } from "@/lib/agentOffers";
 import { supabaseServer } from "@/lib/supabaseClient";
 
 const MAX_OFFERS_PER_LIST = 100;
+const TEMPLATE_OWNER_EMAIL = "marek.marszalek@onesta.com.pl";
 
 function cleanText(value: unknown, maxLength: number) {
   return String(value || "").trim().slice(0, maxLength);
@@ -38,7 +39,7 @@ export default async function handler(
     const { data, error } = await supabaseServer
       .from("agent_offer_lists")
       .select(
-        "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,crm_contact:crm_contacts(id,name)",
+        "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,is_template,public_title,crm_contact:crm_contacts(id,name)",
       )
       .is("deleted_at", null)
       .order("updated_at", { ascending: false });
@@ -67,11 +68,20 @@ export default async function handler(
   const salutationRaw = String(req.body?.clientSalutation || "").trim().toLowerCase();
   const clientSalutation = ["pani", "pan", "panstwo"].includes(salutationRaw) ? salutationRaw : null;
   const clientName = cleanText(req.body?.clientName, 120) || null;
+  // Wzorzec (pula czatu ofertowego): bez klienta i bez przypisania do CRM, z własnym tytułem dla odbiorcy.
+  const isTemplate = Boolean(req.body?.isTemplate);
+  const publicTitle = cleanText(req.body?.publicTitle, 160) || null;
+  if (isTemplate && auth.agent.email.toLowerCase() !== TEMPLATE_OWNER_EMAIL) {
+    return res.status(403).json({ error: "Wzorce prezentacji może tworzyć tylko Marek" });
+  }
+  if (isTemplate && !publicTitle) {
+    return res.status(400).json({ error: "Podaj tytuł widoczny dla klienta" });
+  }
 
   if (!presentationName) {
     return res.status(400).json({ error: "Podaj nazwę prezentacji" });
   }
-  const crmLink = await resolveCrmContactLink(auth.agent.email, req.body?.crmContactId);
+  const crmLink = await resolveCrmContactLink(auth.agent.email, isTemplate ? null : req.body?.crmContactId);
   if (!crmLink.ok) {
     return res.status(400).json({ error: crmLink.error });
   }
@@ -138,10 +148,12 @@ export default async function handler(
         contact_name: contactName,
         contact_email: contactEmail,
         contact_phone: contactPhone,
-        client_salutation: clientSalutation,
-        client_name: clientName,
+        client_salutation: isTemplate ? null : clientSalutation,
+        client_name: isTemplate ? null : clientName,
+        is_template: isTemplate,
+        public_title: isTemplate ? publicTitle : null,
         offers: orderedOffers,
-        ...(crmLink.contactId !== undefined ? { crm_contact_id: crmLink.contactId } : {}),
+        ...(isTemplate ? { crm_contact_id: null } : crmLink.contactId !== undefined ? { crm_contact_id: crmLink.contactId } : {}),
       })
       .select("id,public_token,created_at")
       .single();

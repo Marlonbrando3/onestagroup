@@ -115,7 +115,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
   });
 
-  const items = [...presentationItems, ...lmItems]
+  // Wzorce z czatu: aktywność przypisana po linku leada (presentation_events.crm_contact_id)
+  const { data: templateEvents } = visibleContactIds.length
+    ? await supabaseServer
+        .from("presentation_events")
+        .select("id,list_id,event_type,offer_external_id,offer_title,created_at,crm_contact_id")
+        .in("crm_contact_id", visibleContactIds)
+        .order("created_at", { ascending: false })
+        .limit(40)
+    : { data: [] as any[] };
+  const templateIds = Array.from(new Set((templateEvents || []).map((row: any) => row.list_id)));
+  const { data: templateLists } = templateIds.length
+    ? await supabaseServer.from("agent_offer_lists").select("id,presentation_name,public_token").in("id", templateIds)
+    : { data: [] as any[] };
+  const templatesById = new Map((templateLists || []).map((row: any) => [row.id, row]));
+  const templateItems = (templateEvents || []).map((row: any) => {
+    const template: any = templatesById.get(row.list_id);
+    return {
+      id: row.id,
+      type: row.event_type,
+      offerId: row.offer_external_id,
+      offerTitle: row.offer_title || "",
+      createdAt: row.created_at,
+      contactId: row.crm_contact_id,
+      contactName: contactNames.get(row.crm_contact_id) || "Klient",
+      presentationName: `${String(template?.presentation_name || "Wzorzec").trim()} (z czatu)`,
+      token: template?.public_token || "",
+      unread: !lastSeenAt || Date.parse(row.created_at) > Date.parse(lastSeenAt),
+    };
+  });
+
+  const items = [...presentationItems, ...templateItems, ...lmItems]
     .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
     .slice(0, 60);
 

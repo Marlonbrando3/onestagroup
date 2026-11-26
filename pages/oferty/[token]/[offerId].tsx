@@ -42,6 +42,7 @@ import { normalizeFeatures } from "@/lib/propertyFeatures";
 import type { OfferPdfContact } from "@/lib/offerPdf";
 import { formatPhone } from "@/lib/phone";
 import { usePresentationTracking } from "@/lib/presentationTracking";
+import { resolveLeadKey } from "@/lib/leadManager/tracking";
 
 type PresentationOfferProps = {
   token: string;
@@ -51,6 +52,9 @@ type PresentationOfferProps = {
   features: string[];
   contact: OfferPdfContact;
   projectUnits: ProjectUnit[];
+  // Wzorzec (pula czatu): śledzenie i „Interesuje mnie” tylko z linkiem leada (?k=…)
+  isTemplate: boolean;
+  leadKey: string;
 };
 
 function formatPrice(value: number | null) {
@@ -66,7 +70,11 @@ export default function PresentationOfferPage({
   features,
   contact,
   projectUnits,
+  isTemplate,
+  leadKey,
 }: PresentationOfferProps) {
+  const canInterest = !isTemplate || Boolean(leadKey);
+  const keyQuery = leadKey ? `?k=${encodeURIComponent(leadKey)}` : "";
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   // Czy belka „Podoba Ci się ta oferta?” jest już przyklejona do góry (znacznik nad nią zniknął z ekranu).
@@ -99,7 +107,7 @@ export default function PresentationOfferPage({
   const title =
     validTitleOrEmpty(offer.title) ||
     `${typeLabel} w ${offer.town || offer.province || "Hiszpanii"}`;
-  usePresentationTracking(token, "offer_view", String(offer.external_id || ""), title);
+  usePresentationTracking(token, "offer_view", String(offer.external_id || ""), title, { isTemplate, leadKey });
   const coast = getCoastLabelFromProvince(offer.province);
   const country = getCountryLabel(offer.country) || offer.country || "Hiszpania";
   const locationLine = [coast, offer.town].filter(Boolean).join(", ");
@@ -169,7 +177,7 @@ export default function PresentationOfferPage({
       <div className={`${HomeMontserratSans.className} min-h-screen bg-[#f4f1eb] text-[#182334]`}>
         <div className="border-b border-[#ddd3c4] bg-white">
           <div className="mx-auto flex min-h-[72px] w-11/12 max-w-[1380px] items-center justify-between gap-4 py-3">
-            <Link href={`/oferty/${token}`} className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.11em] text-[#6b5a3d] transition hover:text-[#182334]">
+            <Link href={`/oferty/${token}${keyQuery}`} className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.11em] text-[#6b5a3d] transition hover:text-[#182334]">
               <FaArrowLeft aria-hidden="true" /> Wróć do prezentacji
             </Link>
             <div className="flex flex-wrap items-center justify-end gap-3">
@@ -261,7 +269,7 @@ export default function PresentationOfferPage({
           <div ref={stickySentinelRef} aria-hidden="true" className="mt-8 h-px" />
           <div className="sticky top-[5px] z-30 mx-auto flex max-w-[1240px] items-stretch">
             <Link
-              href={`/oferty/${token}`}
+              href={`/oferty/${token}${keyQuery}`}
               aria-label="Wróć do prezentacji"
               tabIndex={barStuck ? 0 : -1}
               aria-hidden={!barStuck}
@@ -285,11 +293,24 @@ export default function PresentationOfferPage({
                     : "Nie musisz wysyłać zdjęć WhatsAppem ani pamiętać numerów referencyjnych."}
                 </p>
                 <p className="hidden truncate text-[14px] font-bold leading-[18px] text-[#26364b] sm:block">
-                  {barStuck ? "Daj znać — agent prześle Ci więcej informacji." : "Daj znać jednym kliknięciem — agent prześle Ci więcej informacji."}
+                  {canInterest
+                    ? barStuck
+                      ? "Daj znać — agent prześle Ci więcej informacji."
+                      : "Daj znać jednym kliknięciem — agent prześle Ci więcej informacji."
+                    : "Zadzwoń do nas — przekażemy Ci więcej informacji."}
                 </p>
               </div>
               <div className="w-full sm:w-[300px] sm:shrink-0">
-                <InterestButton token={token} offerId={String(offer.external_id)} variant="wide" />
+                {canInterest ? (
+                  <InterestButton token={token} offerId={String(offer.external_id)} variant="wide" leadKey={leadKey} />
+                ) : (
+                  <a
+                    href={`tel:${(contact.phone || "+48576652525").replace(/[^+\d]/g, "")}`}
+                    className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-[#8e2430] px-6 text-[11px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-[#182334]"
+                  >
+                    Zadzwoń do agenta
+                  </a>
+                )}
               </div>
             </section>
           </div>
@@ -358,7 +379,7 @@ export default function PresentationOfferPage({
                 units={projectUnits}
                 variant="presentation"
                 headingClassName={HomePlayfairSans.className}
-                interest={{ token, parentOfferId: String(offer.external_id) }}
+                interest={canInterest ? { token, parentOfferId: String(offer.external_id), leadKey } : undefined}
               />
             </div>
 
@@ -506,10 +527,11 @@ export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = as
   const token = await resolvePublicOfferListToken(requestedToken);
   if (!token) return { notFound: true };
 
+  const requestedKey = typeof context.query.k === "string" ? context.query.k : "";
   if (token !== requestedToken) {
     return {
       redirect: {
-        destination: `/oferty/${encodeURIComponent(token)}/${encodeURIComponent(offerId)}`,
+        destination: `/oferty/${encodeURIComponent(token)}/${encodeURIComponent(offerId)}${requestedKey ? `?k=${encodeURIComponent(requestedKey)}` : ""}`,
         permanent: false,
       },
     };
@@ -517,7 +539,7 @@ export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = as
 
   const { data: presentation, error } = await supabaseServer
     .from("agent_offer_lists")
-    .select("offers,contact_name,contact_email,contact_phone,agent_name,agent_email")
+    .select("offers,contact_name,contact_email,contact_phone,agent_name,agent_email,is_template")
     .eq("public_token", token)
     .maybeSingle();
 
@@ -556,9 +578,14 @@ export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = as
     surface_plot: storedOffer.surface_plot ?? liveOffer?.surface_plot ?? null,
   } as AgentOffer;
 
+  const isTemplate = Boolean((presentation as any).is_template);
+  const leadKey = isTemplate && requestedKey && (await resolveLeadKey(requestedKey)) ? requestedKey : "";
+
   return {
     props: {
       token,
+      isTemplate,
+      leadKey,
       offer,
       images: imageUrls(offer.images),
       description: descriptionValue(offer.descriptions),

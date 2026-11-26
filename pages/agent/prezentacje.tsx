@@ -34,6 +34,8 @@ type PresentationSummary = {
   updated_at: string;
   offersCount: number;
   crm_contact?: { id: string; name: string | null } | null;
+  is_template?: boolean;
+  public_title?: string | null;
 };
 
 function formatDate(value: string) {
@@ -52,6 +54,8 @@ export default function AgentPresentationsPage() {
   const [agent, setAgent] = useState<AgentIdentity | null>(null);
   const [presentations, setPresentations] = useState<PresentationSummary[]>([]);
   const [search, setSearch] = useState("");
+  // Zakładki: prezentacje dla klientów / wzorce do czatu ofertowego
+  const [kind, setKind] = useState<"client" | "template">("client");
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [copiedId, setCopiedId] = useState("");
@@ -128,11 +132,13 @@ export default function AgentPresentationsPage() {
 
   const visiblePresentations = useMemo(() => {
     const query = search.trim().toLowerCase();
-    if (!query) return presentations;
-    return presentations.filter((presentation) =>
+    const ofKind = presentations.filter((presentation) => Boolean(presentation.is_template) === (kind === "template"));
+    if (!query) return ofKind;
+    return ofKind.filter((presentation) =>
       [
         presentation.contact_name,
         presentation.presentation_name,
+        presentation.public_title,
         presentation.contact_email,
         presentation.contact_phone,
         presentation.agent_name,
@@ -140,7 +146,8 @@ export default function AgentPresentationsPage() {
         presentation.public_token,
       ].some((value) => String(value || "").toLowerCase().includes(query)),
     );
-  }, [presentations, search]);
+  }, [presentations, search, kind]);
+  const templateCount = presentations.filter((presentation) => presentation.is_template).length;
 
   // Usuwać może autor prezentacji albo Marek (to samo sprawdza API).
   const canDelete = (presentation: PresentationSummary) => {
@@ -202,7 +209,35 @@ export default function AgentPresentationsPage() {
             </Link>
           </div>
 
-          <div className="mt-7 flex items-center gap-3 rounded-2xl border border-[#ddd3c4] bg-white p-4 shadow-sm">
+          <div className="mt-7 inline-flex overflow-hidden rounded-full border border-[#ddd3c4] bg-white p-1 shadow-sm">
+            {[
+              { value: "client" as const, label: "Dla klientów", count: presentations.length - templateCount },
+              { value: "template" as const, label: "Wzorce (czat)", count: templateCount },
+            ].map((tab) => (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => setKind(tab.value)}
+                className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-[10px] font-extrabold uppercase tracking-[0.1em] transition ${
+                  kind === tab.value ? "bg-[#182334] text-white" : "text-[#526173] hover:bg-[#f5f1ea]"
+                }`}
+              >
+                {tab.label}
+                <span className={`rounded-full px-2 py-0.5 text-[9px] ${kind === tab.value ? "bg-white/15" : "bg-[#f2eee7]"}`}>
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+          </div>
+          {kind === "template" ? (
+            <p className="mt-3 max-w-[760px] text-[12px] leading-5 text-slate-500">
+              Wzorce to pula ogólnych prezentacji dla czatu ofertowego (Lead Manager). Nie są przypisane do klientów; aktywność
+              leada z linku z czatu widać w jego karcie w CRM. Nowy wzorzec: wybierz oferty i w edytorze przełącz „Rodzaj
+              prezentacji” na „Wzorzec (czat)”.
+            </p>
+          ) : null}
+
+          <div className="mt-5 flex items-center gap-3 rounded-2xl border border-[#ddd3c4] bg-white p-4 shadow-sm">
             <FaSearch className="shrink-0 text-[#9b7a36]" aria-hidden="true" />
             <input
               value={search}
@@ -239,7 +274,9 @@ export default function AgentPresentationsPage() {
                           {presentation.presentation_name || "Prezentacja bez nazwy"}
                         </h2>
                         <p className="mt-1 truncate text-[10px] font-semibold text-slate-500">
-                          {presentation.contact_name || presentation.agent_name || "Onesta Group"}
+                          {presentation.is_template
+                            ? `Dla klienta: „${presentation.public_title || "Oferty wybrane dla Ciebie"}”`
+                            : presentation.contact_name || presentation.agent_name || "Onesta Group"}
                         </p>
                         {presentation.crm_contact?.id ? (
                           <a

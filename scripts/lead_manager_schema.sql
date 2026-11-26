@@ -127,3 +127,11 @@ alter table public.lm_chat_config enable row level security;
 alter table public.lm_chat_results enable row level security;
 revoke all on table public.lm_chat_config, public.lm_chat_results from anon, authenticated;
 grant all on table public.lm_chat_config, public.lm_chat_results to service_role;
+
+-- Wzorce prezentacji (pula czatu) i przypisywanie aktywności do leada bez przypisywania prezentacji, 26.11.2026
+alter table public.agent_offer_lists add column if not exists is_template boolean not null default false;
+alter table public.agent_offer_lists add column if not exists public_title text;
+alter table public.presentation_events add column if not exists crm_contact_id uuid references public.crm_contacts(id) on delete set null;
+alter table public.presentation_events add column if not exists lead_id uuid;
+create index if not exists presentation_events_contact_idx on public.presentation_events (crm_contact_id, created_at desc) where crm_contact_id is not null;
+create index if not exists agent_offer_lists_template_idx on public.agent_offer_lists (is_template) where is_template;

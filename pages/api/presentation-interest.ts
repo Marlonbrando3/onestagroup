@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { notifyPresentationActivity } from "@/lib/crmReminders";
+import { resolveLeadKey } from "@/lib/leadManager/tracking";
 
 // Przycisk „Interesuje mnie ta oferta” w prezentacji /oferty/[token].
 // Klient nic nie wpisuje — wysyłamy mail do agenta, który przygotował prezentację:
@@ -38,11 +39,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { data: presentation, error } = await supabaseServer
     .from("agent_offer_lists")
-    .select("id,offers,presentation_name,agent_user_id,agent_name,agent_email,contact_name,contact_email")
+    .select("id,offers,presentation_name,agent_user_id,agent_name,agent_email,contact_name,contact_email,is_template")
     .eq("public_token", token)
     .maybeSingle();
   if (error || !presentation || !Array.isArray(presentation.offers)) {
     return res.status(404).json({ success: false });
+  }
+
+  // Wzorzec (pula czatu): „Interesuje mnie” tylko z linkiem leada – wiemy wtedy, kto kliknął
+  let lead: { contactId: string; leadId: string } | null = null;
+  if (presentation.is_template) {
+    lead = await resolveLeadKey(body.k);
+    if (!lead) return res.status(403).json({ success: false });
+    const { data: leadContact } = await supabaseServer
+      .from("crm_contacts")
+      .select("name,phone")
+      .eq("id", lead.contactId)
+      .maybeSingle();
+    const who = [leadContact?.name, leadContact?.phone].filter(Boolean).join(", ");
+    presentation.presentation_name = `${String(presentation.presentation_name || "Wzorzec").trim()} – ${who || "lead z czatu"}`;
   }
 
   let offer: any = (presentation.offers as any[]).find((item) => String(item?.external_id) === offerId);
@@ -63,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!offer) return res.status(404).json({ success: false });
 
   // Ten sam klik powtórzony w krótkim czasie — nie wysyłamy drugiego maila.
-  const key = `${token}:${offerId}`;
+  const key = `${token}:${offerId}${lead ? `:${lead.contactId}` : ""}`;
   const now = Date.now();
   if ((recent.get(key) || 0) > now - REPEAT_WINDOW_MS) return res.status(200).json({ success: true });
 
@@ -92,6 +107,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     event_type: "interest",
     offer_external_id: offerId,
     offer_title: offer.title ? String(offer.title).slice(0, 300) : null,
+    ...(lead ? { crm_contact_id: lead.contactId, lead_id: lead.leadId } : {}),
   });
   if (eventError) console.error("presentation-interest: nie zapisano zdarzenia CRM", eventError);
   try {
@@ -99,6 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       presentation.id,
       "interest",
       offer.title ? String(offer.title) : offerId,
+      lead?.contactId,
     );
   } catch (pushError) {
     console.error("presentation-interest: push", pushError);

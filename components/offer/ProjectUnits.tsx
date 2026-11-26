@@ -31,7 +31,7 @@ export default function ProjectUnits({
   locale?: "pl" | "en";
   headingClassName?: string;
   /** Prezentacja: w okienku także „Interesuje mnie ta oferta” (mail i powiadomienie do agenta). */
-  interest?: { token: string; parentOfferId: string };
+  interest?: { token: string; parentOfferId: string; leadKey?: string };
 }) {
   const [selected, setSelected] = useState<ProjectUnit | null>(null);
   const en = locale === "en";
@@ -153,6 +153,7 @@ export default function ProjectUnits({
                   token={interest.token}
                   offerId={selected.externalId}
                   parentOfferId={interest.parentOfferId}
+                  leadKey={interest.leadKey}
                   variant="wide"
                 />
                 <p className="mt-4 text-center text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-400">

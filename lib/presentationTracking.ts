@@ -24,20 +24,25 @@ export function usePresentationTracking(
   type: "open" | "offer_view",
   offerId?: string,
   offerTitle?: string,
+  // Wzorzec prezentacji: śledzimy tylko z kluczem leada z linku (?k=…); bez niego nic nie zapisujemy
+  options?: { isTemplate?: boolean; leadKey?: string },
 ) {
+  const isTemplate = Boolean(options?.isTemplate);
+  const leadKey = options?.leadKey || "";
   useEffect(() => {
     if (!token) return;
+    if (isTemplate && !leadKey) return;
     let cancelled = false;
     async function track() {
       try {
         const { data } = await supabase.auth.getSession();
         if (cancelled || data.session) return;
-        const key = type === "open" ? `${token}:open` : `${token}:offer:${offerId || ""}`;
+        const key = `${type === "open" ? `${token}:open` : `${token}:offer:${offerId || ""}`}${leadKey ? `:${leadKey.slice(-12)}` : ""}`;
         if (!shouldTrackInThisTab(key, type === "open")) return;
         await fetch("/api/presentation-event", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, type, offerId, offerTitle }),
+          body: JSON.stringify({ token, type, offerId, offerTitle, k: leadKey || undefined }),
           keepalive: true,
         });
       } catch {
@@ -48,5 +53,5 @@ export function usePresentationTracking(
     return () => {
       cancelled = true;
     };
-  }, [token, type, offerId, offerTitle]);
+  }, [token, type, offerId, offerTitle, isTemplate, leadKey]);
 }

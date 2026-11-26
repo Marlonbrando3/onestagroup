@@ -63,6 +63,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }));
       }
 
+      // Wzorce z czatu (nieprzypisane): aktywność rozpoznana po linku leada
+      const { data: leadEventRows } = await supabaseServer
+        .from("presentation_events")
+        .select("id,list_id,event_type,offer_external_id,offer_title,created_at")
+        .eq("crm_contact_id", contactId)
+        .order("created_at", { ascending: false })
+        .limit(300);
+      if (leadEventRows?.length) {
+        const templateIds = Array.from(new Set(leadEventRows.map((row) => row.list_id)));
+        const { data: templateLists } = await supabaseServer
+          .from("agent_offer_lists")
+          .select("id,presentation_name,public_title,public_token")
+          .in("id", templateIds);
+        const templates = new Map((templateLists || []).map((row: any) => [row.id, row]));
+        const known = new Set(events.map((event) => event.id));
+        events = [
+          ...events,
+          ...leadEventRows
+            .filter((row) => !known.has(row.id))
+            .map((row) => {
+              const template: any = templates.get(row.list_id);
+              return {
+                id: row.id,
+                type: row.event_type,
+                offerId: row.offer_external_id,
+                offerTitle: row.offer_title || "",
+                createdAt: row.created_at,
+                presentationId: row.list_id,
+                presentationName: `${String(template?.presentation_name || "Wzorzec").trim()} (z czatu)`,
+                token: template?.public_token || "",
+                fromTemplate: true,
+              };
+            }),
+        ].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+      }
+
       if (req.query.markSeen === "1") {
         await supabaseServer
           .from("crm_contacts")
@@ -78,6 +114,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .from("agent_offer_lists")
       .select(listColumns)
       .is("deleted_at", null)
+      .eq("is_template", false)
       .order("created_at", { ascending: false })
       .limit(40);
     if (!user.isAdmin) query = query.eq("agent_email", user.email);
@@ -96,10 +133,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const presentationId = String(req.body?.presentationId || "");
     if (!presentationId) return res.status(400).json({ error: "Brak ID prezentacji." });
 
-    let ownQuery = supabaseServer.from("agent_offer_lists").select("id,crm_contact_id").eq("id", presentationId);
+    let ownQuery = supabaseServer.from("agent_offer_lists").select("id,crm_contact_id,is_template").eq("id", presentationId);
     if (!user.isAdmin) ownQuery = ownQuery.eq("agent_email", user.email);
     const { data: presentation } = await ownQuery.maybeSingle();
     if (!presentation) return res.status(403).json({ error: "Brak dostepu do tej prezentacji." });
+    if (req.method === "POST" && presentation.is_template) {
+      return res.status(400).json({ error: "Wzorca z czatu nie przypisuje się do klienta – utwórz dla niego dedykowaną prezentację." });
+    }
 
     if (req.method === "DELETE") {
       const { error } = await supabaseServer

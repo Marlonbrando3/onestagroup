@@ -507,8 +507,9 @@ export default function LeadManagerPage() {
               </div>
               <p className="lmHint">
                 Wstaw {"{{chatLink}}"} w treść SMS-a powitalnego. Klient po kliknięciu odpowiada na 2 pytania i dostaje prezentację
-                przypisaną do jego odpowiedzi – jako własną kopię skojarzoną z jego kartą w CRM (widzisz, co ogląda, a Ty dostajesz push).
-                Pula = prezentacje ze strefy agenta, które nie są przypisane do żadnego klienta.
+                przypisaną do jego odpowiedzi, z linkiem rozpoznającym leada (widzisz w CRM, co ogląda, i dostajesz push).
+                Pula = wzorce ze strefy agenta (Prezentacje → zakładka „Wzorce (czat)”). Wzorzec nie jest przypisywany do klienta –
+                w karcie widać tylko, co oglądał z linku z czatu.
               </p>
               {chatConfig ? (
                 <>
@@ -629,7 +630,7 @@ export default function LeadManagerPage() {
                       </div>
                     </div>
                     {!chatPresentations.length ? (
-                      <small>Brak prezentacji w puli – utwórz je w strefie agenta (bez przypisanego klienta).</small>
+                      <small>Brak wzorców – w strefie agenta wybierz oferty i w edytorze ustaw „Rodzaj prezentacji: Wzorzec (czat)”.</small>
                     ) : null}
                   </div>
 

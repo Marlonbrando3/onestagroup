@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { notifyPresentationActivity } from "@/lib/crmReminders";
+import { resolveLeadKey } from "@/lib/leadManager/tracking";
 
 // Aktywność klienta w prezentacji /oferty/[token]: otwarcie prezentacji i otwarcie konkretnej oferty.
 // („Interesuje mnie ta oferta” zapisuje /api/presentation-interest.)
@@ -25,10 +26,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { data: list } = await supabaseServer
     .from("agent_offer_lists")
-    .select("id,offers")
+    .select("id,offers,is_template")
     .eq("public_token", token)
     .maybeSingle();
   if (!list) return res.status(404).json({ success: false });
+
+  // Wzorzec (pula czatu): zapisujemy tylko wejścia z linkiem leada (?k=…), przypisując je do jego karty w CRM
+  let lead: { contactId: string; leadId: string } | null = null;
+  if (list.is_template) {
+    lead = await resolveLeadKey(body.k);
+    if (!lead) return res.status(200).json({ success: true, skipped: true });
+  }
 
   let offerId: string | null = null;
   let offerTitle: string | null = null;
@@ -51,6 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .order("created_at", { ascending: false })
     .limit(1);
   recentQuery = offerId ? recentQuery.eq("offer_external_id", offerId) : recentQuery;
+  recentQuery = lead ? recentQuery.eq("crm_contact_id", lead.contactId) : recentQuery;
   const { data: recent } = await recentQuery;
   if (recent?.length) return res.status(200).json({ success: true, deduped: true });
 
@@ -59,13 +68,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     event_type: type,
     offer_external_id: offerId,
     offer_title: offerTitle,
+    ...(lead ? { crm_contact_id: lead.contactId, lead_id: lead.leadId } : {}),
   });
   if (error) {
     console.error("presentation-event: nie zapisano zdarzenia", error);
     return res.status(500).json({ success: false });
   }
   try {
-    await notifyPresentationActivity(list.id, type, offerTitle);
+    await notifyPresentationActivity(list.id, type, offerTitle, lead?.contactId);
   } catch (pushError) {
     console.error("presentation-event: push", pushError);
   }

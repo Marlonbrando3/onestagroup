@@ -6,6 +6,7 @@ import { supabaseServer } from "@/lib/supabaseClient";
 import { CBTOP_SOURCE_PRESENTATION_TOKEN } from "@/lib/cbTopOffers";
 
 const MAX_OFFERS_PER_LIST = 100;
+const TEMPLATE_OWNER_EMAIL = "marek.marszalek@onesta.com.pl";
 
 function cleanText(value: unknown, maxLength: number) {
   return String(value || "").trim().slice(0, maxLength);
@@ -36,7 +37,7 @@ export default async function handler(
   const { data: presentation, error: presentationError } = await supabaseServer
     .from("agent_offer_lists")
     .select(
-      "id,public_token,agent_user_id,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,crm_contact:crm_contacts(id,name)",
+      "id,public_token,agent_user_id,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,is_template,public_title,crm_contact:crm_contacts(id,name)",
     )
     .eq("id", id)
     .is("deleted_at", null)
@@ -82,6 +83,15 @@ export default async function handler(
   const salutationRaw = String(req.body?.clientSalutation || "").trim().toLowerCase();
   const clientSalutation = ["pani", "pan", "panstwo"].includes(salutationRaw) ? salutationRaw : null;
   const clientName = cleanText(req.body?.clientName, 120) || null;
+  const wasTemplate = Boolean((presentation as any).is_template);
+  const isTemplate = typeof req.body?.isTemplate === "undefined" ? wasTemplate : Boolean(req.body.isTemplate);
+  const publicTitle = cleanText(req.body?.publicTitle, 160) || null;
+  if (isTemplate !== wasTemplate && auth.agent.email.toLowerCase() !== TEMPLATE_OWNER_EMAIL) {
+    return res.status(403).json({ error: "Rodzaj prezentacji (wzorzec) może zmienić tylko Marek" });
+  }
+  if (isTemplate && !publicTitle) {
+    return res.status(400).json({ error: "Podaj tytuł widoczny dla klienta" });
+  }
   const requestedIds: string[] = Array.isArray(req.body?.propertyIds)
     ? req.body.propertyIds.map((value: unknown) => String(value || "").trim())
     : [];
@@ -92,8 +102,11 @@ export default async function handler(
   }
   // Bez zmiany powiązania (np. edycja prezentacji kolegi z klientem z jego lejka) nie sprawdzamy dostępu.
   const currentCrmContactId = (presentation as any).crm_contact?.id || null;
-  const requestedCrmContactId =
-    typeof req.body?.crmContactId === "undefined" ? undefined : req.body.crmContactId || null;
+  const requestedCrmContactId = isTemplate
+    ? null
+    : typeof req.body?.crmContactId === "undefined"
+      ? undefined
+      : req.body.crmContactId || null;
   const crmLink = await resolveCrmContactLink(
     auth.agent.email,
     requestedCrmContactId === currentCrmContactId ? undefined : requestedCrmContactId,
@@ -142,15 +155,17 @@ export default async function handler(
       contact_name: contactName,
       contact_email: contactEmail,
       contact_phone: contactPhone,
-      client_salutation: clientSalutation,
-      client_name: clientName,
+      client_salutation: isTemplate ? null : clientSalutation,
+      client_name: isTemplate ? null : clientName,
+      is_template: isTemplate,
+      public_title: isTemplate ? publicTitle : null,
       offers: orderedOffers,
       updated_at: updatedAt,
-      ...(crmLink.contactId !== undefined ? { crm_contact_id: crmLink.contactId } : {}),
+      ...(isTemplate ? { crm_contact_id: null } : crmLink.contactId !== undefined ? { crm_contact_id: crmLink.contactId } : {}),
     })
     .eq("id", id)
     .select(
-      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,crm_contact:crm_contacts(id,name)",
+      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,is_template,public_title,crm_contact:crm_contacts(id,name)",
     )
     .single();
 

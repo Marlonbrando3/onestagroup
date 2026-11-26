@@ -75,6 +75,14 @@ function siteOrigin() {
   return (process.env.NEXT_PUBLIC_SITE_URL || "https://onesta.com.pl").replace(/\/+$/, "");
 }
 
+// Klucz leada w linku do wzorca prezentacji (?k=…): kto ogląda, bez przypisywania prezentacji
+export async function resolveLeadKey(value: unknown) {
+  const key = String(value || "").trim();
+  if (key.length < 20 || key.length > 2048 || !/^[A-Za-z0-9_-]+$/.test(key)) return null;
+  const payload = await readLmTrackingToken(key);
+  return payload ? { contactId: payload.contactId, leadId: payload.leadId } : null;
+}
+
 export async function createTrackedOfferLinks(leadId: string, contactId: string, shorten: boolean) {
   const token = await createToken(leadId, contactId, "costa_blanca");
   const url = `${siteOrigin()}/r/${token}`;

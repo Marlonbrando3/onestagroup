@@ -197,6 +197,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         });
       }
+      // Wzorce prezentacji z czatu (aktywność przypisana po linku leada)
+      const { data: leadPresentationRows } = await supabaseServer
+        .from("presentation_events")
+        .select("crm_contact_id,created_at")
+        .in("crm_contact_id", ids)
+        .order("created_at", { ascending: false })
+        .limit(1000);
+      (leadPresentationRows || []).forEach((row) => {
+        const current = lastPresentationEvent.get(row.crm_contact_id);
+        if (!current || Date.parse(row.created_at) > Date.parse(current)) {
+          lastPresentationEvent.set(row.crm_contact_id, row.created_at);
+        }
+      });
       // Aktywność leada na /cbtop (link z SMS-a Lead Managera) też zapala sygnał
       const { data: trackingRows } = await supabaseServer
         .from("lm_tracking_events")

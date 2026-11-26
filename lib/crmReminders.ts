@@ -125,18 +125,21 @@ export async function notifyPresentationActivity(
   listId: string,
   type: "open" | "offer_view" | "interest",
   offerTitle?: string | null,
+  // Wzorzec prezentacji (pula czatu): klient rozpoznany po linku leada, prezentacja nie jest do niego przypisana
+  leadContactId?: string | null,
 ) {
   if (!supabaseServer) return;
   const { data: list } = await supabaseServer
     .from("agent_offer_lists")
-    .select("crm_contact_id,presentation_name")
+    .select("crm_contact_id,presentation_name,is_template")
     .eq("id", listId)
     .maybeSingle();
-  if (!list?.crm_contact_id) return;
+  const contactId = leadContactId || list?.crm_contact_id;
+  if (!list || !contactId) return;
   const { data: contact } = await supabaseServer
     .from("crm_contacts")
     .select("id,name,pipeline_owner")
-    .eq("id", list.crm_contact_id)
+    .eq("id", contactId)
     .maybeSingle();
   if (!contact?.pipeline_owner) return;
   const presentationSettings = (await getCrmUserSettings(contact.pipeline_owner)).presentation;
@@ -149,7 +152,7 @@ export async function notifyPresentationActivity(
       ? `🔥 ${name}: „Interesuje mnie ta oferta”`
       : type === "offer_view"
         ? `👀 ${name} ogląda ofertę`
-        : `👀 ${name} otworzył(a) prezentację`;
+        : `👀 ${name} otworzył(a) ${list.is_template ? "oferty z czatu" : "prezentację"}`;
   const body =
     type === "open"
       ? `Prezentacja: ${list.presentation_name || "bez nazwy"}`

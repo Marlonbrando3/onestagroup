@@ -1,10 +1,10 @@
-import crypto from "crypto";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { sendCrmPush } from "@/lib/crmPush";
 import { insertLmEvent, readLmTrackingToken } from "./tracking";
 
 // Czat ofertowy: link z SMS-a powitalnego → /czat/<token> → 2 pytania jednokrotnego wyboru →
-// prezentacja z puli (kopia dla klienta, skojarzona z kartą w CRM, więc działa śledzenie i sygnał w lejku).
+// wzorzec prezentacji z puli z kluczem leada w linku (?k=…). Wzorzec NIE jest przypisywany do klienta –
+// tylko jego aktywność trafia do karty w CRM. Dedykowane prezentacje przypisuje się ręcznie po rozmowie.
 
 export type ChatOption = { id: string; label: string };
 export type ChatQuestion = { id: string; text: string; options: ChatOption[] };
@@ -105,14 +105,14 @@ export async function saveChatConfig(input: any) {
   return config;
 }
 
-// Pula prezentacji do wyboru: prezentacje ze strefy agenta, które nie są przypisane do konkretnego klienta
+// Pula prezentacji do wyboru: wzorce ze strefy agenta (is_template)
 export async function listChatPresentations() {
   if (!supabaseServer) return [];
   const { data } = await supabaseServer
     .from("agent_offer_lists")
     .select("id,presentation_name,public_token,offers,updated_at")
     .is("deleted_at", null)
-    .is("crm_contact_id", null)
+    .eq("is_template", true)
     .order("updated_at", { ascending: false })
     .limit(200);
   return (data || []).map((row: any) => ({
@@ -154,7 +154,7 @@ export async function getPublicChat(token: string) {
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
-    if (data?.public_token) previous = { url: `/oferty/${data.public_token}`, offersCount: 0 };
+    if (data?.public_token) previous = { url: `/oferty/${data.public_token}?k=${encodeURIComponent(token)}`, offersCount: 0 };
   }
   return {
     enabled: config.enabled,
@@ -199,10 +199,6 @@ export async function recordChatOpen(token: string) {
   }
 }
 
-function newPublicToken() {
-  return crypto.randomBytes(18).toString("base64url");
-}
-
 export async function completeChat(token: string, answerIds: string[]) {
   if (!supabaseServer) throw new Error("Brak konfiguracji serwera.");
   const config = await readChatConfig();
@@ -227,51 +223,29 @@ export async function completeChat(token: string, answerIds: string[]) {
 
   const linked = await contactFromToken(token).catch(() => null);
   if (!linked) {
-    // Wejście bez linku z SMS-a – pokazujemy prezentację z puli bez przypisywania
+    // Wejście bez linku z SMS-a – wzorzec bez śledzenia
     return { url: `/oferty/${source.public_token}`, offersCount };
   }
+  const url = `/oferty/${source.public_token}?k=${encodeURIComponent(token)}`;
 
-  // Ten sam wybór drugi raz → ta sama prezentacja klienta
+  // Ten sam wybór drugi raz – bez ponownego zapisu i powiadomień
   const { data: existing } = await supabaseServer
     .from("lm_chat_results")
-    .select("public_token,source_list_id")
+    .select("id")
     .eq("crm_contact_id", linked.contact.id)
     .eq("source_list_id", source.id)
-    .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-  if (existing?.public_token) return { url: `/oferty/${existing.public_token}`, offersCount };
+  if (existing) return { url, offersCount };
 
-  // Kopia prezentacji dla klienta (skojarzona z kartą → śledzenie otwarć i ofert, sygnał w lejku)
   const contactName = String(linked.contact.name || "").trim();
-  const publicToken = newPublicToken();
-  const { data: copy, error: copyError } = await supabaseServer
-    .from("agent_offer_lists")
-    .insert({
-      public_token: publicToken,
-      agent_user_id: source.agent_user_id,
-      agent_email: source.agent_email,
-      agent_name: source.agent_name,
-      offers: source.offers,
-      contact_name: source.contact_name,
-      contact_email: source.contact_email,
-      contact_phone: source.contact_phone,
-      presentation_name: `${String(source.presentation_name || "Prezentacja").trim()} – ${contactName || "klient z czatu"}`,
-      client_salutation: null,
-      client_name: firstName(contactName) || null,
-      crm_contact_id: linked.contact.id,
-    })
-    .select("id")
-    .single();
-  if (copyError || !copy) throw copyError || new Error("Nie udało się przygotować prezentacji.");
-
   await supabaseServer.from("lm_chat_results").insert({
     lead_id: linked.leadId,
     crm_contact_id: linked.contact.id,
     answers: chosen.map(({ question, answer }) => ({ question, answer })),
     source_list_id: source.id,
-    list_id: copy.id,
-    public_token: publicToken,
+    list_id: null,
+    public_token: source.public_token,
   });
 
   const answersText = chosen.map((item) => `${item.question}: ${item.answer}`).join("\n");
@@ -286,7 +260,7 @@ export async function completeChat(token: string, answerIds: string[]) {
     leadId: linked.leadId,
     event: "chat_completed",
     title: `Czat ofertowy: ${chosen.map((item) => item.answer).join(", ")}`,
-    detail: `Wysłano prezentację „${String(source.presentation_name || "").trim()}” (${offersCount} ofert).`,
+    detail: `Wysłano wzorzec „${String(source.presentation_name || "").trim()}” (${offersCount} ofert) – aktywność w nim widać w historii.`,
   });
 
   if (linked.contact.pipeline_owner) {
@@ -298,5 +272,5 @@ export async function completeChat(token: string, answerIds: string[]) {
     }).catch(() => 0);
   }
 
-  return { url: `/oferty/${publicToken}`, offersCount };
+  return { url, offersCount };
 }
