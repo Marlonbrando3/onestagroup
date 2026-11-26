@@ -24,14 +24,14 @@ export const DEFAULT_CHAT_CONFIG: ChatConfig = {
   agentName: "Marek Marszałek",
   agentSubtitle: "Onesta Group · nieruchomości w Hiszpanii",
   greeting:
-    "Dzień dobry{{firstName}}! 👋\nDziękuję za zgłoszenie. Jesteśmy teraz poza biurem, ale już teraz mogę dobrać dla Ciebie oferty – odpowiedz tylko na 2 krótkie pytania.",
+    "Dzień dobry{{firstName}}! 👋\nDziękuję za zgłoszenie. Jesteśmy teraz poza biurem, ale zadbaliśmy o to, żebyś już teraz otrzymał wstępnie dobrane oferty. Odpowiedz tylko na dwa krótkie pytania.",
   questions: [
     {
       id: "budzet",
       text: "Jaki budżet planujesz przeznaczyć na zakup?",
       options: [
-        { id: "do300", label: "do 300 tys. €" },
-        { id: "300-500", label: "300–500 tys. €" },
+        { id: "300-400", label: "300–400 tys. €" },
+        { id: "400-500", label: "400–500 tys. €" },
         { id: "500plus", label: "powyżej 500 tys. €" },
       ],
     },
