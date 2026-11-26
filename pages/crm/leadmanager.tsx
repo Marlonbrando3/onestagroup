@@ -457,7 +457,7 @@ export default function LeadManagerPage() {
                 </label>
                 <label className="lmField lmWide">
                   <span>
-                    SMS z ofertami – dla leadów, które zaznaczyły zgodę na SMS. Zmienne: {"{{name}}"} (imię i nazwisko),{" "}
+                    Treść SMS-a powitalnego. Zmienne: {"{{name}}"} (imię i nazwisko),{" "}
                     {"{{firstName}}"} (imię), {"{{company}}"}, {"{{chatLink}}"} (czat „wygeneruj oferty”), {"{{cbTopLink}}"} (TOP 20)
                   </span>
                   <textarea
@@ -469,17 +469,7 @@ export default function LeadManagerPage() {
                   />
                   <small>{settings.sms.clientTemplate.length} znaków</small>
                 </label>
-                <label className="lmField lmWide">
-                  <span>
-                    SMS powitalny bez linku – dla leadów bez zgody na SMS z ofertami (samo podziękowanie i zapowiedź telefonu, bez
-                    ofert i linków). Zmienne: {"{{name}}"}, {"{{firstName}}"}, {"{{company}}"}
-                  </span>
-                  <textarea
-                    rows={5}
-                    value={settings.sms.basicTemplate}
-                    onChange={(event) => setSettings({ ...settings, sms: { ...settings.sms, basicTemplate: event.target.value } })}
-                  />
-                </label>
+
               </div>
               <div className="lmActions">
                 <input
@@ -496,61 +486,6 @@ export default function LeadManagerPage() {
                 </button>
               </div>
               {result("test_sms")}
-            </div>
-
-            <div className="lmCard">
-              <h2>Zgody z formularza Meta (RODO / Prawo komunikacji elektronicznej)</h2>
-              <p className="lmHint">
-                W formularzu Lead Ads dodaj checkboxy zgód („Własne zastrzeżenia / Custom disclaimer”). Każdy checkbox ma swój klucz –
-                wpisz go poniżej. Zgody zapisują się w karcie klienta (sekcja „Zgody”) z datą i źródłem.
-              </p>
-              <label className="lmSwitch">
-                <input
-                  checked={settings.consents.requireSmsConsent}
-                  type="checkbox"
-                  onChange={(event) =>
-                    setSettings({ ...settings, consents: { ...settings.consents, requireSmsConsent: event.target.checked } })
-                  }
-                />
-                <span>Link do ofert w SMS-ie tylko dla zaznaczonej zgody na SMS – pozostali dostają powitanie bez linku (zalecane)</span>
-              </label>
-              <div className="lmGrid">
-                <label className="lmField">
-                  <span>Klucz checkboxa zgody na SMS</span>
-                  <input
-                    autoComplete="off"
-                    name="lm-sms-consent-key"
-                    placeholder="np. zgoda_sms"
-                    value={settings.consents.smsKey}
-                    onChange={(event) => setSettings({ ...settings, consents: { ...settings.consents, smsKey: event.target.value } })}
-                  />
-                </label>
-                <label className="lmField">
-                  <span>Klucz checkboxa zgody na kontakt telefoniczny</span>
-                  <input
-                    autoComplete="off"
-                    name="lm-phone-consent-key"
-                    placeholder="np. zgoda_telefon"
-                    value={settings.consents.phoneKey}
-                    onChange={(event) => setSettings({ ...settings, consents: { ...settings.consents, phoneKey: event.target.value } })}
-                  />
-                </label>
-              </div>
-              {(() => {
-                const keys = Array.from(new Set(diag.leads.flatMap((lead) => (lead.consents || []).map((item) => item.key))));
-                return keys.length ? (
-                  <p className="lmHint">
-                    Klucze z ostatnich leadów: {keys.map((key) => <code key={key} className="lmKey">{key}</code>)}
-                  </p>
-                ) : (
-                  <p className="lmHint">Klucze pojawią się tu automatycznie po pierwszym leadzie z formularza z checkboxami zgód.</p>
-                );
-              })()}
-              {settings.consents.requireSmsConsent && !settings.consents.smsKey ? (
-                <p className="lmResult fail">
-                  Nie ustawiono klucza zgody SMS – wszystkie leady z Facebooka dostaną powitanie bez linku, dopóki go nie wpiszesz.
-                </p>
-              ) : null}
             </div>
 
             <div className="lmSaveBar">

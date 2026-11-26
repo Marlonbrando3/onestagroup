@@ -183,20 +183,9 @@ export async function ingestLead(input: LmIncomingLead): Promise<LmIngestResult>
     console.error("lead manager: push", error);
   }
 
-  // 4. SMS powitalny do klienta (najwyżej jeden na lead).
-  // Ze zgodą na SMS z formularza → wersja z linkiem do ofert (informacja handlowa, art. 398 PKE).
-  // Bez zgody → to samo powitanie bez linku (odpowiedź na zgłoszenie, nie informacja handlowa).
-  const withOffers = !settings.consents.requireSmsConsent || smsConsent === true;
-  if (!withOffers) {
-    await addLmLog(
-      "info",
-      "SMS powitalny bez linku – brak zgody na SMS z ofertami",
-      settings.consents.smsKey
-        ? `${name} • ${phone} • w formularzu nie zaznaczono „${settings.consents.smsKey}”`
-        : `${name} • ${phone} • w Lead Managerze nie ustawiono klucza zgody SMS z formularza Meta`,
-      leadId,
-    );
-  }
+  // 4. SMS powitalny do klienta z linkiem do czatu ofertowego (najwyżej jeden na lead).
+  // Formularz Meta obiecuje „wstępne propozycje przed pierwszą rozmową” – SMS realizuje prośbę klienta.
+  const withOffers = true;
   const { data: claimed } = await supabaseServer
     .from("lm_leads")
     .update({ welcome_sms_claimed_at: now.toISOString() })
@@ -240,6 +229,15 @@ export async function ingestLead(input: LmIncomingLead): Promise<LmIngestResult>
       error: delivery.error || null,
     });
     sms = { status: delivery.status, error: delivery.error };
+    if (delivery.status === "failed") {
+      // Właściciel od razu wie, że klient nie dostał SMS-a (np. brak środków w SMSAPI)
+      await sendCrmPush(pushOwner, {
+        title: `⚠️ SMS do ${name} nie został wysłany`,
+        body: delivery.error || "Sprawdź Lead Manager → Wysłane SMS-y.",
+        url: "/crm/leadmanager",
+        tag: `sms-failed-${leadId}`,
+      }).catch(() => 0);
+    }
     await addLmLog(
       delivery.status === "sent" ? "success" : delivery.status === "simulated" ? "info" : "error",
       delivery.status === "sent" ? "SMS powitalny wysłany" : delivery.status === "simulated" ? "SMS powitalny – symulacja" : "SMS powitalny niewysłany",
