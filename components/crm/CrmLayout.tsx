@@ -7,7 +7,7 @@ import { canAccessCrm, isCrmAdmin, isCrmSuperadmin } from "./users";
 import CrmAppHead from "./CrmAppHead";
 
 type CrmLayoutProps = {
-  active: "contacts" | "add" | "pipeline" | "mailing" | "account" | "leadmanager" | "partners";
+  active: "contacts" | "add" | "pipeline" | "mailing" | "account" | "leadmanager" | "partners" | "chat";
   children: ReactNode;
   // Na telefonie: cały CRM mieści się w wysokości ekranu (lejek przewija się wewnątrz)
   fitScreen?: boolean;
@@ -37,6 +37,15 @@ function MailingIcon() {
     <svg aria-hidden="true" viewBox="0 0 24 24">
       <rect x="3" y="5" width="18" height="14" rx="2" />
       <path d="M4 7l8 6 8-6" />
+    </svg>
+  );
+}
+
+function ChatIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M4 5h16v11H9l-5 4z" />
+      <path d="M8 9h8M8 12h5" />
     </svg>
   );
 }
@@ -91,7 +100,7 @@ export default function CrmLayout({ active, children, fitScreen = false }: CrmLa
       }
       const admin = isCrmAdmin(data.user.email);
       const superadmin = isCrmSuperadmin(data.user.email);
-      if (((active === "mailing" || active === "partners") && !admin) || (active === "leadmanager" && !superadmin)) {
+      if (((active === "mailing" || active === "partners") && !admin) || ((active === "leadmanager" || active === "chat") && !superadmin)) {
         router.push("/crm");
         return;
       }
@@ -247,6 +256,17 @@ export default function CrmLayout({ active, children, fitScreen = false }: CrmLa
             >
               <LeadManagerIcon />
               <span className="crmTooltip">Lead Manager</span>
+            </Link>
+          ) : null}
+          {isSuperadmin ? (
+            <Link
+              aria-label="Czat ofertowy"
+              className={`crmNavItem ${active === "chat" ? "active" : ""}`}
+              href="/crm/czat-ofertowy"
+              title="Czat ofertowy – ustawienia"
+            >
+              <ChatIcon />
+              <span className="crmTooltip">Czat ofertowy</span>
             </Link>
           ) : null}
         </nav>
