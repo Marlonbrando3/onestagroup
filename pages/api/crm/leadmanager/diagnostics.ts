@@ -3,7 +3,7 @@ import { supabaseServer } from "@/lib/supabaseClient";
 import { requireCrmSuperadmin } from "@/lib/crmServerAuth";
 import { sendCrmPush } from "@/lib/crmPush";
 import { ingestLead } from "@/lib/leadManager/ingest";
-import { getPageSubscription, subscribePageToLeadgen, testMetaConnection } from "@/lib/leadManager/meta";
+import { getPageSubscriptions, subscribePageToLeadgen, testMetaConnection } from "@/lib/leadManager/meta";
 import { addLmLog, readLmSettings } from "@/lib/leadManager/settings";
 import { sendLmSms } from "@/lib/leadManager/sms";
 
@@ -41,30 +41,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     if (action === "test_meta") {
       const page = await testMetaConnection(settings.meta);
-      await addLmLog("success", "Test Meta: token działa", `Strona: ${page.name || "?"} (${page.id || "?"})`);
-      return res.status(200).json({ ok: true, message: `Token działa – strona: ${page.name || page.id}` });
+      await addLmLog("success", "Test Meta: token działa", `Konto tokenu: ${page.name || "?"} (${page.id || "?"})`);
+      return res.status(200).json({ ok: true, message: `Token działa – konto: ${page.name || page.id}. Sprawdź jeszcze subskrypcję stron.` });
     }
 
     if (action === "check_subscription") {
-      const info = await getPageSubscription(settings.meta);
-      const appsText = info.apps.length
-        ? info.apps.map((app) => `${app.name || app.id} (${app.id}): ${app.fields.join(", ") || "brak pól"}`).join("; ")
-        : "żadna aplikacja";
-      const message = info.subscribed
-        ? `Strona „${info.page.name}” jest zasubskrybowana do aplikacji ${settings.meta.appId} na leadgen. Zasubskrybowane: ${appsText}.`
-        : `Strona „${info.page.name}” NIE jest zasubskrybowana do aplikacji ${settings.meta.appId || "(brak App ID)"} na leadgen – Meta nie wyśle leadów. Zasubskrybowane: ${appsText}. Kliknij „Podłącz stronę”.`;
-      await addLmLog(info.subscribed ? "success" : "error", "Sprawdzenie subskrypcji strony", message);
-      return res.status(200).json({ ok: info.subscribed, message });
+      const pages = await getPageSubscriptions(settings.meta);
+      const lines = pages.map((page) =>
+        page.error
+          ? `${page.name}: błąd – ${page.error}`
+          : `${page.name}: ${page.subscribed ? "✓ podłączona (leadgen)" : "✗ niepodłączona"}${
+              page.apps.length ? ` – aplikacje: ${page.apps.map((app) => `${app.name || app.id} [${app.fields.join(", ") || "brak pól"}]`).join("; ")}` : ""
+            }`,
+      );
+      const message = pages.length ? lines.join("\n") : "Token nie ma dostępu do żadnej strony.";
+      await addLmLog(pages.some((page) => page.subscribed) ? "success" : "error", "Sprawdzenie subskrypcji stron", message);
+      return res.status(200).json({
+        ok: pages.some((page) => page.subscribed),
+        message,
+        pages: pages.map((page) => ({ id: page.id, name: page.name, subscribed: page.subscribed })),
+      });
     }
 
     if (action === "subscribe_page") {
-      const ok = await subscribePageToLeadgen(settings.meta);
-      const info = await getPageSubscription(settings.meta).catch(() => null);
-      const message = ok
-        ? `Podłączono stronę „${info?.page.name || ""}” do aplikacji na leadgen. Wyślij teraz testowego leada z Lead Ads Testing Tool.`
+      const pageId = String(req.body?.pageId || "");
+      if (!pageId) return res.status(400).json({ error: "Wybierz stronę." });
+      const result = await subscribePageToLeadgen(settings.meta, pageId);
+      const message = result.ok
+        ? `Podłączono stronę „${result.pageName}” do aplikacji (leadgen). Wyślij teraz testowego leada z Lead Ads Testing Tool.`
         : "Meta nie potwierdziła subskrypcji.";
-      await addLmLog(ok ? "success" : "error", "Podłączenie strony do leadgen", message);
-      return res.status(200).json({ ok, message });
+      await addLmLog(result.ok ? "success" : "error", "Podłączenie strony do leadgen", message);
+      return res.status(200).json({ ok: result.ok, message });
     }
 
     if (action === "test_sms") {

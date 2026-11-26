@@ -151,32 +151,57 @@ export async function fetchMetaLead(reference: MetaLeadReference, settings: LmSe
   };
 }
 
-// Subskrypcja strony do aplikacji (bez niej Meta nie wysyła leadów na webhook, nawet z poprawnym Callback URL)
-export async function getPageSubscription(settings: LmSettings["meta"]) {
-  const page = await graphGet("me", { fields: "id,name" }, settings);
-  const data = await graphGet("me/subscribed_apps", {}, settings);
-  const apps: Array<{ id: string; name: string; fields: string[] }> = (Array.isArray(data?.data) ? data.data : []).map((app: any) => ({
-    id: String(app?.id || ""),
-    name: String(app?.name || ""),
-    fields: Array.isArray(app?.subscribed_fields) ? app.subscribed_fields.map(String) : [],
+// Subskrypcja strony do aplikacji (bez niej Meta nie wysyła leadów na webhook, nawet z poprawnym Callback URL).
+// Token w konfiguracji bywa tokenem użytkownika systemowego – wtedy strony i ich tokeny bierzemy z me/accounts.
+type PageInfo = { id: string; name: string; accessToken: string };
+
+async function listManagedPages(settings: LmSettings["meta"]): Promise<PageInfo[]> {
+  const me = await graphGet("me", { fields: "id,name" }, settings);
+  const accounts = await graphGet("me/accounts", { fields: "id,name,access_token", limit: "100" }, settings).catch(() => null);
+  const pages = (Array.isArray(accounts?.data) ? accounts.data : []).map((page: any) => ({
+    id: String(page?.id || ""),
+    name: String(page?.name || ""),
+    accessToken: String(page?.access_token || ""),
   }));
-  const ours = apps.find((app) => settings.appId && app.id === settings.appId);
-  return {
-    page: { id: String(page?.id || ""), name: String(page?.name || "") },
-    apps,
-    subscribed: Boolean(ours?.fields.includes("leadgen")),
-  };
+  // Token samej strony: me = strona, brak me/accounts
+  return pages.length ? pages : [{ id: String(me?.id || ""), name: String(me?.name || ""), accessToken: settings.pageAccessToken }];
 }
 
-export async function subscribePageToLeadgen(settings: LmSettings["meta"]) {
-  if (!settings.pageAccessToken) throw new Error("Brak tokenu dostępu strony Meta (Page Access Token).");
-  const url = new URL(`https://graph.facebook.com/${settings.graphApiVersion}/me/subscribed_apps`);
+async function pageSubscribedApps(page: PageInfo, settings: LmSettings["meta"]) {
+  const data = await graphGet(`${encodeURIComponent(page.id)}/subscribed_apps`, {}, { ...settings, pageAccessToken: page.accessToken });
+  return (Array.isArray(data?.data) ? data.data : []).map((app: any) => ({
+    id: String(app?.id || ""),
+    name: String(app?.name || ""),
+    fields: Array.isArray(app?.subscribed_fields) ? (app.subscribed_fields as unknown[]).map(String) : [],
+  })) as Array<{ id: string; name: string; fields: string[] }>;
+}
+
+export async function getPageSubscriptions(settings: LmSettings["meta"]) {
+  const pages = await listManagedPages(settings);
+  return Promise.all(
+    pages.map(async (page) => {
+      try {
+        const apps = await pageSubscribedApps(page, settings);
+        const ours = apps.find((app) => settings.appId && app.id === settings.appId);
+        return { id: page.id, name: page.name, apps, subscribed: Boolean(ours?.fields.includes("leadgen")), error: "" };
+      } catch (error) {
+        return { id: page.id, name: page.name, apps: [], subscribed: false, error: error instanceof Error ? error.message : "Błąd" };
+      }
+    }),
+  );
+}
+
+export async function subscribePageToLeadgen(settings: LmSettings["meta"], pageId: string) {
+  const pages = await listManagedPages(settings);
+  const page = pages.find((item) => item.id === pageId);
+  if (!page) throw new Error("Token nie ma dostępu do tej strony.");
+  const url = new URL(`https://graph.facebook.com/${settings.graphApiVersion}/${encodeURIComponent(page.id)}/subscribed_apps`);
   url.searchParams.set("subscribed_fields", "leadgen");
-  url.searchParams.set("access_token", settings.pageAccessToken);
+  url.searchParams.set("access_token", page.accessToken);
   const response = await fetch(url, { method: "POST", signal: AbortSignal.timeout(12_000) });
   const data = (await response.json().catch(() => null)) as any;
   if (!response.ok || data?.error) throw new Error(data?.error?.message || `Meta Graph API zwróciło HTTP ${response.status}.`);
-  return Boolean(data?.success);
+  return { ok: Boolean(data?.success), pageName: page.name };
 }
 
 export async function testMetaConnection(settings: LmSettings["meta"]) {

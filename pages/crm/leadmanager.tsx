@@ -65,6 +65,7 @@ export default function LeadManagerPage() {
   const [testPhone, setTestPhone] = useState("");
   const [testLead, setTestLead] = useState({ name: "Test Lead Manager", phone: "", email: "" });
   const [copied, setCopied] = useState(false);
+  const [metaPages, setMetaPages] = useState<Array<{ id: string; name: string; subscribed: boolean }>>([]);
   const [revealed, setRevealed] = useState<Record<SecretKey, boolean>>({ appSecret: false, pageAccessToken: false, apiToken: false });
   const [revealBusy, setRevealBusy] = useState<SecretKey | "">("");
   const [copiedSecret, setCopiedSecret] = useState<SecretKey | "">("");
@@ -191,6 +192,14 @@ export default function LeadManagerPage() {
         body: JSON.stringify({ action, ...payload }),
       });
       setTestResult((current) => ({ ...current, [action]: { ok: Boolean(result.ok), message: result.message || "" } }));
+      if (action === "check_subscription") setMetaPages(result.pages || []);
+      if (action === "subscribe_page") {
+        const check = await api("/api/crm/leadmanager/diagnostics", {
+          method: "POST",
+          body: JSON.stringify({ action: "check_subscription" }),
+        }).catch(() => null);
+        if (check?.pages) setMetaPages(check.pages);
+      }
       if (action === "simulate_lead" && result.contactId) {
         setTestResult((current) => ({
           ...current,
@@ -323,13 +332,35 @@ export default function LeadManagerPage() {
                 >
                   {busyAction === "check_subscription" ? "Sprawdzam…" : "Sprawdź subskrypcję strony"}
                 </button>
-                <button disabled={busyAction === "subscribe_page"} type="button" onClick={() => runTest("subscribe_page")}>
-                  {busyAction === "subscribe_page" ? "Podłączam…" : "Podłącz stronę (leadgen)"}
-                </button>
                 <small>Najpierw zapisz zmiany – testy używają zapisanej konfiguracji.</small>
               </div>
               {result("test_meta")}
               {result("check_subscription")}
+              {metaPages.length ? (
+                <ul className="lmList">
+                  {metaPages.map((page) => (
+                    <li key={page.id}>
+                      <div>
+                        <span className={`lmDot ${page.subscribed ? "success" : "error"}`} />
+                        <strong>{page.name}</strong>
+                        <small>
+                          {page.subscribed ? "Podłączona – leady trafiają do CRM" : "Niepodłączona – Meta nie wysyła z niej leadów"} · ID{" "}
+                          {page.id}
+                        </small>
+                      </div>
+                      {!page.subscribed ? (
+                        <button
+                          disabled={busyAction === "subscribe_page"}
+                          type="button"
+                          onClick={() => runTest("subscribe_page", { pageId: page.id })}
+                        >
+                          {busyAction === "subscribe_page" ? "Podłączam…" : "Podłącz"}
+                        </button>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
               {result("subscribe_page")}
             </div>
 
@@ -753,6 +784,7 @@ export default function LeadManagerPage() {
           font-weight: 600;
         }
         .lmResult {
+          white-space: pre-line;
           border-radius: 6px;
           font-size: 13px;
           margin: 0;
