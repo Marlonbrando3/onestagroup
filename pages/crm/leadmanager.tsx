@@ -746,8 +746,19 @@ export default function LeadManagerPage() {
               )}
             </div>
 
-            <div className="lmCard">
-              <h2>Dziennik</h2>
+            <details className="lmCard lmCollapsible">
+              <summary>
+                <h2>Dziennik</h2>
+                <span className="lmCount">{diag.log.length}</span>
+                {diag.log[0] ? (
+                  <small>
+                    ostatni wpis: {diag.log[0].title} · {formatTime(diag.log[0].created_at)}
+                  </small>
+                ) : null}
+                <span className="lmChevron" aria-hidden="true">
+                  ›
+                </span>
+              </summary>
               {diag.log.length ? (
                 <ul className="lmList">
                   {diag.log.map((row) => (
@@ -766,7 +777,7 @@ export default function LeadManagerPage() {
               ) : (
                 <p className="lmHint">Dziennik jest pusty.</p>
               )}
-            </div>
+            </details>
           </>
         ) : !error ? (
           <p className="lmHint">Ładowanie…</p>
@@ -978,6 +989,44 @@ export default function LeadManagerPage() {
           font-size: 13px;
           font-weight: 600;
           text-decoration: none;
+        }
+        .lmCollapsible > summary {
+          align-items: center;
+          cursor: pointer;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px 10px;
+          list-style: none;
+        }
+        .lmCollapsible > summary::-webkit-details-marker {
+          display: none;
+        }
+        .lmCollapsible > summary small {
+          color: #8a8d93;
+          flex: 1 1 200px;
+          font-size: 12px;
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .lmCount {
+          background: #eef0f2;
+          border-radius: 999px;
+          color: #5b5f66;
+          font-size: 12px;
+          font-weight: 700;
+          padding: 1px 8px;
+        }
+        .lmChevron {
+          color: #8a8d93;
+          font-size: 20px;
+          line-height: 1;
+          margin-left: auto;
+          transition: transform 0.15s ease;
+        }
+        .lmCollapsible[open] .lmChevron {
+          transform: rotate(90deg);
         }
         .lmCopy {
           align-items: center;
