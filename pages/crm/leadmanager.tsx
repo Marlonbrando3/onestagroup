@@ -122,7 +122,10 @@ export default function LeadManagerPage() {
     return (
       <div className="lmSecret">
         <input
-          autoComplete="off"
+          autoComplete="new-password"
+          data-1p-ignore
+          data-lpignore="true"
+          name={`lm-${key}`}
           placeholder={masks[key] ? `${masks[key]} – zostaw puste, aby nie zmieniać` : emptyPlaceholder}
           spellCheck={false}
           type={revealed[key] ? "text" : "password"}
@@ -273,6 +276,9 @@ export default function LeadManagerPage() {
                 <label className="lmField">
                   <span>Verify Token (dowolny, ten sam co w Meta)</span>
                   <input
+                    autoComplete="off"
+                    name="lm-verify-token"
+                    spellCheck={false}
                     value={settings.meta.verifyToken}
                     onChange={(event) => setSettings({ ...settings, meta: { ...settings.meta, verifyToken: event.target.value } })}
                   />
@@ -280,6 +286,10 @@ export default function LeadManagerPage() {
                 <label className="lmField">
                   <span>App ID</span>
                   <input
+                    autoComplete="off"
+                    inputMode="numeric"
+                    name="lm-app-id"
+                    placeholder="np. 1234567890123456"
                     value={settings.meta.appId}
                     onChange={(event) => setSettings({ ...settings, meta: { ...settings.meta, appId: event.target.value } })}
                   />
@@ -341,7 +351,9 @@ export default function LeadManagerPage() {
                 <label className="lmField">
                   <span>Nadawca (pole nadawcy SMSAPI, maks. 11 znaków)</span>
                   <input
+                    autoComplete="off"
                     maxLength={11}
+                    name="lm-sender"
                     value={settings.sms.senderName}
                     onChange={(event) => setSettings({ ...settings, sms: { ...settings.sms, senderName: event.target.value } })}
                   />
@@ -499,7 +511,7 @@ export default function LeadManagerPage() {
           <p className="lmHint">Ładowanie…</p>
         ) : null}
       </section>
-      <style jsx>{`
+      <style jsx global>{`
         .lmPage {
           align-content: start;
           background: #f7f7f8;
@@ -520,7 +532,7 @@ export default function LeadManagerPage() {
           display: grid;
           gap: 6px;
         }
-        .lmHeader :global(a) {
+        .lmHeader a {
           color: #3c61c4;
           font-size: 13px;
           text-decoration: none;
@@ -771,7 +783,7 @@ export default function LeadManagerPage() {
           flex-basis: 100%;
           font-size: 12px;
         }
-        .lmList :global(a) {
+        .lmList a {
           color: #3c61c4;
           font-size: 13px;
           font-weight: 600;

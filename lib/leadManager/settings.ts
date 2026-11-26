@@ -85,11 +85,15 @@ export async function saveLmSettings(input: any) {
   if (!supabaseServer) throw new Error("Brak SUPABASE_SERVICE_ROLE_KEY w konfiguracji.");
   const meta = input?.meta || {};
   const sms = input?.sms || {};
+  const appId = str(meta.appId, 64);
+  if (appId && !/^\d{5,30}$/.test(appId)) {
+    throw new Error("App ID to sam numer aplikacji z developers.facebook.com (np. 1234567890123456) – popraw to pole.");
+  }
   const payload: Record<string, unknown> = {
     id: 1,
     company_name: str(input?.companyName, 120) || "Onesta Group",
     meta_enabled: Boolean(meta.enabled),
-    meta_app_id: str(meta.appId, 64),
+    meta_app_id: appId,
     meta_verify_token: str(meta.verifyToken, 200),
     meta_graph_api_version: /^v\d{1,3}\.\d$/.test(str(meta.graphApiVersion)) ? str(meta.graphApiVersion) : "v26.0",
     sms_enabled: Boolean(sms.enabled),
