@@ -116,6 +116,10 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
       setTyping(false);
       if (!response.ok) throw new Error(result.error || "Coś poszło nie tak.");
       push({ from: "agent", text: chat.finalText });
+      // „Przygotowanie” ofert: 1,5 s pisania, dopiero potem link
+      setTyping(true);
+      await sleep(1500);
+      setTyping(false);
       push({ from: "result", url: result.url, offersCount: result.offersCount || 0 });
       setStep(2);
     } catch (reason) {
