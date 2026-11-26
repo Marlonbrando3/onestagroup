@@ -157,3 +157,4 @@ alter table public.lm_leads add column if not exists consents jsonb not null def
 alter table public.crm_consents enable row level security;
 revoke all on table public.crm_consents from anon, authenticated;
 grant all on table public.crm_consents to service_role;
+alter table public.lm_settings add column if not exists sms_basic_template text not null default '';  -- powitanie bez linku (bez zgody SMS)

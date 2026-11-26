@@ -60,9 +60,10 @@ export default function PolitykaPrywatnosci() {
           <ul className="list-disc space-y-2 pl-5">
             <li>
               obsługa zapytania (także zgłoszenia z formularza reklamowego
-              Facebook/Instagram), kontakt w odpowiedzi na nie, przedstawienie
-              ofert, czat ofertowy i podjęcie działań przed zawarciem umowy —
-              art. 6 ust. 1 lit. b RODO;
+              Facebook/Instagram), kontakt w odpowiedzi na nie, w tym SMS
+              potwierdzający przyjęcie zgłoszenia (bez treści handlowych),
+              przedstawienie ofert, czat ofertowy i podjęcie działań przed
+              zawarciem umowy — art. 6 ust. 1 lit. b RODO;
             </li>
             <li>
               realizacja umowy pośrednictwa — art. 6 ust. 1 lit. b RODO;

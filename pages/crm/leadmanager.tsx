@@ -25,6 +25,7 @@ type Settings = {
     apiToken: string;
     senderName: string;
     clientTemplate: string;
+    basicTemplate: string;
     hasApiToken?: boolean;
   };
   consents: { requireSmsConsent: boolean; smsKey: string; phoneKey: string };
@@ -456,8 +457,8 @@ export default function LeadManagerPage() {
                 </label>
                 <label className="lmField lmWide">
                   <span>
-                    Treść SMS-a. Zmienne: {"{{name}}"} (imię i nazwisko), {"{{firstName}}"} (imię), {"{{company}}"},{" "}
-                    {"{{chatLink}}"} (czat „wygeneruj oferty”), {"{{cbTopLink}}"} (link do TOP 20 ze śledzeniem)
+                    SMS z ofertami – dla leadów, które zaznaczyły zgodę na SMS. Zmienne: {"{{name}}"} (imię i nazwisko),{" "}
+                    {"{{firstName}}"} (imię), {"{{company}}"}, {"{{chatLink}}"} (czat „wygeneruj oferty”), {"{{cbTopLink}}"} (TOP 20)
                   </span>
                   <textarea
                     rows={8}
@@ -467,6 +468,17 @@ export default function LeadManagerPage() {
                     }
                   />
                   <small>{settings.sms.clientTemplate.length} znaków</small>
+                </label>
+                <label className="lmField lmWide">
+                  <span>
+                    SMS powitalny bez linku – dla leadów bez zgody na SMS z ofertami (samo podziękowanie i zapowiedź telefonu, bez
+                    ofert i linków). Zmienne: {"{{name}}"}, {"{{firstName}}"}, {"{{company}}"}
+                  </span>
+                  <textarea
+                    rows={5}
+                    value={settings.sms.basicTemplate}
+                    onChange={(event) => setSettings({ ...settings, sms: { ...settings.sms, basicTemplate: event.target.value } })}
+                  />
                 </label>
               </div>
               <div className="lmActions">
@@ -500,7 +512,7 @@ export default function LeadManagerPage() {
                     setSettings({ ...settings, consents: { ...settings.consents, requireSmsConsent: event.target.checked } })
                   }
                 />
-                <span>Wysyłaj SMS powitalny tylko klientom, którzy zaznaczyli zgodę na SMS (zalecane)</span>
+                <span>Link do ofert w SMS-ie tylko dla zaznaczonej zgody na SMS – pozostali dostają powitanie bez linku (zalecane)</span>
               </label>
               <div className="lmGrid">
                 <label className="lmField">
@@ -536,7 +548,7 @@ export default function LeadManagerPage() {
               })()}
               {settings.consents.requireSmsConsent && !settings.consents.smsKey ? (
                 <p className="lmResult fail">
-                  Nie ustawiono klucza zgody SMS – SMS powitalne nie będą wysyłane do leadów z Facebooka, dopóki go nie wpiszesz.
+                  Nie ustawiono klucza zgody SMS – wszystkie leady z Facebooka dostaną powitanie bez linku, dopóki go nie wpiszesz.
                 </p>
               ) : null}
             </div>

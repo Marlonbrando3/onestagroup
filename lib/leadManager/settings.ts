@@ -18,6 +18,8 @@ export type LmSettings = {
     apiToken: string;
     senderName: string;
     clientTemplate: string;
+    // Powitanie bez linku – dla leadów bez zgody na SMS z ofertami
+    basicTemplate: string;
   };
   // Zgody z formularza Meta: klucze checkboxów i czy SMS wymaga zaznaczonej zgody
   consents: {
@@ -48,6 +50,7 @@ function mapRow(row: any): LmSettings {
       apiToken: row?.sms_api_token || "",
       senderName: row?.sms_sender_name || "",
       clientTemplate: row?.sms_client_template || "",
+      basicTemplate: row?.sms_basic_template || "",
     },
     consents: {
       requireSmsConsent: row?.require_sms_consent !== false,
@@ -111,6 +114,7 @@ export async function saveLmSettings(input: any) {
     sms_simulation_mode: sms.simulationMode !== false,
     sms_sender_name: str(sms.senderName, 11),
     sms_client_template: str(sms.clientTemplate, 1500),
+    sms_basic_template: str(sms.basicTemplate, 1500),
     require_sms_consent: input?.consents?.requireSmsConsent !== false,
     sms_consent_key: str(input?.consents?.smsKey, 120),
     phone_consent_key: str(input?.consents?.phoneKey, 120),

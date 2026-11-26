@@ -183,21 +183,21 @@ export async function ingestLead(input: LmIncomingLead): Promise<LmIngestResult>
     console.error("lead manager: push", error);
   }
 
-  // 4. SMS powitalny do klienta (najwyżej jeden na lead) – tylko ze zgodą na SMS z formularza
-  const smsAllowed = !settings.consents.requireSmsConsent || smsConsent === true;
-  if (!smsAllowed) {
+  // 4. SMS powitalny do klienta (najwyżej jeden na lead).
+  // Ze zgodą na SMS z formularza → wersja z linkiem do ofert (informacja handlowa, art. 398 PKE).
+  // Bez zgody → to samo powitanie bez linku (odpowiedź na zgłoszenie, nie informacja handlowa).
+  const withOffers = !settings.consents.requireSmsConsent || smsConsent === true;
+  if (!withOffers) {
     await addLmLog(
       "info",
-      "SMS powitalny pominięty – brak zgody na SMS",
+      "SMS powitalny bez linku – brak zgody na SMS z ofertami",
       settings.consents.smsKey
         ? `${name} • ${phone} • w formularzu nie zaznaczono „${settings.consents.smsKey}”`
         : `${name} • ${phone} • w Lead Managerze nie ustawiono klucza zgody SMS z formularza Meta`,
       leadId,
     );
   }
-  const { data: claimed } = !smsAllowed
-    ? { data: null }
-    : await supabaseServer
+  const { data: claimed } = await supabaseServer
     .from("lm_leads")
     .update({ welcome_sms_claimed_at: now.toISOString() })
     .eq("id", leadId)
@@ -206,12 +206,14 @@ export async function ingestLead(input: LmIncomingLead): Promise<LmIngestResult>
   let sms: LmIngestResult["sms"];
   if (claimed?.length) {
     let links = { cbTop: "", costaBlanca: "", chat: "" };
-    try {
-      links = await createTrackedOfferLinks(leadId, contactId, !settings.sms.simulationMode);
-    } catch (error) {
-      console.error("lead manager: link śledzący", error);
+    if (withOffers) {
+      try {
+        links = await createTrackedOfferLinks(leadId, contactId, !settings.sms.simulationMode);
+      } catch (error) {
+        console.error("lead manager: link śledzący", error);
+      }
     }
-    const message = renderTemplate(settings.sms.clientTemplate, {
+    const message = renderTemplate(withOffers ? settings.sms.clientTemplate : settings.sms.basicTemplate, {
       name,
       firstName: name.split(/\s+/)[0],
       phone,
