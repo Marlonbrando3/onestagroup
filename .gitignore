@@ -43,3 +43,4 @@ certificates
 
 # lokalny podgląd projektów REDSP (lib/projectUnits.ts)
 /.cache/
+_to_delete/

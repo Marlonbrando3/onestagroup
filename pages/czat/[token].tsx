@@ -115,6 +115,24 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
         <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport" />
         <meta content="#0f5d52" name="theme-color" />
       </Head>
+      <div className="chatPage">
+      <aside className="chatIntro">
+        <img alt="Onesta Group" className="chatLogo" src="/logotype_full_new.svg" />
+        <p className="chatEyebrow">Nieruchomości w Hiszpanii</p>
+        <h1>
+          Oferty dla Ciebie
+          <br />w niecałą minutę
+        </h1>
+        <p className="chatLead">
+          Odpowiedz w czacie na dwa krótkie pytania – od razu otrzymasz prezentację wybranych nieruchomości na Costa Blanca i
+          Costa del Sol. Bez zobowiązań.
+        </p>
+        <ul className="chatPoints">
+          <li>Polskie biuro na miejscu w Hiszpanii</li>
+          <li>Sprawdzone inwestycje od zaufanych deweloperów</li>
+          <li>Opieka od wyboru mieszkania aż po akt notarialny</li>
+        </ul>
+      </aside>
       <main className="chatShell">
         <header className="chatHeader">
           <img alt="" className="chatAvatar" src="/Marek.webp" />
@@ -171,11 +189,18 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
           )}
         </footer>
       </main>
+      </div>
       <style jsx global>{`
         html,
         body {
-          background: #e9e4dc;
+          background: #0c3b35;
           margin: 0;
+        }
+        .chatPage {
+          min-height: 100dvh;
+        }
+        .chatIntro {
+          display: none;
         }
         .chatShell {
           background: #efeae2;
@@ -360,6 +385,94 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
           font-size: 13px;
           margin: 6px 0;
           text-align: center;
+        }
+        @media (min-width: 960px) {
+          .chatPage {
+            align-items: center;
+            background:
+              linear-gradient(90deg, rgba(6, 38, 34, 0.92) 0%, rgba(6, 38, 34, 0.78) 38%, rgba(6, 38, 34, 0.25) 72%, rgba(6, 38, 34, 0.1) 100%),
+              url("/mediterranean-property-banner.webp") center / cover no-repeat;
+            box-sizing: border-box;
+            display: grid;
+            gap: clamp(40px, 6vw, 110px);
+            grid-template-columns: minmax(0, 520px) 420px;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px clamp(32px, 5vw, 80px);
+          }
+          .chatIntro {
+            color: #ffffff;
+            display: block;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          }
+          .chatLogo {
+            display: block;
+            height: auto;
+            margin-bottom: 44px;
+            width: 190px;
+          }
+          .chatEyebrow {
+            color: #e8b75e;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            margin: 0 0 14px;
+            text-transform: uppercase;
+          }
+          .chatIntro h1 {
+            font-size: clamp(34px, 3.4vw, 48px);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin: 0 0 20px;
+          }
+          .chatLead {
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 17px;
+            line-height: 1.6;
+            margin: 0 0 28px;
+            max-width: 470px;
+          }
+          .chatPoints {
+            display: grid;
+            gap: 12px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+          }
+          .chatPoints li {
+            align-items: center;
+            color: rgba(255, 255, 255, 0.92);
+            display: flex;
+            font-size: 15px;
+            gap: 12px;
+          }
+          .chatPoints li::before {
+            align-items: center;
+            background: rgba(232, 183, 94, 0.18);
+            border: 1px solid rgba(232, 183, 94, 0.6);
+            border-radius: 999px;
+            color: #e8b75e;
+            content: "✓";
+            display: inline-flex;
+            flex: 0 0 auto;
+            font-size: 12px;
+            font-weight: 800;
+            height: 24px;
+            justify-content: center;
+            width: 24px;
+          }
+          .chatShell {
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+            height: min(760px, calc(100vh - 80px));
+            max-width: none;
+            overflow: hidden;
+            width: 420px;
+          }
+          .chatHeader {
+            padding: 14px 16px;
+          }
         }
         @keyframes chatIn {
           from {
