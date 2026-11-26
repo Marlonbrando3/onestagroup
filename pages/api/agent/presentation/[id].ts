@@ -37,7 +37,7 @@ export default async function handler(
   const { data: presentation, error: presentationError } = await supabaseServer
     .from("agent_offer_lists")
     .select(
-      "id,public_token,agent_user_id,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,is_template,public_title,crm_contact:crm_contacts(id,name)",
+      "id,public_token,agent_user_id,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,is_template,public_title,public_subtitle,crm_contact:crm_contacts(id,name)",
     )
     .eq("id", id)
     .is("deleted_at", null)
@@ -86,6 +86,7 @@ export default async function handler(
   const wasTemplate = Boolean((presentation as any).is_template);
   const isTemplate = typeof req.body?.isTemplate === "undefined" ? wasTemplate : Boolean(req.body.isTemplate);
   const publicTitle = cleanText(req.body?.publicTitle, 160) || null;
+  const publicSubtitle = cleanText(req.body?.publicSubtitle, 160) || null;
   if (isTemplate !== wasTemplate && auth.agent.email.toLowerCase() !== TEMPLATE_OWNER_EMAIL) {
     return res.status(403).json({ error: "Rodzaj prezentacji (wzorzec) może zmienić tylko Marek" });
   }
@@ -159,13 +160,14 @@ export default async function handler(
       client_name: isTemplate ? null : clientName,
       is_template: isTemplate,
       public_title: isTemplate ? publicTitle : null,
+      public_subtitle: isTemplate ? publicSubtitle : null,
       offers: orderedOffers,
       updated_at: updatedAt,
       ...(isTemplate ? { crm_contact_id: null } : crmLink.contactId !== undefined ? { crm_contact_id: crmLink.contactId } : {}),
     })
     .eq("id", id)
     .select(
-      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,is_template,public_title,crm_contact:crm_contacts(id,name)",
+      "id,public_token,agent_email,agent_name,presentation_name,contact_name,contact_email,contact_phone,client_salutation,client_name,offers,created_at,updated_at,is_template,public_title,public_subtitle,crm_contact:crm_contacts(id,name)",
     )
     .single();
 

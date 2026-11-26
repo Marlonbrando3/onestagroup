@@ -135,3 +135,4 @@ alter table public.presentation_events add column if not exists crm_contact_id u
 alter table public.presentation_events add column if not exists lead_id uuid;
 create index if not exists presentation_events_contact_idx on public.presentation_events (crm_contact_id, created_at desc) where crm_contact_id is not null;
 create index if not exists agent_offer_lists_template_idx on public.agent_offer_lists (is_template) where is_template;
+alter table public.agent_offer_lists add column if not exists public_subtitle text; -- podtytuł wzorca (np. budżet)

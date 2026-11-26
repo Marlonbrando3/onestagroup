@@ -42,6 +42,7 @@ export default function PresentationEditor({
   // Wzorzec = prezentacja do puli czatu ofertowego: bez klienta, z tytułem dla odbiorcy (tylko Marek)
   const [isTemplate, setIsTemplate] = useState(false);
   const [publicTitle, setPublicTitle] = useState("");
+  const [publicSubtitle, setPublicSubtitle] = useState("");
   const [crmContact, setCrmContact] = useState<PickedCrmContact | null>(null);
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -117,6 +118,7 @@ export default function PresentationEditor({
           setClientName(presentation?.client_name || "");
           setIsTemplate(Boolean(presentation?.is_template));
           setPublicTitle(presentation?.public_title || "");
+          setPublicSubtitle(presentation?.public_subtitle || "");
           setCrmContact(
             presentation?.crm_contact?.id
               ? { id: presentation.crm_contact.id, name: presentation.crm_contact.name || "Klient" }
@@ -188,6 +190,7 @@ export default function PresentationEditor({
             clientName,
             isTemplate,
             publicTitle,
+            publicSubtitle,
             crmContactId: isTemplate ? null : crmContact?.id || null,
             contactName,
             contactEmail,
@@ -338,12 +341,23 @@ export default function PresentationEditor({
                     value={publicTitle}
                     onChange={(event) => setPublicTitle(event.target.value)}
                     className="presentationInput"
-                    placeholder="np. Apartamenty z widokiem na morze na Costa del Sol"
+                    placeholder="np. Costa Blanca"
+                  />
+                  <span className="mt-2">Podtytuł (np. widełki budżetu)</span>
+                  <input
+                    maxLength={160}
+                    value={publicSubtitle}
+                    onChange={(event) => setPublicSubtitle(event.target.value)}
+                    className="presentationInput"
+                    placeholder="np. 300–400 tys. €"
                   />
                   <div className="mt-1 rounded-xl bg-[#182334] px-4 py-4 text-white">
                     <p className="text-[8px] font-extrabold uppercase tracking-[0.16em] text-slate-400">Podgląd nagłówka</p>
-                    <p className="mt-2 text-[8px] font-extrabold uppercase tracking-[0.16em] text-[#d6b66f]">Wybrane oferty</p>
+                    <p className="mt-2 text-[8px] font-extrabold uppercase tracking-[0.16em] text-[#d6b66f]">Wstępnie wybrane oferty</p>
                     <p className="mt-1 text-[19px] font-extrabold leading-tight">{publicTitle.trim() || "Oferty wybrane dla Ciebie"}</p>
+                    {publicSubtitle.trim() ? (
+                      <p className="mt-1 text-[10px] font-extrabold leading-tight text-[#d6b66f]">{publicSubtitle.trim()}</p>
+                    ) : null}
                     <p className="mt-2 text-[10px] font-medium leading-4 text-slate-300">
                       Na podstawie Twoich odpowiedzi wybraliśmy oferty, które — wierzymy — mogą spełnić Twoje oczekiwania.
                     </p>

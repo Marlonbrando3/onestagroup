@@ -28,6 +28,7 @@ type PublicOfferListProps = {
   // Wzorzec (pula czatu): własny tytuł, bez imienia klienta; śledzenie i „Interesuje mnie” tylko z linkiem leada (?k=…)
   isTemplate: boolean;
   publicTitle: string;
+  publicSubtitle: string;
   leadKey: string;
 };
 
@@ -51,6 +52,7 @@ export default function PublicOfferList({
   coverImages,
   isTemplate,
   publicTitle,
+  publicSubtitle,
   leadKey,
 }: PublicOfferListProps) {
   usePresentationTracking(token, "open", undefined, undefined, { isTemplate, leadKey });
@@ -78,7 +80,7 @@ export default function PublicOfferList({
   return (
     <>
       <Head>
-        <title>{isTemplate ? headingText : clientName ? `Prezentacja dla ${greeting ? `${greeting.title} ` : ""}${clientName}` : greeting ? `Oferty wybrane dla ${greeting.title}` : "Oferty wybrane dla Ciebie"} | Onesta Group</title>
+        <title>{isTemplate ? [headingText, publicSubtitle].filter(Boolean).join(" · ") : clientName ? `Prezentacja dla ${greeting ? `${greeting.title} ` : ""}${clientName}` : greeting ? `Oferty wybrane dla ${greeting.title}` : "Oferty wybrane dla Ciebie"} | Onesta Group</title>
         <meta
           name="description"
           content="Indywidualna lista nieruchomości przygotowana przez Onesta Group."
@@ -102,11 +104,16 @@ export default function PublicOfferList({
           <div className="relative px-6 py-10 sm:px-10 md:py-14 lg:px-14">
             <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-[#d6b66f]/10 blur-2xl" />
             <p className="relative text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#d6b66f]">
-              {isTemplate ? "Wybrane oferty" : clientName ? "Prezentacja przygotowana dla" : "Indywidualna prezentacja ofert"}
+              {isTemplate ? "Wstępnie wybrane oferty" : clientName ? "Prezentacja przygotowana dla" : "Indywidualna prezentacja ofert"}
             </p>
             <h1 className={`${HomePlayfairSans.className} relative mt-4 text-[36px] font-semibold leading-[1.06] tracking-[-0.02em] md:text-[52px]`}>
               {headingText}
             </h1>
+            {isTemplate && publicSubtitle ? (
+              <p className={`${HomePlayfairSans.className} relative mt-3 text-[18px] font-semibold leading-tight text-[#d6b66f] md:text-[26px]`}>
+                {publicSubtitle}
+              </p>
+            ) : null}
             <div className="relative mt-6 h-[3px] w-16 rounded-full bg-[#d6b66f]" aria-hidden="true" />
             <p className="relative mt-6 max-w-[620px] text-[16px] leading-8 text-slate-200 md:text-[18px]">{claim}</p>
             <ul className="relative mt-7 grid gap-2.5 text-[13px] text-slate-300">
@@ -250,7 +257,7 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
   const { data, error } = await supabaseServer
     .from("agent_offer_lists")
     .select(
-      "offers,created_at,agent_name,agent_email,contact_name,contact_email,contact_phone,client_salutation,client_name,is_template,public_title",
+      "offers,created_at,agent_name,agent_email,contact_name,contact_email,contact_phone,client_salutation,client_name,is_template,public_title,public_subtitle",
     )
     .eq("public_token", token)
     .maybeSingle();
@@ -267,6 +274,7 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
       token,
       isTemplate,
       publicTitle: String((data as any).public_title || "").trim(),
+      publicSubtitle: String((data as any).public_subtitle || "").trim(),
       leadKey,
       offers: data.offers as AgentOffer[],
       createdAt: data.created_at,

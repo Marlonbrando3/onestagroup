@@ -36,6 +36,7 @@ type PresentationSummary = {
   crm_contact?: { id: string; name: string | null } | null;
   is_template?: boolean;
   public_title?: string | null;
+  public_subtitle?: string | null;
 };
 
 function formatDate(value: string) {
@@ -275,7 +276,7 @@ export default function AgentPresentationsPage() {
                         </h2>
                         <p className="mt-1 truncate text-[10px] font-semibold text-slate-500">
                           {presentation.is_template
-                            ? `Dla klienta: „${presentation.public_title || "Oferty wybrane dla Ciebie"}”`
+                            ? `Dla klienta: „${[presentation.public_title || "Oferty wybrane dla Ciebie", presentation.public_subtitle].filter(Boolean).join(" · ")}”`
                             : presentation.contact_name || presentation.agent_name || "Onesta Group"}
                         </p>
                         {presentation.crm_contact?.id ? (
