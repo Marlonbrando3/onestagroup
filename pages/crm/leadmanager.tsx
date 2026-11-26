@@ -316,9 +316,21 @@ export default function LeadManagerPage() {
                 <button disabled={busyAction === "test_meta"} type="button" onClick={() => runTest("test_meta")}>
                   {busyAction === "test_meta" ? "Sprawdzam…" : "Testuj token Meta"}
                 </button>
-                <small>Najpierw zapisz zmiany – test używa zapisanej konfiguracji.</small>
+                <button
+                  disabled={busyAction === "check_subscription"}
+                  type="button"
+                  onClick={() => runTest("check_subscription")}
+                >
+                  {busyAction === "check_subscription" ? "Sprawdzam…" : "Sprawdź subskrypcję strony"}
+                </button>
+                <button disabled={busyAction === "subscribe_page"} type="button" onClick={() => runTest("subscribe_page")}>
+                  {busyAction === "subscribe_page" ? "Podłączam…" : "Podłącz stronę (leadgen)"}
+                </button>
+                <small>Najpierw zapisz zmiany – testy używają zapisanej konfiguracji.</small>
               </div>
               {result("test_meta")}
+              {result("check_subscription")}
+              {result("subscribe_page")}
             </div>
 
             <div className="lmCard">

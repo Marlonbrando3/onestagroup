@@ -151,6 +151,34 @@ export async function fetchMetaLead(reference: MetaLeadReference, settings: LmSe
   };
 }
 
+// Subskrypcja strony do aplikacji (bez niej Meta nie wysyła leadów na webhook, nawet z poprawnym Callback URL)
+export async function getPageSubscription(settings: LmSettings["meta"]) {
+  const page = await graphGet("me", { fields: "id,name" }, settings);
+  const data = await graphGet("me/subscribed_apps", {}, settings);
+  const apps: Array<{ id: string; name: string; fields: string[] }> = (Array.isArray(data?.data) ? data.data : []).map((app: any) => ({
+    id: String(app?.id || ""),
+    name: String(app?.name || ""),
+    fields: Array.isArray(app?.subscribed_fields) ? app.subscribed_fields.map(String) : [],
+  }));
+  const ours = apps.find((app) => settings.appId && app.id === settings.appId);
+  return {
+    page: { id: String(page?.id || ""), name: String(page?.name || "") },
+    apps,
+    subscribed: Boolean(ours?.fields.includes("leadgen")),
+  };
+}
+
+export async function subscribePageToLeadgen(settings: LmSettings["meta"]) {
+  if (!settings.pageAccessToken) throw new Error("Brak tokenu dostępu strony Meta (Page Access Token).");
+  const url = new URL(`https://graph.facebook.com/${settings.graphApiVersion}/me/subscribed_apps`);
+  url.searchParams.set("subscribed_fields", "leadgen");
+  url.searchParams.set("access_token", settings.pageAccessToken);
+  const response = await fetch(url, { method: "POST", signal: AbortSignal.timeout(12_000) });
+  const data = (await response.json().catch(() => null)) as any;
+  if (!response.ok || data?.error) throw new Error(data?.error?.message || `Meta Graph API zwróciło HTTP ${response.status}.`);
+  return Boolean(data?.success);
+}
+
 export async function testMetaConnection(settings: LmSettings["meta"]) {
   const data = await graphGet("me", { fields: "id,name" }, settings);
   return { id: data?.id as string | undefined, name: data?.name as string | undefined };

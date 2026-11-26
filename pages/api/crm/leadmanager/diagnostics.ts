@@ -3,7 +3,7 @@ import { supabaseServer } from "@/lib/supabaseClient";
 import { requireCrmSuperadmin } from "@/lib/crmServerAuth";
 import { sendCrmPush } from "@/lib/crmPush";
 import { ingestLead } from "@/lib/leadManager/ingest";
-import { testMetaConnection } from "@/lib/leadManager/meta";
+import { getPageSubscription, subscribePageToLeadgen, testMetaConnection } from "@/lib/leadManager/meta";
 import { addLmLog, readLmSettings } from "@/lib/leadManager/settings";
 import { sendLmSms } from "@/lib/leadManager/sms";
 
@@ -43,6 +43,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const page = await testMetaConnection(settings.meta);
       await addLmLog("success", "Test Meta: token działa", `Strona: ${page.name || "?"} (${page.id || "?"})`);
       return res.status(200).json({ ok: true, message: `Token działa – strona: ${page.name || page.id}` });
+    }
+
+    if (action === "check_subscription") {
+      const info = await getPageSubscription(settings.meta);
+      const appsText = info.apps.length
+        ? info.apps.map((app) => `${app.name || app.id} (${app.id}): ${app.fields.join(", ") || "brak pól"}`).join("; ")
+        : "żadna aplikacja";
+      const message = info.subscribed
+        ? `Strona „${info.page.name}” jest zasubskrybowana do aplikacji ${settings.meta.appId} na leadgen. Zasubskrybowane: ${appsText}.`
+        : `Strona „${info.page.name}” NIE jest zasubskrybowana do aplikacji ${settings.meta.appId || "(brak App ID)"} na leadgen – Meta nie wyśle leadów. Zasubskrybowane: ${appsText}. Kliknij „Podłącz stronę”.`;
+      await addLmLog(info.subscribed ? "success" : "error", "Sprawdzenie subskrypcji strony", message);
+      return res.status(200).json({ ok: info.subscribed, message });
+    }
+
+    if (action === "subscribe_page") {
+      const ok = await subscribePageToLeadgen(settings.meta);
+      const info = await getPageSubscription(settings.meta).catch(() => null);
+      const message = ok
+        ? `Podłączono stronę „${info?.page.name || ""}” do aplikacji na leadgen. Wyślij teraz testowego leada z Lead Ads Testing Tool.`
+        : "Meta nie potwierdziła subskrypcji.";
+      await addLmLog(ok ? "success" : "error", "Podłączenie strony do leadgen", message);
+      return res.status(200).json({ ok, message });
     }
 
     if (action === "test_sms") {
