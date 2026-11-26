@@ -14,6 +14,8 @@ export type LmIncomingLead = {
   metaFormId?: string;
   metaPageId?: string;
   formAnswers: LmFormAnswer[];
+  // Checkboxy zgód z formularza Meta (custom disclaimer): klucz pola i czy zaznaczone
+  consents?: Array<{ key: string; checked: boolean }>;
 };
 
 type MetaField = { name?: string; values?: string[] };
@@ -117,12 +119,17 @@ async function graphGet(path: string, params: Record<string, string>, settings: 
 export async function fetchMetaLead(reference: MetaLeadReference, settings: LmSettings["meta"]): Promise<LmIncomingLead> {
   const data = await graphGet(
     encodeURIComponent(reference.leadgenId),
-    { fields: "id,created_time,field_data,form_id,campaign_name,ad_name" },
+    { fields: "id,created_time,field_data,form_id,campaign_name,ad_name,custom_disclaimer_responses" },
     settings,
   ).catch(async (error) => {
-    // campaign_name bywa niedostępne dla tokenu strony – wtedy pytamy o podstawowe pola
-    if (String(error?.message || "").includes("campaign_name")) {
-      return graphGet(encodeURIComponent(reference.leadgenId), { fields: "id,created_time,field_data,form_id" }, settings);
+    // Część pól bywa niedostępna dla tokenu – wtedy pytamy o mniej
+    const message = String(error?.message || "");
+    if (message.includes("campaign_name") || message.includes("ad_name")) {
+      return graphGet(
+        encodeURIComponent(reference.leadgenId),
+        { fields: "id,created_time,field_data,form_id,custom_disclaimer_responses" },
+        settings,
+      ).catch(() => graphGet(encodeURIComponent(reference.leadgenId), { fields: "id,created_time,field_data,form_id" }, settings));
     }
     throw error;
   });
@@ -148,6 +155,9 @@ export async function fetchMetaLead(reference: MetaLeadReference, settings: LmSe
     metaFormId: formId,
     metaPageId: reference.pageId,
     formAnswers: parsed.formAnswers,
+    consents: (Array.isArray(data?.custom_disclaimer_responses) ? data.custom_disclaimer_responses : [])
+      .map((item: any) => ({ key: String(item?.checkbox_key || "").trim(), checked: item?.is_checked === true || item?.is_checked === "1" || item?.is_checked === 1 }))
+      .filter((item: { key: string }) => item.key),
   };
 }
 

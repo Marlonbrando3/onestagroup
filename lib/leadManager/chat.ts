@@ -1,6 +1,7 @@
 import { supabaseServer } from "@/lib/supabaseClient";
 import { sendCrmPush } from "@/lib/crmPush";
 import { insertLmEvent, readLmTrackingToken } from "./tracking";
+import { hasTrackingConsent, recordConsent, TRACKING_CONSENT_WORDING } from "@/lib/consents";
 
 // Czat ofertowy: link z SMS-a powitalnego → /czat/<token> → 2 pytania jednokrotnego wyboru →
 // wzorzec prezentacji z puli z kluczem leada w linku (?k=…). Wzorzec NIE jest przypisywany do klienta –
@@ -154,7 +155,10 @@ export async function getPublicChat(token: string) {
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
-    if (data?.public_token) previous = { url: `/oferty/${data.public_token}?k=${encodeURIComponent(token)}`, offersCount: 0 };
+    if (data?.public_token) {
+      const consented = await hasTrackingConsent(linked.contact.id);
+      previous = { url: `/oferty/${data.public_token}${consented ? `?k=${encodeURIComponent(token)}` : ""}`, offersCount: 0 };
+    }
   }
   return {
     enabled: config.enabled,
@@ -168,10 +172,12 @@ export async function getPublicChat(token: string) {
   };
 }
 
-export async function recordChatOpen(token: string) {
+// Otwarcie czatu zapisujemy tylko przy zgodzie (CRM albo CookieYes „reklamowe” w tej przeglądarce)
+export async function recordChatOpen(token: string, cookieConsent: boolean) {
   if (!supabaseServer) return;
   const linked = await contactFromToken(token).catch(() => null);
   if (!linked) return;
+  if (!cookieConsent && !(await hasTrackingConsent(linked.contact.id))) return;
   // Odświeżenie strony w ciągu 2 minut nie liczy się jako nowe otwarcie
   const since = new Date(Date.now() - 2 * 60 * 1000).toISOString();
   const { data: recent } = await supabaseServer
@@ -199,7 +205,7 @@ export async function recordChatOpen(token: string) {
   }
 }
 
-export async function completeChat(token: string, answerIds: string[]) {
+export async function completeChat(token: string, answerIds: string[], trackingConsent: boolean) {
   if (!supabaseServer) throw new Error("Brak konfiguracji serwera.");
   const config = await readChatConfig();
   if (!config.enabled) throw new Error("Czat jest chwilowo wyłączony.");
@@ -226,7 +232,18 @@ export async function completeChat(token: string, answerIds: string[]) {
     // Wejście bez linku z SMS-a – wzorzec bez śledzenia
     return { url: `/oferty/${source.public_token}`, offersCount };
   }
-  const url = `/oferty/${source.public_token}?k=${encodeURIComponent(token)}`;
+  // Zgoda z czatu (Tak / Nie) – zapis w rejestrze zgód; link z kluczem leada tylko przy zgodzie
+  await recordConsent({
+    contactId: linked.contact.id,
+    leadId: linked.leadId,
+    kind: "tracking",
+    granted: trackingConsent,
+    source: "chat",
+    wording: trackingConsent ? TRACKING_CONSENT_WORDING : "Odmowa w czacie ofertowym",
+  });
+  const url = trackingConsent
+    ? `/oferty/${source.public_token}?k=${encodeURIComponent(token)}`
+    : `/oferty/${source.public_token}`;
 
   // Ten sam wybór drugi raz – bez ponownego zapisu i powiadomień
   const { data: existing } = await supabaseServer
@@ -260,7 +277,9 @@ export async function completeChat(token: string, answerIds: string[]) {
     leadId: linked.leadId,
     event: "chat_completed",
     title: `Czat ofertowy: ${chosen.map((item) => item.answer).join(", ")}`,
-    detail: `Wysłano wzorzec „${String(source.presentation_name || "").trim()}” (${offersCount} ofert) – aktywność w nim widać w historii.`,
+    detail: `Wysłano wzorzec „${String(source.presentation_name || "").trim()}” (${offersCount} ofert). ${
+      trackingConsent ? "Zgoda na zapisywanie oglądanych ofert – aktywność widać w historii." : "Bez zgody na zapisywanie oglądanych ofert."
+    }`,
   });
 
   if (linked.contact.pipeline_owner) {

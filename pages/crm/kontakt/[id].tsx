@@ -18,6 +18,7 @@ import { useCrmNotes } from "@/components/crm/useCrmNotes";
 import { getCrmUser } from "@/components/crm/users";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
+import CrmConsentPanel from "@/components/crm/CrmConsentPanel";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const today = new Date().toISOString().slice(0, 10);
@@ -938,6 +939,12 @@ export default function CRMContactCardPage() {
                       Brak powiązanych prezentacji. Po skojarzeniu zobaczysz tu i w historii, kiedy klient otwiera prezentację i oferty.
                     </p>
                   )}
+                </section>
+                <section className="crmSideSection">
+                  <div className="crmSideHeader">
+                    <h2>Zgody</h2>
+                  </div>
+                  <CrmConsentPanel contactId={contactId} />
                 </section>
               </aside>
 

@@ -41,8 +41,10 @@ import { getProjectUnits, type ProjectUnit } from "@/lib/projectUnits";
 import { normalizeFeatures } from "@/lib/propertyFeatures";
 import type { OfferPdfContact } from "@/lib/offerPdf";
 import { formatPhone } from "@/lib/phone";
-import { usePresentationTracking } from "@/lib/presentationTracking";
+import { useCookieYesAdvertisement, usePresentationTracking } from "@/lib/presentationTracking";
 import { resolveLeadKey } from "@/lib/leadManager/tracking";
+import { hasTrackingConsent } from "@/lib/consents";
+import TrackingConsentBar from "@/components/presentation/TrackingConsentBar";
 
 type PresentationOfferProps = {
   token: string;
@@ -55,6 +57,8 @@ type PresentationOfferProps = {
   // Wzorzec (pula czatu): śledzenie i „Interesuje mnie” tylko z linkiem leada (?k=…)
   isTemplate: boolean;
   leadKey: string;
+  identifiable: boolean;
+  trackingConsent: boolean;
 };
 
 function formatPrice(value: number | null) {
@@ -72,7 +76,11 @@ export default function PresentationOfferPage({
   projectUnits,
   isTemplate,
   leadKey,
+  identifiable,
+  trackingConsent,
 }: PresentationOfferProps) {
+  const [consent, setConsent] = useState(trackingConsent);
+  const cookieAdvertisement = useCookieYesAdvertisement();
   const canInterest = !isTemplate || Boolean(leadKey);
   const keyQuery = leadKey ? `?k=${encodeURIComponent(leadKey)}` : "";
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -107,7 +115,11 @@ export default function PresentationOfferPage({
   const title =
     validTitleOrEmpty(offer.title) ||
     `${typeLabel} w ${offer.town || offer.province || "Hiszpanii"}`;
-  usePresentationTracking(token, "offer_view", String(offer.external_id || ""), title, { isTemplate, leadKey });
+  usePresentationTracking(token, "offer_view", String(offer.external_id || ""), title, {
+    isTemplate,
+    leadKey,
+    allowed: consent || cookieAdvertisement,
+  });
   const coast = getCoastLabelFromProvince(offer.province);
   const country = getCountryLabel(offer.country) || offer.country || "Hiszpania";
   const locationLine = [coast, offer.town].filter(Boolean).join(", ");
@@ -473,6 +485,9 @@ export default function PresentationOfferPage({
               </div>
             </div>
           </section>
+          {identifiable && !cookieAdvertisement ? (
+            <TrackingConsentBar token={token} leadKey={leadKey} consent={consent} onChange={setConsent} />
+          ) : null}
         </main>
 
         {lightboxIndex !== null ? (
@@ -539,7 +554,7 @@ export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = as
 
   const { data: presentation, error } = await supabaseServer
     .from("agent_offer_lists")
-    .select("offers,contact_name,contact_email,contact_phone,agent_name,agent_email,is_template")
+    .select("offers,contact_name,contact_email,contact_phone,agent_name,agent_email,is_template,crm_contact_id")
     .eq("public_token", token)
     .maybeSingle();
 
@@ -579,13 +594,17 @@ export const getServerSideProps: GetServerSideProps<PresentationOfferProps> = as
   } as AgentOffer;
 
   const isTemplate = Boolean((presentation as any).is_template);
-  const leadKey = isTemplate && requestedKey && (await resolveLeadKey(requestedKey)) ? requestedKey : "";
+  const lead = isTemplate && requestedKey ? await resolveLeadKey(requestedKey) : null;
+  const leadKey = lead ? requestedKey : "";
+  const contactId = isTemplate ? lead?.contactId || null : (presentation as any).crm_contact_id || null;
 
   return {
     props: {
       token,
       isTemplate,
       leadKey,
+      identifiable: Boolean(contactId),
+      trackingConsent: await hasTrackingConsent(contactId),
       offer,
       images: imageUrls(offer.images),
       description: descriptionValue(offer.descriptions),

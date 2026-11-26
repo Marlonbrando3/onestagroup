@@ -27,6 +27,7 @@ type Settings = {
     clientTemplate: string;
     hasApiToken?: boolean;
   };
+  consents: { requireSmsConsent: boolean; smsKey: string; phoneKey: string };
   updatedAt: string | null;
 };
 type LogRow = { id: string; level: "info" | "success" | "error"; title: string; detail: string | null; created_at: string };
@@ -39,6 +40,7 @@ type LeadRow = {
   form_name: string | null;
   crm_contact_id: string | null;
   duplicate_of_existing: boolean;
+  consents?: Array<{ key: string; checked: boolean }>;
 };
 type SmsRow = { id: string; created_at: string; audience: string; recipient: string; status: string; error: string | null };
 
@@ -484,6 +486,61 @@ export default function LeadManagerPage() {
               {result("test_sms")}
             </div>
 
+            <div className="lmCard">
+              <h2>Zgody z formularza Meta (RODO / Prawo komunikacji elektronicznej)</h2>
+              <p className="lmHint">
+                W formularzu Lead Ads dodaj checkboxy zgód („Własne zastrzeżenia / Custom disclaimer”). Każdy checkbox ma swój klucz –
+                wpisz go poniżej. Zgody zapisują się w karcie klienta (sekcja „Zgody”) z datą i źródłem.
+              </p>
+              <label className="lmSwitch">
+                <input
+                  checked={settings.consents.requireSmsConsent}
+                  type="checkbox"
+                  onChange={(event) =>
+                    setSettings({ ...settings, consents: { ...settings.consents, requireSmsConsent: event.target.checked } })
+                  }
+                />
+                <span>Wysyłaj SMS powitalny tylko klientom, którzy zaznaczyli zgodę na SMS (zalecane)</span>
+              </label>
+              <div className="lmGrid">
+                <label className="lmField">
+                  <span>Klucz checkboxa zgody na SMS</span>
+                  <input
+                    autoComplete="off"
+                    name="lm-sms-consent-key"
+                    placeholder="np. zgoda_sms"
+                    value={settings.consents.smsKey}
+                    onChange={(event) => setSettings({ ...settings, consents: { ...settings.consents, smsKey: event.target.value } })}
+                  />
+                </label>
+                <label className="lmField">
+                  <span>Klucz checkboxa zgody na kontakt telefoniczny</span>
+                  <input
+                    autoComplete="off"
+                    name="lm-phone-consent-key"
+                    placeholder="np. zgoda_telefon"
+                    value={settings.consents.phoneKey}
+                    onChange={(event) => setSettings({ ...settings, consents: { ...settings.consents, phoneKey: event.target.value } })}
+                  />
+                </label>
+              </div>
+              {(() => {
+                const keys = Array.from(new Set(diag.leads.flatMap((lead) => (lead.consents || []).map((item) => item.key))));
+                return keys.length ? (
+                  <p className="lmHint">
+                    Klucze z ostatnich leadów: {keys.map((key) => <code key={key} className="lmKey">{key}</code>)}
+                  </p>
+                ) : (
+                  <p className="lmHint">Klucze pojawią się tu automatycznie po pierwszym leadzie z formularza z checkboxami zgód.</p>
+                );
+              })()}
+              {settings.consents.requireSmsConsent && !settings.consents.smsKey ? (
+                <p className="lmResult fail">
+                  Nie ustawiono klucza zgody SMS – SMS powitalne nie będą wysyłane do leadów z Facebooka, dopóki go nie wpiszesz.
+                </p>
+              ) : null}
+            </div>
+
             <div className="lmSaveBar">
               {saveMessage ? <span>{saveMessage}</span> : null}
               <button className="primary" disabled={isSaving} type="button" onClick={save}>
@@ -713,6 +770,11 @@ export default function LeadManagerPage() {
                         <strong>{lead.name}</strong> · {lead.phone}
                         {lead.source === "diagnostic" ? <em className="lmTag">test</em> : null}
                         {lead.duplicate_of_existing ? <em className="lmTag">ponowne</em> : null}
+                        {(lead.consents || []).map((item) => (
+                          <em className={`lmTag ${item.checked ? "lmTagYes" : "lmTagNo"}`} key={item.key}>
+                            {item.key}: {item.checked ? "✓" : "✗"}
+                          </em>
+                        ))}
                         <small>{[lead.form_name, formatTime(lead.created_at)].filter(Boolean).join(" · ")}</small>
                       </div>
                       {lead.crm_contact_id ? <Link href={`/crm/kontakt/${lead.crm_contact_id}`}>Karta →</Link> : null}
@@ -925,6 +987,21 @@ export default function LeadManagerPage() {
         .lmSecret button {
           flex: 0 0 auto;
           padding: 0 10px;
+        }
+        .lmKey {
+          background: #eef0f2;
+          border-radius: 4px;
+          font-size: 12px;
+          margin: 0 4px;
+          padding: 1px 6px;
+        }
+        .lmTagYes {
+          background: #e6f6ec !important;
+          color: #1f7a48 !important;
+        }
+        .lmTagNo {
+          background: #fdeeee !important;
+          color: #a83434 !important;
         }
         .lmQuestion {
           border-top: 1px solid #eef0f2;

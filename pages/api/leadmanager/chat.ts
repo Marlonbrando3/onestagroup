@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { completeChat, recordChatOpen } from "@/lib/leadManager/chat";
+import { cookieYesAdvertisementFromRequest } from "@/lib/consents";
 
 // Publiczne API czatu ofertowego (/czat/<token>)
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,12 +13,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const action = String(req.body?.action || "");
   try {
     if (action === "open") {
-      await recordChatOpen(token);
+      await recordChatOpen(token, cookieYesAdvertisementFromRequest(req));
       return res.status(200).json({ ok: true });
     }
     if (action === "complete") {
       const answers = Array.isArray(req.body?.answers) ? req.body.answers.map((item: unknown) => String(item).slice(0, 40)) : [];
-      const result = await completeChat(token, answers);
+      const result = await completeChat(token, answers, req.body?.consent === true);
       return res.status(200).json({ ok: true, ...result });
     }
     return res.status(400).json({ error: "Nieznana akcja." });

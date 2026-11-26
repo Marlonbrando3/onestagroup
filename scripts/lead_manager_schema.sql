@@ -136,3 +136,24 @@ alter table public.presentation_events add column if not exists lead_id uuid;
 create index if not exists presentation_events_contact_idx on public.presentation_events (crm_contact_id, created_at desc) where crm_contact_id is not null;
 create index if not exists agent_offer_lists_template_idx on public.agent_offer_lists (is_template) where is_template;
 alter table public.agent_offer_lists add column if not exists public_subtitle text; -- podtytuł wzorca (np. budżet)
+
+-- Rejestr zgód (dowód zgody: kiedy, skąd, jaka treść), 26.11.2026
+create table if not exists public.crm_consents (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  crm_contact_id uuid not null references public.crm_contacts(id) on delete cascade,
+  lead_id uuid references public.lm_leads(id) on delete set null,
+  kind text not null check (kind in ('sms', 'phone', 'email', 'tracking')),
+  granted boolean not null,
+  source text not null check (source in ('meta_form', 'chat', 'presentation', 'crm_manual', 'diagnostic')),
+  wording text,
+  recorded_by text
+);
+create index if not exists crm_consents_contact_idx on public.crm_consents (crm_contact_id, kind, created_at desc);
+alter table public.lm_settings add column if not exists require_sms_consent boolean not null default true;
+alter table public.lm_settings add column if not exists sms_consent_key text not null default '';
+alter table public.lm_settings add column if not exists phone_consent_key text not null default '';
+alter table public.lm_leads add column if not exists consents jsonb not null default '[]'::jsonb;
+alter table public.crm_consents enable row level security;
+revoke all on table public.crm_consents from anon, authenticated;
+grant all on table public.crm_consents to service_role;

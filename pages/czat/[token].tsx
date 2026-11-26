@@ -2,6 +2,7 @@ import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { getPublicChat } from "@/lib/leadManager/chat";
+import { TRACKING_CONSENT_TEXT } from "@/components/presentation/TrackingConsentBar";
 
 // Czat ofertowy: link „wygeneruj oferty” z SMS-a powitalnego → 2 pytania → prezentacja dopasowana do odpowiedzi.
 
@@ -13,7 +14,8 @@ type ChatProps = {
 type Message =
   | { id: number; from: "agent"; text: string }
   | { id: number; from: "user"; text: string }
-  | { id: number; from: "result"; url: string; offersCount: number };
+  | { id: number; from: "result"; url: string; offersCount: number }
+  | { id: number; from: "consent" };
 
 const TYPING_MS = 1100;
 const sleep = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -21,7 +23,7 @@ const sleep = (ms: number) => new Promise((resolve) => window.setTimeout(resolve
 export default function OfferChatPage({ token, chat }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [typing, setTyping] = useState(false);
-  const [step, setStep] = useState<number>(-1); // -1 = powitanie, 0..1 = pytania, 2 = koniec
+  const [step, setStep] = useState<number>(-1); // -1 = powitanie, 0..1 = pytania, 3 = zgoda, 2 = koniec
   const [answers, setAnswers] = useState<string[]>([]);
   const [error, setError] = useState("");
   const idRef = useRef(0);
@@ -82,13 +84,31 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
       setStep(questionIndex + 1);
       return;
     }
+    if (!chat.linked) {
+      await finish(nextAnswers, false);
+      return;
+    }
+    // Zgoda na zapisywanie oglądanych ofert – przed wysłaniem linku
+    await agentSays("Ostatnia rzecz 🙂");
+    push({ from: "consent" });
+    setStep(3);
+  }
+
+  async function answerConsent(consent: boolean) {
+    if (step !== 3) return;
+    setStep(-2);
+    push({ from: "user", text: consent ? "Tak, zgadzam się" : "Nie, dziękuję" });
+    await finish(answers, consent);
+  }
+
+  async function finish(finalAnswers: string[], consent: boolean) {
     setTyping(true);
     try {
       const [response] = await Promise.all([
         fetch("/api/leadmanager/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "complete", token, answers: nextAnswers }),
+          body: JSON.stringify({ action: "complete", token, answers: finalAnswers, consent }),
         }),
         sleep(1600),
       ]);
@@ -147,7 +167,14 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
         <section aria-live="polite" className="chatBody">
           <p className="chatDay">Dzisiaj</p>
           {messages.map((message) =>
-            message.from === "result" ? (
+            message.from === "consent" ? (
+              <div className="chatBubble agent" key={message.id}>
+                {TRACKING_CONSENT_TEXT}{" "}
+                <a className="chatLink" href="/polityka-prywatnosci" rel="noreferrer" target="_blank">
+                  Polityka prywatności
+                </a>
+              </div>
+            ) : message.from === "result" ? (
               <a className="chatResult" href={message.url} key={message.id}>
                 <span className="chatResultIcon" aria-hidden="true">
                   🏡
@@ -176,7 +203,16 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
         </section>
 
         <footer className="chatFooter">
-          {question ? (
+          {step === 3 ? (
+            <div className="chatOptions">
+              <button type="button" onClick={() => answerConsent(true)}>
+                Tak, zgadzam się
+              </button>
+              <button type="button" onClick={() => answerConsent(false)}>
+                Nie, dziękuję
+              </button>
+            </div>
+          ) : question ? (
             <div className="chatOptions">
               {question.options.map((option) => (
                 <button key={option.id} type="button" onClick={() => choose(step, option.id, option.label)}>
@@ -187,6 +223,12 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
           ) : (
             <p className="chatHint">{step === 2 ? "Dziękujemy! Odezwiemy się wkrótce." : "Wybierz odpowiedź, gdy pojawi się pytanie."}</p>
           )}
+          <p className="chatFooterNote">
+            Administrator danych: Onesta Group Sp. z o.o. ·{" "}
+            <a href="/polityka-prywatnosci" rel="noreferrer" target="_blank">
+              Polityka prywatności
+            </a>
+          </p>
         </footer>
       </main>
       </div>
@@ -284,6 +326,19 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
           align-self: flex-end;
           background: #d9fdd3;
           border-top-right-radius: 2px;
+        }
+        .chatLink {
+          color: #0f5d52;
+          font-weight: 600;
+        }
+        .chatFooterNote {
+          color: #8696a0;
+          font-size: 11px;
+          margin: 8px 0 0;
+          text-align: center;
+        }
+        .chatFooterNote a {
+          color: inherit;
         }
         .chatTyping {
           align-items: center;

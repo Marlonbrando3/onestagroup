@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       supabaseServer.from("lm_log").select("*").order("created_at", { ascending: false }).limit(60),
       supabaseServer
         .from("lm_leads")
-        .select("id,created_at,source,name,phone,email,form_name,campaign_name,crm_contact_id,duplicate_of_existing,form_answers")
+        .select("id,created_at,source,name,phone,email,form_name,campaign_name,crm_contact_id,duplicate_of_existing,form_answers,consents")
         .order("created_at", { ascending: false })
         .limit(30),
       supabaseServer

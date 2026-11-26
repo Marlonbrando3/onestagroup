@@ -3,6 +3,7 @@ import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
 import { notifyPresentationActivity } from "@/lib/crmReminders";
 import { resolveLeadKey } from "@/lib/leadManager/tracking";
+import { cookieYesAdvertisementFromRequest, hasTrackingConsent } from "@/lib/consents";
 
 // Aktywność klienta w prezentacji /oferty/[token]: otwarcie prezentacji i otwarcie konkretnej oferty.
 // („Interesuje mnie ta oferta” zapisuje /api/presentation-interest.)
@@ -26,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { data: list } = await supabaseServer
     .from("agent_offer_lists")
-    .select("id,offers,is_template")
+    .select("id,offers,is_template,crm_contact_id")
     .eq("public_token", token)
     .maybeSingle();
   if (!list) return res.status(404).json({ success: false });
@@ -37,6 +38,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     lead = await resolveLeadKey(body.k);
     if (!lead) return res.status(200).json({ success: true, skipped: true });
   }
+
+  // Zgoda: zapisana przy kliencie w CRM (czat / pasek zgody) albo „reklamowa” w CookieYes w tej przeglądarce.
+  const contactId = lead?.contactId || list.crm_contact_id || null;
+  const consented = (await hasTrackingConsent(contactId)) || cookieYesAdvertisementFromRequest(req);
+  if (!consented) return res.status(200).json({ success: true, skipped: true, reason: "no-consent" });
 
   let offerId: string | null = null;
   let offerTitle: string | null = null;

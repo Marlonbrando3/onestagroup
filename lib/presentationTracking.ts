@@ -1,36 +1,44 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { hasCookieYesConsent, subscribeToCookieYesConsent } from "@/lib/cookieConsent";
 
-// Zapis aktywności klienta w prezentacji (otwarcie prezentacji / oferty).
-// Nie liczymy wejść osób zalogowanych (agent lub CRM sprawdzający własną prezentację).
-// Każde nowe otwarcie linku (nowa karta, ponowne wejście) liczy się osobno. W obrębie jednej karty
-// pomijamy tylko powroty: ponowne „otwarcie prezentacji” po cofnięciu z oferty i tę samą ofertę w ciągu 2 minut.
-const REPEAT_IN_TAB_MS = 2 * 60 * 1000;
+// Zapis aktywności klienta w prezentacji (otwarcie prezentacji / oferty) – WYŁĄCZNIE za zgodą:
+// zgoda zapisana w CRM (czat / pasek zgody na prezentacji) albo zgoda „reklamowa” w CookieYes.
+// Nie liczymy wejść osób zalogowanych (agent / CRM). Nic nie zapisujemy w pamięci przeglądarki –
+// powroty w obrębie jednej wizyty odsiewamy w pamięci strony, a serwer dodatkowo blokuje duplikaty w 20 s.
+const REPEAT_IN_PAGE_MS = 2 * 60 * 1000;
+const trackedInThisVisit = new Map<string, number>();
 
-function shouldTrackInThisTab(key: string, oncePerTab: boolean) {
-  try {
-    const storageKey = `onestaTrack:${key}`;
-    const last = Number(window.sessionStorage.getItem(storageKey) || 0);
-    const now = Date.now();
-    if (last && (oncePerTab || now - last < REPEAT_IN_TAB_MS)) return false;
-    window.sessionStorage.setItem(storageKey, String(now));
-  } catch {
-    // brak sessionStorage – liczymy zawsze
-  }
+function shouldTrackNow(key: string, oncePerVisit: boolean) {
+  const last = trackedInThisVisit.get(key) || 0;
+  const now = Date.now();
+  if (last && (oncePerVisit || now - last < REPEAT_IN_PAGE_MS)) return false;
+  trackedInThisVisit.set(key, now);
   return true;
 }
+
+// Zgoda „reklamowa” CookieYes w tej przeglądarce (z nasłuchiwaniem zmian w banerze)
+export function useCookieYesAdvertisement() {
+  const [accepted, setAccepted] = useState(false);
+  useEffect(() => {
+    setAccepted(hasCookieYesConsent("advertisement"));
+    return subscribeToCookieYesConsent((state) => setAccepted(state.accepted.includes("advertisement")));
+  }, []);
+  return accepted;
+}
+
 export function usePresentationTracking(
   token: string,
   type: "open" | "offer_view",
   offerId?: string,
   offerTitle?: string,
-  // Wzorzec prezentacji: śledzimy tylko z kluczem leada z linku (?k=…); bez niego nic nie zapisujemy
-  options?: { isTemplate?: boolean; leadKey?: string },
+  options?: { isTemplate?: boolean; leadKey?: string; allowed?: boolean },
 ) {
   const isTemplate = Boolean(options?.isTemplate);
   const leadKey = options?.leadKey || "";
+  const allowed = Boolean(options?.allowed);
   useEffect(() => {
-    if (!token) return;
+    if (!token || !allowed) return;
     if (isTemplate && !leadKey) return;
     let cancelled = false;
     async function track() {
@@ -38,7 +46,7 @@ export function usePresentationTracking(
         const { data } = await supabase.auth.getSession();
         if (cancelled || data.session) return;
         const key = `${type === "open" ? `${token}:open` : `${token}:offer:${offerId || ""}`}${leadKey ? `:${leadKey.slice(-12)}` : ""}`;
-        if (!shouldTrackInThisTab(key, type === "open")) return;
+        if (!shouldTrackNow(key, type === "open")) return;
         await fetch("/api/presentation-event", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -53,5 +61,5 @@ export function usePresentationTracking(
     return () => {
       cancelled = true;
     };
-  }, [token, type, offerId, offerTitle, isTemplate, leadKey]);
+  }, [token, type, offerId, offerTitle, isTemplate, leadKey, allowed]);
 }

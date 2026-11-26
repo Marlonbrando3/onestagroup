@@ -1,5 +1,6 @@
 import { supabaseServer } from "@/lib/supabaseClient";
 import { sendCrmPush } from "@/lib/crmPush";
+import { hasTrackingConsent } from "@/lib/consents";
 
 // Linki śledzące z SMS-a (onesta.com.pl/r/<token> → /cbtop#lm=<token>) i aktywność leada na /cbtop.
 // Token jest szyfrowany (AES-GCM), ważny 90 dni, zawiera ID leada i kontaktu w CRM.
@@ -137,7 +138,14 @@ export async function insertLmEvent(input: {
   });
 }
 
-export async function recordLmTrackingEvent(input: { token: string; event: string; context?: string; offerId?: string }) {
+export async function recordLmTrackingEvent(input: {
+  token: string;
+  event: string;
+  context?: string;
+  offerId?: string;
+  // zgoda „reklamowa” CookieYes w przeglądarce, z której przyszło zdarzenie
+  cookieConsent?: boolean;
+}) {
   if (!supabaseServer) return null;
   const payload = await readLmTrackingToken(input.token);
   if (!payload) return null;
@@ -154,6 +162,11 @@ export async function recordLmTrackingEvent(input: { token: string; event: strin
     .eq("id", payload.contactId)
     .maybeSingle();
   if (!contact) return null;
+
+  // Aktywność na stronie zapisujemy tylko za zgodą; „pilny kontakt” to wyraźna prośba klienta – zawsze.
+  if (event !== "urgent_contact_request" && !input.cookieConsent && !(await hasTrackingConsent(contact.id))) {
+    return { contactId: contact.id, urgentContactStatus: undefined, skipped: true as const };
+  }
 
   // Pilny kontakt: najwyżej raz na 10 minut
   if (event === "urgent_contact_request") {

@@ -19,6 +19,12 @@ export type LmSettings = {
     senderName: string;
     clientTemplate: string;
   };
+  // Zgody z formularza Meta: klucze checkboxów i czy SMS wymaga zaznaczonej zgody
+  consents: {
+    requireSmsConsent: boolean;
+    smsKey: string;
+    phoneKey: string;
+  };
   updatedAt: string | null;
 };
 
@@ -42,6 +48,11 @@ function mapRow(row: any): LmSettings {
       apiToken: row?.sms_api_token || "",
       senderName: row?.sms_sender_name || "",
       clientTemplate: row?.sms_client_template || "",
+    },
+    consents: {
+      requireSmsConsent: row?.require_sms_consent !== false,
+      smsKey: row?.sms_consent_key || "",
+      phoneKey: row?.phone_consent_key || "",
     },
     updatedAt: row?.updated_at || null,
   };
@@ -100,6 +111,9 @@ export async function saveLmSettings(input: any) {
     sms_simulation_mode: sms.simulationMode !== false,
     sms_sender_name: str(sms.senderName, 11),
     sms_client_template: str(sms.clientTemplate, 1500),
+    require_sms_consent: input?.consents?.requireSmsConsent !== false,
+    sms_consent_key: str(input?.consents?.smsKey, 120),
+    phone_consent_key: str(input?.consents?.phoneKey, 120),
     updated_at: new Date().toISOString(),
   };
   const isNewSecret = (value: unknown) => {

@@ -2,7 +2,7 @@ import Head from "next/head";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
-const updatedAt = "29 sierpnia 2026 r.";
+const updatedAt = "26 listopada 2026 r.";
 
 export default function PolitykaPrywatnosci() {
   return (
@@ -59,37 +59,47 @@ export default function PolitykaPrywatnosci() {
           </h2>
           <ul className="list-disc space-y-2 pl-5">
             <li>
-              obsługa zapytania, przedstawienie ofert i podjęcie działań przed
-              zawarciem umowy — art. 6 ust. 1 lit. b RODO;
+              obsługa zapytania (także zgłoszenia z formularza reklamowego
+              Facebook/Instagram), kontakt w odpowiedzi na nie, przedstawienie
+              ofert, czat ofertowy i podjęcie działań przed zawarciem umowy —
+              art. 6 ust. 1 lit. b RODO;
             </li>
             <li>
               realizacja umowy pośrednictwa — art. 6 ust. 1 lit. b RODO;
             </li>
             <li>
-              prowadzenie księgowości i wykonanie obowiązków prawnych — art. 6
-              ust. 1 lit. c RODO;
+              prowadzenie księgowości i wykonanie obowiązków prawnych, w tym
+              dokumentowanie udzielonych i wycofanych zgód (rozliczalność, art. 5
+              ust. 2 i art. 7 ust. 1 RODO) — art. 6 ust. 1 lit. c RODO;
             </li>
             <li>
-              bezpieczeństwo serwisu, przeciwdziałanie nadużyciom, dochodzenie
-              lub obrona roszczeń — prawnie uzasadniony interes administratora,
-              art. 6 ust. 1 lit. f RODO;
+              prowadzenie bazy klientów (CRM), bezpieczeństwo serwisu,
+              przeciwdziałanie nadużyciom, dochodzenie lub obrona roszczeń —
+              prawnie uzasadniony interes administratora, art. 6 ust. 1 lit. f
+              RODO;
             </li>
             <li>
-              marketing prowadzony pocztą elektroniczną, telefonicznie lub za
-              pomocą SMS — zgoda, art. 6 ust. 1 lit. a RODO, wraz ze zgodą
-              wymaganą przez Prawo komunikacji elektronicznej, gdy ma ono
-              zastosowanie;
+              wiadomości SMS z informacją handlową, w tym SMS powitalny z
+              linkiem do czatu ofertowego, oraz kontakt telefoniczny w celach
+              marketingowych — zgoda, art. 6 ust. 1 lit. a RODO, wraz ze zgodą
+              wymaganą przez art. 398 Prawa komunikacji elektronicznej
+              (odrębnie dla SMS i dla telefonu);
             </li>
             <li>
-              analityka, reklama, remarketing i personalizowane śledzenie
-              prezentacji ofert — zgoda, art. 6 ust. 1 lit. a RODO; zapis lub
-              odczyt informacji na urządzeniu odbywa się zgodnie z art. 399
-              Prawa komunikacji elektronicznej.
+              zapisywanie, które z przesłanych ofert oglądasz i oznaczasz
+              (personalizowane linki i prezentacje) — zgoda, art. 6 ust. 1 lit.
+              a RODO oraz art. 399 Prawa komunikacji elektronicznej;
+            </li>
+            <li>
+              analityka, reklama i remarketing — zgoda wyrażona w panelu
+              CookieYes, art. 6 ust. 1 lit. a RODO oraz art. 399 Prawa
+              komunikacji elektronicznej.
             </li>
           </ul>
           <p className="mt-3">
-            Zgodę można wycofać w dowolnym momencie. Wycofanie zgody nie wpływa
-            na zgodność z prawem przetwarzania dokonanego przed jej wycofaniem.
+            Zgodę można wycofać w dowolnym momencie — w sposób równie łatwy jak
+            jej udzielenie. Wycofanie zgody nie wpływa na zgodność z prawem
+            przetwarzania dokonanego przed jej wycofaniem.
           </p>
         </section>
 
@@ -97,28 +107,39 @@ export default function PolitykaPrywatnosci() {
           <h2 className="mb-3 text-xl font-semibold">
             3. Kategorie przetwarzanych danych
           </h2>
-          <ul className="list-disc space-y-1 pl-5">
+          <ul className="list-disc space-y-2 pl-5">
             <li>imię i nazwisko, adres e-mail i numer telefonu;</li>
             <li>
-              treść formularza, preferencje i informacje o poszukiwanej
+              treść formularza i odpowiedzi na pytania w nim zawarte (np.
+              budżet, region, termin zakupu), odpowiedzi udzielone w czacie
+              ofertowym, preferencje i informacje o poszukiwanej
               nieruchomości;
             </li>
             <li>
               informacje o kampanii oraz formularzu, z którego pochodzi
               zgłoszenie;
             </li>
+            <li>
+              informacje o zgodach: rodzaj zgody, jej treść, data, źródło (np.
+              formularz, czat, strona prezentacji) oraz ewentualne wycofanie;
+            </li>
+            <li>
+              historia kontaktu i ustalenia z rozmów zapisane przez doradcę w
+              systemie CRM;
+            </li>
             <li>adres IP, informacje o urządzeniu, przeglądarce i sesji;</li>
             <li>
               identyfikator zgody CookieYes oraz wybrane kategorie zgód;
             </li>
             <li>
-              po uzyskaniu odpowiedniej zgody: otwarcie indywidualnego linku,
-              oznaczenia oglądanych ofert i interakcje marketingowe wykonane na
-              stronie prezentacji;
+              wyłącznie po udzieleniu zgody: otwarcie indywidualnego linku lub
+              prezentacji, oglądane oferty i działania wykonane na stronie
+              prezentacji lub strony z ofertami;
             </li>
             <li>
-              informacja o wyraźnie wysłanej prośbie o kontakt, niezbędna do jej
-              obsługi — niezależnie od zgód analitycznych i reklamowych.
+              wyraźnie wysłana prośba o kontakt lub kliknięcie „Interesuje mnie
+              ta oferta” — przetwarzane zawsze, bo jest Twoją prośbą,
+              niezależnie od zgód analitycznych i reklamowych.
             </li>
           </ul>
         </section>
@@ -126,10 +147,11 @@ export default function PolitykaPrywatnosci() {
         <section className="mb-8">
           <h2 className="mb-3 text-xl font-semibold">4. Źródła danych</h2>
           <p>
-            Dane otrzymujemy bezpośrednio od Ciebie, z formularzy na naszej
-            stronie, z formularzy reklamowych — w szczególności Meta Lead Ads —
-            oraz automatycznie z urządzenia, wyłącznie w zakresie dozwolonym
-            przez wybrane zgody.
+            Dane otrzymujemy bezpośrednio od Ciebie — z formularzy na naszej
+            stronie, z formularzy reklamowych Meta Lead Ads (Facebook,
+            Instagram), z czatu ofertowego i z rozmów z doradcą — oraz
+            automatycznie z urządzenia, wyłącznie w zakresie dozwolonym przez
+            udzielone zgody.
           </p>
         </section>
 
@@ -139,11 +161,19 @@ export default function PolitykaPrywatnosci() {
             Dane mogą otrzymać podmioty wspierające nas w świadczeniu usług,
             wyłącznie w niezbędnym zakresie:
           </p>
-          <ul className="list-disc space-y-1 pl-5">
-            <li>Vercel — hosting i dostarczanie aplikacji;</li>
+          <ul className="list-disc space-y-2 pl-5">
+            <li>Netlify — hosting strony i aplikacji;</li>
+            <li>
+              Vercel — poprzednia wersja systemu obsługi zgłoszeń, do czasu jej
+              wyłączenia;
+            </li>
             <li>Supabase — baza danych i infrastruktura systemu CRM;</li>
-            <li>SMSAPI — dostarczanie wiadomości SMS;</li>
-            <li>CookieYes — zarządzanie i dokumentowanie zgód;</li>
+            <li>SMSAPI (LINK Mobility Poland) — wysyłka wiadomości SMS;</li>
+            <li>
+              Meta Platforms Ireland — formularze reklamowe Lead Ads, z których
+              otrzymujemy zgłoszenia;
+            </li>
+            <li>CookieYes — zarządzanie i dokumentowanie zgód cookies;</li>
             <li>
               Google, Meta i Hotjar — analityka oraz reklama, wyłącznie zgodnie
               z wybranymi kategoriami zgód;
@@ -181,21 +211,34 @@ export default function PolitykaPrywatnosci() {
 
         <section className="mb-8">
           <h2 className="mb-3 text-xl font-semibold">
-            7. Indywidualne linki i profilowanie
+            7. Czat ofertowy, indywidualne linki i profilowanie
           </h2>
           <p>
-            Osoba, która pozostawiła dane kontaktowe, może otrzymać indywidualny
-            link do prezentacji ofert. Samo otwarcie linku nie powoduje zapisania
-            aktywności przy kontakcie. Dopiero po zaakceptowaniu kategorii
-            reklamowej możemy przypisać do kontaktu w CRM otwarcie prezentacji,
-            oglądane nieruchomości oraz wybrane działania kontaktowe.
+            Po zgłoszeniu przez formularz możesz otrzymać SMS (jeżeli wyraziłeś
+            na to zgodę) z indywidualnym linkiem do czatu ofertowego. W czacie
+            odpowiadasz na kilka pytań, a my dobieramy wstępną selekcję ofert.
+            Odpowiedzi zapisujemy w Twojej karcie klienta, aby doradca mógł się
+            do nich odnieść.
           </p>
-          <p className="mt-2">
-            Informacje te pomagają doradcy przygotować rozmowę i lepiej dopasować
-            propozycje. Odrzucenie zgody nie ogranicza dostępu do prezentacji ani
-            formularzy i nie blokuje samodzielnie wysłanej prośby o kontakt.
-            Profilowanie nie wywołuje skutków prawnych ani w podobny sposób
-            istotnie nie wpływa na użytkownika.
+          <p className="mt-3">
+            Przed wysłaniem ofert pytamy, czy możemy zapisywać, które z
+            przesłanych ofert oglądasz i które oznaczysz. Tylko po zgodzie link
+            zawiera zabezpieczony (zaszyfrowany) identyfikator, a my zapisujemy
+            w CRM otwarcia, oglądane nieruchomości i kliknięcia. Na
+            prezentacjach przygotowanych indywidualnie dla Ciebie o tę samą zgodę
+            pytamy na stronie prezentacji (albo uwzględniamy zgodę reklamową
+            wyrażoną w panelu CookieYes). Bez zgody prezentacja działa w pełni —
+            po prostu niczego nie zapisujemy.
+          </p>
+          <p className="mt-3">
+            Zgodę wycofasz w każdej chwili: linkiem „Wyłącz zapisywanie” na
+            stronie prezentacji, w panelu CookieYes, e-mailem na{" "}
+            <a className="underline" href="mailto:biuro@onesta.com.pl">
+              biuro@onesta.com.pl
+            </a>{" "}
+            lub telefonicznie. Informacje te służą wyłącznie przygotowaniu
+            rozmowy i dopasowaniu propozycji. Profilowanie nie wywołuje skutków
+            prawnych ani w podobny sposób istotnie nie wpływa na Ciebie.
           </p>
         </section>
 
@@ -203,9 +246,10 @@ export default function PolitykaPrywatnosci() {
           <h2 className="mb-3 text-xl font-semibold">
             8. Pliki cookies i podobne technologie
           </h2>
-          <p className="mb-3">
-            Używamy plików cookies, localStorage i sessionStorage. CookieYes
-            umożliwia osobny wybór następujących kategorii:
+          <p className="mb-2">
+            Używamy plików cookies oraz — w ograniczonym zakresie —
+            sessionStorage. CookieYes umożliwia osobny wybór następujących
+            kategorii:
           </p>
           <ul className="list-disc space-y-2 pl-5">
             <li>
@@ -224,16 +268,18 @@ export default function PolitykaPrywatnosci() {
             </li>
             <li>
               <strong>Reklamowe</strong> — służą pomiarowi reklam, remarketingowi
-              i — po wejściu z indywidualnego linku — przypisaniu interakcji z
-              prezentacją do kontaktu w CRM, m.in. za pomocą Google Ads i Meta
-              Pixel.
+              oraz — po wejściu z indywidualnego linku lub na indywidualną
+              prezentację — zapisaniu w CRM oglądanych ofert i interakcji, m.in.
+              za pomocą Google Ads i Meta Pixel.
             </li>
           </ul>
           <p className="mt-3">
-            Identyfikator indywidualnego linku jest zapisywany w sessionStorage
-            dopiero po zgodzie reklamowej i wygasa wraz z sesją przeglądarki.
-            Szczegółową listę technologii, dostawców i okresów działania pokazuje
-            panel ustawień CookieYes.
+            Strony prezentacji ofert i czat ofertowy nie zapisują w przeglądarce
+            żadnych identyfikatorów. Identyfikator linku z SMS-a do strony
+            „TOP 20” jest zapisywany w sessionStorage dopiero po zgodzie
+            reklamowej i wygasa wraz z sesją przeglądarki. Szczegółową listę
+            technologii, dostawców i okresów działania pokazuje panel ustawień
+            CookieYes.
           </p>
           <button
             type="button"
@@ -249,24 +295,35 @@ export default function PolitykaPrywatnosci() {
           </h2>
           <ul className="list-disc space-y-2 pl-5">
             <li>
-              dane związane z zapytaniem — przez okres potrzebny do jego obsługi
-              i dalszego kontaktu, a następnie przez czas niezbędny do ustalenia,
-              dochodzenia lub obrony roszczeń;
+              dane związane z zapytaniem i kartą klienta w CRM — przez okres
+              potrzebny do jego obsługi i dalszego kontaktu, a następnie przez
+              czas niezbędny do ustalenia, dochodzenia lub obrony roszczeń;
             </li>
             <li>
               dane umowne i księgowe — przez okres wymagany przepisami prawa;
             </li>
             <li>
-              dane wykorzystywane w marketingu — do wycofania zgody lub
-              skutecznego wniesienia sprzeciwu;
+              dane wykorzystywane w marketingu (SMS, telefon) — do wycofania
+              zgody lub skutecznego wniesienia sprzeciwu;
             </li>
             <li>
-              zabezpieczony token indywidualnego linku — maksymalnie 90 dni;
+              zapis oglądanych ofert i interakcji z prezentacjami — do wycofania
+              zgody (od tej chwili nie zbieramy nowych danych), nie dłużej niż 24
+              miesiące od zdarzenia; po tym czasie dane są automatycznie
+              usuwane;
             </li>
             <li>
-              historia aktywności prezentacji — do zakończenia relacji z kontaktem
-              albo realizacji uzasadnionego żądania usunięcia; wycofanie zgody
-              zatrzymuje dalsze zbieranie aktywności;
+              zabezpieczony identyfikator indywidualnego linku — traci ważność
+              po 90 dniach;
+            </li>
+            <li>
+              rejestr zgód (treść, data, źródło, wycofanie) — przez okres
+              przetwarzania danych na podstawie zgody i do upływu terminów
+              przedawnienia roszczeń, aby móc wykazać zgodność z prawem;
+            </li>
+            <li>
+              techniczny dziennik integracji (np. odbiór zgłoszeń, wysyłka
+              SMS) — 12 miesięcy;
             </li>
             <li>
               cookies i identyfikatory dostawców — przez okresy wskazane w panelu
@@ -282,7 +339,10 @@ export default function PolitykaPrywatnosci() {
             <li>uzyskać dostęp do danych i ich kopię;</li>
             <li>żądać sprostowania, usunięcia lub ograniczenia przetwarzania;</li>
             <li>żądać przeniesienia danych;</li>
-            <li>wnieść sprzeciw wobec przetwarzania;</li>
+            <li>
+              wnieść sprzeciw wobec przetwarzania opartego na prawnie
+              uzasadnionym interesie, w tym wobec profilowania;
+            </li>
             <li>wycofać zgodę w dowolnym momencie.</li>
           </ul>
           <p className="mt-3">

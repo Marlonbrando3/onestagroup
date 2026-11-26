@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { recordLmTrackingEvent } from "@/lib/leadManager/tracking";
+import { cookieYesAdvertisementFromRequest } from "@/lib/consents";
 
 // Aktywność leada na /cbtop (wysyłana z lib/cbTopTracking.ts).
 // Tokeny ze starych SMS-ów (sprzed przeniesienia, wydane przez leadmanager-iota.vercel.app) przekazujemy dalej
@@ -44,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const result = await recordLmTrackingEvent(body);
+    const result = await recordLmTrackingEvent({ ...body, cookieConsent: cookieYesAdvertisementFromRequest(req) });
     if (result) return res.status(200).json({ ok: true, urgentContactStatus: result.urgentContactStatus });
 
     // Stary token → stara aplikacja

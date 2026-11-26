@@ -4,6 +4,7 @@ import type { LmFormAnswer, LmIncomingLead } from "./meta";
 import { addLmLog, readLmSettings } from "./settings";
 import { renderTemplate, sendLmSms } from "./sms";
 import { createTrackedOfferLinks } from "./tracking";
+import { recordConsent } from "@/lib/consents";
 
 // Lead z Meta → szansa sprzedaży w lejku Marka (etap „Zakwalifikowano”):
 // imię i nazwisko, telefon, e-mail do pól kontaktu, reszta ankiety do „Podsumowania informacji o kliencie”.
@@ -83,6 +84,7 @@ export async function ingestLead(input: LmIncomingLead): Promise<LmIngestResult>
       phone,
       email: input.email || null,
       form_answers: input.formAnswers,
+      consents: input.consents || [],
     })
     .select("id")
     .single();
@@ -137,6 +139,37 @@ export async function ingestLead(input: LmIncomingLead): Promise<LmIngestResult>
     .update({ crm_contact_id: contactId, duplicate_of_existing: Boolean(existing) })
     .eq("id", leadId);
 
+  // 2b. Zgody z formularza (checkboxy Meta) → rejestr zgód klienta
+  const consentFor = (key: string) => {
+    if (input.source === "diagnostic") return true; // lead testowy tworzy Marek na własny numer
+    if (!key) return null;
+    const found = (input.consents || []).find((item) => item.key === key);
+    return found ? found.checked : false;
+  };
+  const smsConsent = consentFor(settings.consents.smsKey);
+  const phoneConsent = consentFor(settings.consents.phoneKey);
+  const consentSource = input.source === "diagnostic" ? "diagnostic" : "meta_form";
+  if (smsConsent !== null) {
+    await recordConsent({
+      contactId,
+      leadId,
+      kind: "sms",
+      granted: smsConsent,
+      source: consentSource,
+      wording: input.source === "diagnostic" ? "Lead testowy" : `Formularz Meta – pole „${settings.consents.smsKey}”`,
+    });
+  }
+  if (phoneConsent !== null) {
+    await recordConsent({
+      contactId,
+      leadId,
+      kind: "phone",
+      granted: phoneConsent,
+      source: consentSource,
+      wording: input.source === "diagnostic" ? "Lead testowy" : `Formularz Meta – pole „${settings.consents.phoneKey}”`,
+    });
+  }
+
   // 3. Push do właściciela lejka
   const pushOwner = existing?.pipeline_owner || settings.leadOwnerEmail;
   try {
@@ -150,8 +183,21 @@ export async function ingestLead(input: LmIncomingLead): Promise<LmIngestResult>
     console.error("lead manager: push", error);
   }
 
-  // 4. SMS powitalny do klienta (najwyżej jeden na lead)
-  const { data: claimed } = await supabaseServer
+  // 4. SMS powitalny do klienta (najwyżej jeden na lead) – tylko ze zgodą na SMS z formularza
+  const smsAllowed = !settings.consents.requireSmsConsent || smsConsent === true;
+  if (!smsAllowed) {
+    await addLmLog(
+      "info",
+      "SMS powitalny pominięty – brak zgody na SMS",
+      settings.consents.smsKey
+        ? `${name} • ${phone} • w formularzu nie zaznaczono „${settings.consents.smsKey}”`
+        : `${name} • ${phone} • w Lead Managerze nie ustawiono klucza zgody SMS z formularza Meta`,
+      leadId,
+    );
+  }
+  const { data: claimed } = !smsAllowed
+    ? { data: null }
+    : await supabaseServer
     .from("lm_leads")
     .update({ welcome_sms_claimed_at: now.toISOString() })
     .eq("id", leadId)

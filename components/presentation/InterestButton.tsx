@@ -2,25 +2,16 @@ import { useEffect, useState } from "react";
 import { FaCheck, FaRegHeart } from "react-icons/fa";
 
 // „Interesuje mnie ta oferta” w prezentacji dla klienta: jeden klik = mail do agenta
-// (pages/api/presentation-interest.ts). Kliknięte oferty pamiętamy w przeglądarce klienta.
+// (pages/api/presentation-interest.ts). To wyraźna prośba klienta, więc nie wymaga zgody na śledzenie.
+// Nic nie zapisujemy w przeglądarce – stan „wysłano” trzymamy tylko w pamięci strony.
+const sentInThisVisit = new Set<string>();
 type Props = { token: string; offerId: string; variant?: "card" | "wide"; parentOfferId?: string; leadKey?: string };
-
-const storageKey = (token: string) => `onesta-interest-${token}`;
-
-function readClicked(token: string): string[] {
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(storageKey(token)) || "[]");
-    return Array.isArray(parsed) ? parsed.map(String) : [];
-  } catch {
-    return [];
-  }
-}
 
 export default function InterestButton({ token, offerId, variant = "card", parentOfferId, leadKey }: Props) {
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   useEffect(() => {
-    if (readClicked(token).includes(offerId)) setState("sent");
+    if (sentInThisVisit.has(`${token}:${offerId}`)) setState("sent");
     // Na stronie oferty są dwa przyciski — po kliknięciu jednego drugi też pokazuje „wysłano”.
     const onSent = (event: Event) => {
       if ((event as CustomEvent<string>).detail === `${token}:${offerId}`) setState("sent");
@@ -41,14 +32,7 @@ export default function InterestButton({ token, offerId, variant = "card", paren
       if (!response.ok) throw new Error(String(response.status));
       setState("sent");
       window.dispatchEvent(new CustomEvent("onesta-interest-sent", { detail: `${token}:${offerId}` }));
-      try {
-        const clicked = readClicked(token);
-        if (!clicked.includes(offerId)) {
-          window.localStorage.setItem(storageKey(token), JSON.stringify([...clicked, offerId]));
-        }
-      } catch {
-        /* brak dostępu do localStorage — nic nie szkodzi */
-      }
+      sentInThisVisit.add(`${token}:${offerId}`);
     } catch {
       setState("error");
     }

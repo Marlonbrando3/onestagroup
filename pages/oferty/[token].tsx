@@ -12,8 +12,11 @@ import { formatPhone } from "@/lib/phone";
 import type { AgentOffer } from "@/lib/agentOffers";
 import { resolvePublicOfferListToken } from "@/lib/publicOfferListToken";
 import { supabaseServer } from "@/lib/supabaseClient";
-import { usePresentationTracking } from "@/lib/presentationTracking";
+import { useCookieYesAdvertisement, usePresentationTracking } from "@/lib/presentationTracking";
 import { resolveLeadKey } from "@/lib/leadManager/tracking";
+import { hasTrackingConsent } from "@/lib/consents";
+import TrackingConsentBar from "@/components/presentation/TrackingConsentBar";
+import { useState } from "react";
 
 type PublicOfferListProps = {
   token: string;
@@ -30,6 +33,9 @@ type PublicOfferListProps = {
   publicTitle: string;
   publicSubtitle: string;
   leadKey: string;
+  // Czy wiemy, czyja to prezentacja (klient w CRM / link leada) i czy jest zgoda na zapisywanie oglądanych ofert
+  identifiable: boolean;
+  trackingConsent: boolean;
 };
 
 // Teksty nagłówka zależnie od zwrotu wybranego przez agenta. Imię klienta agent wpisuje
@@ -54,8 +60,12 @@ export default function PublicOfferList({
   publicTitle,
   publicSubtitle,
   leadKey,
+  identifiable,
+  trackingConsent,
 }: PublicOfferListProps) {
-  usePresentationTracking(token, "open", undefined, undefined, { isTemplate, leadKey });
+  const [consent, setConsent] = useState(trackingConsent);
+  const cookieAdvertisement = useCookieYesAdvertisement();
+  usePresentationTracking(token, "open", undefined, undefined, { isTemplate, leadKey, allowed: consent || cookieAdvertisement });
   const canInterest = !isTemplate || Boolean(leadKey);
   const keyQuery = leadKey ? `?k=${encodeURIComponent(leadKey)}` : "";
   const greeting = clientSalutation ? GREETING[clientSalutation] : null;
@@ -220,6 +230,10 @@ export default function PublicOfferList({
           ))}
         </section>
 
+        {identifiable && !cookieAdvertisement ? (
+          <TrackingConsentBar token={token} leadKey={leadKey} consent={consent} onChange={setConsent} />
+        ) : null}
+
         <p className="mx-auto mt-10 w-11/12 max-w-7xl text-center text-[11px] leading-5 text-slate-500">
           Dostępność i ceny ofert mogą ulec zmianie. Skontaktuj się z agentem
           Onesta, aby potwierdzić aktualne warunki.
@@ -257,7 +271,7 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
   const { data, error } = await supabaseServer
     .from("agent_offer_lists")
     .select(
-      "offers,created_at,agent_name,agent_email,contact_name,contact_email,contact_phone,client_salutation,client_name,is_template,public_title,public_subtitle",
+      "offers,created_at,agent_name,agent_email,contact_name,contact_email,contact_phone,client_salutation,client_name,is_template,public_title,public_subtitle,crm_contact_id",
     )
     .eq("public_token", token)
     .maybeSingle();
@@ -267,7 +281,9 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
   }
 
   const isTemplate = Boolean((data as any).is_template);
-  const leadKey = isTemplate && requestedKey && (await resolveLeadKey(requestedKey)) ? requestedKey : "";
+  const lead = isTemplate && requestedKey ? await resolveLeadKey(requestedKey) : null;
+  const leadKey = lead ? requestedKey : "";
+  const contactId = isTemplate ? lead?.contactId || null : (data as any).crm_contact_id || null;
 
   return {
     props: {
@@ -276,6 +292,8 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
       publicTitle: String((data as any).public_title || "").trim(),
       publicSubtitle: String((data as any).public_subtitle || "").trim(),
       leadKey,
+      identifiable: Boolean(contactId),
+      trackingConsent: await hasTrackingConsent(contactId),
       offers: data.offers as AgentOffer[],
       createdAt: data.created_at,
       contactName: data.contact_name || data.agent_name || "",
