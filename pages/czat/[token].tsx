@@ -23,6 +23,8 @@ const sleep = (ms: number) => new Promise((resolve) => window.setTimeout(resolve
 export default function OfferChatPage({ token, chat }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [typing, setTyping] = useState(false);
+  // Napis obok mrugających kropek (np. „Przygotowuję oferty”); pusty = same kropki
+  const [typingLabel, setTypingLabel] = useState("");
   const [step, setStep] = useState<number>(-1); // -1 = powitanie, 0..1 = pytania, 3 = zgoda, 2 = koniec
   const [answers, setAnswers] = useState<string[]>([]);
   const [error, setError] = useState("");
@@ -116,10 +118,12 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
       setTyping(false);
       if (!response.ok) throw new Error(result.error || "Coś poszło nie tak.");
       push({ from: "agent", text: chat.finalText });
-      // „Przygotowanie” ofert: 1,5 s pisania, dopiero potem link
+      // „Przygotowanie” ofert: 2 s napisu z mrugającymi kropkami, dopiero potem link
+      setTypingLabel("Przygotowuję oferty");
       setTyping(true);
-      await sleep(1500);
+      await sleep(2000);
       setTyping(false);
+      setTypingLabel("");
       push({ from: "result", url: result.url, offersCount: result.offersCount || 0 });
       setStep(2);
     } catch (reason) {
@@ -134,7 +138,7 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
   return (
     <>
       <Head>
-        <title>{`Czat z ${chat.agentName} | Onesta Group`}</title>
+        <title>Czat ofertowy | Onesta Group</title>
         <meta content="noindex, nofollow" name="robots" />
         <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport" />
         <meta content="#0f5d52" name="theme-color" />
@@ -159,7 +163,7 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
       </aside>
       <main className="chatShell">
         <header className="chatHeader">
-          <img alt="" className="chatAvatar" src="/Marek.webp" />
+          <img alt="" className="chatAvatar" src="/logotype_Onesta.png" />
           <div>
             <strong>{chat.agentName}</strong>
             <span>
@@ -196,7 +200,8 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
             ),
           )}
           {typing ? (
-            <div className="chatBubble agent chatTyping" aria-label="pisze">
+            <div className={`chatBubble agent chatTyping ${typingLabel ? "withLabel" : ""}`} aria-label={typingLabel || "pisze"}>
+              {typingLabel ? <em>{typingLabel}</em> : null}
               <span />
               <span />
               <span />
@@ -267,10 +272,12 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
           padding: max(12px, env(safe-area-inset-top)) 16px 12px;
         }
         .chatAvatar {
+          background: #ffffff;
           border: 2px solid rgba(255, 255, 255, 0.6);
           border-radius: 999px;
           height: 44px;
-          object-fit: cover;
+          object-fit: contain;
+          padding: 5px;
           width: 44px;
         }
         .chatHeader div {
@@ -349,6 +356,26 @@ export default function OfferChatPage({ token, chat }: ChatProps) {
           display: flex;
           gap: 4px;
           padding: 12px 14px;
+        }
+        .chatTyping em {
+          color: #54656f;
+          font-size: 14px;
+          font-style: normal;
+          margin-right: 4px;
+        }
+        .chatTyping.withLabel span {
+          animation: chatBlink 1s infinite ease-in-out;
+          height: 6px;
+          width: 6px;
+        }
+        @keyframes chatBlink {
+          0%,
+          100% {
+            opacity: 0.15;
+          }
+          50% {
+            opacity: 1;
+          }
         }
         .chatTyping span {
           animation: chatDot 1s infinite ease-in-out;

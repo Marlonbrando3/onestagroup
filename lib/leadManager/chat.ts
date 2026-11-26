@@ -22,8 +22,8 @@ export type ChatConfig = {
 
 export const DEFAULT_CHAT_CONFIG: ChatConfig = {
   enabled: true,
-  agentName: "Marek Marszałek",
-  agentSubtitle: "Onesta Group · nieruchomości w Hiszpanii",
+  agentName: "Asystent Onesta",
+  agentSubtitle: "automatyczny asystent · odpowiada od razu",
   greeting:
     "Dzień dobry{{firstName}}! 👋\nDziękuję za zgłoszenie. Jesteśmy teraz poza biurem, ale zadbaliśmy o to, żebyś już teraz otrzymał wstępnie dobrane oferty. Odpowiedz tylko na dwa krótkie pytania.",
   questions: [
@@ -48,7 +48,7 @@ export const DEFAULT_CHAT_CONFIG: ChatConfig = {
   ],
   rules: {},
   defaultListId: "",
-  finalText: "Gotowe! Przygotowałem dla Ciebie wybór ofert dopasowanych do Twoich odpowiedzi. Zadzwonię, gdy tylko wrócę do biura 🙂",
+  finalText: "Gotowe! Oto wstępnie dobrane oferty dopasowane do Twoich odpowiedzi. Doradca Onesta zadzwoni do Ciebie, gdy tylko wróci do biura 🙂",
 };
 
 const str = (value: unknown, max: number) => String(value ?? "").trim().slice(0, max);
