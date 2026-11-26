@@ -658,9 +658,16 @@ export default function CRMContactCardPage() {
         {openMenuId === id ? (
           <div className="crmItemMenuList">
             <button type="button" onClick={onEdit}>
+              <svg aria-hidden="true" fill="none" height="15" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="15">
+                <path d="M4 20h4L19 9l-4-4L4 16z" />
+                <path d="M13.5 6.5l4 4" />
+              </svg>
               Edytuj
             </button>
             <button className="danger" type="button" onClick={onDelete}>
+              <svg aria-hidden="true" fill="none" height="15" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="15">
+                <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+              </svg>
               Usuń
             </button>
           </div>
@@ -2509,51 +2516,80 @@ export default function CRMContactCardPage() {
           color: #08a742;
         }
 
-        /* Item menu */
-        .crmItemMenu {
+        /* Item menu (renderMenu jest poza drzewem JSX ze <style jsx>, dlatego style globalne z prefiksem crm) */
+        :global(.crmItemMenu) {
           position: relative;
         }
-        .crmItemMenuToggle {
+        :global(.crmItemMenuToggle) {
+          align-items: center;
           background: transparent;
           border: 0;
-          border-radius: 4px;
+          border-radius: 6px;
           color: #747678;
           cursor: pointer;
+          display: inline-flex;
           font-size: 10px;
+          height: 26px;
+          justify-content: center;
           letter-spacing: 1px;
-          padding: 4px 6px;
+          min-width: 30px;
+          padding: 0 6px;
         }
-        .crmItemMenuToggle:hover {
-          background: rgba(33, 35, 44, 0.06);
+        :global(.crmItemMenuToggle:hover),
+        :global(.crmItemMenuToggle[aria-expanded="true"]) {
+          background: #eef0f3;
+          color: #21232c;
         }
-        .crmItemMenuList {
+        :global(.crmItemMenuToggle:focus-visible) {
+          box-shadow: 0 0 0 2px rgba(60, 97, 196, 0.35);
+          outline: none;
+        }
+        :global(.crmItemMenuList) {
           background: #ffffff;
           border: 1px solid #e3e6ea;
-          border-radius: 6px;
-          box-shadow: 0 8px 24px rgba(33, 35, 44, 0.16);
+          border-radius: 8px;
+          box-shadow: 0 10px 28px rgba(33, 35, 44, 0.16);
           display: grid;
-          min-width: 120px;
-          padding: 4px;
+          gap: 2px;
+          min-width: 150px;
+          padding: 5px;
           position: absolute;
           right: 0;
-          top: 26px;
+          top: 30px;
           z-index: 40;
         }
-        .crmItemMenuList button {
+        :global(.crmItemMenuList button) {
+          align-items: center;
           background: transparent;
           border: 0;
-          border-radius: 4px;
+          border-radius: 6px;
           color: #21232c;
           cursor: pointer;
+          display: flex;
+          font: inherit;
           font-size: 13px;
-          padding: 7px 10px;
+          font-weight: 500;
+          gap: 9px;
+          padding: 8px 10px;
           text-align: left;
+          white-space: nowrap;
+          width: 100%;
         }
-        .crmItemMenuList button:hover {
-          background: #f1f2f4;
+        :global(.crmItemMenuList button svg) {
+          color: #747678;
+          flex: 0 0 auto;
         }
-        .crmItemMenuList button.danger {
+        :global(.crmItemMenuList button:hover) {
+          background: #f1f3f6;
+        }
+        :global(.crmItemMenuList button.danger) {
           color: #c0392b;
+        }
+        :global(.crmItemMenuList button.danger svg) {
+          color: #c0392b;
+        }
+        :global(.crmItemMenuList button.danger:hover) {
+          background: #fdeeee;
         }
 
         /* Modal */
