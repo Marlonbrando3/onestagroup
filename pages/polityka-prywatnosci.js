@@ -163,29 +163,50 @@ export default function PolitykaPrywatnosci() {
             wyłącznie w niezbędnym zakresie:
           </p>
           <ul className="list-disc space-y-2 pl-5">
-            <li>Netlify — hosting strony i aplikacji;</li>
             <li>
-              Vercel — poprzednia wersja systemu obsługi zgłoszeń, do czasu jej
-              wyłączenia;
-            </li>
-            <li>Supabase — baza danych i infrastruktura systemu CRM;</li>
-            <li>SMSAPI (LINK Mobility Poland) — wysyłka wiadomości SMS;</li>
-            <li>
-              Meta Platforms Ireland — formularze reklamowe Lead Ads, z których
-              otrzymujemy zgłoszenia;
-            </li>
-            <li>CookieYes — zarządzanie i dokumentowanie zgód cookies;</li>
-            <li>
-              Google, Meta i Hotjar — analityka oraz reklama, wyłącznie zgodnie
-              z wybranymi kategoriami zgód;
-            </li>
-            <li>
-              dostawcy poczty elektronicznej, obsługi IT, księgowości i doradcy
-              prawni;
+              <strong>Dostawcy usług technicznych</strong> (przetwarzają dane na
+              nasze polecenie, na podstawie umów powierzenia):
+              <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                <li>Netlify — hosting strony i aplikacji;</li>
+                <li>Supabase — baza danych i infrastruktura systemu CRM;</li>
+                <li>SMSAPI (LINK Mobility Poland) — wysyłka wiadomości SMS;</li>
+                <li>LH.pl — poczta elektroniczna i serwer pocztowy;</li>
+                <li>CookieYes — zarządzanie i dokumentowanie zgód cookies;</li>
+                <li>
+                  Vercel — poprzednia wersja systemu obsługi zgłoszeń, do czasu
+                  jej wyłączenia;
+                </li>
+              </ul>
             </li>
             <li>
-              partnerzy uczestniczący w obsłudze transakcji nieruchomościowej,
-              jeżeli jest to potrzebne do realizacji Twojego zapytania lub umowy.
+              <strong>Meta Platforms Ireland</strong> — formularze reklamowe Lead
+              Ads (Facebook, Instagram), z których otrzymujemy zgłoszenia, oraz —
+              wyłącznie po zgodzie reklamowej — Meta Pixel do pomiaru reklam; w
+              zakresie zbierania i przekazywania danych przez Meta Pixel jesteśmy
+              z Meta współadministratorami (art. 26 RODO), a dalsze przetwarzanie
+              Meta prowadzi jako odrębny administrator;
+            </li>
+            <li>
+              <strong>Google Ireland</strong> — Google Tag Manager, Google
+              Analytics i Google Ads (pomiar ruchu i konwersji) oraz{" "}
+              <strong>Hotjar</strong> — analiza korzystania ze strony; wyłącznie
+              zgodnie z wybranymi kategoriami zgód;
+            </li>
+            <li>
+              <strong>Firmy partnerskie</strong>, którym — na Twoją prośbę lub za
+              Twoją wiedzą — przekazujemy dane potrzebne do realizacji zapytania:
+              biura nieruchomości i agencje w Hiszpanii, deweloperzy, firmy
+              wyposażające i meblujące nieruchomości, firmy zarządzające najmem i
+              nieruchomościami, prawnicy, notariusze i gestorie, banki i doradcy
+              kredytowi. Dane przekazujemy wyłącznie partnerom, którzy potwierdzili,
+              że wykorzystają je tylko do zleconego zadania, zachowają je w
+              poufności i nie użyją ich do własnego marketingu bez Twojej zgody.
+              Na Twoje żądanie wskażemy, którym partnerom przekazaliśmy Twoje
+              dane;
+            </li>
+            <li>
+              doradcy prawni, księgowi i podmioty świadczące obsługę IT — w
+              zakresie niezbędnym do ich usług.
             </li>
           </ul>
           <p className="mt-3">

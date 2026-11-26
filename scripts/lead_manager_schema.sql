@@ -158,3 +158,32 @@ alter table public.crm_consents enable row level security;
 revoke all on table public.crm_consents from anon, authenticated;
 grant all on table public.crm_consents to service_role;
 alter table public.lm_settings add column if not exists sms_basic_template text not null default '';  -- powitanie bez linku (bez zgody SMS)
+
+-- Partnerzy (firmy współpracujące) i rejestr przekazań danych klientów, 26.11.2026
+create table if not exists public.crm_partners (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  name text not null,
+  category text not null default 'inne',
+  region text,
+  contact text,
+  role text not null default 'administrator' check (role in ('administrator', 'processor')),
+  clause_accepted_at date,
+  clause_note text,
+  archived boolean not null default false
+);
+create table if not exists public.crm_data_shares (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  crm_contact_id uuid not null references public.crm_contacts(id) on delete cascade,
+  partner_id uuid not null references public.crm_partners(id) on delete restrict,
+  purpose text not null,
+  scope text,
+  client_informed boolean not null default true,
+  recorded_by text
+);
+create index if not exists crm_data_shares_contact_idx on public.crm_data_shares (crm_contact_id, created_at desc);
+alter table public.crm_partners enable row level security;
+alter table public.crm_data_shares enable row level security;
+revoke all on table public.crm_partners, public.crm_data_shares from anon, authenticated;
+grant all on table public.crm_partners, public.crm_data_shares to service_role;

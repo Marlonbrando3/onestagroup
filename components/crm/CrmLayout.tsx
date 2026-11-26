@@ -7,7 +7,7 @@ import { canAccessCrm, isCrmAdmin, isCrmSuperadmin } from "./users";
 import CrmAppHead from "./CrmAppHead";
 
 type CrmLayoutProps = {
-  active: "contacts" | "add" | "pipeline" | "mailing" | "account" | "leadmanager";
+  active: "contacts" | "add" | "pipeline" | "mailing" | "account" | "leadmanager" | "partners";
   children: ReactNode;
   // Na telefonie: cały CRM mieści się w wysokości ekranu (lejek przewija się wewnątrz)
   fitScreen?: boolean;
@@ -37,6 +37,16 @@ function MailingIcon() {
     <svg aria-hidden="true" viewBox="0 0 24 24">
       <rect x="3" y="5" width="18" height="14" rx="2" />
       <path d="M4 7l8 6 8-6" />
+    </svg>
+  );
+}
+
+function PartnersIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <circle cx="8" cy="9" r="3" />
+      <circle cx="16" cy="9" r="3" />
+      <path d="M2.5 19a5.5 5.5 0 0 1 11 0M10.5 19a5.5 5.5 0 0 1 11 0" />
     </svg>
   );
 }
@@ -81,7 +91,7 @@ export default function CrmLayout({ active, children, fitScreen = false }: CrmLa
       }
       const admin = isCrmAdmin(data.user.email);
       const superadmin = isCrmSuperadmin(data.user.email);
-      if ((active === "mailing" && !admin) || (active === "leadmanager" && !superadmin)) {
+      if (((active === "mailing" || active === "partners") && !admin) || (active === "leadmanager" && !superadmin)) {
         router.push("/crm");
         return;
       }
@@ -215,6 +225,17 @@ export default function CrmLayout({ active, children, fitScreen = false }: CrmLa
             >
               <MailingIcon />
               <span className="crmTooltip">Mailing</span>
+            </Link>
+          ) : null}
+          {isAdmin ? (
+            <Link
+              aria-label="Partnerzy"
+              className={`crmNavItem ${active === "partners" ? "active" : ""}`}
+              href="/crm/partnerzy"
+              title="Partnerzy (przekazywanie danych)"
+            >
+              <PartnersIcon />
+              <span className="crmTooltip">Partnerzy</span>
             </Link>
           ) : null}
           {isSuperadmin ? (

@@ -19,6 +19,7 @@ import { getCrmUser } from "@/components/crm/users";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
 import CrmConsentPanel from "@/components/crm/CrmConsentPanel";
+import CrmDataSharesPanel from "@/components/crm/CrmDataSharesPanel";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const today = new Date().toISOString().slice(0, 10);
@@ -945,6 +946,12 @@ export default function CRMContactCardPage() {
                     <h2>Zgody</h2>
                   </div>
                   <CrmConsentPanel contactId={contactId} />
+                </section>
+                <section className="crmSideSection">
+                  <div className="crmSideHeader">
+                    <h2>Przekazania danych</h2>
+                  </div>
+                  <CrmDataSharesPanel contactId={contactId} />
                 </section>
               </aside>
 
