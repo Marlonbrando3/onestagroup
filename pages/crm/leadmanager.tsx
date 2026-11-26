@@ -767,13 +767,22 @@ export default function LeadManagerPage() {
               {result("test_push")}
             </div>
 
-            <div className="lmCard">
-              <div className="lmCardHead">
+            <details className="lmCard lmCollapsible">
+              <summary>
                 <h2>Ostatnie leady</h2>
-                <button className="lmLink" type="button" onClick={loadDiagnostics}>
-                  Odśwież
-                </button>
-              </div>
+                <span className="lmCount">{diag.leads.length}</span>
+                {diag.leads[0] ? (
+                  <small>
+                    ostatni: {diag.leads[0].name} · {formatTime(diag.leads[0].created_at)}
+                  </small>
+                ) : null}
+                <span className="lmChevron" aria-hidden="true">
+                  ›
+                </span>
+              </summary>
+              <button className="lmLink lmRefresh" type="button" onClick={loadDiagnostics}>
+                Odśwież
+              </button>
               {diag.leads.length ? (
                 <ul className="lmList">
                   {diag.leads.map((lead) => (
@@ -796,10 +805,23 @@ export default function LeadManagerPage() {
               ) : (
                 <p className="lmHint">Jeszcze nie ma leadów w nowym Lead Managerze.</p>
               )}
-            </div>
+            </details>
 
-            <div className="lmCard">
-              <h2>Wysłane SMS-y</h2>
+            <details className="lmCard lmCollapsible">
+              <summary>
+                <h2>Wysłane SMS-y</h2>
+                <span className="lmCount">{diag.sms.length}</span>
+                {diag.sms[0] ? (
+                  <small>
+                    ostatni: {diag.sms[0].recipient} ·{" "}
+                    {diag.sms[0].status === "sent" ? "wysłany" : diag.sms[0].status === "simulated" ? "symulacja" : "błąd"} ·{" "}
+                    {formatTime(diag.sms[0].created_at)}
+                  </small>
+                ) : null}
+                <span className="lmChevron" aria-hidden="true">
+                  ›
+                </span>
+              </summary>
               {diag.sms.length ? (
                 <ul className="lmList">
                   {diag.sms.map((row) => (
@@ -819,7 +841,7 @@ export default function LeadManagerPage() {
               ) : (
                 <p className="lmHint">Brak wysyłek.</p>
               )}
-            </div>
+            </details>
 
             <details className="lmCard lmCollapsible">
               <summary>
@@ -1099,6 +1121,9 @@ export default function LeadManagerPage() {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+        }
+        .lmRefresh {
+          justify-self: start;
         }
         .lmCount {
           background: #eef0f2;
