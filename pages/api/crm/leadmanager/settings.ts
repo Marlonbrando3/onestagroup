@@ -8,6 +8,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!user) return;
   try {
     if (req.method === "GET") {
+      // Podgląd pełnej wartości tokenu – tylko na żądanie (przycisk „Pokaż”), zapisywany w dzienniku
+      const reveal = String(req.query.reveal || "");
+      if (reveal) {
+        const settings = await readLmSettings();
+        const values: Record<string, string> = {
+          appSecret: settings.meta.appSecret,
+          pageAccessToken: settings.meta.pageAccessToken,
+          apiToken: settings.sms.apiToken,
+        };
+        if (!(reveal in values)) return res.status(400).json({ error: "Nieznane pole." });
+        const labels: Record<string, string> = { appSecret: "App Secret", pageAccessToken: "Page Access Token", apiToken: "token SMSAPI" };
+        await addLmLog("info", `Podgląd: ${labels[reveal]}`, `Wyświetlił(a): ${user.email}`);
+        return res.status(200).json({ value: values[reveal] });
+      }
       return res.status(200).json({ settings: publicLmSettings(await readLmSettings()) });
     }
     if (req.method === "PUT") {

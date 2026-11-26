@@ -42,6 +42,8 @@ type LeadRow = {
 };
 type SmsRow = { id: string; created_at: string; audience: string; recipient: string; status: string; error: string | null };
 
+type SecretKey = "appSecret" | "pageAccessToken" | "apiToken";
+
 const WEBHOOK_URL = "https://onesta.com.pl/api/leadmanager/meta-webhook";
 
 function formatTime(value: string) {
@@ -63,6 +65,9 @@ export default function LeadManagerPage() {
   const [testPhone, setTestPhone] = useState("");
   const [testLead, setTestLead] = useState({ name: "Test Lead Manager", phone: "", email: "" });
   const [copied, setCopied] = useState(false);
+  const [revealed, setRevealed] = useState<Record<SecretKey, boolean>>({ appSecret: false, pageAccessToken: false, apiToken: false });
+  const [revealBusy, setRevealBusy] = useState<SecretKey | "">("");
+  const [copiedSecret, setCopiedSecret] = useState<SecretKey | "">("");
 
   const api = useCallback(async (url: string, init?: RequestInit) => {
     const { data } = await supabase.auth.getSession();
@@ -81,7 +86,60 @@ export default function LeadManagerPage() {
     setSettings(value);
     setMasks({ appSecret: value.meta.appSecret, pageAccessToken: value.meta.pageAccessToken, apiToken: value.sms.apiToken });
     setSecrets({ appSecret: "", pageAccessToken: "", apiToken: "" });
+    setRevealed({ appSecret: false, pageAccessToken: false, apiToken: false });
   };
+
+  // „Pokaż”: pobiera zapisaną wartość i wstawia ją do pola (można ją skopiować albo poprawić)
+  async function toggleReveal(key: SecretKey) {
+    if (revealed[key]) {
+      setRevealed((current) => ({ ...current, [key]: false }));
+      return;
+    }
+    if (!secrets[key] && masks[key]) {
+      setRevealBusy(key);
+      try {
+        const result = await api(`/api/crm/leadmanager/settings?reveal=${key}`);
+        setSecrets((current) => ({ ...current, [key]: result.value || "" }));
+      } catch (reason) {
+        setError(reason instanceof Error ? reason.message : "Nie udało się pobrać tokenu.");
+        setRevealBusy("");
+        return;
+      }
+      setRevealBusy("");
+    }
+    setRevealed((current) => ({ ...current, [key]: true }));
+  }
+
+  function copySecret(key: SecretKey) {
+    if (!secrets[key]) return;
+    navigator.clipboard?.writeText(secrets[key]).then(() => {
+      setCopiedSecret(key);
+      window.setTimeout(() => setCopiedSecret(""), 1500);
+    });
+  }
+
+  function secretInput(key: SecretKey, emptyPlaceholder: string) {
+    return (
+      <div className="lmSecret">
+        <input
+          autoComplete="off"
+          placeholder={masks[key] ? `${masks[key]} – zostaw puste, aby nie zmieniać` : emptyPlaceholder}
+          spellCheck={false}
+          type={revealed[key] ? "text" : "password"}
+          value={secrets[key]}
+          onChange={(event) => setSecrets({ ...secrets, [key]: event.target.value })}
+        />
+        <button disabled={revealBusy === key || (!masks[key] && !secrets[key])} type="button" onClick={() => toggleReveal(key)}>
+          {revealBusy === key ? "…" : revealed[key] ? "Ukryj" : "Pokaż"}
+        </button>
+        {revealed[key] && secrets[key] ? (
+          <button type="button" onClick={() => copySecret(key)}>
+            {copiedSecret === key ? "Skopiowano" : "Kopiuj"}
+          </button>
+        ) : null}
+      </div>
+    );
+  }
 
   const loadDiagnostics = useCallback(async () => {
     try {
@@ -226,16 +284,10 @@ export default function LeadManagerPage() {
                     onChange={(event) => setSettings({ ...settings, meta: { ...settings.meta, appId: event.target.value } })}
                   />
                 </label>
-                <label className="lmField">
+                <div className="lmField">
                   <span>App Secret {settings.meta.hasAppSecret ? "✓ zapisany" : ""}</span>
-                  <input
-                    autoComplete="off"
-                    placeholder={masks.appSecret ? `${masks.appSecret} – zostaw puste, aby nie zmieniać` : "Wklej App Secret"}
-                    type="password"
-                    value={secrets.appSecret}
-                    onChange={(event) => setSecrets({ ...secrets, appSecret: event.target.value })}
-                  />
-                </label>
+                  {secretInput("appSecret", "Wklej App Secret")}
+                </div>
                 <label className="lmField">
                   <span>Wersja Graph API</span>
                   <input
@@ -245,18 +297,10 @@ export default function LeadManagerPage() {
                     }
                   />
                 </label>
-                <label className="lmField lmWide">
+                <div className="lmField lmWide">
                   <span>Page Access Token {settings.meta.hasPageAccessToken ? "✓ zapisany" : ""}</span>
-                  <input
-                    autoComplete="off"
-                    placeholder={
-                      masks.pageAccessToken ? `${masks.pageAccessToken} – zostaw puste, aby nie zmieniać` : "Wklej token strony"
-                    }
-                    type="password"
-                    value={secrets.pageAccessToken}
-                    onChange={(event) => setSecrets({ ...secrets, pageAccessToken: event.target.value })}
-                  />
-                </label>
+                  {secretInput("pageAccessToken", "Wklej token strony")}
+                </div>
               </div>
               <div className="lmActions">
                 <button disabled={busyAction === "test_meta"} type="button" onClick={() => runTest("test_meta")}>
@@ -290,16 +334,10 @@ export default function LeadManagerPage() {
                 <span>Tryb symulacji – SMS-y nie wychodzą, tylko zapis w dzienniku</span>
               </label>
               <div className="lmGrid">
-                <label className="lmField">
+                <div className="lmField">
                   <span>Token SMSAPI {settings.sms.hasApiToken ? "✓ zapisany" : ""}</span>
-                  <input
-                    autoComplete="off"
-                    placeholder={masks.apiToken ? `${masks.apiToken} – zostaw puste, aby nie zmieniać` : "Wklej token OAuth SMSAPI"}
-                    type="password"
-                    value={secrets.apiToken}
-                    onChange={(event) => setSecrets({ ...secrets, apiToken: event.target.value })}
-                  />
-                </label>
+                  {secretInput("apiToken", "Wklej token OAuth SMSAPI")}
+                </div>
                 <label className="lmField">
                   <span>Nadawca (pole nadawcy SMSAPI, maks. 11 znaków)</span>
                   <input
@@ -589,6 +627,19 @@ export default function LeadManagerPage() {
           border-color: #3c61c4;
           box-shadow: 0 0 0 3px rgba(60, 97, 196, 0.14);
           outline: none;
+        }
+        .lmSecret {
+          display: flex;
+          gap: 6px;
+        }
+        .lmSecret input {
+          flex: 1 1 auto;
+          font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+          min-width: 0;
+        }
+        .lmSecret button {
+          flex: 0 0 auto;
+          padding: 0 10px;
         }
         .lmCopy {
           align-items: center;
