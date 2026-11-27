@@ -527,11 +527,14 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
 
 
         <section id="zespol" className={styles.teamSection} aria-labelledby="team-heading">
-          <div className={styles.container}>
-            <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>Po Twojej stronie</p>
-              <h2 id="team-heading">Kim jesteśmy</h2>
-              <p className={styles.lead}>Za ofertami stoją ludzie. Z nami omówisz wybór, zadasz pytania i zaplanujesz kolejne kroki po polsku.</p>
+          <div className={`${styles.container} ${styles.teamLayout}`}>
+            <div className={styles.teamAside}>
+              <div className={styles.sectionHeading}>
+                <p className={styles.eyebrow}>Kim jesteśmy</p>
+                <h2 id="team-heading">Zespół, który dba o Twoje interesy</h2>
+                <p className={styles.lead}>Za ofertami stoją ludzie. Z nami omówisz wybór, zadasz pytania i zaplanujesz kolejne kroki po polsku.</p>
+              </div>
+              <Link href="/aboutus" className={styles.textLink}><span>Więcej o zespole <BrandName /></span> <Arrow /></Link>
             </div>
             <div className={styles.teamGrid}>
               {agencyTeam.map((person) => (
@@ -554,7 +557,6 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
                 <p>Chcesz współtworzyć z nami <BrandName />? Napisz na <a href="mailto:biuro@onesta.com.pl" className={styles.teamJoinLink}>biuro@onesta.com.pl</a> i opowiedz nam o sobie.</p>
               </article>
             </div>
-            <Link href="/aboutus" className={styles.textLink}><span>Więcej o zespole <BrandName /></span> <Arrow /></Link>
           </div>
         </section>
 
