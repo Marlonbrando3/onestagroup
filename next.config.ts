@@ -48,6 +48,14 @@ const nextConfig: NextConfig = {
     ];
   },
   poweredByHeader: false,
+  // Obrazek podglądu linku prezentacji (next/og + sharp): dołącz do funkcji fonty, zdjęcia agentów i pliki next/og.
+  outputFileTracingIncludes: {
+    "/api/og/prezentacja/[file]": [
+      "./public/fonts/pdf/**",
+      "./public/images/agency/team-*.webp",
+      "./node_modules/next/dist/compiled/@vercel/og/**",
+    ],
+  },
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   images: {

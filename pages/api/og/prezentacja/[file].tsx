@@ -105,6 +105,24 @@ async function agentAvatar(origin: string, photoPath: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    await render(req, res);
+  } catch (error) {
+    // Generowanie się nie udało → pokaż choć zdjęcie pierwszej oferty (lepsze niż logo), a przyczynę zapisz w logach i nagłówku.
+    const message = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+    console.error("[og/prezentacja]", message);
+    res.setHeader("X-Og-Error", message.replace(/[^\x20-\x7e]/g, "?").slice(0, 300));
+    res.setHeader("Cache-Control", "no-store");
+    const fallback = (req as any).__ogFallback as string | undefined;
+    if (fallback) {
+      res.redirect(302, fallback);
+      return;
+    }
+    res.status(500).send("OG error");
+  }
+}
+
+async function render(req: NextApiRequest, res: NextApiResponse) {
   if (!supabaseServer) {
     res.status(503).end();
     return;
@@ -127,6 +145,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const offers = data.offers as AgentOffer[];
+  (req as any).__ogFallback = offers.map((offer) => imageUrls(offer.images)[0]).find(Boolean);
   const texts = presentationPreviewTexts({
     offers,
     isTemplate: Boolean((data as any).is_template),
