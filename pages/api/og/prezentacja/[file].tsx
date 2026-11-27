@@ -114,6 +114,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.setHeader("X-Og-Error", message.replace(/[^\x20-\x7e]/g, "?").slice(0, 300));
     res.setHeader("Cache-Control", "no-store");
     const fallback = (req as any).__ogFallback as string | undefined;
+    if (req.query.debug === "1") {
+      res.status(500).send(`OG error: ${message}\n${error instanceof Error ? error.stack || "" : ""}`.slice(0, 4000));
+      return;
+    }
     if (fallback) {
       res.redirect(302, fallback);
       return;
