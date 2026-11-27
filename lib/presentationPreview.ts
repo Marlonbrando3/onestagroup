@@ -1,5 +1,24 @@
 import type { AgentOffer } from "@/lib/agentOffers";
 
+// Zdjęcia agentów do podglądu linku (dopasowanie po e-mailu albo imieniu i nazwisku). Brak zdjęcia → inicjały.
+const AGENT_PHOTOS: Array<{ emails: string[]; name: string; photo: string }> = [
+  { emails: ["marek.marszalek@onesta.com.pl"], name: "marek marszałek", photo: "images/agency/team-marek.webp" },
+  { emails: ["karolina@fenomen.nieruchomosci.pl"], name: "karolina bakowicz", photo: "images/agency/team-karolina.webp" },
+];
+
+export function presentationAgent(input: { agentEmail?: string | null; agentName?: string | null; contactName?: string | null }) {
+  const name = String(input.contactName || input.agentName || "").trim();
+  const email = String(input.agentEmail || "").trim().toLowerCase();
+  const match = AGENT_PHOTOS.find((agent) => agent.emails.includes(email) || agent.name === name.toLowerCase());
+  const initials = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || "")
+    .join("");
+  return { name, photo: match?.photo || null, initials: initials || "OG" };
+}
+
 // Wspólne teksty podglądu linku prezentacji (WhatsApp, Messenger, SMS, mail) – strona i obrazek OG.
 const SALUTATION: Record<string, string> = { pani: "Pani", pan: "Pana", panstwo: "Państwa" };
 
