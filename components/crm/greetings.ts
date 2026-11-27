@@ -4,7 +4,7 @@ export type CrmGreeting = { before: string; after: string; emoji: string; title?
 
 // Specjalne powitanie Karoliny – co trzecie wejście na lejek
 const KAROLINA_EMAIL = "karolina@fenomen.nieruchomosci.pl";
-const queenGreeting: CrmGreeting = { before: "Witaj, ", title: "Królowo Złota", after: "!", emoji: "👑" };
+const queenGreeting: CrmGreeting = { before: "Witaj, ", after: ", Królowo Złota!", emoji: "👑" };
 const queenCounterKey = "crmQueenGreetingCounter";
 
 export const crmGreetings: CrmGreeting[] = [
