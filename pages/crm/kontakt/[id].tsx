@@ -139,6 +139,22 @@ function ActivityIcon({ type }: { type: CrmActivityType | "note" | "presentation
       </svg>
     );
   }
+  if (type === "Mail") {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="4" />
+        <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.9 7.9" />
+      </svg>
+    );
+  }
+  if (type === "Wiadomość") {
+    return (
+      <svg {...common}>
+        <path d="M4 5h16v11H9l-5 4z" />
+        <path d="M8 10h8M8 13h5" />
+      </svg>
+    );
+  }
   if (type === "Spotkanie") {
     return (
       <svg {...common}>

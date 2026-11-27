@@ -122,6 +122,8 @@ function activityTypeGlyph(type: CrmActivityType) {
   const glyphs: Record<string, string> = {
     "Zadzwoń": "☎",
     "Wyślij oferty": "✉",
+    Mail: "@",
+    "Wiadomość": "💬",
     "Follow up": "↻",
     Spotkanie: "👥",
     Prezentacja: "▶",
@@ -4099,7 +4101,7 @@ export default function CRMPipelinePage() {
         .crmActivityTypeTabs {
           display: grid;
           gap: 5px;
-          grid-template-columns: repeat(5, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
         }
 
         .crmActivityTypeTabs button {

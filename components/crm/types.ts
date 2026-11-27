@@ -3,6 +3,8 @@ export type CrmActivityType =
   | "Wyślij oferty"
   | "Follow up"
   | "Zadzwoń"
+  | "Mail"
+  | "Wiadomość"
   | "Spotkanie"
   | "Prezentacja"
   | "Brak kontaktu";
@@ -87,6 +89,8 @@ export const crmActivityTypes: CrmActivityType[] = [
   "Wyślij oferty",
   "Follow up",
   "Zadzwoń",
+  "Mail",
+  "Wiadomość",
   "Spotkanie",
   "Prezentacja",
   "Brak kontaktu",
