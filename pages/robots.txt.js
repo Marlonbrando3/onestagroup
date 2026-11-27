@@ -14,6 +14,7 @@ export async function getServerSideProps({ res }) {
   const blockedBots = ["GPTBot", "CCBot", "ClaudeBot", "anthropic-ai", "Google-Extended", "Bytespider", "Amazonbot", "meta-externalagent", "AhrefsBot", "SemrushBot", "MJ12bot", "DotBot", "PetalBot", "BLEXBot", "DataForSeoBot"];
   const robots = `User-agent: *
 Allow: /
+Allow: /api/og/
 Disallow: /api/
 Disallow: /admin
 Disallow: /agent
