@@ -151,6 +151,8 @@ const agencyTeam = [
   ...Team.map((person) => ({ ...person, photo: teamPhotoOverrides[person.id] ?? person.photo })),
   { id: 4, name: "Dominik Michałowski", title: "Partner · zarządzanie nieruchomościami", photo: "dominik.png" },
   { id: 5, name: "Damian Włodarkiewicz", title: "Zarządzanie nieruchomościami, zespołem, procesami i marketingiem", photo: "damian.png" },
+  { id: 6, name: "Robert Jurewicz", title: "B2B Partner · Costa del Sol", photo: "images/agency/team-robert-jurewicz.webp" },
+  { id: 7, name: "Magda Reder", title: "B2B Partner · Costa del Sol", photo: "images/agency/team-magda-reder.webp" },
 ];
 
 const teamIntros: Record<number, string> = {
@@ -159,6 +161,9 @@ const teamIntros: Record<number, string> = {
   3: "Omawia cele zakupu, porównuje możliwości i pomaga doprecyzować kryteria wyboru nieruchomości. Przygotowuje oferty, prowadzi przez proces preselekcji i planuje prezentacje.",
   4: "Prowadzi prezentacje nieruchomości i pomaga zorganizować opiekę nad nimi po zakupie. Koordynuje bieżące sprawy na miejscu i kontakt z właścicielami.",
   5: "Łączy zarządzanie nieruchomościami, zespołem i procesami z działaniami marketingowymi, aby zwiększać efektywność i maksymalizować rentowność wynajmu dla właścicieli, z którymi współpracujemy.",
+  // TODO: docelowe opisy – na razie tekst zastępczy
+  6: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  7: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
 };
 
 // „Jasne zasady”: trzy punkty z ikonami, jak lista atutów wyżej.
@@ -532,7 +537,7 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
               {agencyTeam.map((person) => (
                 <article key={person.id} data-person={person.id}>
                   <div className={styles.teamImage}>
-                    <Image src={`/${person.photo}`} alt={person.name} fill sizes="(min-width: 1455px) 237px, (min-width: 1101px) 17vw, (min-width: 900px) 28vw, (min-width: 600px) 43vw, 88vw" className={styles.cover} />
+                    <Image src={`/${person.photo}`} alt={person.name} fill sizes="(min-width: 1455px) 300px, (min-width: 1101px) 22vw, (min-width: 900px) 28vw, (min-width: 600px) 43vw, 88vw" className={styles.cover} />
                   </div>
                   <h3>{person.name}</h3>
                   <p className={styles.teamRole}>{person.title}</p>
