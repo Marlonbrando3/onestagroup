@@ -7,6 +7,7 @@ import PropertyCard from "@/components/SearchEngine/PropertyCard";
 import InterestButton from "@/components/presentation/InterestButton";
 import { HomeMontserratSans, HomePlayfairSans } from "@/fonts/homeFonts";
 import { imageUrls } from "@/lib/presentationOffer";
+import { presentationPreviewTexts } from "@/lib/presentationPreview";
 import { propertyImageUrl } from "@/lib/propertyImages";
 import { formatPhone } from "@/lib/phone";
 import type { AgentOffer } from "@/lib/agentOffers";
@@ -36,6 +37,10 @@ type PublicOfferListProps = {
   // Czy wiemy, czyja to prezentacja (klient w CRM / link leada) i czy jest zgoda na zapisywanie oglądanych ofert
   identifiable: boolean;
   trackingConsent: boolean;
+  // Podgląd linku (WhatsApp, Messenger, SMS): opis i wygenerowany obrazek z kolażem ofert
+  previewDescription: string;
+  previewImageUrl: string;
+  pageUrl: string;
 };
 
 // Teksty nagłówka zależnie od zwrotu wybranego przez agenta. Imię klienta agent wpisuje
@@ -62,6 +67,9 @@ export default function PublicOfferList({
   leadKey,
   identifiable,
   trackingConsent,
+  previewDescription,
+  previewImageUrl,
+  pageUrl,
 }: PublicOfferListProps) {
   const [consent, setConsent] = useState(trackingConsent);
   const cookieAdvertisement = useCookieYesAdvertisement();
@@ -87,14 +95,24 @@ export default function PublicOfferList({
     year: "numeric",
   }).format(new Date(createdAt));
 
+  const pageTitle = `${isTemplate ? [headingText, publicSubtitle].filter(Boolean).join(" · ") : clientName ? `Prezentacja dla ${greeting ? `${greeting.title} ` : ""}${clientName}` : greeting ? `Oferty wybrane dla ${greeting.title}` : "Oferty wybrane dla Ciebie"} | Onesta Group`;
+
   return (
     <>
       <Head>
-        <title>{isTemplate ? [headingText, publicSubtitle].filter(Boolean).join(" · ") : clientName ? `Prezentacja dla ${greeting ? `${greeting.title} ` : ""}${clientName}` : greeting ? `Oferty wybrane dla ${greeting.title}` : "Oferty wybrane dla Ciebie"} | Onesta Group</title>
-        <meta
-          name="description"
-          content="Indywidualna lista nieruchomości przygotowana przez Onesta Group."
-        />
+        <title>{pageTitle}</title>
+        <meta name="description" content={previewDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Onesta Group" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={previewDescription} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={previewImageUrl} />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={pageTitle} />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="robots" content="noindex,nofollow" />
       </Head>
 
@@ -284,6 +302,16 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
   const lead = isTemplate && requestedKey ? await resolveLeadKey(requestedKey) : null;
   const leadKey = lead ? requestedKey : "";
   const contactId = isTemplate ? lead?.contactId || null : (data as any).crm_contact_id || null;
+  const host = String(context.req.headers["x-forwarded-host"] || context.req.headers.host || "onesta.com.pl");
+  const proto = String(context.req.headers["x-forwarded-proto"] || (host.startsWith("localhost") ? "http" : "https")).split(",")[0];
+  const origin = `${proto}://${host}`;
+  const preview = presentationPreviewTexts({
+    offers: data.offers as AgentOffer[],
+    isTemplate,
+    publicTitle: (data as any).public_title,
+    clientSalutation: data.client_salutation,
+    clientName: data.client_name,
+  });
 
   return {
     props: {
@@ -294,6 +322,10 @@ export const getServerSideProps: GetServerSideProps<PublicOfferListProps> = asyn
       leadKey,
       identifiable: Boolean(contactId),
       trackingConsent: await hasTrackingConsent(contactId),
+      previewDescription: preview.description,
+      // ?n= zmienia adres, gdy zmieni się liczba ofert – WhatsApp pobierze wtedy nowy obrazek.
+      previewImageUrl: `${origin}/api/og/prezentacja/${encodeURIComponent(token)}.jpg?n=${(data.offers as AgentOffer[]).length}`,
+      pageUrl: `${origin}/oferty/${encodeURIComponent(token)}`,
       offers: data.offers as AgentOffer[],
       createdAt: data.created_at,
       contactName: data.contact_name || data.agent_name || "",
