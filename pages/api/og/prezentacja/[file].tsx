@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ImageResponse } from "next/og";
+// Bezpośredni import silnika (zamiast "next/og"), żeby Netlify dołączył do funkcji jego pliki (resvg.wasm, fonty).
+import { ImageResponse } from "next/dist/compiled/@vercel/og/index.node.js";
 import { readFile } from "fs/promises";
 import path from "path";
 import sharp from "sharp";
