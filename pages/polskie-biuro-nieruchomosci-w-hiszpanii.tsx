@@ -537,13 +537,22 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
               {agencyTeam.map((person) => (
                 <article key={person.id} data-person={person.id}>
                   <div className={styles.teamImage}>
-                    <Image src={`/${person.photo}`} alt={person.name} fill sizes="(min-width: 1455px) 260px, (min-width: 1101px) 18vw, (min-width: 900px) 25vw, (min-width: 600px) 43vw, 88vw" className={styles.cover} />
+                    <Image src={`/${person.photo}`} alt={person.name} fill sizes="(min-width: 1455px) 240px, (min-width: 1101px) 18vw, (min-width: 900px) 22vw, (min-width: 600px) 43vw, 88vw" className={styles.cover} />
                   </div>
                   <h3>{person.name}</h3>
                   <p className={styles.teamRole}>{person.title}</p>
                   <p>{teamIntros[person.id]}</p>
                 </article>
               ))}
+              <article data-person="join">
+                <div className={`${styles.teamImage} ${styles.teamJoinImage}`} aria-hidden="true">
+                  <span className={styles.teamJoinPlus}>+</span>
+                  <span>Tu jest miejsce<br />na Twoje zdjęcie</span>
+                </div>
+                <h3>Dołącz do nas</h3>
+                <p className={styles.teamRole}>Współtwórz <BrandName /></p>
+                <p>Chcesz współtworzyć z nami <BrandName />? Napisz na <a href="mailto:biuro@onesta.com.pl" className={styles.teamJoinLink}>biuro@onesta.com.pl</a> i opowiedz nam o sobie.</p>
+              </article>
             </div>
             <Link href="/aboutus" className={styles.textLink}><span>Więcej o zespole <BrandName /></span> <Arrow /></Link>
           </div>

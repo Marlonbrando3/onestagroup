@@ -182,8 +182,8 @@
 .costAudience { display: block; font-size: 18px; font-weight: 400; line-height: 1.5; letter-spacing: 0; }
 .costGrid > div:last-child > p { color: #536074; }
 .teamSection { padding-block: 80px; border-block: 1px solid var(--line); }
-.teamGrid { display: flex; flex-wrap: wrap; justify-content: center; gap: 36px 24px; max-width: calc(60% + 5px); margin-inline: auto; }
-.teamGrid > article { flex: 0 1 calc((100% - 2 * 24px) / 3); min-width: 0; }
+.teamGrid { display: flex; flex-wrap: wrap; justify-content: center; gap: 36px 24px; max-width: calc(80% + 14px); margin-inline: auto; }
+.teamGrid > article { flex: 0 1 calc((100% - 3 * 24px) / 4); min-width: 0; }
 .teamImage { position: relative; aspect-ratio: 4 / 5; background: #eee8dd; overflow: hidden; }
 .teamImage img { object-position: center 20%; }
 .teamGrid [data-person="3"] .teamImage img { object-position: center 25%; transform: scale(1.6); transform-origin: 50% 24%; }
@@ -192,6 +192,10 @@
 .teamGrid h3 { min-height: 1.18em; margin-top: 20px; font-size: clamp(14px, 1.4vw, 20px); }
 .teamRole { min-height: 5.1em; margin-top: 12px; color: #7b6038; font-size: 10px; letter-spacing: .09em; line-height: 1.7; text-transform: uppercase; }
 .teamGrid article > p:last-child { font-size: 13px; color: #536074; }
+.teamJoinImage { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; border: 1px dashed #b89a68; background: #f7f2e9; color: #7b6038; text-align: center; padding: 20px; }
+.teamJoinPlus { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; border: 1px solid currentColor; font-size: 34px; font-weight: 300; line-height: 1; }
+.teamJoinImage span:last-child { font-size: 10px; letter-spacing: .09em; line-height: 1.6; text-transform: uppercase; }
+.teamJoinLink { color: #7b6038; text-decoration: underline; text-underline-offset: 3px; }
 .faqSection { display: grid; grid-template-columns: .8fr 1.2fr; gap: 7%; align-items: start; }
 .faqSection > .sectionHeading { position: sticky; top: 115px; }
 .faqImage { position: relative; aspect-ratio: 16 / 10; margin-top: 32px; overflow: hidden; }
@@ -284,7 +288,7 @@
   .quickContactFields { grid-template-columns: 1fr 1fr; }
   .quickContactFields .button { grid-column: 1 / -1; }
   .faqSection { grid-template-columns: .85fr 1.15fr; gap: 5%; }
-  .teamGrid { max-width: calc(80% + 10px); }
+  .teamGrid { max-width: none; }
   .teamGrid h3 { font-size: 20px; }
 }
 
