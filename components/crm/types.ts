@@ -44,7 +44,14 @@ export const crmStatuses: CrmStatus[] = [
   "Deklaracja/termin przylotu",
   "Etap prezentacji",
   "Do weryfikacji",
+  "Stagnacja",
 ];
+
+// Ostatni, ukrywany etap lejka – klienci „uśpieni”. Dostępny w każdym lejku (także własnych).
+export const CRM_STAGNATION_STAGE: CrmStatus = "Stagnacja";
+export function withStagnationStage(stages: CrmStatus[]) {
+  return stages.includes(CRM_STAGNATION_STAGE) ? stages : [...stages, CRM_STAGNATION_STAGE];
+}
 
 export const crmStageProbabilities: Partial<Record<CrmStatus, number | null>> = {
   Zakwalifikowano: 5,
@@ -56,6 +63,7 @@ export const crmStageProbabilities: Partial<Record<CrmStatus, number | null>> = 
   "Deklaracja/termin przylotu": 70,
   "Etap prezentacji": 90,
   "Do weryfikacji": null,
+  Stagnacja: null,
 };
 
 export const crmLegacyStatusMap: Record<string, CrmStatus> = {

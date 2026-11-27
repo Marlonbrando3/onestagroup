@@ -11,6 +11,7 @@ import {
   crmActivityTypes,
   crmCurrency,
   defaultCrmPipeline,
+  withStagnationStage,
 } from "@/components/crm/types";
 import { useCrmActivities } from "@/components/crm/useCrmActivities";
 import { useCrmContacts } from "@/components/crm/useCrmContacts";
@@ -311,7 +312,7 @@ export default function CRMContactCardPage() {
     }
   }
   const [pipeline, setPipeline] = useState<CrmPipeline>(defaultCrmPipeline);
-  const stages = pipeline.stages.length ? pipeline.stages : defaultCrmPipeline.stages;
+  const stages = withStagnationStage(pipeline.stages.length ? pipeline.stages : defaultCrmPipeline.stages);
   const currentStageIndex = contact ? stages.indexOf(contact.status) : -1;
 
   const plannedActivities = useMemo(

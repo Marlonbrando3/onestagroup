@@ -9,6 +9,8 @@ import {
   crmActivityTypes,
   crmStatuses,
   defaultCrmPipeline,
+  CRM_STAGNATION_STAGE,
+  withStagnationStage,
 } from "@/components/crm/types";
 import { useCrmContacts } from "@/components/crm/useCrmContacts";
 import {
@@ -239,6 +241,32 @@ export default function CRMPipelinePage() {
   const [isDailyTasksOpen, setIsDailyTasksOpen] = useState(false);
   const [activitiesReloadKey, setActivitiesReloadKey] = useState(0);
   const [dailyTasksChecked, setDailyTasksChecked] = useState(false);
+  // Etap „Stagnacja” domyślnie ukryty; przycisk obok filtra go pokazuje (pamiętane w tej przeglądarce)
+  const [showStagnation, setShowStagnation] = useState(false);
+  useEffect(() => {
+    try {
+      setShowStagnation(window.localStorage.getItem("crmShowStagnation") === "1");
+    } catch {
+      // brak dostępu do pamięci przeglądarki – zostaje ukryty
+    }
+  }, []);
+  function toggleStagnation() {
+    setShowStagnation((current) => {
+      const next = !current;
+      try {
+        window.localStorage.setItem("crmShowStagnation", next ? "1" : "0");
+      } catch {
+        // bez zapamiętywania
+      }
+      if (next) {
+        window.setTimeout(() => {
+          const board = document.querySelector(".crmPipelineBoard");
+          if (board) board.scrollTo({ left: board.scrollWidth, behavior: "smooth" });
+        }, 60);
+      }
+      return next;
+    });
+  }
   const [contactFilter, setContactFilter] = useState<
     "all" | "today" | "overdue" | "noTasks"
   >("all");
@@ -251,9 +279,9 @@ export default function CRMPipelinePage() {
   const activePipeline =
     pipelines.find((pipeline) => pipeline.id === selectedPipelineId) ||
     defaultCrmPipeline;
-  const pipelineStages = activePipeline.stages.length
-    ? activePipeline.stages
-    : defaultCrmPipeline.stages;
+  const pipelineStages = withStagnationStage(
+    activePipeline.stages.length ? activePipeline.stages : defaultCrmPipeline.stages,
+  );
   const addContactPipeline =
     pipelines.find((pipeline) => pipeline.id === addContactPipelineId) ||
     activePipeline;
@@ -297,7 +325,12 @@ export default function CRMPipelinePage() {
     return true;
   }
 
-  const columns = pipelineStages.map((status) => {
+  const stagnationCount = contacts.filter(
+    (contact) => contact.status === CRM_STAGNATION_STAGE && matchesContactFilter(contact),
+  ).length;
+  const columns = pipelineStages
+    .filter((status) => showStagnation || status !== CRM_STAGNATION_STAGE)
+    .map((status) => {
     const stageContacts = contacts.filter(
       (contact) => contact.status === status && matchesContactFilter(contact),
     );
@@ -1366,6 +1399,19 @@ export default function CRMPipelinePage() {
               <option value="noTasks">Klienci bez zaplanowanych działań</option>
             </select>
           </label>
+          <button
+            aria-pressed={showStagnation}
+            className={`crmStagnationToggle ${showStagnation ? "active" : ""}`}
+            title={showStagnation ? "Ukryj etap „Stagnacja”" : "Pokaż etap „Stagnacja”"}
+            type="button"
+            onClick={toggleStagnation}
+          >
+            <svg aria-hidden="true" fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.9" viewBox="0 0 24 24" width="16">
+              <path d="M6 3h12M6 21h12M7 3c0 5 10 5 10 9s-10 4-10 9M17 3c0 5-10 5-10 9s10 4 10 9" />
+            </svg>
+            <span className="crmStagnationLabel">Stagnacja</span>
+            <span className="crmStagnationCount">{stagnationCount}</span>
+          </button>
           {canEditActivePipeline ? (
             <>
               <button
@@ -2243,6 +2289,46 @@ export default function CRMPipelinePage() {
 
         .crmPipelineFilter {
           margin-left: 0 !important;
+        }
+
+        .crmStagnationToggle {
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #d5d9de;
+          border-radius: 999px;
+          color: #5b5f66;
+          cursor: pointer;
+          display: inline-flex;
+          font: inherit;
+          font-size: 12px;
+          font-weight: 700;
+          gap: 6px;
+          min-height: 34px;
+          padding: 0 12px 0 10px;
+        }
+
+        .crmStagnationToggle:hover {
+          background: #f4f6f8;
+          color: #21232c;
+        }
+
+        .crmStagnationToggle.active {
+          background: #eef0f3;
+          border-color: #8a9099;
+          color: #21232c;
+        }
+
+        .crmStagnationCount {
+          background: #eef0f2;
+          border-radius: 999px;
+          font-size: 11px;
+          min-width: 20px;
+          padding: 1px 6px;
+          text-align: center;
+        }
+
+        .crmStagnationToggle.active .crmStagnationCount {
+          background: #ffffff;
         }
 
         .crmPipelineFilter select {
