@@ -537,7 +537,7 @@ export default function PolishRealEstateAgency({ showcase }: { showcase: AgencyS
               {agencyTeam.map((person) => (
                 <article key={person.id} data-person={person.id}>
                   <div className={styles.teamImage}>
-                    <Image src={`/${person.photo}`} alt={person.name} fill sizes="(min-width: 1455px) 300px, (min-width: 1101px) 22vw, (min-width: 900px) 28vw, (min-width: 600px) 43vw, 88vw" className={styles.cover} />
+                    <Image src={`/${person.photo}`} alt={person.name} fill sizes="(min-width: 1455px) 260px, (min-width: 1101px) 18vw, (min-width: 900px) 25vw, (min-width: 600px) 43vw, 88vw" className={styles.cover} />
                   </div>
                   <h3>{person.name}</h3>
                   <p className={styles.teamRole}>{person.title}</p>
