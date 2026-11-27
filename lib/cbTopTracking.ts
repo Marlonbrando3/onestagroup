@@ -42,7 +42,7 @@ function trackingEndpoint() {
 
 function validToken(value: string | null) {
   return Boolean(
-    value && value.length >= 20 && value.length <= 2048 && /^[a-z0-9_-]+$/i.test(value),
+    value && value.length >= 10 && value.length <= 2048 && /^[a-z0-9_-]+$/i.test(value),
   );
 }
 

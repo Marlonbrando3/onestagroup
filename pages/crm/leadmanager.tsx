@@ -47,6 +47,21 @@ type SmsRow = { id: string; created_at: string; audience: string; recipient: str
 
 type SecretKey = "appSecret" | "pageAccessToken" | "apiToken";
 
+// Szacunek długości SMS-a: imię ~10 znaków, link do czatu ~38 znaków (onesta.com.pl/czat/XXXXXXXXXX).
+// Polskie znaki → kodowanie UCS-2: 70 znaków w 1 SMS, 67 na część przy dłuższych; bez nich 160 / 153.
+const GSM_CHARS = /^[A-Za-z0-9 \r\n@£$¥èéùìòÇØøÅå_^{}\\\[~\]|€ÆæßÉ!"#¤%&'()*+,\-./:;<=>?¡ÄÖÑÜ§¿äöñüà]*$/;
+function estimateSms(template: string) {
+  const text = template
+    .replace(/{{\s*firstName\s*}}/g, "Aleksandra")
+    .replace(/{{\s*name\s*}}/g, "Aleksandra Kowalska")
+    .replace(/{{\s*company\s*}}/g, "Onesta Group")
+    .replace(/{{\s*(chatLink|cbTopLink|costaBlancaLink)\s*}}/g, "https://onesta.com.pl/czat/Ab3dEf7hJk");
+  const unicode = !GSM_CHARS.test(text);
+  const length = text.length;
+  const parts = unicode ? (length <= 70 ? 1 : Math.ceil(length / 67)) : length <= 160 ? 1 : Math.ceil(length / 153);
+  return { length, parts, unicode };
+}
+
 const WEBHOOK_URL = "https://onesta.com.pl/api/leadmanager/meta-webhook";
 
 function formatTime(value: string) {
@@ -416,7 +431,18 @@ export default function LeadManagerPage() {
                       setSettings({ ...settings, sms: { ...settings.sms, clientTemplate: event.target.value } })
                     }
                   />
-                  <small>{settings.sms.clientTemplate.length} znaków</small>
+                  {(() => {
+                    const estimate = estimateSms(settings.sms.clientTemplate);
+                    return (
+                      <small className={estimate.parts > 3 ? "lmSmsWarn" : ""}>
+                        ok. {estimate.length} znaków po wstawieniu imienia i linku · {estimate.parts}{" "}
+                        {estimate.parts === 1 ? "SMS" : estimate.parts < 5 ? "SMS-y" : "SMS-ów"} na każdego leada
+                        {estimate.unicode ? " (polskie znaki: 67 znaków na SMS, bez nich 153)" : ""}
+                        {estimate.parts > 3 ? " – warto skrócić, każda część to osobna opłata" : ""}
+                        {estimate.length > 640 ? " – ZA DŁUGI, SMSAPI odrzuci wiadomość" : ""}
+                      </small>
+                    );
+                  })()}
                 </label>
 
               </div>
@@ -737,6 +763,10 @@ export default function LeadManagerPage() {
         .lmSecret button {
           flex: 0 0 auto;
           padding: 0 10px;
+        }
+        .lmSmsWarn {
+          color: #a35b00 !important;
+          font-weight: 600;
         }
         .lmKey {
           background: #eef0f2;

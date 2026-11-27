@@ -43,14 +43,52 @@ function trackingKey() {
   return keyPromise;
 }
 
-async function createToken(leadId: string, contactId: string, offerKey: OfferKey) {
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const payload: TokenPayload = { version: 2, leadId, contactId, offerKey, expiresAt: Date.now() + 90 * 24 * 60 * 60 * 1000 };
-  const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await trackingKey(), encoder.encode(JSON.stringify(payload)));
-  return Buffer.concat([Buffer.from(iv), Buffer.from(encrypted)]).toString("base64url");
+// Krótki kod linku z SMS-a (10 znaków, np. „Ab3dEf7hJk”) – rekord w lm_short_links, ważny 90 dni.
+// Długi, zaszyfrowany token (dawne linki) nadal działa.
+const SHORT_CODE = /^[A-Za-z0-9]{10,16}$/;
+const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+
+function randomCode(length = 10) {
+  const bytes = crypto.getRandomValues(new Uint8Array(length));
+  return Array.from(bytes, (byte) => CODE_ALPHABET[byte % CODE_ALPHABET.length]).join("");
+}
+
+async function createShortCode(leadId: string, contactId: string, offerKey: OfferKey) {
+  if (!supabaseServer) throw new Error("Brak konfiguracji serwera.");
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const code = randomCode();
+    const { error } = await supabaseServer.from("lm_short_links").insert({
+      code,
+      lead_id: leadId,
+      crm_contact_id: contactId,
+      offer_key: offerKey,
+      expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+    });
+    if (!error) return code;
+    if (error.code !== "23505") throw error;
+  }
+  throw new Error("Nie udało się wygenerować krótkiego linku.");
+}
+
+async function readShortCode(code: string): Promise<TokenPayload | null> {
+  if (!supabaseServer) return null;
+  const { data } = await supabaseServer
+    .from("lm_short_links")
+    .select("lead_id,crm_contact_id,offer_key,expires_at")
+    .eq("code", code)
+    .maybeSingle();
+  if (!data || Date.parse(data.expires_at) < Date.now() || !(String(data.offer_key) in TRACKED_OFFERS)) return null;
+  return {
+    version: 2,
+    leadId: data.lead_id,
+    contactId: data.crm_contact_id,
+    offerKey: data.offer_key as OfferKey,
+    expiresAt: Date.parse(data.expires_at),
+  };
 }
 
 export async function readLmTrackingToken(token: string): Promise<TokenPayload | null> {
+  if (SHORT_CODE.test(token)) return readShortCode(token);
   try {
     const bytes = Buffer.from(token, "base64url");
     if (bytes.length < 29) return null;
@@ -79,18 +117,17 @@ function siteOrigin() {
 // Klucz leada w linku do wzorca prezentacji (?k=…): kto ogląda, bez przypisywania prezentacji
 export async function resolveLeadKey(value: unknown) {
   const key = String(value || "").trim();
-  if (key.length < 20 || key.length > 2048 || !/^[A-Za-z0-9_-]+$/.test(key)) return null;
+  if (key.length < 10 || key.length > 2048 || !/^[A-Za-z0-9_-]+$/.test(key)) return null;
   const payload = await readLmTrackingToken(key);
   return payload ? { contactId: payload.contactId, leadId: payload.leadId } : null;
 }
 
-export async function createTrackedOfferLinks(leadId: string, contactId: string, shorten: boolean) {
-  const token = await createToken(leadId, contactId, "costa_blanca");
-  const url = `${siteOrigin()}/r/${token}`;
-  const link = shorten ? `[%idzdo:${url}%]` : url;
-  const chatToken = await createToken(leadId, contactId, "chat");
-  const chatUrl = `${siteOrigin()}/czat/${chatToken}`;
-  return { cbTop: link, costaBlanca: link, chat: shorten ? `[%idzdo:${chatUrl}%]` : chatUrl };
+// Linki do SMS-a: krótkie, na naszej domenie (onesta.com.pl/czat/Ab3dEf7hJk) – bez skracacza idz.do
+export async function createTrackedOfferLinks(leadId: string, contactId: string, _shorten?: boolean) {
+  const cbCode = await createShortCode(leadId, contactId, "costa_blanca");
+  const chatCode = await createShortCode(leadId, contactId, "chat");
+  const link = `${siteOrigin()}/r/${cbCode}`;
+  return { cbTop: link, costaBlanca: link, chat: `${siteOrigin()}/czat/${chatCode}` };
 }
 
 export async function resolveLmTrackedLink(token: string) {

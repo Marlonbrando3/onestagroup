@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (
     !body ||
     typeof body.token !== "string" ||
-    body.token.length < 20 ||
+    body.token.length < 10 ||
     body.token.length > 2048 ||
     typeof body.event !== "string" ||
     (body.context !== undefined && typeof body.context !== "string") ||
