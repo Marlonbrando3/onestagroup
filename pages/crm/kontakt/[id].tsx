@@ -1466,76 +1466,130 @@ export default function CRMContactCardPage() {
       ) : null}
 
       {editingActivityId ? (
-        <div className="crmModalBackdrop" role="presentation">
-          <section aria-modal="true" className="crmActivityModal" role="dialog">
-            <header>
-              <div>
-                <p>Edycja działania</p>
-                <h2>{activityEditForm.title || "Działanie"}</h2>
-              </div>
-              <button aria-label="Zamknij" type="button" onClick={closeActivityEdit}>
+        <div
+          className="crmModalBackdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !isSavingActivityEdit) closeActivityEdit();
+          }}
+        >
+          {/* Ten sam wygląd co formularz „Aktywność” nad historią – edycja i dodawanie się nie różnią. */}
+          <section aria-label="Edycja aktywności" aria-modal="true" className="crmComposer open crmEditComposer" role="dialog">
+            <div className="crmComposerTabs">
+              <span className="crmEditComposerTitle">
+                <svg aria-hidden="true" fill="none" height="15" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="15">
+                  <rect height="16" rx="2" width="18" x="3" y="5" />
+                  <path d="M3 10h18M8 3v4M16 3v4" />
+                </svg>
+                Edycja aktywności
+              </span>
+              <button aria-label="Zamknij" className="crmEditComposerClose" type="button" onClick={closeActivityEdit}>
                 ×
               </button>
-            </header>
-            <div className="crmTaskEditor">
-              <div className="crmTypeChips" aria-label="Typ działania">
-                {crmActivityTypes.map((type) => (
-                  <button
-                    className={`${activityEditForm.type === type ? "active" : ""} ${
-                      type === "Brak kontaktu" ? "noContact" : ""
-                    }`.trim()}
-                    key={type}
-                    type="button"
-                    onClick={() => changeEditType(type)}
-                  >
-                    <ActivityIcon type={type} />
-                    {type}
-                  </button>
-                ))}
+            </div>
+            <form className="crmActivityComposer" onSubmit={handleActivityEditSubmit}>
+              <div className="crmComposerRow">
+                <span className="crmComposerRowIcon" />
+                <input
+                  autoFocus
+                  className="crmComposerTitle"
+                  placeholder="Tytuł działania"
+                  value={activityEditForm.title}
+                  onChange={(event) => setActivityEditForm({ ...activityEditForm, title: event.target.value })}
+                />
               </div>
-              <form className="crmActivityForm" onSubmit={handleActivityEditSubmit}>
-                <div className="crmTaskScheduleRow">
+              <div className="crmComposerRow">
+                <span className="crmComposerRowIcon" />
+                <div className="crmTypeSegment" aria-label="Typ działania">
+                  {crmActivityTypes.map((type) => (
+                    <button
+                      className={`${activityEditForm.type === type ? "active" : ""} ${
+                        type === "Brak kontaktu" ? "noContact" : ""
+                      }`.trim()}
+                      key={type}
+                      type="button"
+                      onClick={() => changeEditType(type)}
+                    >
+                      <ActivityIcon type={type} />
+                      {type}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="crmComposerRow">
+                <span className="crmComposerRowIcon" title="Termin">
+                  <svg aria-hidden="true" fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="18">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v5l3 2" />
+                  </svg>
+                </span>
+                <div className="crmComposerWhen">
                   <input
-                    placeholder="Tytuł działania"
-                    value={activityEditForm.title}
-                    onChange={(event) => setActivityEditForm({ ...activityEditForm, title: event.target.value })}
-                  />
-                  <input
+                    aria-label="Data"
                     type="date"
                     value={activityEditForm.dueDate}
                     onChange={(event) => setActivityEditForm({ ...activityEditForm, dueDate: event.target.value })}
                   />
                   <input
+                    aria-label="Godzina"
                     type="time"
                     value={activityEditForm.dueTime}
                     onChange={(event) => setActivityEditForm({ ...activityEditForm, dueTime: event.target.value })}
                   />
                 </div>
-                <select
-                  value={activityEditForm.status}
-                  onChange={(event) =>
-                    setActivityEditForm({ ...activityEditForm, status: event.target.value as CrmActivityStatus })
-                  }
-                >
-                  <option value="planned">Zaplanowane</option>
-                  <option value="done">Wykonane</option>
-                </select>
+              </div>
+              <div className="crmComposerRow">
+                <span className="crmComposerRowIcon" title="Notatka">
+                  <svg aria-hidden="true" fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="18">
+                    <path d="M5 4h14v11l-5 5H5z" />
+                    <path d="M14 20v-5h5" />
+                  </svg>
+                </span>
                 <textarea
-                  placeholder="Opis, ustalenia…"
+                  className="crmComposerNote"
+                  placeholder="Notatka do działania: o czym rozmawiać, co ustalono…"
                   value={activityEditForm.note}
                   onChange={(event) => setActivityEditForm({ ...activityEditForm, note: event.target.value })}
                 />
-                {activityEditError ? <p className="crmError">{activityEditError}</p> : null}
-                <div className="crmModalActions">
-                  <button disabled={isSavingActivityEdit} type="button" onClick={closeActivityEdit}>
-                    Anuluj
+              </div>
+              <div className="crmComposerRow">
+                <span className="crmComposerRowIcon" title="Status">
+                  <svg aria-hidden="true" fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24" width="18">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="m8 12 3 3 5-6" />
+                  </svg>
+                </span>
+                <div className="crmStatusSegment" role="radiogroup" aria-label="Status">
+                  <button
+                    aria-checked={activityEditForm.status === "planned"}
+                    className={activityEditForm.status === "planned" ? "active" : ""}
+                    role="radio"
+                    type="button"
+                    onClick={() => setActivityEditForm({ ...activityEditForm, status: "planned" })}
+                  >
+                    Zaplanowane
                   </button>
-                  <button className="primary" disabled={isSavingActivityEdit} type="submit">
-                    {isSavingActivityEdit ? "Zapisywanie..." : "Zapisz zmiany"}
+                  <button
+                    aria-checked={activityEditForm.status === "done"}
+                    className={activityEditForm.status === "done" ? "active done" : ""}
+                    role="radio"
+                    type="button"
+                    onClick={() => setActivityEditForm({ ...activityEditForm, status: "done" })}
+                  >
+                    Wykonane
                   </button>
                 </div>
-              </form>
-            </div>
+              </div>
+              {activityEditError ? <p className="crmError">{activityEditError}</p> : null}
+              <div className="crmComposerFooter">
+                <button disabled={isSavingActivityEdit} type="button" onClick={closeActivityEdit}>
+                  Anuluj
+                </button>
+                <button className="primary" disabled={isSavingActivityEdit} type="submit">
+                  {isSavingActivityEdit ? "Zapisywanie..." : "Zapisz"}
+                </button>
+              </div>
+            </form>
           </section>
         </div>
       ) : null}
@@ -2683,6 +2737,38 @@ export default function CRMContactCardPage() {
         }
         .crmActivityModal .crmTaskEditor {
           padding: 6px 0 0;
+        }
+        .crmEditComposer {
+          box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+          max-height: calc(100vh - 48px);
+          overflow: auto;
+          width: min(760px, 100%);
+        }
+        .crmEditComposer .crmComposerTabs {
+          align-items: center;
+          justify-content: space-between;
+        }
+        .crmEditComposerTitle {
+          align-items: center;
+          color: #21232c;
+          display: inline-flex;
+          font-size: 13px;
+          font-weight: 600;
+          gap: 6px;
+          border-bottom: 2px solid #3c61c4;
+          padding: 11px 10px 9px;
+        }
+        .crmEditComposer .crmEditComposerClose {
+          background: transparent;
+          border: 0;
+          color: #5b5f66;
+          cursor: pointer;
+          font-size: 22px;
+          line-height: 1;
+          padding: 4px 8px;
+        }
+        .crmEditComposer .crmEditComposerClose:hover {
+          color: #21232c;
         }
 
         @media (max-width: 1000px) {
