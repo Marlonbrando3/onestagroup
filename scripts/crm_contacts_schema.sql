@@ -88,3 +88,21 @@ create table if not exists public.crm_event_reads (
   last_seen_at timestamptz not null default now()
 );
 alter table public.crm_event_reads enable row level security;
+
+-- Flagi rekordów (27.11.2026): katalog flag (systemowe + tworzone przez użytkowników) i przypięcia na kontakcie.
+create table if not exists public.crm_flags (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  label text not null,
+  color text not null default '#64748b',
+  owner_email text,
+  is_system boolean not null default false
+);
+alter table public.crm_flags enable row level security;
+revoke all on table public.crm_flags from anon, authenticated;
+grant all on table public.crm_flags to service_role;
+alter table public.crm_contacts add column if not exists flag_ids uuid[] not null default '{}';
+alter table public.crm_contacts add column if not exists high_potential boolean not null default false;
+insert into public.crm_flags (label, color, is_system)
+select v.label, v.color, true from (values ('Zarejestrowano klienta', '#1f9d55'), ('Niski budżet', '#d63b3b')) as v(label, color)
+where not exists (select 1 from public.crm_flags f where f.is_system and f.label = v.label);

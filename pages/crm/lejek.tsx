@@ -25,6 +25,7 @@ import CrmActivityBell from "@/components/crm/CrmActivityBell";
 import CrmPushToggle from "@/components/crm/CrmPushToggle";
 import CrmAccountMenu from "@/components/crm/CrmAccountMenu";
 import { useRouter } from "next/router";
+import { CrmFlagChips, useCrmFlags } from "@/components/crm/CrmFlags";
 import {
   DragEvent,
   FormEvent,
@@ -144,6 +145,7 @@ function getActivityPopupPosition(element: HTMLElement) {
 
 export default function CRMPipelinePage() {
   const router = useRouter();
+  const { flags: crmFlags } = useCrmFlags();
   const [currentUserEmail, setCurrentUserEmail] = useState("");
   const [selectedOwner, setSelectedOwner] = useState("all");
   const [selectedPipelineId, setSelectedPipelineId] = useState(
@@ -1544,7 +1546,8 @@ export default function CRMPipelinePage() {
                         <article
                           className={`crmPipelineCard ${draggedId === contact.id ? "dragging" : ""} ${
                             isActivityOpen ? "activityOpen" : ""
-                          }`}
+                          } ${contact.highPotential ? "highPotential" : ""}`}
+                          title={contact.highPotential ? "Wysoki potencjał" : undefined}
                           draggable
                           key={contact.id}
                           onClick={(event) => openContact(event, contact.id)}
@@ -1589,6 +1592,7 @@ export default function CRMPipelinePage() {
                                 : "Brak kwoty"}
                             </span>
                           </div>
+                          <CrmFlagChips flags={crmFlags} flagIds={contact.flagIds} />
                           {isActivitiesLoading ? (
                             <div className="crmCardActivity">
                               <span
@@ -3430,9 +3434,23 @@ export default function CRMPipelinePage() {
           box-shadow: 0 1px 3px rgba(21, 32, 43, 0.08);
         }
 
+        .crmPipelineCard.highPotential {
+          background: #effaf2;
+          border-color: #9fd8b3;
+          box-shadow:
+            0 1px 3px rgba(21, 32, 43, 0.08),
+            0 0 0 1px rgba(46, 160, 90, 0.12),
+            0 4px 14px rgba(46, 160, 90, 0.16);
+        }
+
         .crmPipelineCard:hover {
           border-color: #c3c7cd;
           box-shadow: 0 4px 12px rgba(21, 32, 43, 0.12);
+        }
+
+        .crmPipelineCard.highPotential:hover {
+          border-color: #7fcb9c;
+          box-shadow: 0 4px 16px rgba(46, 160, 90, 0.24);
         }
 
         .crmPipelineCard.activityOpen {

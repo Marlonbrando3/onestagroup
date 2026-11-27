@@ -21,6 +21,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
 import CrmConsentPanel from "@/components/crm/CrmConsentPanel";
 import CrmDataSharesPanel from "@/components/crm/CrmDataSharesPanel";
+import { CrmFlagPicker } from "@/components/crm/CrmFlags";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const today = new Date().toISOString().slice(0, 10);
@@ -714,6 +715,12 @@ export default function CRMContactCardPage() {
                   <span className="crmDealSub">
                     {contact.phone || contact.email || "Brak danych kontaktowych"}
                   </span>
+                  <CrmFlagPicker
+                    flagIds={contact.flagIds || []}
+                    highPotential={Boolean(contact.highPotential)}
+                    onChangeFlags={(flagIds) => updateContact({ id: contact.id, flagIds })}
+                    onToggleHighPotential={(highPotential) => updateContact({ id: contact.id, highPotential })}
+                  />
                 </div>
                 <div className="crmDealHeaderRight">
                   <span className="crmDealOwner">

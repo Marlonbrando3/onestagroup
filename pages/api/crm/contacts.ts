@@ -94,6 +94,8 @@ function mapContact(row: any) {
     source: row.source || "",
     lastContact: row.last_contact || "",
     createdAt: row.created_at,
+    flagIds: Array.isArray(row.flag_ids) ? row.flag_ids : [],
+    highPotential: Boolean(row.high_potential),
   };
 }
 
@@ -291,9 +293,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: "Brak ID kontaktu." });
     }
 
-    const payload: Record<string, string | number | null> = {
-      last_contact: new Date().toISOString().slice(0, 10),
-    };
+    // Same flagi / „wysoki potencjał” nie są kontaktem z klientem – nie przesuwamy daty ostatniego kontaktu.
+    const flagOnlyKeys = new Set(["id", "flagIds", "highPotential"]);
+    const isFlagOnly = Object.keys(req.body || {}).every((key) => flagOnlyKeys.has(key));
+    const payload: Record<string, string | number | boolean | string[] | null> = isFlagOnly
+      ? {}
+      : { last_contact: new Date().toISOString().slice(0, 10) };
+
+    if (typeof req.body?.flagIds !== "undefined") {
+      const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const flagIds: string[] = Array.isArray(req.body.flagIds) ? req.body.flagIds.map(String) : [];
+      payload.flag_ids = Array.from(new Set(flagIds.filter((flagId) => uuid.test(flagId)))).slice(0, 30);
+    }
+
+    if (typeof req.body?.highPotential !== "undefined") {
+      payload.high_potential = Boolean(req.body.highPotential);
+    }
 
     if (typeof req.body?.name !== "undefined") {
       const name = String(req.body.name || "").trim();

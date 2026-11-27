@@ -22,6 +22,8 @@ type NewContactPayload = {
 
 type UpdateContactPayload = Partial<NewContactPayload> & {
   id: string;
+  flagIds?: string[];
+  highPotential?: boolean;
 };
 
 function normalizeCrmPhone(value: string) {

@@ -32,6 +32,16 @@ export type CrmContact = {
   hasHistory?: boolean;
   lastPresentationEventAt?: string | null;
   presentationSeenAt?: string | null;
+  flagIds?: string[];
+  highPotential?: boolean;
+};
+
+export type CrmFlag = {
+  id: string;
+  label: string;
+  color: string;
+  ownerEmail: string | null;
+  isSystem: boolean;
 };
 
 export const crmStatuses: CrmStatus[] = [
