@@ -3,6 +3,7 @@ import { supabaseServer } from "@/lib/supabaseClient";
 import { crmActivityTypes } from "@/components/crm/types";
 import {
   canAccessCrm,
+  getCrmUser,
   getVisibleCrmOwner,
   isCrmAdmin,
   normalizeCrmEmail,
@@ -188,7 +189,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       due_date: req.body?.dueDate || null,
       due_time: req.body?.dueTime || null,
       status,
-      created_by: "CRM",
+      created_by: getCrmUser(crmUser.email)?.label || crmUser.email,
       completed_at: status === "done" ? new Date().toISOString() : null,
     };
 

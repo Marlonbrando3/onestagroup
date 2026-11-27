@@ -38,6 +38,13 @@ type LeadActivityItem = {
   detail: string;
 };
 
+// Kto dodał wpis: nazwa użytkownika CRM (stare zadania mają „CRM” – autor nieznany, wtedy nic nie pokazujemy).
+function authorLabel(createdBy?: string | null) {
+  const value = String(createdBy || "").trim();
+  if (!value || value === "CRM") return "";
+  return value.includes("@") ? getCrmUser(value)?.label || value : value;
+}
+
 type HistoryItem =
   | { kind: "note"; id: string; date: string; note: CrmNote }
   | { kind: "activity"; id: string; date: string; activity: CrmActivity }
@@ -1154,6 +1161,9 @@ export default function CRMContactCardPage() {
                                 </span>
                                 <span>{activity.type}</span>
                                 <span>{contact.name}</span>
+                                {authorLabel(activity.createdBy) ? (
+                                  <span className="crmAuthor">Autor: {authorLabel(activity.createdBy)}</span>
+                                ) : null}
                               </p>
                               {activity.note ? <p className="crmCardNote">{activity.note}</p> : null}
                             </div>
@@ -1203,7 +1213,7 @@ export default function CRMContactCardPage() {
                               <div className="crmNoteTop">
                                 <p className="crmMeta">
                                   <span>{formatDateTime(note.createdAt)}</span>
-                                  <span>{note.createdBy || "CRM"}</span>
+                                  <span className="crmAuthor">Autor: {authorLabel(note.createdBy) || "CRM"}</span>
                                   {note.updatedAt &&
                                   new Date(note.updatedAt).getTime() - new Date(note.createdAt).getTime() > 60000 ? (
                                     <span>edytowano</span>
@@ -1358,6 +1368,9 @@ export default function CRMContactCardPage() {
                                 <span>{formatDateTime(activityMoment(activity))}</span>
                                 <span>{activity.type}</span>
                                 <span>{contact.name}</span>
+                                {authorLabel(activity.createdBy) ? (
+                                  <span className="crmAuthor">Autor: {authorLabel(activity.createdBy)}</span>
+                                ) : null}
                               </p>
                               {activity.note ? <p className="crmCardNote">{activity.note}</p> : null}
                             </div>
@@ -2242,6 +2255,10 @@ export default function CRMContactCardPage() {
           color: #b4b7bc;
           content: "·";
           margin-left: 6px;
+        }
+        .crmAuthor {
+          color: #4b5563;
+          font-weight: 600;
         }
         .overdueText {
           color: #c0392b;
