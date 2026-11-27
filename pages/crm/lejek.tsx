@@ -234,9 +234,11 @@ export default function CRMPipelinePage() {
     }
   }, []);
 
+  // Powitanie losujemy raz na wejście, gdy wiadomo, kto jest zalogowany (Karolina ma swoje specjalne)
   useEffect(() => {
-    setGreeting(pickCrmGreeting());
-  }, []);
+    if (!currentUserEmail) return;
+    setGreeting((current) => current || pickCrmGreeting(currentUserEmail));
+  }, [currentUserEmail]);
 
   const [isDailyTasksOpen, setIsDailyTasksOpen] = useState(false);
   const [activitiesReloadKey, setActivitiesReloadKey] = useState(0);
@@ -1283,7 +1285,7 @@ export default function CRMPipelinePage() {
                 {greeting ? (
                   <span>
                     {greeting.before}
-                    <strong>{currentCrmUser.label.split(" ")[0]}</strong>
+                    <strong>{greeting.title || currentCrmUser.label.split(" ")[0]}</strong>
                     {greeting.after}{" "}
                     <span className="crmAppHeaderEmoji" aria-hidden="true">
                       {greeting.emoji}

@@ -1,5 +1,11 @@
 // Powitania w nagłówku CRM. {name} zostanie zastąpione imieniem zalogowanej osoby.
-export type CrmGreeting = { before: string; after: string; emoji: string };
+// `title` – zamiast imienia (np. specjalne powitanie Karoliny)
+export type CrmGreeting = { before: string; after: string; emoji: string; title?: string };
+
+// Specjalne powitanie Karoliny – co trzecie wejście na lejek
+const KAROLINA_EMAIL = "karolina@fenomen.nieruchomosci.pl";
+const queenGreeting: CrmGreeting = { before: "Witaj, ", title: "Królowo Złota", after: "!", emoji: "👑" };
+const queenCounterKey = "crmQueenGreetingCounter";
 
 export const crmGreetings: CrmGreeting[] = [
   { before: "Dobrego dnia, ", after: "!", emoji: "☀️" },
@@ -29,7 +35,17 @@ export const crmGreetings: CrmGreeting[] = [
 const storageKey = "crmGreetingIndex";
 
 // Nowe losowe powitanie przy każdym wejściu na lejek (nigdy dwa razy to samo pod rząd).
-export function pickCrmGreeting(): CrmGreeting {
+export function pickCrmGreeting(email?: string): CrmGreeting {
+  if (String(email || "").trim().toLowerCase() === KAROLINA_EMAIL) {
+    let counter = 0;
+    try {
+      counter = Number(window.localStorage.getItem(queenCounterKey) || 0) + 1;
+      window.localStorage.setItem(queenCounterKey, String(counter));
+    } catch {
+      counter = Math.floor(Math.random() * 3) + 1;
+    }
+    if (counter % 3 === 0) return queenGreeting;
+  }
   let previous = -1;
   try {
     previous = Number(window.sessionStorage.getItem(storageKey) ?? -1);
